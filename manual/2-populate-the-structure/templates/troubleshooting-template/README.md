@@ -1,12 +1,13 @@
 # Troubleshooting
 
-A troubleshooting topic explains to users the product known issues and errors they might encounter because of product quirks or users' mistakes, and helps users resolve issues effectively if there is a solution.
+A troubleshooting topic explains to users the product's known issues and errors they might encounter due to product quirks or user mistakes. It provides effective solutions when available, or clarifies the situation when a solution is not immediately possible.
 
-A troubleshooting document can address different complexities within a defined scope. Specifically, a document can detail:
+A troubleshooting document can address different complexities within a defined scope. A document can detail:
 
+- A known issue without a solution or workaround
 - One issue with one solution
-- One issue with multiple solutions due to different causes
-- A collection of related issues
+- A collection of issues with the same symptom but different causes
+- A collection of related issues and corresponding solutions
 
 When an issue applies to a specific procedure article, and you can explain it within 2 100-word paragraphs, document it in that article as a [troubleshooting section](../procedure/procedure-template-flat.md#faq-troubleshooting-optional).
 
@@ -17,7 +18,7 @@ When an issue applies to a specific procedure article, and you can explain it wi
 
 [...]
 
-## Issue/cause A
+## Issue A
 
 {Symptom}
 
@@ -30,7 +31,7 @@ When an issue applies to a specific procedure article, and you can explain it wi
 3. {Step 3}
 [...]
 
-## Issue/cause B
+## Issue B
 
 {Symptom}
 
@@ -40,6 +41,12 @@ When an issue applies to a specific procedure article, and you can explain it wi
 2. {Step 2}
 3. {Step 3}
 [...]
+
+## Best practices
+
+- {practice 1}
+- {practice 2}
+- {practice 3}
 ````
 
 ## Troubleshooting resources

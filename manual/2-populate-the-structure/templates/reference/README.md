@@ -1,6 +1,6 @@
 # Reference
 
-Use a reference article when you need to provide a clear and structured place to lookup information quickly, without having to read a full explanation or step-by-step instructions.
+Use a reference article when you need to provide a clear and structured place to look up information quickly, without having to read a full explanation or step-by-step instructions.
 
 In many cases, a reference article supports users as they perform a task (for example, by providing a list of error messages and their meanings). In other cases, a reference article works independently, providing users with a place to look up specific information (for example, a list of keyboard shortcuts).
 

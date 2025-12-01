@@ -1,212 +1,165 @@
-# Reference template <!-- This is an informative header; remove it before merging your content. -->
-
-<details>
-<summary>Style rule</summary>
-Use sentence-case headings.
-</details>
-
-
-<!-- Document layout
-| #   | Element            | Format                 | Required   |
-|:----|:------------------ |:---------------------- |:---------- |
-| 1   | Title              | H1                     | Yes        |
-| 2   | Subtitle           | H4                     | Yes        |
-| 3   | Admonition         | Info admonition        | No         |
-| 4   | Introduction       | Paragraph              | Yes        |
-| 5   | H2 section title   | H2                     | Yes        |
-| 6   | H2 section content | Paragraph/list/table   | Yes        |
-| 7   | → Section body     | Paragraph/list/table   | Yes        |
-| 8   | → Code             | Fenced block           | No         |
-| 9   | → Screenshot       | Image                  | No         |
-| 10  | → Admonition       | Admonition             | No         |
-| 11  | H3 section title   | H3                     | No         |
-| 12  | H3 section content | Same as H2             | No         |
-| 13  | H4 section title   | H4                     | No         |
-| 14  | H4 section content | Same as H2             | No         |
-| 15  | H5-H6 section      | -                      | Forbidden  |
-| 16  | Further reading    | -                      | Forbidden  |
-
--->
+# Reference template
 
 ---
-title: ""
-topic: ""
-author: ""
-version: ""
+title:
+doc_type: reference
+product: # [storage | blockchain | messaging]
+topics: []
+authors: # GitHub username
+owner: logos
+doc_version: # increased by one after every update
+slug:
 ---
 
-# { Title }
+## Template overview
 
-<!--
-Guidelines:
+| Element              | Format                   | Required   | ID               |
+|:-------------------- |:------------------------ |:---------- |:---------------- |
+| Title                | H1                       | Yes        | `REF-TITLE`      |
+| Subtitle             | H4                       | Yes        | `REF-SUBTITLE`   |
+| Access callout       | Note-type callout        | No         | `REF-ACCESS`     |
+| Callouts             | Tip, Note, Important, Caution | No         | `REF-CALLOUTS`   |
+| Intro                |                          | Yes        | `REF-INTRO`      |
+| H2 section           | H2 + body (container)    | Yes        | `REF-H2-SECTION` |
+| H3 section           | H3 + body (container)    | No         | `REF-H3-SECTION` |
+| Extra guidelines     |                          | Yes        | `REF-EXTRA`      |
+| Forbidden content    |                          | Forbidden  | `REF-FORBID`     |
 
-- Reference titles use a precise noun phrase of no more than 60 characters or 7 words.
-- Lead the sentence with the lookup object. For example, use "Codex API limits" instead of "Limits of the Codex API".
-- Omit verbs, imperatives, and questions, such as "configure", "using", "how to", or "what is".
-- If necessary, use cue words to signal the content type: "reference", "syntax", or "commands", for example.
-- Avoid meta-descriptions, such as "list of", "table of", "overview of", "description of", or similar.
+## Title <!-- group: REF-TITLE -->
 
-> ⚙️ **Examples:**
+- Use Markdown H1 headings. <!-- REF-STRUCT-TITLE-H1 -->
+- Reference titles use a precise noun phrase. <!-- REF-BEHAV-TITLE-NOUN-PHRASE -->
+	- Examples:
+
+		| Bad (vague, verb-led)        | Good (precise noun phrase)            |
+		| ---------------------------- | ------------------------------------- |
+		| Understanding authentication | OAuth 2.0 token request parameters    |
+		| Handling errors              | CLI exit codes and meanings           |
+		| Working with storage         | Object storage bucket lifecycle rules |
+
+- Omit verbs, imperatives, and questions, such as `configure`, `using`, `how to`, or `what is`. <!-- REF-BEHAV-TITLE-OMIT-CERTAIN-WORDS -->
+- Aim for 25 to 60 characters; 80 characters maximum. <!-- REF-BEHAV-TITLE-LENGTH-25-80 -->
+- Lead the sentence with the lookup object. <!-- REF-BEHAV-TITLE-LOOKUP-OBJECT -->
+	- Example: use `Logos Storage API limits` instead of `Limits of the Logos Storage API`.
+- If necessary, use cue words to signal the content type: `reference`, `syntax`, or `commands`, for example. <!-- REF-BEHAV-TITLE-CUE-WORDS -->
+- Avoid meta-descriptions, such as `list of`, `table of`, `overview of`, `description of`, or similar. <!-- REF-BEHAV-TITLE-OMIT-META -->
+- Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- REF-BEHAV-TITLE-SENTENCE-CASE -->
+- Don't use punctuation marks, such as colons, semicolons, or dashes. <!-- REF-BEHAV-TITLE-NO-PUNCT -->
+
+> **Examples:**
 >
-> - *Workflow syntax for Codex Actions*
-> - *Codex CLI commands reference*
+> - *Workflow syntax for Logos Storage Actions*
+> - *Logos Messaging CLI commands reference*
 > - *Environment variables for GitHub Codespaces*
-> - *Waku v2 protocol reference*
+> - *Logos Blockchain v2 protocol reference*
 
-> ℹ️ **Note:**
-> 
-> For more information and examples, check out the [reference title](../../docs-standards/10-structure-the-content/reference-help-me-to-remember.md#title) standards.
--->
+## Subtitle <!-- group: REF-SUBTITLE -->
 
-#### { Subtitle }
+- Use a Markdown H4 for the subtitle placed right under the H1 title. <!-- REF-STRUCT-SUBTITLE-H4 -->
+- One sentence only; no links, lists, or inline formatting. <!-- REF-BEHAV-SUBTITLE-SINGLE-SENTENCE -->
+- Ends with a period. <!-- REF-BEHAV-SUBTITLE-END-PERIOD -->
+- Stay under 20 words. <!-- REF-BEHAV-SUBTITLE-LENGTH-20 -->
+- Use a base-form verb that states the purpose or benefit. <!-- REF-BEHAV-SUBTITLE-IMPERATIVE -->
+	- Examples: `Understand`, `Review`, `See`, `Check`.
+- Add new value beyond the title; don’t repeat or rephrase the H1. <!-- REF-BEHAV-SUBTITLE-ADDS-VALUE -->
 
-<!--
-Guidelines:
+Examples:
 
-- Single sentence with no links, list items, or formatting. Ends with a period.
-- Use H4 headings format. Stay under 120 characters / 20 words.
-- Focus on the lookup object (Codex CLI syntax, Waku configuration options, etc.).
-- Adds new value beyond the title. It should not repeat the title or be a rephrased version of it.
+- **Title**: *Logos Storage limits* / **Subtitle**: *Understand the limits and resource constraints that apply to Logos Storage.*
+- **Title**: *Logos Blockchain v2 protocol reference* / **Subtitle**: *Review the network parameters and consensus rules used in Logos Blockchain.*
 
-> ⚙️ **Examples:**
+# Access callout (optional) <!-- group: REF-ACCESS -->
+
+This note-type callout is exclusively to alert readers about what roles, permissions, or product versions are required to perform the procedure.
+
+- Omit the callout entirely if no permission/product constraints exist. <!-- REF-STRUCT-ACCESS-OMIT-IF-EMPTY -->
+- Place it after the title and subtitle, before the introduction. <!-- REF-STRUCT-ACCESS-AFTER-SUBTITLE -->
+- Use the `Note` callout style. <!-- REF-STRUCT-ACCESS-NOTE-STYLE -->
+- Use label-led, scannable content (no explanations). <!-- REF-BEHAV-ACCESS-LABELED -->
+- Include permissions (software role or permission level), if applicable. <!-- REF-BEHAV-ACCESS-PERMISSIONS -->
+- Include product (product version or edition), if applicable. <!-- REF-BEHAV-ACCESS-PRODUCT -->
+- If multiple permissions/products apply, use commas. <!-- REF-BEHAV-ACCESS-LIST-IF-MANY -->
+- Do not include knowledge, skills, or required tools. <!-- REF-BEHAV-ACCESS-SCOPE-ONLY -->
+
+Example:
+
+  > **Note**
+  >
+  > - **Permissions**: Node operators, Site operators
+  > - **Product**: Logos Storage v1.4.0 or later
+
+## Callouts <!-- REF-CALLOUTS -->
+
+- Use callouts sparingly and avoid placing them consecutively. <!-- REF-STRUCT-CALLOUTS-NOT-CONSECUTIVE -->
+- One callout maximum per section <!-- REF-STRUCT-CALLOUTS-PER-SECTION-ONE -->
+- Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- REF-BEHAV-CALLOUTS-CONCISE -->
+- Ensure the callout content is directly relevant to the nearby text. <!-- REF-BEHAV-CALLOUTS-RELEVANT -->
+- Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`. <!-- REF-BEHAV-CALLOUTS-TYPE -->
+- For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- REF-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
+
+Example:
+
+> **Note:**
 >
->- *Workflow files use YAML syntax to define the steps and conditions for running Codex Actions.*
->- *Find information about the Codex CLI commands, including their syntax and usage.*
->- *You can use workflow commands when running shell commands in a workflow.*
->- *Using a YAML file, you can configure the Waku v2 protocol options.*
+> Keep container resources within the documented limits to avoid throttling.
 
-> ℹ️ **Note:**
->
-> For more information, check out the [reference subtitle](../../docs-standards/10-structure-the-content/01-document-types/reference.md#subtitle) standards.
--->
+## Intro <!-- group: REF-INTRO -->
 
-(Optional) { Admonition }
+Every reference requires a short introduction that provides context.
 
-<!--
-This information-type admonition is exclusively to alert readers about who can use this feature and shouldn't be used for any other information. For example, a feature is only available to specific application role or using a specific tool or interface.
+- Write one or two 50- to 100-word paragraphs explaining the purpose and relevance of the reference article. <!-- REF-BEHAV-INTRO-LENGTH-50-100 -->
+- Provide context or background information to help readers understand the information. <!-- REF-BEHAV-INTRO-CONTEXT -->
+- Link only when it helps disambiguate or deep-dive (aim ≤2 links). <!-- REF-BEHAV-INTRO-LINK-HEADERS -->
+- If the intro is long or complex, link to other supportive documents. <!-- REF-BEHAV-INTRO-LINK-DOCS -->
+- Avoid meta-descriptions, such as `The following table [...]`, `This article includes the list of [...]`, or similar. <!-- REF-BEHAV-INTRO-OMIT-META -->
+- This section is guidance only; do not render a visible heading or body. <!-- REF-STRUCT-INTRO-GUIDELINES-NO-RENDER -->
 
-> ⚙️ **Example:**
->
-> *This feature is available to users with the **Admin** role in the application.*
+## H2 section <!-- REF-H2-SECTION -->
 
-> ℹ️ **Note:**
->
-> For more information, check out [Admonitions](../../docs-standards/20-style-the-content/12-admonitions.md).
--->
+- Break down long lists or tables into smaller, more manageable sections using H2 headings. <!-- REF-BEHAV-H2-SECTION-BREAKDOWN -->
+	- Examples: Use different lists or tables for different categories, like `Configuration`, `Authentication`, `Networking`.
+- One heading = one concept. Don't mix two concepts under the same heading. <!-- REF-BEHAV-H2-SECTION-ONE-IDEA -->
+- Arrange H2 sections from general to specific, or from most important to least important. <!-- REF-BEHAV-H2-SECTION-ORDER -->
+- Start with a paragraph before you add lists or tables. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->
+- Refer to this list of common text for H2 and H3 headings: <!-- REF-H2-H3-SECTIONS-COMMON-TITLES -->
 
-{ Introduction }
+	| Typical content | Heading text (choose one) |
+	|:---|:---|
+	| Brief definition + when/why to use it | `Overview` / `Description` / `Purpose` |
+	| Command or short config example with required/optional parts | `Usage` / `Synopsis` / `Syntax` |
+	| Options/params. with purpose, accepted values, defaults | `Options` / `Flags` / `Parameters` / `Arguments` |
+	| Runnable examples of common tasks | `Examples` / `Example usage` |
+	| Log lines or exit codes and their meaning | `Return values` / `Output` / `Exit codes` |
+	| Typical errors, causes, and concise fixes | `Errors` / `Troubleshooting` |
 
-<!--
-Guidelines:
+### Tables, lists, or paragraphs <!-- REF-H2-SECTION-CONTENT -->
 
-- No headings.
-- One or two sentences in a single paragraph to give context.
+- Use tables or lists primarily to present reference data. <!-- REF-BEHAV-H2-SECTION-TABLES-LISTS -->
+- Write a brief first sentence or paragraph with a description of the content. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->
+- If present, screenshots have non-empty alt text. <!-- REF-STRUCT-H3-SHOT-ALT-TEXT -->
+- Follow the screenshot rules in the Writing Rules. <!-- REF-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
+- If code is present, use a fenced code block. <!-- REF-STRUCT-H3-FENCED-CODE -->
+- Code snippets are short and illustrative. <!-- REF-BEHAV-H3-CODE-SHORT-ILLUSTRATIVE -->
+- Follow the code rules in the Writing Rules. <!-- REF-BEHAV-H3-CODE-REFER-WRITING-RULES -->
 
-> ℹ️ **Note:**
->
-> Check out [reference example](./reference-example.md).
--->
+## H3 section (optional) <!-- REF-H3-SECTION -->
 
-## { H2 section title }
+- H3 sections expand the preceding H2 section and must be nested under it (no orphan H3). <!-- REF-STRUCT-H3-SECTION-NESTED -->
+- If you add an H3, at least one sibling H3 must follow or the split is unnecessary. <!-- REF-STRUCT-H3-SECTION-SIBLING -->
+- Use tables or lists primarily to present reference data. <!-- REF-BEHAV-H2-SECTION-TABLES-LISTS -->
+- Write a brief first sentence or paragraph with a description of the content. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->
+- If present, screenshots have non-empty alt text. <!-- REF-STRUCT-H3-SHOT-ALT-TEXT -->
+- Follow the screenshot rules in the Writing Rules. <!-- REF-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
+- If code is present, use a fenced code block. <!-- REF-STRUCT-H3-FENCED-CODE -->
+- Code snippets are short and illustrative. <!-- REF-BEHAV-H3-CODE-SHORT-ILLUSTRATIVE -->
+- Follow the code rules in the Writing Rules. <!-- REF-BEHAV-H3-CODE-REFER-WRITING-RULES -->
 
-<!--
-Use H2 headings to break down long list or tables into smaller, more manageable sections. For example, you can use H2 headings to separate different categories of commands or options (configuration, authentication, etc.).
+## Extra guidelines <!-- group: REF-EXTRA -->
 
-Guidelines:
+- This section is guidance only; do not render a visible heading or body. <!-- REF-STRUCT-EXTRA-GUIDELINES-NO-RENDER -->
+- Keep the procedure word count between 400 and 900 words. <!-- REF-BEHAV-EXTRA-LENGTH -->
 
-Use simple section titles. Refer to this list of common section titles:
+## Forbidden content <!-- group: REF-FORBID -->
 
-| Heading text (choose one) | Typical content |
-|:--------------------------|:----------------|
-| **Overview** / **Description** / **Purpose** | A brief definition of the item plus why and when you would use it. |
-| **Usage** / **Synopsis** / **Syntax** | Show the command or a short config example with required and optional parts. |
-| **Options** / **Flags** / **Parameters** / **Arguments** | A table or list that explains each option or parameter, its purpose, accepted values, and defaults. |
-| **Examples** / **Example Usage** | One or more runnable examples that demonstrate common tasks. |
-| **Return values** / **Output** / **Exit codes** | A table or list of possible log lines or numeric exit codes with their meaning. |
-| **Errors** / **Troubleshooting** | Typical error messages, their causes, and concise fixes or links to deeper troubleshooting guides. |
--->
-
-{ H2 section content }
-
-<!--
-Guidelines:
-- One H2 section = one idea. Don't mix two ideas under the same heading.
-- Arrange H2 sections from general to specific, or from most important to least important.
-
-> ℹ️ **Note:**
->
-> For more information, check out [Using headings to organize content](../../docs-standards/10-structure-the-content/concept-help-me-to-understand.md#using-headings-to-organize-content) in the docs standards.
--->
-
-{ Paragraph, list, or table }
-
-<!--
-Add here the reference information. Use tables or lists primarily. When in doubt about the format, read [Tables](../../docs-standards/20-style-the-content/8-tables.md).
--->
-
-(Optional) { Code }
-
-<!--
-> ℹ️ **Note:**
->
-> For information about code formatting, check out [Code](../../docs-standards/20-style-the-content/13-code.md).
--->
-
-(Optional) { Screenshot }
-
-<!--
-> ℹ️ **Note:**
->
-> For more information, check out [Screenshots](../../docs-standards/30-work-with-media/02-screenshots.md).
--->
-
-(Optional) ### { H3 section title }
-
-<!-- **First H3** -->
-
-<!--
-Guidelines:
->
-- H3 is used to break down the main H2 section into smaller, more manageable parts.
-- Use it to provide additional details or sub-sections that are relevant to the main section.
-- Only add an H3 when you have two or more sibling subsections or a clear need for a linkable anchor (e.g., "Parameters", "Example").
-- Try to limit the document depth to H3.
-- For content, use the same format as H2 sections: paragraph, list, or table.
--->
-
-(Optional) { H3 section content }
-
-{ Paragraph, list, or table content }
-
-(Optional) { Screenshot }
-
-(Optional) { Code }
-
-(Optional) ### { H3 section title }
-
-<!-- **Second H3** -->
-
-{ Paragraph, list, or table content }
-
-(Optional) { Screenshot }
-
-(Optional) { Code }
-
-(Optional) #### { H4 section title }
-
-<!--
-Guidelines:
-
-- H4 headings are rarely used and you should avoid them.
-- In most cases, using a table or list under the previous header is a better option.
-- For content, use the same format as H2 sections: paragraph, list, or table.
-- Stop at H4. Deeper levels (H5, H6) are forbidden.
--->
-
-(Optional) #### { H4 section content }
-
-{ Paragraph, list, or table content }
-
-(Optional) { Screenshot }
-
-(Optional) { Code }
+- Do not use H4–H6 headings. <!-- REF-STRUCT-FORBID-H4-H6 -->
+- Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- REF-BEHAV-FORBID-NO-FURTHER-READING -->

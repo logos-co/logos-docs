@@ -48,7 +48,8 @@ slug:
 - Aim for 50 to 60 characters; 80 characters maximum. <!-- PROC-BEHAV-TITLE-LENGTH-50-80 -->
 - Start with an action verb in the imperative form. Don't use the *-ing* form of the verb. <!-- PROC-BEHAV-TITLE-IMPERATIVE -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- PROC-BEHAV-TITLE-SENTENCE-CASE -->
-- Focus on the outcome, not the mechanics. Prefer results over lists of actions. For example, instead of "Install Node.js and create a project directory", use "Set up a local development environment for Node.js". <!-- PROC-BEHAV-TITLE-OUTCOME-FOCUSED -->
+- Focus on the outcome, not the mechanics. Prefer results over lists of actions. <!-- PROC-BEHAV-TITLE-OUTCOME-FOCUSED -->
+	- Example: instead of "Install Node.js and create a project directory", use "Set up a local development environment for Node.js".
 - Include the action and the object/context (what/where/how) so the goal is unambiguous. <!-- PROC-BEHAV-TITLE-ACTION-OBJECT -->
 - Avoid one- or two-word titles and empty verbs like *make*, *manage*, or *put*. <!-- PROC-BEHAV-TITLE-NO-EMPTY-VERBS -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes, except for the required "Step {n}:" prefix. <!-- PROC-BEHAV-TITLE-NO-PUNCT -->
@@ -70,8 +71,9 @@ Examples:
 - One sentence only; no links, lists, or inline formatting. <!-- PROC-BEHAV-SUBTITLE-SINGLE-SENTENCE -->
 - Ends with a period. <!-- PROC-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- PROC-BEHAV-SUBTITLE-LENGTH-20 -->
-- Use an imperative/base-form verb that states the purpose or benefit (for example: *Get started*, *Explore*, *Try*). <!-- PROC-BEHAV-SUBTITLE-IMPERATIVE -->
-- Add new value beyond the title; don’t repeat or rephrase the H1. <!-- PROC-BEHAV-SUBTITLE-A:DDS-VALUE -->
+- Use neutral verbs that state the purpose or benefit; avoid persuasive language. <!-- PROC-BEHAV-SUBTITLE-IMPERATIVE -->
+  - Examples: *Get started*, *Explore*, *Try*.
+- Add new value beyond the title; don’t repeat or rephrase the H1. <!-- PROC-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
 
@@ -82,21 +84,21 @@ Examples:
 
 This note-type callout is exclusively to alert readers about what roles, permissions, or product versions are required to perform the procedure.
 
+- Omit the callout entirely if no permission/product constraints exist. <!-- PROC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 - Place it after the title and subtitle, before the introduction. <!-- PROC-STRUCT-ACCESS-AFTER-SUBTITLE -->
 - Use the `Note` callout style. <!-- PROC-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- PROC-BEHAV-ACCESS-LABELED -->
-- Include permissions (software role or permission level). <!-- PROC-BEHAV-ACCESS-PERMISSIONS -->
+- Include permissions (software role or permission level), if applicable. <!-- PROC-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- PROC-BEHAV-ACCESS-PRODUCT -->
 - If multiple permissions/products apply, use commas. <!-- PROC-BEHAV-ACCESS-LIST-IF-MANY -->
 - Do not include knowledge, skills, or required tools. <!-- PROC-BEHAV-ACCESS-SCOPE-ONLY -->
-- Omit the callout entirely if no permission/product constraints exist. <!-- PROC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 
-**Example:**
+Example:
 
   > **Note**
   >
   > - **Permissions**: Node operators, Site operators
-  > - **Product**: Waku v1.4.0 or later
+  > - **Product**: Logos Storage v1.4.0 or later
 
 ## Callouts <!-- PROC-CALLOUTS -->
 
@@ -108,7 +110,7 @@ This note-type callout is exclusively to alert readers about what roles, permiss
 - Do not include full procedural steps or long prerequisite checklists inside callouts. Put steps in the main flow; keep prerequisite lists in "Before you start." <!-- PROC-BEHAV-CALLOUTS-NO-STEPS -->
 - For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- PROC-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
-**Example:**
+Example:
 
 > **Note:**
 >
@@ -132,7 +134,6 @@ Every procedure requires an introduction that provides context and helps readers
 
 - Render inline under the Intro section; do not add a visible subheading. <!-- PROC-STRUCT-OVERVIEW-NO-HEADING -->
 - Write a 50–100 word paragraph explaining what this procedure covers, why it matters, and when to use it. <!-- PROC-BEHAV-OVERVIEW-LENGTH-50-100 -->
-- Add context that the heading doesn’t provide; do not restate the heading. <!-- PROC-BEHAV-OVERVIEW-NO-REPEAT -->
 - State where it applies and who the intended audience is. <!-- PROC-BEHAV-OVERVIEW-AUDIENCE-SCOPE -->
 - (Optional) Give one concrete real-world scenario in a single sentence. <!-- PROC-BEHAV-OVERVIEW-EXAMPLE-ONE -->
 - Use at most one short alert only if it prevents confusion; otherwise keep this section free of callouts. <!-- PROC-BEHAV-OVERVIEW-ALERT-SPARING -->
@@ -140,11 +141,14 @@ Every procedure requires an introduction that provides context and helps readers
 ### Decisions (optional) <!-- group: PROC-DECISIONS -->
 
 - Render inline under the Intro section; do not add a visible subheading. <!-- PROC-STRUCT-DECISIONS-NO-HEADING -->
-- Summarize decisions the reader must make before starting (for example, CLI vs. GUI). <!-- PROC-BEHAV-DECISIONS-PURPOSE -->
+- Summarize decisions the reader must make before starting. <!-- PROC-BEHAV-DECISIONS-PURPOSE -->
+	- Example: using CLI vs. using GUI.
 - Use a list for simple choices; use a compact table for multi-factor comparisons. <!-- PROC-BEHAV-DECISIONS-FORM -->
 - Focus on actionable factors: performance, complexity, cost, prerequisites, and limitations. <!-- PROC-BEHAV-DECISIONS-FACTORS -->
-- State trade-offs explicitly (for example, "A is faster but less secure"). <!-- PROC-BEHAV-DECISIONS-TRADEOFFS -->
-- Give clear guidance (for example, "Choose A if you need X; choose B if you need Y"). <!-- PROC-BEHAV-DECISIONS-GUIDANCE -->
+- State trade-offs explicitly. <!-- PROC-BEHAV-DECISIONS-TRADEOFFS -->
+	- Example, "A is faster but less secure".
+- Give clear guidance. <!-- PROC-BEHAV-DECISIONS-GUIDANCE -->
+	- Example, "Choose A if you need X; choose B if you need Y".
 - If the decision space is complex, link to a dedicated decision guide. <!-- PROC-BEHAV-DECISIONS-LINK -->
 
 ### Limits (optional) <!-- group: PROC-LIMITS -->
@@ -160,7 +164,8 @@ Every procedure requires an introduction that provides context and helps readers
 
 - Render inline under the Intro section; do not add a visible subheading. <!-- PROC-STRUCT-IMPACT-NO-HEADING -->
 - A paragraph, list, or table. <!-- PROC-BEHAV-IMPACT-FORMAT -->
-- Highlight side effects and risks (for example, data exposure, downtime, irreversible actions). <!-- PROC-BEHAV-IMPACT-RISKS -->
+- Highlight side effects and risks. <!-- PROC-BEHAV-IMPACT-RISKS -->
+	- Examples: data exposure, downtime, irreversible actions.
 - Note required privileges or safer alternatives when relevant. <!-- PROC-BEHAV-IMPACT-PRIVS-ALTS -->
 - Use a single concise callout for critical security impacts; link out for details. <!-- PROC-BEHAV-IMPACT-ALERT-CRITICAL -->
 
@@ -177,9 +182,10 @@ Every procedure requires an introduction that provides context and helps readers
 - Place this section after the introduction and before the first task section. <!-- PROC-STRUCT-EXPECT-POSITION -->
 - Include exactly one unordered list with three items (no code blocks or callouts here). <!-- PROC-STRUCT-EXPECT-UL-THREE -->
 - Write one complete sentence per bullet (two short sentences max), and end sentences with a period. <!-- PROC-BEHAV-EXPECT-SENTENCE-1-2 -->
-- Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure (for example, "You can ..."). <!-- PROC-BEHAV-EXPECT-PARALLEL-OUTCOME -->
+- Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure. <!-- PROC-BEHAV-EXPECT-PARALLEL-OUTCOME -->
+	- Example: "You can ...".
 - Order items from most important to least important. <!-- PROC-BEHAV-EXPECT-PRIORITY -->
-- Avoid links unless you must point to headings in the same page. <!-- PROC-BEHAV-EXPECT-LINKS-INTERNAL -->
+- Allow only same-page heading links; no external links. <!-- PROC-BEHAV-EXPECT-LINKS-INTERNAL -->
 
 ## Task
 
@@ -198,7 +204,7 @@ Every procedure requires at least one task. Each task includes these mandatory a
 - Procedure section titles are Markdown H2 headings. <!-- PROC-STRUCT-TASK-H2 -->
 - Aim for 50–60 characters; 80 max. <!-- PROC-BEHAV-TASK-TITLE-LENGTH-50-80 -->
 - The first task title must be `Step 1:` + `task-name`. Subsequent task titles must increment by `Step` by 1. <!-- PROC-STRUCT-TASK-ORDER-ASC -->
-- Use an imperative verb for `task-name`; avoid the -ing form. <!-- PROC-BEHAV-TASK-TITLE-IMPERATIVE -->
+- Start with an imperative verb; avoid the -ing form. <!-- PROC-BEHAV-TASK-TITLE-IMPERATIVE -->
 - Use sentence case (capitalize only the first word and proper nouns). <!-- PROC-BEHAV-TASK-TITLE-SENTENCE-CASE -->
 - Avoid empty verbs (make, manage, put). <!-- PROC-BEHAV-TASK-TITLE-NO-EMPTY-VERBS -->
 - Avoid one- or two-word titles. <!-- PROC-BEHAV-TASK-TITLE-NO-ONE-TWO-WORD -->
@@ -232,21 +238,21 @@ Every procedure requires at least one task. Each task includes these mandatory a
 - Don’t use external links in steps; only same-page anchors. <!-- PROC-BEHAV-TASK-STEPS-LINKS-INTERNAL -->
 - For UI paths, put location before action. <!-- PROC-BEHAV-TASK-STEPS-LOCATION-FIRST -->
 
-  > Example: <!-- EXAMPLE: QST-BEHAV-TASK-STEP-LOC-FIRST -->
-  >
-  > | Incorrect (action first)                     | Correct (location first)                          |
-  > |:---|:---|
-  > | Click **Save** in the **File** menu.         | In the **File** menu, click **Save**.             |
-  > | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-TASK-STEPS-LOCATION-FIRST -->
+
+    | Incorrect (action first)                         | Correct (location first)                          |
+    |:---|:---|
+    | Click **Save** in the **File** menu.             | In the **File** menu, click **Save**.             |
+    | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
 
 - For conditions, write the result first, then the condition. <!-- PROC-BEHAV-TASK-STEPS-RESULT-THEN-CONDITION -->
 
-  > Example: <!-- EXAMPLE: QST-BEHAV-TASK-STEP-RESULT-THEN-CONDITION -->
-  >
-  > | Incorrect (condition first) | Correct (result first) |
-  > |---|---|
-  > | If the Network Status is Disconnected, an error message will display. | An error message will display if the Network Status is Disconnected. |
-  > | Only use the `$API_KEY` if you are calling the external service. | Use the `$API_KEY` only if you are calling the external service. |
+  - Examples: <!-- EXAMPLE: PROC-BEHAV-TASK-STEPS-RESULT-THEN-CONDITION -->
+
+    | Incorrect (condition first) | Correct (result first) |
+    |:---|:---|
+    | If the Network Status is "Disconnected", an error message will display. | An error message will display if the Network Status is "Disconnected". |
+    | Only use the `$API_KEY` if you are calling the external service.        | Use the `$API_KEY` only if you are calling the external service.       |
 
 ### Step clarifiers (optional) <!-- group: PROC-TASK-CLAR -->
 
@@ -256,19 +262,19 @@ Every procedure requires at least one task. Each task includes these mandatory a
 
 ### Step code (optional) <!-- group: PROC-TASK-CODE -->
 
-- Follow the code rules in the Writing Rules. <!-- PROC-BEHAV-TASK-CODE-REFER-WRITING-RULES -->
+- Follow the code formatting rules in the Writing Rules. <!-- PROC-BEHAV-TASK-CODE-REFER-WRITING-RULES -->
 
-> Example:
->
+Example:
+
 >	1. Do this thing...
 >
 >	```bash
 >	gh workflow run build --repo org/repo
->	``
+>	```
 
 ### Step screenshot (optional) <!-- group: PROC-TASK-IMG -->
 
-See the [writing rules] (../../3-validating-design/writing-rules/README.md) for screenshots. <!-- PROC-BEHAV-TASK-IMG-REFER-WRITING-RULES -->
+- Follow the screenshot formatting rules in the Writing Rules. <!-- PROC-BEHAV-TASK-IMG-REFER-WRITING-RULES -->
 
 ## FAQ / Troubleshooting (optional) <!-- group: PROC-ADDITIONS -->
 

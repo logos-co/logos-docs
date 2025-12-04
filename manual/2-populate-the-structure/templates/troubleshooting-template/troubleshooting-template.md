@@ -69,6 +69,7 @@ Examples:
 
 ## Overview <!-- group: TS-OVERVIEW -->
 
+- This section is guidance only; do not render a visible heading or body. <!-- TS-STRUCT-OVERVIEW-NO-RENDER -->
 - Write one paragraph of 50–100 words. <!-- TS-BEHAV-OVERVIEW-LENGTH -->
 - Briefly describe what feature or task this troubleshooting topic covers, when users may encounter it, and the impact it has on their experience. <!-- TS-BEHAV-OVERVIEW-CONTENT -->
 - Add context that the heading doesn't provide; do not restate the heading. <!-- TS-BEHAV-OVERVIEW-NO-REPEAT -->
@@ -139,8 +140,13 @@ The introduction includes these sections, each one represented by a paragraph, l
 - [Limits (optional)](#limits-optional)
 - [Prerequisites (optional)](#prerequisites-optional)
 
+- This section is guidance only; do not render a visible heading or body. <!-- TS-STRUCT-SOLUTION-INTRO-GUIDELINES-NO-RENDER -->
+- Include the intro components in this order: Overview, Decisions (optional), Limits (optional), Impact (optional), Prerequisites (optional). <!-- TS-STRUCT-SOLUTION-INTRO-ORDER -->
+- The following child blocks render without their own headings: Overview, Decisions, Limits, Impact, Prerequisites. <!-- TS-STRUCT-SOLUTION-INTRO-CHILDREN-NO-HEADINGS -->
+
 ### Overview <!-- group: TS-SOLUTION-OVERVIEW -->
 
+- Render inline under the Intro section; do not add a visible subheading. <!-- TS-STRUCT-SOLUTION-OVERVIEW-NO-HEADING -->
 - Explain whether there is a solution or workaround to the issue. <!-- TS-BEHAV-SOLUTION-OVERVIEW-STATUS -->
 - If there is, write 1-2 sentences explaining what the solution procedure covers. <!-- TS-BEHAV-SOLUTION-OVERVIEW-CONTENT -->
 - State who the intended audience is. <!-- TS-BEHAV-SOLUTION-OVERVIEW-AUDIENCE-SCOPE -->
@@ -148,6 +154,7 @@ The introduction includes these sections, each one represented by a paragraph, l
 
 ### Decisions (optional) <!-- group: TS-SOLUTION-DECISIONS -->
 
+- Render inline under the Intro section; do not add a visible subheading. <!-- TS-STRUCT-SOLUTION-DECISIONS-NO-HEADING -->
 - Summarize decisions the reader must make **before** starting (for example, CLI vs. GUI). <!-- TS-BEHAV-SOLUTION-DECISIONS-PURPOSE -->
 - Use a list for simple choices; use a compact table for multi-factor comparisons. <!-- TS-BEHAV-SOLUTION-DECISIONS-FORM -->
 - Focus on actionable factors: performance, complexity, cost, prerequisites, and limitations. <!-- TS-BEHAV-SOLUTION-DECISIONS-FACTORS -->
@@ -156,6 +163,7 @@ The introduction includes these sections, each one represented by a paragraph, l
 
 ### Limits (optional) <!-- group: TS-SOLUTION-LIMITS -->
 
+- Render inline under the Intro section; do not add a visible subheading. <!-- TS-STRUCT-SOLUTION-LIMITS-NO-HEADING -->
 - Describe constraints as a short paragraph; use a list/table only if it improves scanning. <!-- TS-BEHAV-SOLUTION-LIMITS-FORMAT -->
 - Cover quotas, rate limits, timeouts, eventual consistency, and destructive side effects. <!-- TS-BEHAV-SOLUTION-LIMITS-COVERAGE -->
 - If a constraint is critical to success or safety, surface it with a single concise callout (see Callouts). <!-- TS-BEHAV-SOLUTION-LIMITS-ALERT-CRITICAL -->
@@ -163,6 +171,7 @@ The introduction includes these sections, each one represented by a paragraph, l
 
 ### Prerequisites (optional) <!-- group: TS-SOLUTION-PREREQ -->
 
+- Render inline under the Intro section; do not add a visible subheading. <!-- TS-STRUCT-SOLUTION-PREREQ-NO-HEADING -->
 - List only the technical setup needed to run the procedure (software, versions, tools, configuration). <!-- TS-BEHAV-SOLUTION-PREREQ-SCOPE -->
 - Prefer a single bullet list of noun phrases; keep it brief and link to install/setup instructions as needed. <!-- TS-BEHAV-SOLUTION-PREREQ-LIST-NOUNS -->
 
@@ -196,7 +205,7 @@ The introduction includes these sections, each one represented by a paragraph, l
 >
 > 	1. Do this thing...
 >
->    ```bash
+>   ```bash
 >    gh workflow run build --repo org/repo
 >   ```
 

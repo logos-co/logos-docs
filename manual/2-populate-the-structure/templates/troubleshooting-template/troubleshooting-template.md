@@ -201,13 +201,13 @@ The introduction includes these sections, each one represented by a paragraph, l
 
 - Follow the code rules in the writing rules document. <!-- TS-BEHAV-STEP-CODE-REFER-WRITING-RULES -->
 
->Example:
+> Example:
 >
-> 	1. Do this thing...
+>	1. Do this thing...
 >
->   ```bash
->    gh workflow run build --repo org/repo
->   ```
+>	```bash
+>	gh workflow run build --repo org/repo
+>	```
 
 ### Step screenshot (optional) <!-- group: TS-STEP-IMG -->
 

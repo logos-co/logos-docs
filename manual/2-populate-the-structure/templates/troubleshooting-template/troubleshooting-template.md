@@ -106,13 +106,14 @@ Examples:
 
 - Follow the code rules in the writing rules document. <!-- TS-BEHAV-ISSUE-CODE-REFER-WRITING-RULES -->
 
->Example:
+
+> Example:
 >
-> 	1. Do this thing...
+>	1. Do this thing...
 >
->    ```bash
->    gh workflow run build --repo org/repo
->   ```
+>	```bash
+>	gh workflow run build --repo org/repo
+>	```
 
 ## Issue screenshot (optional) <!-- group: TS-ISSUE-IMG -->
 

@@ -20,7 +20,7 @@ To learn more about Logos, visit the [Logos main site](https://logos.co).
 - **Messaging:** Peer-to-peer messaging protocols and client libraries that apps use to publish and retrieve messages.
 - **Storage:** Node-side content storage and retrieval functionality.
 
-  > [!NOTE]
+  > **Note:**
   >
   > Public end-to-end docs for Storage are not published yet.
 
@@ -54,7 +54,7 @@ The sections below include the information and links for the things that you can
 
   - Example apps entry point: https://github.com/logos-co/logos-app-poc
 
-    > [!NOTE]
+    > **Note:**
     >
     > This repo is still evolving; some apps may be prototypes without full docs.
 
@@ -80,7 +80,7 @@ The sections below include the information and links for the things that you can
 - **Run a validator / consensus node (includes staking):** Run a base-layer node and participate in consensus.
   - Node repo: https://github.com/logos-co/nomos
 
-    > [!NOTE]
+    > **Note:**
     >
     > Public docs exist, but some details may change as testnet packaging stabilizes.
 

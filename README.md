@@ -11,7 +11,7 @@
 
 Logos is a modular technology stack for building decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-To learn more about Logos, visit the [Logos main site](https://logos.c0).
+To learn more about Logos, visit the [Logos main site](https://logos.co).
 
 ## Logos stack components
 

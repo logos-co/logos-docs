@@ -108,7 +108,7 @@ The sections below include the information and links for the things that you can
 
 - **Use a demo chat app in Core using the Chat SDK and Messaging:** Run the demo chat UI/app and validate end-to-end message send/receive.
 
-  - Core POC (start here): https://github.com/logos-co/logos-core-poc
+  - Core PoC (start here): https://github.com/logos-co/logos-core-poc
 
 ### Core
 

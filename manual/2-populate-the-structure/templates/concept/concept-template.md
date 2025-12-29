@@ -13,22 +13,22 @@ slug:
 
 ## Template overview
 
-| Section                | Format                        | Required   | ID              |
-|:-----------------------|:------------------------------|:-----------|:----------------|
-| Title                  | H1                            | Yes        | `CONC-TITLE`    |
-| Subtitle               | H4                            | Yes        | `CONC-SUBTITLE` |
+| Section                | Format                        | Required   | ID                |
+|:-----------------------|:------------------------------|:-----------|:------------------|
+| Title                  | H1                            | Yes        | `CONC-TITLE`      |
+| Subtitle               | H4                            | Yes        | `CONC-SUBTITLE`   |
 | Access callout         | Note-type callout             | No         | `CONC-ACCESS`     |
-| Callouts               | Tip, Note, Important, Caution | No         | `CONC-CALLOUTS` |
-| Intro                  |                               | Yes        | `CONC-INTRO`        |
-| Overview               | Paragraph                     | Yes        | `CONC-OVERVIEW` |
-| Diagram                | Mermaid or image              | No         | `CONC-DIAGRAM`  |
-| Use case example       | Paragraph, list               | No         | `CONC-USE-CASE` |
+| Callouts               | Tip, Note, Important, Caution | No         | `CONC-CALLOUTS`   |
+| Intro                  |                               | Yes        | `CONC-INTRO`      |
+| Overview               | Paragraph                     | Yes        | `CONC-OVERVIEW`   |
+| Diagram                | Mermaid or image              | No         | `CONC-DIAGRAM`    |
+| Use case example       | Paragraph, list               | No         | `CONC-USE-CASE`   |
 | Comparison             | Paragraph, list, table        | No         | `CONC-COMPARISON` |
-| "The basics" heading   | List                          | Yes        | `CONC-BASICS`   |
-| H2 section             | H2 + body (container)         | Yes        | `CONC-H2-SECTION`  |
-| H3 section             | H3 + body (container)         | No         | `CONC-H3-SECTION`  |
+| "The basics" heading   | List                          | Yes        | `CONC-BASICS`     |
+| H2 section             | H2 + body (container)         | Yes        | `CONC-H2-SECTION` |
+| H3 section             | H3 + body (container)         | No         | `CONC-H3-SECTION` |
 | Extra guidelines       |                               | Yes        | `CONC-EXTRA`      |
-| Forbidden content      |                               | Forbidden  | `CONC-FORBID`   |
+| Forbidden content      |                               | Forbidden  | `CONC-FORBID`     |
 
 ## Title <!-- group: CONC-TITLE -->
 
@@ -58,7 +58,7 @@ Examples:
 - One sentence only; no links, lists, or inline formatting. <!-- CONC-BEHAV-SUBTITLE-SINGLE-SENTENCE -->
 - Ends with a period. <!-- CONC-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- CONC-BEHAV-SUBTITLE-LENGTH-20 -->
-- Use a base-form verb that states the purpose or benefit (for example: *Learn*, *Explore*, *Discover*, *Understand*). <!-- CONC-BEHAV-SUBTITLE-IMPERATIVE -->
+- Use neutral verbs that state the purpose or benefit; avoid persuasive language (for example: *Learn*, *Explore*, *Discover*, *Understand*). <!-- CONC-BEHAV-SUBTITLE-IMPERATIVE -->
 - Add new value beyond the title; don’t repeat or rephrase the H1. <!-- CONC-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
@@ -68,16 +68,16 @@ Examples:
 
 ## Access callout (optional) <!-- group: CONC-ACCESS -->
 
-This note-type callout is exclusively to alert readers about what roles, permissions, or product versions are required to perform the procedure.
+This note-type callout is exclusively to alert readers about what roles, permissions, or product versions covered by this concept.
 
+- Omit the callout entirely if no permission/product constraints exist. <!-- CONC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 - Place it after the title and subtitle, before the introduction. <!-- CONC-STRUCT-ACCESS-AFTER-SUBTITLE -->
 - Use the `Note` callout style. <!-- CONC-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- CONC-BEHAV-ACCESS-LABELED -->
-- Include permissions (software role or permission level). <!-- CONC-BEHAV-ACCESS-PERMISSIONS -->
+- Include permissions (software role or permission level), if applicable. <!-- CONC-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- CONC-BEHAV-ACCESS-PRODUCT -->
 - If multiple permissions/products apply, use commas. <!-- CONC-BEHAV-ACCESS-LIST-IF-MANY -->
 - Do not include knowledge, skills, or required tools. <!-- CONC-BEHAV-ACCESS-SCOPE-ONLY -->
-- Omit the callout entirely if no permission/product constraints exist. <!-- CONC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 
 Example:
 
@@ -110,7 +110,9 @@ Every concept requires an introduction that provides context and helps readers u
 - [Use case example (optional)](#use-case-example-optional)
 - [Comparison (optional)](#comparison-optional)
 
+- This section is guidance only; do not render a visible heading or body. <!-- CONC-STRUCT-INTRO-GUIDELINES-NO-RENDER -->
 - Include the intro components in this order: Overview, Diagram (optional), Use case example (optional), Comparison (optional). <!-- CONC-STRUCT-INTRO-ORDER -->
+- The following child blocks render without their own headings: Overview, Diagram (optional), Use case example (optional), Comparison (optional). <!-- CONC-STRUCT-INTRO-CHILDREN-NO-HEADINGS -->
 
 ### Overview <!-- group: CONC-OVERVIEW -->
 
@@ -183,13 +185,13 @@ Every concept requires an introduction that provides context and helps readers u
 
 - If present, the first visual after the key idea must be an image or screenshot. <!-- CONC-STRUCT-H2-SHOT-POSITION -->
 - Screenshot has non-empty alt text. <!-- CONC-STRUCT-H2-SHOT-ALT-TEXT -->
-- Follow the screenshot rules in the Writing Rules. <!-- CONC-BEHAV-H2-SHOT-REFER-WRITING-RULES -->
+- Follow the screenshot formatting rules in the Writing Rules. <!-- CONC-BEHAV-H2-SHOT-REFER-WRITING-RULES -->
 
 ### Code (optional) <!-- CONC-H2-CODE -->
 
 - If present, use a fenced code block; take the first fenced block after screenshot/key idea. <!-- CONC-STRUCT-H2-CODE-POSITION -->
 - Snippet is short and illustrative, non-procedural. <!-- CONC-BEHAV-H2-CODE-SHORT-NONPROCEDURAL -->
-- Follow the code rules in the Writing Rules. <!-- CONC-BEHAV-H2-CODE-REFER-WRITING-RULES -->
+- Follow the code formatting rules in the Writing Rules. <!-- CONC-BEHAV-H2-CODE-REFER-WRITING-RULES -->
 
 ## H3 section (optional) <!-- CONC-H3-SECTION -->
 
@@ -206,7 +208,7 @@ Every concept requires an introduction that provides context and helps readers u
 
 - If present, the first visual after the key idea must be an image or screenshot. <!-- CONC-STRUCT-H3-SHOT-POSITION -->
 - Screenshot has non-empty alt text. <!-- CONC-STRUCT-H3-SHOT-ALT-TEXT -->
-- Follow the screenshot rules in the Writing Rules. <!-- CONC-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
+- Follow the screenshot formatting rules in the Writing Rules. <!-- CONC-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
 
 ### Code (optional) <!-- CONC-H3-CODE -->
 

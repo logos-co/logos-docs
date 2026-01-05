@@ -7,7 +7,7 @@
     | **Tip**    | Helpful information that is not required for the task, such as a keyboard shortcut. |
     | **Note**   | Relevant information for completing the task, but does not affect the user's actions. |
     | **Important**| Information that may impact the user's actions or decisions about completing the task. |
-    | **Caution**| Information that may impact the user's actions or decisions about completing the task. |
+    | **Caution**| Information on actions that can potentially result in data corruption or data loss. |
 
 - Don't use *warning*, *error*, *danger*, *bug*, *important*, or *notes*.
 - In procedural steps, place the callout after the procedure. If you need an admonition for a specific step, write the admonition after the step.
@@ -17,11 +17,11 @@
 
 > ✨ **Tip:**
 >
-> The blockchain records transactions in blocks, hence the term "blockchain".
+> You can use the `--dry-run` flag to preview the changes without modifying any files.
 
 > 📒 **Note:**
 >
-> The blockchain records transactions in blocks, hence the term "blockchain".
+> This process does not require an internet connection.
 
 > 🖐 **Important:**
 >
@@ -29,4 +29,4 @@
 
 > ⚠️ **Caution:** 
 >
-> The blockchain records transactions in blocks, hence the term "blockchain".
+> Resetting the device permanently deletes all data stored on it.

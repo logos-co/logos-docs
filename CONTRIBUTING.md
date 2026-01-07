@@ -1,6 +1,6 @@
 # Contributing to Logos documentation
 
-Thanks for contributing to Logos documentation! This guide explains how to propose changes and submit contributions. Read the [Logos Code of Conduct](https://github.com/logos-co/roadmap/blob/v4/CODE_OF_CONDUCT.md) to keep this place approachable and respectable.
+Thanks for contributing to Logos documentation! This guide explains how to propose changes and submit contributions.
 
 > TL;DR: if you know how to create GitHub issues and pull requests, skip the [Contribute using a pull request](#contribute-using-a-pull-request) section.
 

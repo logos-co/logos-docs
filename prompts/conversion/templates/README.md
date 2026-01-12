@@ -14,12 +14,11 @@ Convert a OneDoc Markdown procedure template into machine-readable JSON using a 
 
 1. **Verify repository files are present**
 
-   Change to the working directory at prompts/conversion/markdown-to-json/templates and ensure the following files are present:
+   Change to the working directory at `prompts/conversion/templates` and ensure the following files are present:
 
    - `md2json-prompt-templates.md`: deterministic prompt.
    - `transform.py`: API runner script.
    - `requirements.txt`: Python dependencies.
-
 
 2. **Install Python 3.10+**
 
@@ -47,13 +46,13 @@ Convert a OneDoc Markdown procedure template into machine-readable JSON using a 
 
 4. **Activate the virtual environment**
 
-   * macOS/Linux:
+   - macOS/Linux:
 
      ```bash
      source .venv/bin/activate
      ```
 
-   * Windows (PowerShell):
+   - Windows (PowerShell):
 
      ```powershell
      .\.venv\Scripts\Activate.ps1
@@ -140,10 +139,6 @@ Choose **one** backend option and set the environment variables.
 2. **Allow temperature/top_p defaults**
 
    For GPT-5+ or other model variants that do not support custom sampling parameters, do not set `TEMPERATURE` or `TOP_P`. If the model supports them, set `TEMPERATURE=0`, `TOP_P=1`, and `ALLOW_SAMPLING_PARAMS=1`.
-
-3. **Pin the model**
-
-   Use a single, agreed model string (for example, `openai/gpt-5.1`) across all tests.
 
 ---
 

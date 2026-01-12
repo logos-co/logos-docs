@@ -34,10 +34,10 @@ slug:
 
 - Use Markdown H1 headings. <!-- CONC-STRUCT-TITLE-H1 -->
 - Aim for 50 to 60 characters; 80 characters maximum. <!-- CONC-BEHAV-TITLE-LENGTH-50-80 -->
-- Use cue words such as `Guide to`, `About`, `Understand`, `FAQ`, or `Introduction to`. Do not use active verbs like `Learn` or `How to` <!-- CONC-BEHAV-TITLE-CUE-WORDS -->
+- Use cue words such as *Guide to*, *About*, *Understand*, *FAQ*, or *Introduction to*. Do not use active verbs like *Learn* or *How to*. <!-- CONC-BEHAV-TITLE-CUE-WORDS -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- CONC-BEHAV-TITLE-SENTENCE-CASE -->
-- For verbs, use the base form over the gerund form. For example, use `Understand` instead of `Understanding`.. <!-- CONC-BEHAV-TITLE-NO-GERUND -->
-- Use the `FAQ:` prefix for question compilations. Don't name FAQ articles as tasks. <!-- CONC-BEHAV-FAQ-PREFIX-QUESTIONS -->
+- For verbs, use the base form over the gerund form. For example, use *Understand* instead of *Understanding*. <!-- CONC-BEHAV-TITLE-NO-GERUND -->
+- Use the *FAQ:* prefix for question compilations. Don't name FAQ articles as tasks. <!-- CONC-BEHAV-FAQ-PREFIX-QUESTIONS -->
 - Avoid one- or two-word titles and empty verbs like *make*, *manage*, or *put*. <!-- CONC-BEHAV-TITLE-NO-EMPTY-VERBS -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes except the `FAQ:` prefix. <!-- CONC-BEHAV-TITLE-NO-PUNCT -->
 
@@ -72,7 +72,7 @@ This note-type callout is exclusively to alert readers about what roles, permiss
 
 - Omit the callout entirely if no permission/product constraints exist. <!-- CONC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 - Place it after the title and subtitle, before the introduction. <!-- CONC-STRUCT-ACCESS-AFTER-SUBTITLE -->
-- Use the `Note` callout style. <!-- CONC-STRUCT-ACCESS-NOTE-STYLE -->
+- Use the *Note* callout style. <!-- CONC-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- CONC-BEHAV-ACCESS-LABELED -->
 - Include permissions (software role or permission level), if applicable. <!-- CONC-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- CONC-BEHAV-ACCESS-PRODUCT -->
@@ -92,7 +92,7 @@ Example:
 - One callout maximum per section <!-- CONC-STRUCT-CALLOUTS-PER-SECTION-ONE -->
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- CONC-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby text. <!-- CONC-BEHAV-CALLOUTS-RELEVANT -->
-- Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`. <!-- CONC-BEHAV-CALLOUTS-TYPE -->
+- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- CONC-BEHAV-CALLOUTS-TYPE -->
 - For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- CONC-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
 Example:
@@ -143,7 +143,7 @@ Every concept requires an introduction that provides context and helps readers u
 - Use a paragraph or list for simple comparisons with ≤2 options. <!-- CONC-STRUCT-COMPARISON-PARAGRAPH-LIST -->
 - Use a table for complex comparisons with 3 or more options. <!-- CONC-STRUCT-COMPARISON-TABLE -->
 - Focus on key decision factors, such as performance, complexity, cost, prerequisites, and limitations. <!-- CONC-BEHAV-COMPARISON-KEY-FACTORS -->
-- Use direct language in short sentences so different options are easy to scan. <!-- CONC-BEHAV-COMPARISON-DIRECT-LANGUAGE -->
+- Use direct language in short sentences, so different options are easy to scan. <!-- CONC-BEHAV-COMPARISON-DIRECT-LANGUAGE -->
 - Highlight trade‑offs clearly. For example, "Option A is faster but less secure" or "Option B adds encryption overhead". <!-- CONC-BEHAV-COMPARISON-TRADEOFFS -->
 - Provide real-world guidance. For example, "Choose A if you need X, choose B if you care about Y". <!-- CONC-BEHAV-COMPARISON-GUIDANCE -->
 

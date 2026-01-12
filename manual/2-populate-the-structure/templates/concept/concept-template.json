@@ -9,8 +9,7 @@
     "steps_layout": null,
     "authors": "# GitHub username",
     "owner": "logos",
-    "slug": "",
-    "doc_version": "# increased by one after every update"
+    "slug": ""
   },
   "sections": [
     {
@@ -69,7 +68,7 @@
         }
       ],
       "examples": [
-        "| Usage   | Example                                |\n\t|:--------|:---------------------------------------|\n\t| **Use** | Guide to RLN rate limiting             |\n\t| Avoid   | Limiting RLN rate                      |\n\t| **Use** | Understand Codex API limits            |\n\t| Avoid   | Understanding Codex API limits         |\n\t| **Use** | FAQ: Codex billing and usage           |\n\t| Avoid   | Questions on Codex billing and usage   |"
+        "|\tUsage   |\tExample                                |\n|\t:--------|\t:---------------------------------------|\n|\t**Use** |\tGuide to RLN rate limiting             |\n|\tAvoid   |\tLimiting RLN rate                      |\n|\t**Use** |\tUnderstand Codex API limits            |\n|\tAvoid   |\tUnderstanding Codex API limits         |\n|\t**Use** |\tFAQ: Codex billing and usage           |\n|\tAvoid   |\tQuestions on Codex billing and usage   |"
       ]
     },
     {
@@ -105,7 +104,7 @@
         {
           "id": "CONC-BEHAV-SUBTITLE-IMPERATIVE",
           "group": "BEHAV",
-          "description": "Use a base-form verb that states the purpose or benefit",
+          "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language",
           "examples": [
             "*Learn*",
             "*Explore*",
@@ -132,6 +131,12 @@
       "format": "Note-type callout",
       "rules": [
         {
+          "id": "CONC-STRUCT-ACCESS-OMIT-IF-EMPTY",
+          "group": "STRUCT",
+          "description": "Omit the callout entirely if no permission/product constraints exist.",
+          "examples": []
+        },
+        {
           "id": "CONC-STRUCT-ACCESS-AFTER-SUBTITLE",
           "group": "STRUCT",
           "description": "Place it after the title and subtitle, before the introduction.",
@@ -152,7 +157,7 @@
         {
           "id": "CONC-BEHAV-ACCESS-PERMISSIONS",
           "group": "BEHAV",
-          "description": "Include permissions (software role or permission level).",
+          "description": "Include permissions (software role or permission level), if applicable.",
           "examples": []
         },
         {
@@ -172,16 +177,10 @@
           "group": "BEHAV",
           "description": "Do not include knowledge, skills, or required tools.",
           "examples": []
-        },
-        {
-          "id": "CONC-STRUCT-ACCESS-OMIT-IF-EMPTY",
-          "group": "STRUCT",
-          "description": "Omit the callout entirely if no permission/product constraints exist.",
-          "examples": []
         }
       ],
       "examples": [
-        "> **Note**\n  >\n  > - **Permissions**: Node operators, Site operators\n  > - **Product**: Logos Storage v1.4.0 or later"
+        "> **Note**\n>\n> - **Permissions**: Node operators, Site operators\n> - **Product**: Logos Storage v1.4.0 or later"
       ]
     },
     {
@@ -238,9 +237,21 @@
       "format": "",
       "rules": [
         {
+          "id": "CONC-STRUCT-INTRO-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
           "id": "CONC-STRUCT-INTRO-ORDER",
           "group": "STRUCT",
           "description": "Include the intro components in this order: Overview, Diagram (optional), Use case example (optional), Comparison (optional).",
+          "examples": []
+        },
+        {
+          "id": "CONC-STRUCT-INTRO-CHILDREN-NO-HEADINGS",
+          "group": "STRUCT",
+          "description": "The following child blocks render without their own headings: Overview, Diagram (optional), Use case example (optional), Comparison (optional).",
           "examples": []
         }
       ],
@@ -477,7 +488,7 @@
     {
       "id": "CONC-H2-KEY-IDEA",
       "title": "Key idea description",
-      "required": "optional",
+      "required": "required",
       "format": null,
       "rules": [
         {
@@ -510,7 +521,7 @@
         {
           "id": "CONC-BEHAV-H2-SHOT-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "Follow the screenshot rules in the Writing Rules.",
+          "description": "Follow the screenshot formatting rules in the Writing Rules.",
           "examples": []
         }
       ],
@@ -537,7 +548,7 @@
         {
           "id": "CONC-BEHAV-H2-CODE-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "Follow the code rules in the Writing Rules.",
+          "description": "Follow the code formatting rules in the Writing Rules.",
           "examples": []
         }
       ],
@@ -579,7 +590,7 @@
     {
       "id": "CONC-H3-KEY-IDEA",
       "title": "Key idea description",
-      "required": "optional",
+      "required": "required",
       "format": null,
       "rules": [
         {
@@ -612,7 +623,7 @@
         {
           "id": "CONC-BEHAV-H3-SHOT-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "Follow the screenshot rules in the Writing Rules.",
+          "description": "Follow the screenshot formatting rules in the Writing Rules.",
           "examples": []
         }
       ],
@@ -688,15 +699,29 @@
       "examples": []
     }
   ],
-  "forbidden": [],
+  "forbidden": [
+    {
+      "id": "CONC-FORBID",
+      "rules": [
+        {
+          "id": "CONC-STRUCT-FORBID-H4-H6",
+          "group": "FORBID",
+          "description": "Do not use H4–H6 headings."
+        },
+        {
+          "id": "CONC-BEHAV-FORBID-NO-FURTHER-READING",
+          "group": "FORBID",
+          "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document."
+        }
+      ]
+    }
+  ],
   "validation": {
     "missingRuleIds": [],
     "duplicateRuleIds": [],
     "groupViolations": [],
     "forbiddenViolations": [],
-    "notes": [
-      "NO_FRONT_MATTER"
-    ],
+    "notes": [],
     "unknownRuleIds": []
   }
 }

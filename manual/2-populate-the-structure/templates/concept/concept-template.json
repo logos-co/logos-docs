@@ -2,14 +2,14 @@
   "documentName": "Concept template",
   "docVersion": null,
   "frontMatter": {
-    "title": "",
+    "title": null,
     "doc_type": "concept",
-    "product": "# [storage | blockchain | messaging]",
+    "product": null,
     "topics": [],
     "steps_layout": null,
-    "authors": "# GitHub username",
+    "authors": [],
     "owner": "logos",
-    "slug": ""
+    "slug": null
   },
   "sections": [
     {
@@ -33,7 +33,7 @@
         {
           "id": "CONC-BEHAV-TITLE-CUE-WORDS",
           "group": "BEHAV",
-          "description": "Use cue words such as `Guide to`, `About`, `Understand`, `FAQ`, or `Introduction to`. Do not use active verbs like `Learn` or `How to`",
+          "description": "Use cue words such as *Guide to*, *About*, *Understand*, *FAQ*, or *Introduction to*. Do not use active verbs like *Understand*, *Learn*, or *How to*.",
           "examples": []
         },
         {
@@ -45,13 +45,16 @@
         {
           "id": "CONC-BEHAV-TITLE-NO-GERUND",
           "group": "BEHAV",
-          "description": "For verbs, use the base form over the gerund form. For example, use `Understand` instead of `Understanding`..",
-          "examples": []
+          "description": "For verbs, use the base form over the gerund form.",
+          "examples": [
+            "Use: *Understand*, *Learn*, *Explore*",
+            "Avoid: *Understanding*, *Learning*, *Exploring*"
+          ]
         },
         {
           "id": "CONC-BEHAV-FAQ-PREFIX-QUESTIONS",
           "group": "BEHAV",
-          "description": "Use the `FAQ:` prefix for question compilations. Don't name FAQ articles as tasks.",
+          "description": "Use the *FAQ:* prefix for question compilations. Don't name FAQ articles as tasks.",
           "examples": []
         },
         {
@@ -68,7 +71,30 @@
         }
       ],
       "examples": [
-        "|\tUsage   |\tExample                                |\n|\t:--------|\t:---------------------------------------|\n|\t**Use** |\tGuide to RLN rate limiting             |\n|\tAvoid   |\tLimiting RLN rate                      |\n|\t**Use** |\tUnderstand Codex API limits            |\n|\tAvoid   |\tUnderstanding Codex API limits         |\n|\t**Use** |\tFAQ: Codex billing and usage           |\n|\tAvoid   |\tQuestions on Codex billing and usage   |"
+        {
+          "Usage": "**Use**",
+          "Example": "Guide to RLN rate limiting"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Limiting RLN rate"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "Understand Codex API limits"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Understanding Codex API limits"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "FAQ: Codex billing and usage"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Questions on Codex billing and usage"
+        }
       ]
     },
     {
@@ -104,29 +130,26 @@
         {
           "id": "CONC-BEHAV-SUBTITLE-IMPERATIVE",
           "group": "BEHAV",
-          "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language",
+          "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language.",
           "examples": [
-            "*Learn*",
-            "*Explore*",
-            "*Discover*",
-            "*Understand*"
+            "Use: *Learn*, *Explore*, *Discover*, *Understand*"
           ]
         },
         {
           "id": "CONC-BEHAV-SUBTITLE-ADDS-VALUE",
           "group": "BEHAV",
-          "description": "Add new value beyond the title; don’t repeat or rephrase the H1.",
+          "description": "Add new value beyond the title; don't repeat or rephrase the H1.",
           "examples": []
         }
       ],
       "examples": [
-        "- **Title**: *About Logos Connect communication protocol* / **Subtitle**: *Understand Waku’s peer-to-peer protocol for private, censorship-resistant messaging*",
-        "- **Title**: *Guide to Logos Storage API* / **Subtitle**: *Learn how Codex provides real-time blockchain data through a single API*"
+        "**Title**: *About Logos Connect communication protocol* / **Subtitle**: *Understand Waku's peer-to-peer protocol for private, censorship-resistant messaging*",
+        "**Title**: *Guide to Logos Storage API* / **Subtitle**: *Learn how Codex provides real-time blockchain data through a single API*"
       ]
     },
     {
       "id": "CONC-ACCESS",
-      "title": "Access callout (optional)",
+      "title": "Access callout",
       "required": "optional",
       "format": "Note-type callout",
       "rules": [
@@ -145,7 +168,7 @@
         {
           "id": "CONC-STRUCT-ACCESS-NOTE-STYLE",
           "group": "STRUCT",
-          "description": "Use the `Note` callout style.",
+          "description": "Use the *Note* callout style.",
           "examples": []
         },
         {
@@ -180,7 +203,7 @@
         }
       ],
       "examples": [
-        "> **Note**\n>\n> - **Permissions**: Node operators, Site operators\n> - **Product**: Logos Storage v1.4.0 or later"
+        "**Note** - **Permissions**: Node operators, Site operators - **Product**: Logos Storage v1.4.0 or later"
       ]
     },
     {
@@ -216,7 +239,7 @@
         {
           "id": "CONC-BEHAV-CALLOUTS-TYPE",
           "group": "BEHAV",
-          "description": "Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`.",
+          "description": "Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*.",
           "examples": []
         },
         {
@@ -227,14 +250,14 @@
         }
       ],
       "examples": [
-        "> **Note:**\n>\n> Keep container resources within the documented limits to avoid throttling."
+        "**Note:** Keep container resources within the documented limits to avoid throttling."
       ]
     },
     {
       "id": "CONC-INTRO",
       "title": "Intro",
       "required": "required",
-      "format": "",
+      "format": null,
       "rules": [
         {
           "id": "CONC-STRUCT-INTRO-GUIDELINES-NO-RENDER",
@@ -266,7 +289,7 @@
         {
           "id": "CONC-BEHAV-OVERVIEW-LENGTH-50-100",
           "group": "BEHAV",
-          "description": "Write a 50–100 word paragraph explaining the concept, its purpose, and its relevance.",
+          "description": "Write a 50-100 word paragraph explaining the concept, its purpose, and its relevance.",
           "examples": []
         },
         {
@@ -298,7 +321,7 @@
     },
     {
       "id": "CONC-DIAGRAM",
-      "title": "Diagram (optional)",
+      "title": "Diagram",
       "required": "optional",
       "format": "Mermaid or image",
       "rules": [
@@ -331,7 +354,7 @@
     },
     {
       "id": "CONC-USE-CASE",
-      "title": "Use case example (optional)",
+      "title": "Use case example",
       "required": "optional",
       "format": "Paragraph, list",
       "rules": [
@@ -348,13 +371,11 @@
           "examples": []
         }
       ],
-      "examples": [
-        "> Example:\n>\n> *For example, you can configure custom environment variables so they are set every time you open a codespace, and you can ensure that temporary files are retained when the codespace stops.*"
-      ]
+      "examples": []
     },
     {
       "id": "CONC-COMPARISON",
-      "title": "Comparison (optional)",
+      "title": "Comparison",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -379,7 +400,7 @@
         {
           "id": "CONC-BEHAV-COMPARISON-DIRECT-LANGUAGE",
           "group": "BEHAV",
-          "description": "Use direct language in short sentences so different options are easy to scan.",
+          "description": "Use direct language in short sentences, so different options are easy to scan.",
           "examples": []
         },
         {
@@ -387,8 +408,8 @@
           "group": "BEHAV",
           "description": "Highlight trade‑offs clearly.",
           "examples": [
-            "Option A is faster but less secure",
-            "Option B adds encryption overhead\"."
+            "\"Option A is faster but less secure\"",
+            "\"Option B adds encryption overhead\"."
           ]
         },
         {
@@ -396,18 +417,16 @@
           "group": "BEHAV",
           "description": "Provide real-world guidance.",
           "examples": [
-            "Choose A if you need X",
-            "choose B if you care about Y\"."
+            "\"Use Option A for high-throughput scenarios\"",
+            "\"Choose Option B when data privacy is critical\"."
           ]
         }
       ],
-      "examples": [
-        "> Example:\n>\n> | Feature             | Relay                                       | RLN Relay                                   |\n> |:--------------------|:--------------------------------------------|:--------------------------------------------|\n> | Spam protection     | None – all peers can flood messages         | Enforces per-peer rate limits, economic penalties |\n> | Privacy impact      | Neutral – standard Pub/Sub propagation      | Neutral – preserves Relay’s anonymity properties |\n> | Resource guarantees | Relies on network-level quotas, no enforcement | Stronger resilience due to rate limiting |"
-      ]
+      "examples": []
     },
     {
       "id": "CONC-BASICS",
-      "title": "\"The basics\"",
+      "title": "\"The basics\" heading",
       "required": "required",
       "format": "List",
       "rules": [
@@ -454,9 +473,7 @@
           "examples": []
         }
       ],
-      "examples": [
-        "> Example:\n>\n>- *Codespaces are fully managed, cloud-based development environments you can spin up in seconds.*\n>- *They run in containers that match your repository’s configuration, so every contributor gets the same setup.*  \n>- *You connect from your browser, VS Code, or the JetBrains Gateway. No local installation required.*"
-      ]
+      "examples": []
     },
     {
       "id": "CONC-H2-SECTION",
@@ -481,31 +498,13 @@
           "group": "STRUCT",
           "description": "Start with a paragraph before you add lists or tables.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H2-KEY-IDEA",
-      "title": "Key idea description",
-      "required": "required",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H2-KEY-IDEA-PARAGRAPH-FIRST",
           "group": "STRUCT",
           "description": "First paragraph = key idea description.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H2-SHOT",
-      "title": "Screenshot (optional)",
-      "required": "optional",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H2-SHOT-POSITION",
           "group": "STRUCT",
@@ -523,16 +522,7 @@
           "group": "BEHAV",
           "description": "Follow the screenshot formatting rules in the Writing Rules.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H2-CODE",
-      "title": "Code (optional)",
-      "required": "optional",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H2-CODE-POSITION",
           "group": "STRUCT",
@@ -556,7 +546,7 @@
     },
     {
       "id": "CONC-H3-SECTION",
-      "title": "H3 section (optional)",
+      "title": "H3 section",
       "required": "optional",
       "format": "H3 + body (container)",
       "rules": [
@@ -583,31 +573,13 @@
           "group": "STRUCT",
           "description": "If you add an H3, at least one sibling H3 must follow or the split is unnecessary.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H3-KEY-IDEA",
-      "title": "Key idea description",
-      "required": "required",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H3-KEY-IDEA-PARAGRAPH-FIRST",
           "group": "STRUCT",
           "description": "First paragraph = key idea description.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H3-SHOT",
-      "title": "Screenshot (optional)",
-      "required": "optional",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H3-SHOT-POSITION",
           "group": "STRUCT",
@@ -625,16 +597,7 @@
           "group": "BEHAV",
           "description": "Follow the screenshot formatting rules in the Writing Rules.",
           "examples": []
-        }
-      ],
-      "examples": []
-    },
-    {
-      "id": "CONC-H3-CODE",
-      "title": "Code (optional)",
-      "required": "optional",
-      "format": null,
-      "rules": [
+        },
         {
           "id": "CONC-STRUCT-H3-CODE-POSITION",
           "group": "STRUCT",
@@ -660,7 +623,7 @@
       "id": "CONC-EXTRA",
       "title": "Extra guidelines",
       "required": "required",
-      "format": "",
+      "format": null,
       "rules": [
         {
           "id": "CONC-STRUCT-EXTRA-GUIDELINES-NO-RENDER",
@@ -681,17 +644,17 @@
       "id": "CONC-FORBID",
       "title": "Forbidden content",
       "required": "forbidden",
-      "format": "",
+      "format": null,
       "rules": [
         {
           "id": "CONC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4–H6 headings.",
+          "group": "STRUCT",
+          "description": "Do not use H4-H6 headings.",
           "examples": []
         },
         {
           "id": "CONC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
+          "group": "BEHAV",
           "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document.",
           "examples": []
         }
@@ -706,7 +669,7 @@
         {
           "id": "CONC-STRUCT-FORBID-H4-H6",
           "group": "FORBID",
-          "description": "Do not use H4–H6 headings."
+          "description": "Do not use H4-H6 headings."
         },
         {
           "id": "CONC-BEHAV-FORBID-NO-FURTHER-READING",
@@ -721,7 +684,9 @@
     "duplicateRuleIds": [],
     "groupViolations": [],
     "forbiddenViolations": [],
-    "notes": [],
-    "unknownRuleIds": []
+    "notes": [
+      "NO_SECTION_TABLE",
+      "md_sha256:c29f9e1747a9c8ddb24794e9e07780a8de42e262e8b888cbefe93bb07c1970a5"
+    ]
   }
 }

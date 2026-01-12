@@ -34,9 +34,12 @@ slug:
 
 - Use Markdown H1 headings. <!-- CONC-STRUCT-TITLE-H1 -->
 - Aim for 50 to 60 characters; 80 characters maximum. <!-- CONC-BEHAV-TITLE-LENGTH-50-80 -->
-- Use cue words such as *Guide to*, *About*, *Understand*, *FAQ*, or *Introduction to*. Do not use active verbs like *Learn* or *How to*. <!-- CONC-BEHAV-TITLE-CUE-WORDS -->
+- Use cue words such as *Guide to*, *About*, *Understand*, *FAQ*, or *Introduction to*. Do not use active verbs like *Understand*, *Learn*, or *How to*. <!-- CONC-BEHAV-TITLE-CUE-WORDS -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- CONC-BEHAV-TITLE-SENTENCE-CASE -->
-- For verbs, use the base form over the gerund form. For example, use *Understand* instead of *Understanding*. <!-- CONC-BEHAV-TITLE-NO-GERUND -->
+- For verbs, use the base form over the gerund form. <!-- CONC-BEHAV-TITLE-NO-GERUND -->
+	- Examples: <!-- EXAMPLE: CONC-BEHAV-TITLE-NO-GERUND -->
+		- Use: *Understand*, *Learn*, *Explore*
+		- Avoid: *Understanding*, *Learning*, *Exploring*
 - Use the *FAQ:* prefix for question compilations. Don't name FAQ articles as tasks. <!-- CONC-BEHAV-FAQ-PREFIX-QUESTIONS -->
 - Avoid one- or two-word titles and empty verbs like *make*, *manage*, or *put*. <!-- CONC-BEHAV-TITLE-NO-EMPTY-VERBS -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes except the `FAQ:` prefix. <!-- CONC-BEHAV-TITLE-NO-PUNCT -->
@@ -58,7 +61,9 @@ Examples:
 - One sentence only; no links, lists, or inline formatting. <!-- CONC-BEHAV-SUBTITLE-SINGLE-SENTENCE -->
 - Ends with a period. <!-- CONC-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- CONC-BEHAV-SUBTITLE-LENGTH-20 -->
-- Use neutral verbs that state the purpose or benefit; avoid persuasive language (for example: *Learn*, *Explore*, *Discover*, *Understand*). <!-- CONC-BEHAV-SUBTITLE-IMPERATIVE -->
+- Use neutral verbs that state the purpose or benefit; avoid persuasive language. <!-- CONC-BEHAV-SUBTITLE-IMPERATIVE -->
+	- Examples: <!-- EXAMPLE: CONC-BEHAV-SUBTITLE-IMPERATIVE -->
+		- Use: *Learn*, *Explore*, *Discover*, *Understand*
 - Add new value beyond the title; don’t repeat or rephrase the H1. <!-- CONC-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
@@ -144,8 +149,14 @@ Every concept requires an introduction that provides context and helps readers u
 - Use a table for complex comparisons with 3 or more options. <!-- CONC-STRUCT-COMPARISON-TABLE -->
 - Focus on key decision factors, such as performance, complexity, cost, prerequisites, and limitations. <!-- CONC-BEHAV-COMPARISON-KEY-FACTORS -->
 - Use direct language in short sentences, so different options are easy to scan. <!-- CONC-BEHAV-COMPARISON-DIRECT-LANGUAGE -->
-- Highlight trade‑offs clearly. For example, "Option A is faster but less secure" or "Option B adds encryption overhead". <!-- CONC-BEHAV-COMPARISON-TRADEOFFS -->
-- Provide real-world guidance. For example, "Choose A if you need X, choose B if you care about Y". <!-- CONC-BEHAV-COMPARISON-GUIDANCE -->
+- Highlight trade‑offs clearly. <!-- CONC-BEHAV-COMPARISON-TRADEOFFS -->
+	- Examples: <!-- EXAMPLE: CONC-BEHAV-COMPARISON-TRADEOFFS -->
+		- "Option A is faster but less secure"
+		- "Option B adds encryption overhead".
+- Provide real-world guidance. <!-- CONC-BEHAV-COMPARISON-GUIDANCE -->
+	- Examples: <!-- EXAMPLE: CONC-BEHAV-COMPARISON-GUIDANCE -->
+		- "Use Option A for high-throughput scenarios"
+		- "Choose Option B when data privacy is critical".
 
 > Example:
 >

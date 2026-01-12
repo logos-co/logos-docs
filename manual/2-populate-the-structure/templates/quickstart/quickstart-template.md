@@ -39,7 +39,7 @@ slug:
 ## Title <!-- group: QST-TITLE -->
 
 - Use a Markdown H1 heading. <!-- QST-STRUCT-TITLE-H1 -->
-- The title consists of the words "Quickstart for" and the name of the project or feature. For example, "Quickstart for Logos Storage". Do not add other text. <!-- QST-BEHAV-TITLE-IMPERATIVE  -->
+- The title consists of the words "Quickstart for" and the name of the project or feature (for example, "Quickstart for Logos Storage"). Do not add other text. <!-- QST-BEHAV-TITLE-IMPERATIVE  -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- QST-BEHAV-TITLE-SENTENCE-CASE -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes. <!-- QST-BEHAV-TITLE-NO-PUNCT -->
 
@@ -49,20 +49,22 @@ slug:
 - One sentence only; no links, list items, or formatting. <!-- QST-BEHAV-SUBTITLE-SINGLE-SENTENCE -->
 - Ends with a period. <!-- QST-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- QST-BEHAV-SUBTITLE-LENGTH-20 -->
-- Use imperative verbs to describe the topic's purpose or benefit (for example: *Get started*, *Explore*, *Try*). <!-- QST-BEHAV-SUBTITLE-IMPERATIVE -->
+- Use imperative verbs to describe the topic's purpose or benefit <!-- QST-BEHAV-SUBTITLE-IMPERATIVE -->
+	- Examples: <!-- EXAMPLE: QST-BEHAV-SUBTITLE-IMPERATIVE -->
+		- *Get started*, *Explore*, *Try*, or similar
 - Adds new value beyond the title; don't repeat or rephrase the H1. <!-- QST-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
 
-- **Title**: *Quickstart for Logos Messaging* / **Subtitle**: *Get hands-on with Logos Messaging's key capabilities.*
-- **Title**: *Quickstart for Stripe* / **Subtitle**: *Quickly add payments to your project with Stripe.*
+	- **Title**: *Quickstart for Logos Messaging* / **Subtitle**: *Get hands-on with Logos Messaging's key capabilities.*
+	- **Title**: *Quickstart for Stripe* / **Subtitle**: *Quickly add payments to your project with Stripe.*
 
 ## Access callouts <!-- group: QST-ACCESS -->
 
 This note-type callout is exclusively to alert readers about what roles, permissions, or product versions are required to perform the procedure.
 
 - Place it after the title and subtitle, before the overview. <!-- QST-STRUCT-ACCESS-AFTER-SUBTITLE -->
-- Use the `Note` callout style. <!-- QST-STRUCT-ACCESS-NOTE-STYLE -->
+- Use the *Note* callout style. <!-- QST-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- QST-BEHAV-ACCESS-LABELED -->
 - Include permissions (software role or permission level). <!-- QST-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- QST-BEHAV-ACCESS-PRODUCT -->
@@ -83,7 +85,7 @@ Examples:
 - One callout maximum per section <!-- QST-STRUCT-CALLOUTS-PER-SECTION-ONE -->
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- QST-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby task or decision point. <!-- QST-BEHAV-CALLOUTS-RELEVANT -->
-- Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`. <!-- QST-BEHAVE-CALLOUTS-TYPE -->
+- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- QST-BEHAVE-CALLOUTS-TYPE -->
 - Do not include full procedural steps or long prerequisite checklists inside callouts. Put steps in the main flow; keep prerequisite lists in "Before you start." <!-- QST-BEHAV-CALLOUTS-NO-STEPS -->
 - For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- QST-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
@@ -101,20 +103,20 @@ Examples:
 - Use the "Before you start" H2 heading for this section. <!-- QST-STRUCT-BEFORE-START-H2-TEXT -->
 - Write a single unordered list. <!-- QST-STRUCT-BEFORE-UNORDERED -->
 - Specify the intended audience of this quickstart, required prior knowledge for using this quickstart and the software or hardware requirements. <!-- QST-BEHAV-BEFORE-CONTENT -->
-- Use noun phrases (For example, "familiarity with Golang"). Don't include verbs such as "learn" or "prepare". <!-- QST-BEHAV-BEFORE-START-NOUN -->
+- Use noun phrases (for example, "familiarity with Golang"). Don't include verbs such as "learn" or "prepare". <!-- QST-BEHAV-BEFORE-START-NOUN -->
 - Provide [links](../../20-style-the-content/10-links.md) to related content such as installation instructions or articles that provide required knowledge. <!-- QST-BEHAV-BEFORE-START-LINK -->
 - Don't include the procedure for setting up or installing prerequisites. If you must explain the procedure, link to the corresponding document or resource. <!-- QST-BEHAV-BEFORE-START-NO-STEPS -->
 
 Example:
 
-> Before you begin, make sure you have:
-> 
-> - A basic understanding of [Ethereum](https://ethereum.org/en/developers/docs/intro-to-ethereum/) ↗ concepts.
-> - Knowledge of how to work with Python virtual environments.
-> - A machine running Ubuntu Linux with the following minimum requirements:
->   - 4 GB memory
->   - 2 TB SSD storage
->   - x86_64 architecture
+	> Before you begin, make sure you have:
+	>
+	> - A basic understanding of [Ethereum](https://ethereum.org/en/developers/docs/intro-to-ethereum/) ↗ concepts.
+	> - Knowledge of how to work with Python virtual environments.
+	> - A machine running Ubuntu Linux with the following minimum requirements:
+	>   - 4 GB memory
+	>   - 2 TB SSD storage
+	>   - x86_64 architecture
 
 ## Task guidelines <!-- group: QST-TASK-GUIDELINES -->
 
@@ -139,9 +141,9 @@ Example:
 
 Examples:
 
-- *Run a Logos Messaging node*
-- *Connect to the Logos Blockchain network*
-- *Configure system admin access*
+	- *Run a Logos Messaging node*
+	- *Connect to the Logos Blockchain network*
+	- *Configure system admin access*
 
 ### Task intro (optional) <!-- group: QST-TASK-INTRO -->
 
@@ -169,21 +171,21 @@ Examples:
 - Don't use external links in steps; only same-page anchors. <!-- QST-BEHAV-TASK-STEP-LINKS -->
 - For UI paths, put location before action. <!-- QST-BEHAV-TASK-STEP-LOC-FIRST -->
 
-	> ⚙️ **Example** <!-- EXAMPLE: QST-BEHAV-TASK-STEP-LOC-FIRST -->
-	>
-	> | Incorrect (action first)                     | Correct (location first)                          |
-	> |:---------------------------------------------|:--------------------------------------------------|
-	> | Click **Save** in the **File** menu.         | In the **File** menu, click **Save**.             |
-	> | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
+	- Example <!-- EXAMPLE: QST-BEHAV-TASK-STEP-LOC-FIRST -->
+
+		| Incorrect (action first) | Correct (location first) |
+		|:---|:---|
+		| Click **Save** in the **File** menu. | In the **File** menu, click **Save**. |
+		| Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
 
 - For conditions, write the result first, then the condition. <!-- QST-BEHAV-TASK-STEP-RESULT-FIRST -->
 
-	> ⚙️ **Example** <!-- EXAMPLE: QST-BEHAV-TASK-STEP-RESULT-FIRST -->
-	>
-	> | Incorrect (condition first) | Correct (result first) |
-	> |---|---|
-	> | If the Network Status is Disconnected, an error message will display. | An error message will display if the Network Status is Disconnected. |
-	> | Only use the `$API_KEY` if you are calling the external service. | Use the `$API_KEY` only if you are calling the external service. |
+	- Example <!-- EXAMPLE: QST-BEHAV-TASK-STEP-RESULT-FIRST -->
+
+		| Incorrect (condition first) | Correct (result first) |
+		|---|---|
+		| If the Network Status is Disconnected, an error message will display. | An error message will display if the Network Status is Disconnected. |
+		| Only use the `$API_KEY` if you are calling the external service. | Use the `$API_KEY` only if you are calling the external service. |
 
 ### Step clarifiers (optional) <!-- group: QST-TASK-CLARIFIERS -->
 
@@ -195,13 +197,13 @@ Examples:
 
 Follow the code rules in the writing rules document. <!-- QST-BEHAV-TASK-CODE-REFER-WRITING-RULES -->
 
->Example:
->
-> 	1. Do this thing...
->
->    ```bash
->    gh workflow run build --repo org/repo
->   ```
+	- Example:
+
+		> 	1. Do this thing...
+		>
+		>    ```bash
+		>    gh workflow run build --repo org/repo
+		>   ```
 
 ### Task screenshot (optional) <!-- group: QST-TASK-IMG -->
 

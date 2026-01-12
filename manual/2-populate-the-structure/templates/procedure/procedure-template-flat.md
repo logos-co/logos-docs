@@ -49,7 +49,9 @@ slug:
 - Start with an action verb in the imperative form. Don't use the *-ing* form of the verb. <!-- PROC-BEHAV-TITLE-IMPERATIVE -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- PROC-BEHAV-TITLE-SENTENCE-CASE -->
 - Focus on the outcome, not the mechanics. Prefer results over lists of actions. <!-- PROC-BEHAV-TITLE-OUTCOME-FOCUSED -->
-	- Example: instead of "Install Node.js and create a project directory", use "Set up a local development environment for Node.js".
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-TITLE-OUTCOME-FOCUSED -->
+		- Use: "Set up a local development environment for Node.js"
+		- Avoid: "Install Node.js and create a project directory"
 - Include the action and the object/context (what/where/how) so the goal is unambiguous. <!-- PROC-BEHAV-TITLE-ACTION-OBJECT -->
 - Avoid one- or two-word titles and empty verbs like *make*, *manage*, or *put*. <!-- PROC-BEHAV-TITLE-NO-EMPTY-VERBS -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes. <!-- PROC-BEHAV-TITLE-NO-PUNCT -->
@@ -72,7 +74,8 @@ Examples:
 - Ends with a period. <!-- PROC-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- PROC-BEHAV-SUBTITLE-LENGTH-20 -->
 - Use neutral verbs that state the purpose or benefit; avoid persuasive language. <!-- PROC-BEHAV-SUBTITLE-IMPERATIVE -->
-  - Examples: *Get started*, *Explore*, *Try*.
+  - Examples: <!-- 	EXAMPLE: PROC-BEHAV-SUBTITLE-IMPERATIVE -->
+  	- Use *Get started*, *Explore*, *Try*, or similar.
 - Add new value beyond the title; don’t repeat or rephrase the H1. <!-- PROC-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
@@ -142,13 +145,19 @@ Every procedure requires an introduction that provides context and helps readers
 
 - Render inline under the Intro section; do not add a visible subheading. <!-- PROC-STRUCT-DECISIONS-NO-HEADING -->
 - Summarize decisions the reader must make before starting. <!-- PROC-BEHAV-DECISIONS-PURPOSE -->
-	- Example: using CLI vs. using GUI.
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-DECISIONS-PURPOSE -->
+		- "Using CLI vs. using GUI"
+		- "Choosing between Method A and Method B"
 - Use a list for simple choices; use a compact table for multi-factor comparisons. <!-- PROC-BEHAV-DECISIONS-FORM -->
 - Focus on actionable factors: performance, complexity, cost, prerequisites, and limitations. <!-- PROC-BEHAV-DECISIONS-FACTORS -->
 - State trade-offs explicitly. <!-- PROC-BEHAV-DECISIONS-TRADEOFFS -->
-	- Example, "A is faster but less secure".
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-DECISIONS-TRADEOFFS -->
+		- "A is faster but less secure"
+		- "B requires more setup but scales better"
 - Give clear guidance. <!-- PROC-BEHAV-DECISIONS-GUIDANCE -->
-	- Example, "Choose A if you need X; choose B if you need Y".
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-DECISIONS-GUIDANCE -->
+		- "Choose A for small projects"
+		- "Choose B for production use"
 - If the decision space is complex, link to a dedicated decision guide. <!-- PROC-BEHAV-DECISIONS-LINK -->
 
 ### Limits (optional) <!-- group: PROC-LIMITS -->
@@ -164,8 +173,7 @@ Every procedure requires an introduction that provides context and helps readers
 
 - Render inline under the Intro section; do not add a visible subheading. <!-- PROC-STRUCT-IMPACT-NO-HEADING -->
 - A paragraph, list, or table. <!-- PROC-BEHAV-IMPACT-FORMAT -->
-- Highlight side effects and risks. <!-- PROC-BEHAV-IMPACT-RISKS -->
-	- Examples: data exposure, downtime, irreversible actions.
+- Highlight side effects and risks, such as data exposure, downtime, irreversible actions <!-- PROC-BEHAV-IMPACT-RISKS -->
 - Note required privileges or safer alternatives when relevant. <!-- PROC-BEHAV-IMPACT-PRIVS-ALTS -->
 - Use a single concise callout for critical security impacts; link out for details. <!-- PROC-BEHAV-IMPACT-ALERT-CRITICAL -->
 
@@ -183,7 +191,10 @@ Every procedure requires an introduction that provides context and helps readers
 - Include exactly one unordered list with three items (no code blocks or callouts here). <!-- PROC-STRUCT-EXPECT-UL-THREE -->
 - Write one complete sentence per bullet (two short sentences max), and end sentences with a period. <!-- PROC-BEHAV-EXPECT-SENTENCE-1-2 -->
 - Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure. <!-- PROC-BEHAV-EXPECT-PARALLEL-OUTCOME -->
-	- Example: "You can ...".
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-EXPECT-PARALLEL-OUTCOME -->
+		- "You can ..."
+		- "You have ..."
+		- "Your system is ..."
 - Order items from most important to least important. <!-- PROC-BEHAV-EXPECT-PRIORITY -->
 - Allow only same-page heading links; no external links. <!-- PROC-BEHAV-EXPECT-LINKS-INTERNAL -->
 
@@ -238,19 +249,19 @@ Every procedure requires at least one task. Each task includes these mandatory a
 
 	- Examples: <!-- EXAMPLE: PROC-BEHAV-TASK-STEPS-LOCATION-FIRST -->
 
-    | Incorrect (action first)                         | Correct (location first)                          |
-    |:---|:---|
-    | Click **Save** in the **File** menu.             | In the **File** menu, click **Save**.             |
-    | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
+		| Incorrect (action first)                         | Correct (location first)                          |
+		|:---|:---|
+		| Click **Save** in the **File** menu.             | In the **File** menu, click **Save**.             |
+		| Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |
 
 - For conditions, write the result first, then the condition. <!-- PROC-BEHAV-TASK-STEPS-RESULT-THEN-CONDITION -->
 
-  - Examples: <!-- EXAMPLE: PROC-BEHAV-TASK-STEPS-RESULT-THEN-CONDITION -->
+	- Examples: <!-- EXAMPLE: PROC-BEHAV-TASK-STEPS-RESULT-THEN-CONDITION -->
 
-    | Incorrect (condition first) | Correct (result first) |
-    |:---|:---|
-    | If the Network Status is "Disconnected", an error message will display. | An error message will display if the Network Status is "Disconnected". |
-    | Only use the `$API_KEY` if you are calling the external service.        | Use the `$API_KEY` only if you are calling the external service.       |
+		| Incorrect (condition first) | Correct (result first) |
+		|:---|:---|
+		| If the Network Status is "Disconnected", an error message will display. | An error message will display if the Network Status is "Disconnected". |
+		| Only use the `$API_KEY` if you are calling the external service.        | Use the `$API_KEY` only if you are calling the external service.       |
 
 ### Step clarifiers (optional) <!-- group: PROC-TASK-CLAR -->
 

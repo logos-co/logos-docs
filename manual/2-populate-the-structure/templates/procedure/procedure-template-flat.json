@@ -2,14 +2,14 @@
   "documentName": "Procedure template: flat layout",
   "docVersion": null,
   "frontMatter": {
-    "title": "",
+    "title": null,
     "doc_type": "procedure",
-    "product": "# [storage | blockchain | messaging]",
+    "product": null,
     "topics": [],
     "steps_layout": "flat",
-    "authors": "# GitHub username",
+    "authors": [],
     "owner": "logos",
-    "slug": ""
+    "slug": null
   },
   "sections": [
     {
@@ -46,7 +46,10 @@
           "id": "PROC-BEHAV-TITLE-OUTCOME-FOCUSED",
           "group": "BEHAV",
           "description": "Focus on the outcome, not the mechanics. Prefer results over lists of actions.",
-          "examples": []
+          "examples": [
+            "Use: \"Set up a local development environment for Node.js\"",
+            "Avoid: \"Install Node.js and create a project directory\""
+          ]
         },
         {
           "id": "PROC-BEHAV-TITLE-ACTION-OBJECT",
@@ -68,7 +71,30 @@
         }
       ],
       "examples": [
-        "Examples:\n\n\t| Usage   | Example                                 |\n\t|:--------|:----------------------------------------|\n\t| **Use** | Create a codespace from a template      |\n\t| Avoid   | Creating a codespace from a template    |\n\t| **Use** | Use source control in your codespace    |\n\t| Avoid   | Use source control                      |\n\t| **Use** | Collaborate with others in a codespace  |\n\t| Avoid   | Set up a live share session             |"
+        {
+          "Usage": "**Use**",
+          "Example": "Create a codespace from a template"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Creating a codespace from a template"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "Use source control in your codespace"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Use source control"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "Collaborate with others in a codespace"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Set up a live share session"
+        }
       ]
     },
     {
@@ -105,7 +131,9 @@
           "id": "PROC-BEHAV-SUBTITLE-IMPERATIVE",
           "group": "BEHAV",
           "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language.",
-          "examples": []
+          "examples": [
+            "Use *Get started*, *Explore*, *Try*, or similar."
+          ]
         },
         {
           "id": "PROC-BEHAV-SUBTITLE-ADDS-VALUE",
@@ -115,7 +143,8 @@
         }
       ],
       "examples": [
-        "Examples:\n\n- **Title**: *Quickstart for GitHub Actions* / **Subtitle**: *Try out the core features of GitHub Actions in minutes*\n- **Title**: *Create a pull request* / **Subtitle**: *Create a pull request to propose and collaborate on changes to a repository*"
+        "**Title**: *Quickstart for GitHub Actions* / **Subtitle**: *Try out the core features of GitHub Actions in minutes*",
+        "**Title**: *Create a pull request* / **Subtitle**: *Create a pull request to propose and collaborate on changes to a repository*"
       ]
     },
     {
@@ -174,7 +203,7 @@
         }
       ],
       "examples": [
-        "Example:\n\n  > **Note**\n  >\n  > - **Permissions**: Node operators, Site operators\n  > - **Product**: Logos Storage v1.4.0 or later"
+        "**Note** - **Permissions**: Node operators, Site operators - **Product**: Logos Storage v1.4.0 or later"
       ]
     },
     {
@@ -227,7 +256,7 @@
         }
       ],
       "examples": [
-        "Example:\n\n> **Note:**\n>\n> Keep container resources within the documented limits to avoid throttling."
+        "**Note:** Keep container resources within the documented limits to avoid throttling."
       ]
     },
     {
@@ -272,7 +301,7 @@
         {
           "id": "PROC-BEHAV-OVERVIEW-LENGTH-50-100",
           "group": "BEHAV",
-          "description": "Write a 50–100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
+          "description": "Write a 50-100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
           "examples": []
         },
         {
@@ -312,7 +341,10 @@
           "id": "PROC-BEHAV-DECISIONS-PURPOSE",
           "group": "BEHAV",
           "description": "Summarize decisions the reader must make before starting.",
-          "examples": []
+          "examples": [
+            "\"Using CLI vs. using GUI\"",
+            "\"Choosing between Method A and Method B\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-FORM",
@@ -330,13 +362,19 @@
           "id": "PROC-BEHAV-DECISIONS-TRADEOFFS",
           "group": "BEHAV",
           "description": "State trade-offs explicitly.",
-          "examples": []
+          "examples": [
+            "\"A is faster but less secure\"",
+            "\"B requires more setup but scales better\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-GUIDANCE",
           "group": "BEHAV",
           "description": "Give clear guidance.",
-          "examples": []
+          "examples": [
+            "\"Choose A for small projects\"",
+            "\"Choose B for production use\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-LINK",
@@ -413,7 +451,7 @@
         {
           "id": "PROC-BEHAV-IMPACT-RISKS",
           "group": "BEHAV",
-          "description": "Highlight side effects and risks.",
+          "description": "Highlight side effects and risks, such as data exposure, downtime, irreversible actions",
           "examples": []
         },
         {
@@ -498,7 +536,11 @@
           "id": "PROC-BEHAV-EXPECT-PARALLEL-OUTCOME",
           "group": "BEHAV",
           "description": "Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure.",
-          "examples": []
+          "examples": [
+            "\"You can ...\"",
+            "\"You have ...\"",
+            "\"Your system is ...\""
+          ]
         },
         {
           "id": "PROC-BEHAV-EXPECT-PRIORITY",
@@ -530,7 +572,7 @@
         {
           "id": "PROC-BEHAV-TASK-TITLE-LENGTH-50-80",
           "group": "BEHAV",
-          "description": "Aim for 50–60 characters; 80 max.",
+          "description": "Aim for 50-60 characters; 80 max.",
           "examples": []
         },
         {
@@ -659,7 +701,7 @@
         {
           "id": "PROC-BEHAV-TASK-STEPS-COUNT-2-7",
           "group": "BEHAV",
-          "description": "Aim for 2–7 steps. Split if longer.",
+          "description": "Aim for 2-7 steps. Split if longer.",
           "examples": []
         },
         {
@@ -697,7 +739,14 @@
           "group": "BEHAV",
           "description": "For UI paths, put location before action.",
           "examples": [
-            "Examples:\n\n    | Incorrect (action first)                         | Correct (location first)                          |\n    |:---|:---|\n    | Click **Save** in the **File** menu.             | In the **File** menu, click **Save**.             |\n    | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |"
+            {
+              "Incorrect (action first)": "Click **Save** in the **File** menu.",
+              "Correct (location first)": "In the **File** menu, click **Save**."
+            },
+            {
+              "Incorrect (action first)": "Select **Run** from the **Debug** configuration.",
+              "Correct (location first)": "From the **Debug** configuration, select **Run**."
+            }
           ]
         },
         {
@@ -705,7 +754,14 @@
           "group": "BEHAV",
           "description": "For conditions, write the result first, then the condition.",
           "examples": [
-            "Examples:\n\n    | Incorrect (condition first) | Correct (result first) |\n    |:---|:---|\n    | If the Network Status is \"Disconnected\", an error message will display. | An error message will display if the Network Status is \"Disconnected\". |\n    | Only use the `$API_KEY` if you are calling the external service.        | Use the `$API_KEY` only if you are calling the external service.       |"
+            {
+              "Incorrect (condition first)": "If the Network Status is \"Disconnected\", an error message will display.",
+              "Correct (result first)": "An error message will display if the Network Status is \"Disconnected\"."
+            },
+            {
+              "Incorrect (condition first)": "Only use the `$API_KEY` if you are calling the external service.",
+              "Correct (result first)": "Use the `$API_KEY` only if you are calling the external service."
+            }
           ]
         }
       ],
@@ -732,7 +788,7 @@
         {
           "id": "PROC-BEHAV-TASK-CLAR-COUNT-2-4",
           "group": "BEHAV",
-          "description": "Limit clarifiers to 2–4 items in one level.",
+          "description": "Limit clarifiers to 2-4 items in one level.",
           "examples": []
         }
       ],
@@ -752,7 +808,7 @@
         }
       ],
       "examples": [
-        "Example:\n\n> \t1. Do this thing...\n>\n> \t```bash\n> \tgh workflow run build --repo org/repo\n> \t```"
+        "1. Do this thing... ```bash gh workflow run build --repo org/repo ```"
       ]
     },
     {
@@ -850,13 +906,13 @@
       "rules": [
         {
           "id": "PROC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4–H6 headings.",
+          "group": "STRUCT",
+          "description": "Do not use H4-H6 headings.",
           "examples": []
         },
         {
           "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
+          "group": "BEHAV",
           "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document.",
           "examples": []
         }
@@ -871,7 +927,7 @@
         {
           "id": "PROC-STRUCT-FORBID-H4-H6",
           "group": "FORBID",
-          "description": "Do not use H4–H6 headings."
+          "description": "Do not use H4-H6 headings."
         },
         {
           "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
@@ -886,7 +942,8 @@
     "duplicateRuleIds": [],
     "groupViolations": [],
     "forbiddenViolations": [],
-    "notes": [],
-    "unknownRuleIds": []
+    "notes": [
+      "NO_SECTION_TABLE"
+    ]
   }
 }

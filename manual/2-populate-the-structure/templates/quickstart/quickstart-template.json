@@ -690,6 +690,12 @@
           "group": "STRUCT",
           "description": "Do not use H4-H6 headings.",
           "examples": []
+        },
+        {
+          "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
+          "group": "BEHAV",
+          "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document.",
+          "examples": []
         }
       ],
       "examples": []
@@ -698,18 +704,7 @@
   "forbidden": [
     {
       "id": "QST-FORBID",
-      "rules": [
-        {
-          "id": "QST-STRUCT-FORBID-GUIDELINES-NO-RENDER",
-          "group": "FORBID",
-          "description": "This section is guidance only; do not render a visible heading or body."
-        },
-        {
-          "id": "QST-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4-H6 headings."
-        }
-      ]
+      "rules": []
     }
   ],
   "validation": {
@@ -717,6 +712,8 @@
     "duplicateRuleIds": [],
     "groupViolations": [],
     "forbiddenViolations": [],
-    "notes": []
+    "notes": [
+      "NO_SECTION_TABLE"
+    ]
   }
 }

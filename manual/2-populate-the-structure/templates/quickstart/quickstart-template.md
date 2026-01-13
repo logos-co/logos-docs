@@ -225,3 +225,4 @@ Follow the code rules in the writing rules document. <!-- QST-BEHAV-TASK-CODE-RE
 
 - This section is guidance only; do not render a visible heading or body. <!-- QST-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
 - Do not use H4-H6 headings. <!-- QST-STRUCT-FORBID-H4-H6 -->
+- Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- PROC-BEHAV-FORBID-NO-FURTHER-READING -->

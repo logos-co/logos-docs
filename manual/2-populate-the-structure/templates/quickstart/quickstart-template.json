@@ -185,7 +185,7 @@
           "examples": []
         },
         {
-          "id": "QST-BEHAVE-CALLOUTS-TYPE",
+          "id": "QST-BEHAV-CALLOUTS-TYPE",
           "group": "BEHAV",
           "description": "Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*.",
           "examples": []
@@ -369,7 +369,7 @@
         {
           "id": "QST-BEHAV-TASK-TITLE-LENGTH",
           "group": "BEHAV",
-          "description": "Aim for 50-60 characters; 80 max.",
+          "description": "Aim for 50–60 characters; 80 max.",
           "examples": []
         },
         {
@@ -418,7 +418,7 @@
         {
           "id": "QST-BEHAV-TASK-INTRO-BRIEF",
           "group": "BEHAV",
-          "description": "Write 1-2 short sentences that provide context.",
+          "description": "Write 1–2 short sentences that provide context.",
           "examples": []
         },
         {
@@ -496,7 +496,7 @@
         {
           "id": "QST-BEHAV-TASK-STEP-RANGE",
           "group": "BEHAV",
-          "description": "Aim for 2-7 steps. Split if longer.",
+          "description": "Aim for 2–7 steps. Split if longer.",
           "examples": []
         },
         {
@@ -583,7 +583,7 @@
         {
           "id": "QST-STRUCT-TASK-CLARIFIERS-LIMIT",
           "group": "STRUCT",
-          "description": "Limit clarifiers to 2-4 items in one level.",
+          "description": "Limit clarifiers to 2–4 items in one level.",
           "examples": []
         }
       ],
@@ -678,7 +678,20 @@
       "title": "Forbidden content",
       "required": "forbidden",
       "format": null,
-      "rules": [],
+      "rules": [
+        {
+          "id": "QST-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
+          "id": "QST-STRUCT-FORBID-H4-H6",
+          "group": "STRUCT",
+          "description": "Do not use H4-H6 headings.",
+          "examples": []
+        }
+      ],
       "examples": []
     }
   ],
@@ -687,7 +700,12 @@
       "id": "QST-FORBID",
       "rules": [
         {
-          "id": "QST-FORBID-STRUCT-H4-H6",
+          "id": "QST-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "FORBID",
+          "description": "This section is guidance only; do not render a visible heading or body."
+        },
+        {
+          "id": "QST-STRUCT-FORBID-H4-H6",
           "group": "FORBID",
           "description": "Do not use H4-H6 headings."
         }
@@ -697,13 +715,8 @@
   "validation": {
     "missingRuleIds": [],
     "duplicateRuleIds": [],
-    "groupViolations": [
-      "Unknown group token in rule ID QST-BEHAVE-CALLOUTS-TYPE (set to BEHAV)"
-    ],
+    "groupViolations": [],
     "forbiddenViolations": [],
-    "notes": [
-      "NO_SECTION_TABLE",
-      "md_sha256:6a32fe35579eee7aa2f7ddd285c27c2c522bfd58b949bfb6e2392fe7ebbb5ee0"
-    ]
+    "notes": []
   }
 }

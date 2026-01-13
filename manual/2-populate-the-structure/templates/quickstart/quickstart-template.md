@@ -13,25 +13,25 @@ slug:
 
 ## Template overview
 
-| Section                       | Format                              | Required  | ID                               |
-|:------------------------------|:------------------------------------|:----------|:---------------------------------|
-| Title                         | H1                                  | Yes       | `QST-TITLE`                      |
-| Subtitle                      | H4                                  | Yes       | `QST-SUBTITLE`                   |
-| Access callouts               | Note-type callout                   | No        | `QST-ACCESS`                     |
-| Callouts                      | Tip, Note, Important, Caution       | No        | `QST-CALLOUTS`                   |
-| Overview                      | Paragraph                           | Yes       | `QST-OVERVIEW`                   |
-| "Before you start"            | List                                | No        | `QST-BEFORE-START`               |
-| Task guidelines               |                                     | Yes       | `QST-TASK-GUIDELINES`            |
-| Task title                    | H2                                  | Yes       | `QST-TASK-TITLE`                 |
-| Task intro                    | Paragraph                           | No        | `QST-TASK-INTRO`                 |
-| Task callouts                 | Tip, Note, Important, Caution       | No        | `QST-TASK-CALLOUTS`              |
-| Task actions                  | Numbered list                       | Yes       | `QST-TASK-STEP`                  |
-| Step clarifiers               | Unordered bullets (depth 1) (1)     | No        | `QST-TASK-CLARIFIERS`            |
-| Code                          | Fenced code block (2)               | No        | `QST-TASK-CODE`                  |
-| Screenshot                    | Image (2)                           | No        | `QST-TASK-IMG`                   |
-| "Next steps"                  | Bullet list                         | No        | `QST-NEXT`                       |
-| Extra guidelines              |                                     | Yes       | `QST-EXTRA`                      |
-| Forbidden content             |                                     | Forbidden | `QST-FORBID`                     |
+| Section                       | Format                              | Required  | ID                    |
+|:------------------------------|:------------------------------------|:----------|:----------------------|
+| Title                         | H1                                  | Yes       | `QST-TITLE`           |
+| Subtitle                      | H4                                  | Yes       | `QST-SUBTITLE`        |
+| Access callouts               | Note-type callout                   | No        | `QST-ACCESS`          |
+| Callouts                      | Tip, Note, Important, Caution       | No        | `QST-CALLOUTS`        |
+| Overview                      | Paragraph                           | Yes       | `QST-OVERVIEW`        |
+| "Before you start"            | List                                | No        | `QST-BEFORE-START`    |
+| Task guidelines               |                                     | Yes       | `QST-TASK-GUIDELINES` |
+| Task title                    | H2                                  | Yes       | `QST-TASK-TITLE`      |
+| Task intro                    | Paragraph                           | No        | `QST-TASK-INTRO`      |
+| Task callouts                 | Tip, Note, Important, Caution       | No        | `QST-TASK-CALLOUTS`   |
+| Task actions                  | Numbered list                       | Yes       | `QST-TASK-STEP`       |
+| Step clarifiers               | Unordered bullets (depth 1) (1)     | No        | `QST-TASK-CLARIFIERS` |
+| Code                          | Fenced code block (2)               | No        | `QST-TASK-CODE`       |
+| Screenshot                    | Image (2)                           | No        | `QST-TASK-IMG`        |
+| "Next steps"                  | Bullet list                         | No        | `QST-NEXT`            |
+| Extra guidelines              |                                     | Yes       | `QST-EXTRA`           |
+| Forbidden content             |                                     | Forbidden | `QST-FORBID`          |
 
 (1) Use a short bullet list for clarifiers or alternatives. Do not create numbered sub-steps.  
 (2) Nest code and images inside the list item they clarify (indent so they are children of the preceding step).
@@ -85,7 +85,7 @@ Examples:
 - One callout maximum per section <!-- QST-STRUCT-CALLOUTS-PER-SECTION-ONE -->
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- QST-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby task or decision point. <!-- QST-BEHAV-CALLOUTS-RELEVANT -->
-- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- QST-BEHAVE-CALLOUTS-TYPE -->
+- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- QST-BEHAV-CALLOUTS-TYPE -->
 - Do not include full procedural steps or long prerequisite checklists inside callouts. Put steps in the main flow; keep prerequisite lists in "Before you start." <!-- QST-BEHAV-CALLOUTS-NO-STEPS -->
 - For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- QST-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
@@ -223,4 +223,5 @@ Follow the code rules in the writing rules document. <!-- QST-BEHAV-TASK-CODE-RE
 
 ## Forbidden content <!-- group: QST-FORBID -->
 
-- Do not use H4-H6 headings. <!-- QST-FORBID-STRUCT-H4-H6 -->
+- This section is guidance only; do not render a visible heading or body. <!-- QST-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
+- Do not use H4-H6 headings. <!-- QST-STRUCT-FORBID-H4-H6 -->

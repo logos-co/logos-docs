@@ -2,14 +2,14 @@
   "documentName": "Procedure template: flat layout",
   "docVersion": null,
   "frontMatter": {
-    "title": "",
+    "title": null,
     "doc_type": "procedure",
     "product": "# [storage | blockchain | messaging]",
     "topics": [],
     "steps_layout": "flat",
     "authors": "# GitHub username",
     "owner": "logos",
-    "slug": ""
+    "slug": null
   },
   "sections": [
     {
@@ -47,9 +47,8 @@
           "group": "BEHAV",
           "description": "Focus on the outcome, not the mechanics. Prefer results over lists of actions.",
           "examples": [
-            "instead of \"Install Node.js",
-            "create a project directory",
-            "use \"Set up a local development environment for Node.js\"."
+            "Use: \"Set up a local development environment for Node.js\"",
+            "Avoid: \"Install Node.js and create a project directory\""
           ]
         },
         {
@@ -72,14 +71,30 @@
         }
       ],
       "examples": [
-        "| Usage | Example |",
-        "|:--------|:----------------------------------------|",
-        "| **Use** | Create a codespace from a template |",
-        "| Avoid | Creating a codespace from a template |",
-        "| **Use** | Use source control in your codespace |",
-        "| Avoid | Use source control |",
-        "| **Use** | Collaborate with others in a codespace |",
-        "| Avoid | Set up a live share session |"
+        {
+          "Usage": "**Use**",
+          "Example": "Create a codespace from a template"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Creating a codespace from a template"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "Use source control in your codespace"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Use source control"
+        },
+        {
+          "Usage": "**Use**",
+          "Example": "Collaborate with others in a codespace"
+        },
+        {
+          "Usage": "Avoid",
+          "Example": "Set up a live share session"
+        }
       ]
     },
     {
@@ -115,11 +130,9 @@
         {
           "id": "PROC-BEHAV-SUBTITLE-IMPERATIVE",
           "group": "BEHAV",
-          "description": "Use a base-form verb that states the purpose or benefit",
+          "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language.",
           "examples": [
-            "*Get started*",
-            "*Explore*",
-            "*Try*"
+            "Use *Get started*, *Explore*, *Try*, or similar."
           ]
         },
         {
@@ -130,16 +143,22 @@
         }
       ],
       "examples": [
-        "- **Title**: *Quickstart for GitHub Actions* / **Subtitle**: *Try out the core features of GitHub Actions in minutes*",
-        "- **Title**: *Create a pull request* / **Subtitle**: *Create a pull request to propose and collaborate on changes to a repository*"
+        "**Title**: *Quickstart for GitHub Actions* / **Subtitle**: *Try out the core features of GitHub Actions in minutes*",
+        "**Title**: *Create a pull request* / **Subtitle**: *Create a pull request to propose and collaborate on changes to a repository*"
       ]
     },
     {
       "id": "PROC-ACCESS",
-      "title": "Access callout (optional)",
+      "title": "Access callout",
       "required": "optional",
       "format": "Note-type callout",
       "rules": [
+        {
+          "id": "PROC-STRUCT-ACCESS-OMIT-IF-EMPTY",
+          "group": "STRUCT",
+          "description": "Omit the callout entirely if no permission/product constraints exist.",
+          "examples": []
+        },
         {
           "id": "PROC-STRUCT-ACCESS-AFTER-SUBTITLE",
           "group": "STRUCT",
@@ -161,7 +180,7 @@
         {
           "id": "PROC-BEHAV-ACCESS-PERMISSIONS",
           "group": "BEHAV",
-          "description": "Include permissions (software role or permission level).",
+          "description": "Include permissions (software role or permission level), if applicable.",
           "examples": []
         },
         {
@@ -181,19 +200,10 @@
           "group": "BEHAV",
           "description": "Do not include knowledge, skills, or required tools.",
           "examples": []
-        },
-        {
-          "id": "PROC-STRUCT-ACCESS-OMIT-IF-EMPTY",
-          "group": "STRUCT",
-          "description": "Omit the callout entirely if no permission/product constraints exist.",
-          "examples": []
         }
       ],
       "examples": [
-        "> **Note**",
-        ">",
-        "> - **Permissions**: Node operators, Site operators",
-        "> - **Product**: Logos Storage v1.4.0 or later"
+        "**Note** - **Permissions**: Node operators, Site operators - **Product**: Logos Storage v1.4.0 or later"
       ]
     },
     {
@@ -246,9 +256,7 @@
         }
       ],
       "examples": [
-        "> **Note:**",
-        ">",
-        "> Keep container resources within the documented limits to avoid throttling."
+        "**Note:** Keep container resources within the documented limits to avoid throttling."
       ]
     },
     {
@@ -319,7 +327,7 @@
     },
     {
       "id": "PROC-DECISIONS",
-      "title": "Decisions (optional)",
+      "title": "Decisions",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -332,8 +340,11 @@
         {
           "id": "PROC-BEHAV-DECISIONS-PURPOSE",
           "group": "BEHAV",
-          "description": "Summarize decisions the reader must make before starting (for example, CLI vs. GUI).",
-          "examples": []
+          "description": "Summarize decisions the reader must make before starting.",
+          "examples": [
+            "\"Using CLI vs. using GUI\"",
+            "\"Choosing between Method A and Method B\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-FORM",
@@ -350,14 +361,20 @@
         {
           "id": "PROC-BEHAV-DECISIONS-TRADEOFFS",
           "group": "BEHAV",
-          "description": "State trade-offs explicitly (for example, \"A is faster but less secure\").",
-          "examples": []
+          "description": "State trade-offs explicitly.",
+          "examples": [
+            "\"A is faster but less secure\"",
+            "\"B requires more setup but scales better\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-GUIDANCE",
           "group": "BEHAV",
-          "description": "Give clear guidance (for example, \"Choose A if you need X; choose B if you need Y\").",
-          "examples": []
+          "description": "Give clear guidance.",
+          "examples": [
+            "\"Choose A for small projects\"",
+            "\"Choose B for production use\""
+          ]
         },
         {
           "id": "PROC-BEHAV-DECISIONS-LINK",
@@ -370,7 +387,7 @@
     },
     {
       "id": "PROC-LIMITS",
-      "title": "Limits (optional)",
+      "title": "Limits",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -415,7 +432,7 @@
     },
     {
       "id": "PROC-IMPACT",
-      "title": "Impact (optional)",
+      "title": "Impact",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -434,12 +451,8 @@
         {
           "id": "PROC-BEHAV-IMPACT-RISKS",
           "group": "BEHAV",
-          "description": "Highlight side effects and risks (",
-          "examples": [
-            "data exposure",
-            "downtime",
-            "irreversible actions)."
-          ]
+          "description": "Highlight side effects and risks, such as data exposure, downtime, irreversible actions",
+          "examples": []
         },
         {
           "id": "PROC-BEHAV-IMPACT-PRIVS-ALTS",
@@ -458,7 +471,7 @@
     },
     {
       "id": "PROC-PREREQ",
-      "title": "Prerequisites (optional)",
+      "title": "Prerequisites",
       "required": "optional",
       "format": "Paragraph, list",
       "rules": [
@@ -522,8 +535,12 @@
         {
           "id": "PROC-BEHAV-EXPECT-PARALLEL-OUTCOME",
           "group": "BEHAV",
-          "description": "Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure (for example, \"You can ...\").",
-          "examples": []
+          "description": "Use parallel wording in each bullet (same grammatical shape), focused on outcomes users will have after completing the procedure.",
+          "examples": [
+            "\"You can ...\"",
+            "\"You have ...\"",
+            "\"Your system is ...\""
+          ]
         },
         {
           "id": "PROC-BEHAV-EXPECT-PRIORITY",
@@ -593,7 +610,7 @@
     },
     {
       "id": "PROC-TASK-INTRO",
-      "title": "Task intro (optional)",
+      "title": "Task intro",
       "required": "optional",
       "format": "Paragraph",
       "rules": [
@@ -620,7 +637,7 @@
     },
     {
       "id": "PROC-TASK-CALLOUTS",
-      "title": "Task callouts (optional)",
+      "title": "Task callouts",
       "required": "optional",
       "format": "Tip, Note, Important, Caution",
       "rules": [
@@ -722,12 +739,14 @@
           "group": "BEHAV",
           "description": "For UI paths, put location before action.",
           "examples": [
-            "> Example:",
-            ">",
-            "> | Incorrect (action first) | Correct (location first) |",
-            "> |:---|:---|",
-            "> | Click **Save** in the **File** menu. | In the **File** menu, click **Save**. |",
-            "> | Select **Run** from the **Debug** configuration. | From the **Debug** configuration, select **Run**. |"
+            {
+              "Incorrect (action first)": "Click **Save** in the **File** menu.",
+              "Correct (location first)": "In the **File** menu, click **Save**."
+            },
+            {
+              "Incorrect (action first)": "Select **Run** from the **Debug** configuration.",
+              "Correct (location first)": "From the **Debug** configuration, select **Run**."
+            }
           ]
         },
         {
@@ -735,12 +754,14 @@
           "group": "BEHAV",
           "description": "For conditions, write the result first, then the condition.",
           "examples": [
-            "> Example:",
-            ">",
-            "> | Incorrect (condition first) | Correct (result first) |",
-            "> |---|---|",
-            "> | If the Network Status is Disconnected, an error message will display. | An error message will display if the Network Status is Disconnected. |",
-            "> | Only use the `$API_KEY` if you are calling the external service. | Use the `$API_KEY` only if you are calling the external service. |"
+            {
+              "Incorrect (condition first)": "If the Network Status is \"Disconnected\", an error message will display.",
+              "Correct (result first)": "An error message will display if the Network Status is \"Disconnected\"."
+            },
+            {
+              "Incorrect (condition first)": "Only use the `$API_KEY` if you are calling the external service.",
+              "Correct (result first)": "Use the `$API_KEY` only if you are calling the external service."
+            }
           ]
         }
       ],
@@ -748,7 +769,7 @@
     },
     {
       "id": "PROC-TASK-CLAR",
-      "title": "Step clarifiers (optional)",
+      "title": "Step clarifiers",
       "required": "optional",
       "format": "Bullets under a step (depth 1) (2)",
       "rules": [
@@ -775,37 +796,31 @@
     },
     {
       "id": "PROC-TASK-CODE",
-      "title": "Step code (optional)",
+      "title": "Step code",
       "required": "optional",
       "format": "Fenced code block under the step (3)",
       "rules": [
         {
           "id": "PROC-BEHAV-TASK-CODE-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "Follow the code rules in the Writing Rules.",
-          "examples": [
-            "> Example:",
-            ">",
-            "> 1. Do this thing...",
-            ">",
-            "> ```bash",
-            "> gh workflow run build --repo org/repo",
-            "> ```"
-          ]
+          "description": "Follow the code formatting rules in the Writing Rules.",
+          "examples": []
         }
       ],
-      "examples": []
+      "examples": [
+        "1. Do this thing... ```bash gh workflow run build --repo org/repo ```"
+      ]
     },
     {
       "id": "PROC-TASK-IMG",
-      "title": "Step screenshot (optional)",
+      "title": "Step screenshot",
       "required": "optional",
       "format": "Image under the step (3)",
       "rules": [
         {
           "id": "PROC-BEHAV-TASK-IMG-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "Follow the screenshot rules in the Writing Rules.",
+          "description": "Follow the screenshot formatting rules in the Writing Rules.",
           "examples": []
         }
       ],
@@ -813,7 +828,7 @@
     },
     {
       "id": "PROC-ADDITIONS",
-      "title": "FAQ / Troubleshooting (optional)",
+      "title": "FAQ / Troubleshooting",
       "required": "optional",
       "format": "Paragraph, list, H3",
       "rules": [
@@ -890,14 +905,20 @@
       "format": null,
       "rules": [
         {
+          "id": "PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
           "id": "PROC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
+          "group": "STRUCT",
           "description": "Do not use H4–H6 headings.",
           "examples": []
         },
         {
           "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
+          "group": "BEHAV",
           "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document.",
           "examples": []
         }
@@ -910,13 +931,18 @@
       "id": "PROC-FORBID",
       "rules": [
         {
+          "id": "PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body."
+        },
+        {
           "id": "PROC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
+          "group": "STRUCT",
           "description": "Do not use H4–H6 headings."
         },
         {
           "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
+          "group": "BEHAV",
           "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document."
         }
       ]
@@ -928,8 +954,8 @@
     "groupViolations": [],
     "forbiddenViolations": [],
     "notes": [
-      "NO_FRONT_MATTER"
-    ],
-    "unknownRuleIds": []
+      "NO_SECTION_TABLE",
+      "md_sha256:6b216a52d48604a855d9104066dc6e15e15ae3b77f0c666827aebaca8d53693c"
+    ]
   }
 }

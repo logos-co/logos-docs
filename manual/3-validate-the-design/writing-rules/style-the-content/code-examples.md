@@ -5,7 +5,8 @@ Code in documentation includes:
   - Short examples that illustrate a single element
   - Longer, more complex examples that demonstrate how to use multiple elements or features together
 
-- Code examples should be concise. 
+- Code examples should be concise.
+- Wrap lines at 80 characters.
 - Create code examples for elements that are frequently used or hard to understand.
 - Use backticks (`) for one-line code snippets. Use fenced code blocks (triple backticks) and language identifiers for longer examples.
 

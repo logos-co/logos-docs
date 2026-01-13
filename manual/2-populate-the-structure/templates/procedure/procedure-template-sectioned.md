@@ -89,7 +89,7 @@ This note-type callout is exclusively to alert readers about what roles, permiss
 
 - Omit the callout entirely if no permission/product constraints exist. <!-- PROC-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 - Place it after the title and subtitle, before the introduction. <!-- PROC-STRUCT-ACCESS-AFTER-SUBTITLE -->
-- Use the `Note` callout style. <!-- PROC-STRUCT-ACCESS-NOTE-STYLE -->
+- Use the *Note* callout style. <!-- PROC-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- PROC-BEHAV-ACCESS-LABELED -->
 - Include permissions (software role or permission level), if applicable. <!-- PROC-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- PROC-BEHAV-ACCESS-PRODUCT -->
@@ -109,9 +109,9 @@ Example:
 - One callout maximum per section <!-- PROC-STRUCT-CALLOUTS-PER-SECTION-ONE -->
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- PROC-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby task or decision point. <!-- PROC-BEHAV-CALLOUTS-RELEVANT -->
-- Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`. <!-- PROC-BEHAV-CALLOUTS-TYPE -->
+- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- PROC-BEHAV-CALLOUTS-TYPE -->
 - Do not include full procedural steps or long prerequisite checklists inside callouts. Put steps in the main flow; keep prerequisite lists in "Before you start." <!-- PROC-BEHAV-CALLOUTS-NO-STEPS -->
-- For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- PROC-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
+- For the allowed callout types and when to use them, see the [Writing rules](../../3-validating-design/writing-rules/README.md). <!-- PROC-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
 Example:
 
@@ -211,7 +211,7 @@ Every procedure requires at least one task. Each task includes these mandatory a
 
 - Procedure section titles are Markdown H2 headings. <!-- PROC-STRUCT-TASK-H2 -->
 - Aim for 50–60 characters; 80 max. <!-- PROC-BEHAV-TASK-TITLE-LENGTH-50-80 -->
-- The first task title must be `Step 1:` + `task-name`. Subsequent task titles must increment by `Step` by 1. <!-- PROC-STRUCT-TASK-ORDER-ASC -->
+- The first task title must be *Step 1:* + *task-name*. Subsequent task titles must increment *Step* by 1. <!-- PROC-STRUCT-TASK-ORDER-ASC -->
 - Start with an imperative verb; avoid the -ing form. <!-- PROC-BEHAV-TASK-TITLE-IMPERATIVE -->
 - Use sentence case (capitalize only the first word and proper nouns). <!-- PROC-BEHAV-TASK-TITLE-SENTENCE-CASE -->
 - Avoid empty verbs (make, manage, put). <!-- PROC-BEHAV-TASK-TITLE-NO-EMPTY-VERBS -->
@@ -301,5 +301,6 @@ Example:
 
 ## Forbidden content <!-- group: PROC-FORBID -->
 
+- This section is guidance only; do not render a visible heading or body. <!-- PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
 - Do not use H4–H6 headings. <!-- PROC-STRUCT-FORBID-H4-H6 -->
 - Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- PROC-BEHAV-FORBID-NO-FURTHER-READING -->

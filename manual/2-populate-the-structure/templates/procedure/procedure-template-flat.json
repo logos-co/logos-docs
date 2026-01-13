@@ -4,10 +4,10 @@
   "frontMatter": {
     "title": null,
     "doc_type": "procedure",
-    "product": null,
+    "product": "# [storage | blockchain | messaging]",
     "topics": [],
     "steps_layout": "flat",
-    "authors": [],
+    "authors": "# GitHub username",
     "owner": "logos",
     "slug": null
   },
@@ -138,7 +138,7 @@
         {
           "id": "PROC-BEHAV-SUBTITLE-ADDS-VALUE",
           "group": "BEHAV",
-          "description": "Add new value beyond the title; don't repeat or rephrase the H1.",
+          "description": "Add new value beyond the title; don’t repeat or rephrase the H1.",
           "examples": []
         }
       ],
@@ -149,7 +149,7 @@
     },
     {
       "id": "PROC-ACCESS",
-      "title": "Access callout (optional)",
+      "title": "Access callout",
       "required": "optional",
       "format": "Note-type callout",
       "rules": [
@@ -301,7 +301,7 @@
         {
           "id": "PROC-BEHAV-OVERVIEW-LENGTH-50-100",
           "group": "BEHAV",
-          "description": "Write a 50-100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
+          "description": "Write a 50–100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
           "examples": []
         },
         {
@@ -327,7 +327,7 @@
     },
     {
       "id": "PROC-DECISIONS",
-      "title": "Decisions (optional)",
+      "title": "Decisions",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -387,7 +387,7 @@
     },
     {
       "id": "PROC-LIMITS",
-      "title": "Limits (optional)",
+      "title": "Limits",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -432,7 +432,7 @@
     },
     {
       "id": "PROC-IMPACT",
-      "title": "Impact (optional)",
+      "title": "Impact",
       "required": "optional",
       "format": "Paragraph, list, table",
       "rules": [
@@ -471,7 +471,7 @@
     },
     {
       "id": "PROC-PREREQ",
-      "title": "Prerequisites (optional)",
+      "title": "Prerequisites",
       "required": "optional",
       "format": "Paragraph, list",
       "rules": [
@@ -572,7 +572,7 @@
         {
           "id": "PROC-BEHAV-TASK-TITLE-LENGTH-50-80",
           "group": "BEHAV",
-          "description": "Aim for 50-60 characters; 80 max.",
+          "description": "Aim for 50–60 characters; 80 max.",
           "examples": []
         },
         {
@@ -602,7 +602,7 @@
         {
           "id": "PROC-BEHAV-TASK-TITLE-NO-PUNCT",
           "group": "BEHAV",
-          "description": "Don't use punctuation marks in titles (colons, semicolons, dashes).",
+          "description": "Don’t use punctuation marks in titles (colons, semicolons, dashes).",
           "examples": []
         }
       ],
@@ -610,14 +610,14 @@
     },
     {
       "id": "PROC-TASK-INTRO",
-      "title": "Task intro (optional)",
+      "title": "Task intro",
       "required": "optional",
       "format": "Paragraph",
       "rules": [
         {
           "id": "PROC-BEHAV-TASK-INTRO-BRIEF",
           "group": "BEHAV",
-          "description": "Write 1-2 short sentences that provide context.",
+          "description": "Write 1–2 short sentences that provide context.",
           "examples": []
         },
         {
@@ -637,7 +637,7 @@
     },
     {
       "id": "PROC-TASK-CALLOUTS",
-      "title": "Task callouts (optional)",
+      "title": "Task callouts",
       "required": "optional",
       "format": "Tip, Note, Important, Caution",
       "rules": [
@@ -701,7 +701,7 @@
         {
           "id": "PROC-BEHAV-TASK-STEPS-COUNT-2-7",
           "group": "BEHAV",
-          "description": "Aim for 2-7 steps. Split if longer.",
+          "description": "Aim for 2–7 steps. Split if longer.",
           "examples": []
         },
         {
@@ -731,7 +731,7 @@
         {
           "id": "PROC-BEHAV-TASK-STEPS-LINKS-INTERNAL",
           "group": "BEHAV",
-          "description": "Don't use external links in steps; only same-page anchors.",
+          "description": "Don’t use external links in steps; only same-page anchors.",
           "examples": []
         },
         {
@@ -769,7 +769,7 @@
     },
     {
       "id": "PROC-TASK-CLAR",
-      "title": "Step clarifiers (optional)",
+      "title": "Step clarifiers",
       "required": "optional",
       "format": "Bullets under a step (depth 1) (2)",
       "rules": [
@@ -788,7 +788,7 @@
         {
           "id": "PROC-BEHAV-TASK-CLAR-COUNT-2-4",
           "group": "BEHAV",
-          "description": "Limit clarifiers to 2-4 items in one level.",
+          "description": "Limit clarifiers to 2–4 items in one level.",
           "examples": []
         }
       ],
@@ -796,7 +796,7 @@
     },
     {
       "id": "PROC-TASK-CODE",
-      "title": "Step code (optional)",
+      "title": "Step code",
       "required": "optional",
       "format": "Fenced code block under the step (3)",
       "rules": [
@@ -813,7 +813,7 @@
     },
     {
       "id": "PROC-TASK-IMG",
-      "title": "Step screenshot (optional)",
+      "title": "Step screenshot",
       "required": "optional",
       "format": "Image under the step (3)",
       "rules": [
@@ -828,7 +828,7 @@
     },
     {
       "id": "PROC-ADDITIONS",
-      "title": "FAQ / Troubleshooting (optional)",
+      "title": "FAQ / Troubleshooting",
       "required": "optional",
       "format": "Paragraph, list, H3",
       "rules": [
@@ -905,9 +905,15 @@
       "format": null,
       "rules": [
         {
+          "id": "PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
           "id": "PROC-STRUCT-FORBID-H4-H6",
           "group": "STRUCT",
-          "description": "Do not use H4-H6 headings.",
+          "description": "Do not use H4–H6 headings.",
           "examples": []
         },
         {
@@ -925,13 +931,18 @@
       "id": "PROC-FORBID",
       "rules": [
         {
+          "id": "PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body."
+        },
+        {
           "id": "PROC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4-H6 headings."
+          "group": "STRUCT",
+          "description": "Do not use H4–H6 headings."
         },
         {
           "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
+          "group": "BEHAV",
           "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document."
         }
       ]
@@ -943,7 +954,8 @@
     "groupViolations": [],
     "forbiddenViolations": [],
     "notes": [
-      "NO_SECTION_TABLE"
+      "NO_SECTION_TABLE",
+      "md_sha256:6b216a52d48604a855d9104066dc6e15e15ae3b77f0c666827aebaca8d53693c"
     ]
   }
 }

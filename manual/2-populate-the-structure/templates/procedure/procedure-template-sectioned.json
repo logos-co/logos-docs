@@ -4,10 +4,10 @@
   "frontMatter": {
     "title": null,
     "doc_type": "procedure",
-    "product": "# [storage | blockchain | messaging]",
+    "product": null,
     "topics": [],
     "steps_layout": "sectioned",
-    "authors": "# GitHub username",
+    "authors": [],
     "owner": "logos",
     "slug": null
   },
@@ -138,7 +138,7 @@
         {
           "id": "PROC-BEHAV-SUBTITLE-ADDS-VALUE",
           "group": "BEHAV",
-          "description": "Add new value beyond the title; don't repeat or rephrase the H1.",
+          "description": "Add new value beyond the title; don’t repeat or rephrase the H1.",
           "examples": []
         }
       ],
@@ -168,7 +168,7 @@
         {
           "id": "PROC-STRUCT-ACCESS-NOTE-STYLE",
           "group": "STRUCT",
-          "description": "Use the `Note` callout style.",
+          "description": "Use the *Note* callout style.",
           "examples": []
         },
         {
@@ -239,7 +239,7 @@
         {
           "id": "PROC-BEHAV-CALLOUTS-TYPE",
           "group": "BEHAV",
-          "description": "Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`.",
+          "description": "Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*.",
           "examples": []
         },
         {
@@ -251,7 +251,7 @@
         {
           "id": "PROC-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES",
           "group": "BEHAV",
-          "description": "For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md).",
+          "description": "For the allowed callout types and when to use them, see the [Writing rules](../../3-validating-design/writing-rules/README.md).",
           "examples": []
         }
       ],
@@ -301,7 +301,7 @@
         {
           "id": "PROC-BEHAV-OVERVIEW-LENGTH-50-100",
           "group": "BEHAV",
-          "description": "Write a 50-100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
+          "description": "Write a 50–100 word paragraph explaining what this procedure covers, why it matters, and when to use it.",
           "examples": []
         },
         {
@@ -570,13 +570,13 @@
         {
           "id": "PROC-BEHAV-TASK-TITLE-LENGTH-50-80",
           "group": "BEHAV",
-          "description": "Aim for 50-60 characters; 80 max.",
+          "description": "Aim for 50–60 characters; 80 max.",
           "examples": []
         },
         {
           "id": "PROC-STRUCT-TASK-ORDER-ASC",
           "group": "STRUCT",
-          "description": "The first task title must be `Step 1:` + `task-name`. Subsequent task titles must increment by `Step` by 1.",
+          "description": "The first task title must be *Step 1:* + *task-name*. Subsequent task titles must increment *Step* by 1.",
           "examples": []
         },
         {
@@ -606,7 +606,7 @@
         {
           "id": "PROC-BEHAV-TASK-TITLE-NO-PUNCT",
           "group": "BEHAV",
-          "description": "Don't use punctuation marks in titles (colons, semicolons, dashes).",
+          "description": "Don’t use punctuation marks in titles (colons, semicolons, dashes).",
           "examples": []
         }
       ],
@@ -621,7 +621,7 @@
         {
           "id": "PROC-BEHAV-TASK-INTRO-BRIEF",
           "group": "BEHAV",
-          "description": "Write 1-2 short sentences that provide context.",
+          "description": "Write 1–2 short sentences that provide context.",
           "examples": []
         },
         {
@@ -711,7 +711,7 @@
         {
           "id": "PROC-BEHAV-TASK-STEPS-COUNT-2-7",
           "group": "BEHAV",
-          "description": "Aim for 2-7 steps. Split if longer.",
+          "description": "Aim for 2–7 steps. Split if longer.",
           "examples": []
         },
         {
@@ -741,7 +741,7 @@
         {
           "id": "PROC-BEHAV-TASK-STEPS-LINKS-INTERNAL",
           "group": "BEHAV",
-          "description": "Don't use external links in steps; only same-page anchors.",
+          "description": "Don’t use external links in steps; only same-page anchors.",
           "examples": []
         },
         {
@@ -798,7 +798,7 @@
         {
           "id": "PROC-BEHAV-TASK-CLAR-COUNT-2-4",
           "group": "BEHAV",
-          "description": "Limit clarifiers to 2-4 items in one level.",
+          "description": "Limit clarifiers to 2–4 items in one level.",
           "examples": []
         }
       ],
@@ -915,9 +915,15 @@
       "format": null,
       "rules": [
         {
+          "id": "PROC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
           "id": "PROC-STRUCT-FORBID-H4-H6",
           "group": "STRUCT",
-          "description": "Do not use H4-H6 headings.",
+          "description": "Do not use H4–H6 headings.",
           "examples": []
         },
         {
@@ -933,25 +939,21 @@
   "forbidden": [
     {
       "id": "PROC-FORBID",
-      "rules": [
-        {
-          "id": "PROC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4-H6 headings."
-        },
-        {
-          "id": "PROC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
-          "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document."
-        }
-      ]
+      "rules": []
     }
   ],
   "validation": {
     "missingRuleIds": [],
     "duplicateRuleIds": [],
-    "groupViolations": [],
+    "groupViolations": [
+      "Section PROC-TASK-INTRO marked BEHAV but contains container constraints",
+      "Section PROC-TASK-CODE marked BEHAV but contains container constraints",
+      "Section PROC-TASK-IMG marked BEHAV but contains container constraints"
+    ],
     "forbiddenViolations": [],
-    "notes": []
+    "notes": [
+      "NO_SECTION_TABLE",
+      "md_sha256:fefc2fafe055c19e93a19c66a3a1e6fbd851c7c0685de0ca58f4bb4b14acf982"
+    ]
   }
 }

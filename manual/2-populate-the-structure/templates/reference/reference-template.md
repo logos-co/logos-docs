@@ -28,8 +28,9 @@ slug:
 ## Title <!-- group: REF-TITLE -->
 
 - Use Markdown H1 headings. <!-- REF-STRUCT-TITLE-H1 -->
+- Aim for 25 to 60 characters; 80 characters maximum. <!-- REF-BEHAV-TITLE-LENGTH-25-80 -->
 - Reference titles use a precise noun phrase. <!-- REF-BEHAV-TITLE-NOUN-PHRASE -->
-	- Examples:
+	- Examples: <!-- EXAMPLE: REF-BEHAV-TITLE-NOUN-PHRASE -->
 
 		| Bad (vague, verb-led)        | Good (precise noun phrase)            |
 		| ---------------------------- | ------------------------------------- |
@@ -37,21 +38,23 @@ slug:
 		| Handling errors              | CLI exit codes and meanings           |
 		| Working with storage         | Object storage bucket lifecycle rules |
 
-- Omit verbs, imperatives, and questions, such as `configure`, `using`, `how to`, or `what is`. <!-- REF-BEHAV-TITLE-OMIT-CERTAIN-WORDS -->
-- Aim for 25 to 60 characters; 80 characters maximum. <!-- REF-BEHAV-TITLE-LENGTH-25-80 -->
+- If necessary, use cue words to signal the content type, such as *reference*, *syntax*, or *commands*. <!-- REF-BEHAV-TITLE-CUE-WORDS -->
+- Omit verbs, imperatives, and questions, such as *configure*, *using*, *how to*, or *what is*. <!-- REF-BEHAV-TITLE-OMIT-CERTAIN-WORDS -->
 - Lead the sentence with the lookup object. <!-- REF-BEHAV-TITLE-LOOKUP-OBJECT -->
-	- Example: use `Logos Storage API limits` instead of `Limits of the Logos Storage API`.
-- If necessary, use cue words to signal the content type: `reference`, `syntax`, or `commands`, for example. <!-- REF-BEHAV-TITLE-CUE-WORDS -->
-- Avoid meta-descriptions, such as `list of`, `table of`, `overview of`, `description of`, or similar. <!-- REF-BEHAV-TITLE-OMIT-META -->
+	- Examples: <!-- EXAMPLE: REF-BEHAV-TITLE-LOOKUP-OBJECT -->
+		- Use: *Logos Storage API limits*
+		- Avoid: *Limits of the Logos Storage API*
+
+- Avoid meta-descriptions, such as *list of*, *table of*, *overview of*, *description of*, or similar. <!-- REF-BEHAV-TITLE-OMIT-META -->
 - Capitalize only the first word and any proper nouns (sentence-style capitalization). <!-- REF-BEHAV-TITLE-SENTENCE-CASE -->
 - Don't use punctuation marks, such as colons, semicolons, or dashes. <!-- REF-BEHAV-TITLE-NO-PUNCT -->
 
-> **Examples:**
->
-> - *Workflow syntax for Logos Storage Actions*
-> - *Logos Messaging CLI commands reference*
-> - *Environment variables for GitHub Codespaces*
-> - *Logos Blockchain v2 protocol reference*
+Examples:
+
+	- *Workflow syntax for Logos Storage Actions*
+	- *Logos Messaging CLI commands reference*
+	- *Environment variables for GitHub Codespaces*
+	- *Logos Blockchain v2 protocol reference*
 
 ## Subtitle <!-- group: REF-SUBTITLE -->
 
@@ -60,7 +63,8 @@ slug:
 - Ends with a period. <!-- REF-BEHAV-SUBTITLE-END-PERIOD -->
 - Stay under 20 words. <!-- REF-BEHAV-SUBTITLE-LENGTH-20 -->
 - Use neutral verbs that state the purpose or benefit; avoid persuasive language. <!-- REF-BEHAV-SUBTITLE-IMPERATIVE -->
-	- Examples: `Understand`, `Review`, `See`, `Check`.
+	- Examples: <!-- EXAMPLE: REF-BEHAV-SUBTITLE-IMPERATIVE -->
+		- Use `Understand`, `Review`, `See`, `Check`
 - Add new value beyond the title; don’t repeat or rephrase the H1. <!-- REF-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
@@ -74,7 +78,7 @@ This note-type callout is exclusively to alert readers about what roles, permiss
 
 - Omit the callout entirely if no permission/product constraints exist. <!-- REF-STRUCT-ACCESS-OMIT-IF-EMPTY -->
 - Place it after the title and subtitle, before the introduction. <!-- REF-STRUCT-ACCESS-AFTER-SUBTITLE -->
-- Use the `Note` callout style. <!-- REF-STRUCT-ACCESS-NOTE-STYLE -->
+- Use the *Note* callout style. <!-- REF-STRUCT-ACCESS-NOTE-STYLE -->
 - Use label-led, scannable content (no explanations). <!-- REF-BEHAV-ACCESS-LABELED -->
 - Include permissions (software role or permission level), if applicable. <!-- REF-BEHAV-ACCESS-PERMISSIONS -->
 - Include product (product version or edition), if applicable. <!-- REF-BEHAV-ACCESS-PRODUCT -->
@@ -94,7 +98,7 @@ Example:
 - One callout maximum per section. <!-- REF-STRUCT-CALLOUTS-PER-SECTION-ONE -->
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- REF-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby text. <!-- REF-BEHAV-CALLOUTS-RELEVANT -->
-- Use the appropriate type: `Tip`, `Note`, `Important`, or `Caution`. <!-- REF-BEHAV-CALLOUTS-TYPE -->
+- Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- REF-BEHAV-CALLOUTS-TYPE -->
 - For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- REF-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
 Example:
@@ -107,23 +111,19 @@ Example:
 
 Every reference requires a short introduction that provides context.
 
-- Write one or two 50- to 100-word paragraphs explaining the purpose and relevance of the reference article. <!-- REF-BEHAV-INTRO-LENGTH-50-100 -->
+- Write one or two 50-100 word paragraphs explaining the purpose and relevance of the reference article. <!-- REF-BEHAV-INTRO-LENGTH-50-100 -->
 - Provide context or background information to help readers understand the information. <!-- REF-BEHAV-INTRO-CONTEXT -->
 - Link only when it helps disambiguate or deep-dive (aim ≤2 links). <!-- REF-BEHAV-INTRO-LINK-HEADERS -->
 - If the intro is long or complex, link to other supportive documents. <!-- REF-BEHAV-INTRO-LINK-DOCS -->
-- Avoid meta-descriptions, such as `The following table [...]`, `This article includes the list of [...]`, or similar. <!-- REF-BEHAV-INTRO-OMIT-META -->
+- Avoid meta-descriptions, such as *The following table [...]*, *This article includes the list of [...]*, or similar. <!-- REF-BEHAV-INTRO-OMIT-META -->
 - This section is guidance only; do not render a visible heading or body. <!-- REF-STRUCT-INTRO-GUIDELINES-NO-RENDER -->
 
-## H2 section <!-- group:REF-H2-SECTION -->
+## H2 section (optional) <!-- group:REF-H2-SECTION -->
 
-- Break down long lists or tables into smaller, more manageable sections using H2 headings. <!-- REF-BEHAV-H2-SECTION-BREAKDOWN -->
-	- Examples: Use different lists or tables for different categories, like `Configuration`, `Authentication`, or `Networking`.
-- One heading = one concept. Don't mix two concepts under the same heading. <!-- REF-BEHAV-H2-SECTION-ONE-IDEA -->
-- Arrange H2 sections from general to specific, or from most important to least important. <!-- REF-BEHAV-H2-SECTION-ORDER -->
-- Start with a paragraph before you add lists or tables. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->
-- Refer to this list of common titles for H2 and H3 headings: <!-- REF-BEHAV-H2-H3-SECTIONS-COMMON-TITLES -->
+- Use a title that clearly indicates the content, even if there in a single H2 section in the document. <!-- REF-STRUCT-H2-SECTION-TITLE -->
+- Use this list of common heading keywords for H2 and H3 titles: <!-- REF-BEHAV-H2-H3-SECTIONS-COMMON-TITLES -->
 
-	| Typical content | Heading text (choose one) |
+	| Typical content | Heading keyword (choose one) |
 	|:---|:---|
 	| Brief definition + when/why to use it | `Overview` / `Description` / `Purpose` |
 	| Command or short config example with required/optional parts | `Usage` / `Synopsis` / `Syntax` |
@@ -132,26 +132,32 @@ Every reference requires a short introduction that provides context.
 	| Log lines or exit codes and their meaning | `Return values` / `Output` / `Exit codes` |
 	| Typical errors, causes, and concise fixes | `Errors` / `Troubleshooting` |
 
+- Break down long lists or tables into smaller, more manageable sections using H2 headings. <!-- REF-BEHAV-H2-SECTION-BREAKDOWN -->
+- Use different lists or tables for different categories, like `Configuration`, `Authentication`, or `Networking`.
+- One heading = one concept. Don't mix two concepts under the same heading. <!-- REF-BEHAV-H2-SECTION-ONE-IDEA -->
+- Arrange H2 sections from general to specific, or from most important to least important. <!-- REF-BEHAV-H2-SECTION-ORDER -->
+- Start with a paragraph before you add lists or tables. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->
+
 ### Tables, lists, or paragraphs <!-- group: REF-H2-SECTION-CONTENT -->
 
 - Use tables or lists primarily to present reference data. <!-- REF-BEHAV-H2-SECTION-TABLES-LISTS -->
 - If present, screenshots have non-empty alt text. <!-- REF-STRUCT-H2-SHOT-ALT-TEXT -->
-- Follow the screenshot formatting rules in the Writing Rules. <!-- REF-BEHAV-H2-SHOT-REFER-WRITING-RULES -->
+- Follow the screenshot formatting rules in the Writing rules. <!-- REF-BEHAV-H2-SHOT-REFER-WRITING-RULES -->
 - If code is present, use a fenced code block. <!-- REF-STRUCT-H2-FENCED-CODE -->
 - Code snippets are short and illustrative. <!-- REF-BEHAV-H2-CODE-SHORT-ILLUSTRATIVE -->
-- Follow the code formatting rules in the Writing Rules. <!-- REF-BEHAV-H2-CODE-REFER-WRITING-RULES -->
+- Follow the code formatting rules in the Writing rules. <!-- REF-BEHAV-H2-CODE-REFER-WRITING-RULES -->
 
 ## H3 section (optional) <!-- group: REF-H3-SECTION -->
 
 - H3 sections expand the preceding H2 section and must be nested under it (no orphan H3). <!-- REF-STRUCT-H3-SECTION-NESTED -->
 - If you add an H3, at least one sibling H3 must follow or the split is unnecessary. <!-- REF-STRUCT-H3-SECTION-SIBLING -->
 - Use tables or lists primarily to present reference data. <!-- REF-BEHAV-H3-SECTION-TABLES-LISTS -->
-- Write a brief first sentence or paragraph with a description of the content. <!-- REF-STRUCT-H3-SECTION-PARAGRAPH-FIRST -->
+- Optionally, write a brief first sentence or paragraph with a description of the content. <!-- REF-STRUCT-H3-SECTION-PARAGRAPH-FIRST -->
 - If present, screenshots have non-empty alt text. <!-- REF-STRUCT-H3-SHOT-ALT-TEXT -->
-- Follow the screenshot formatting rules in the Writing Rules. <!-- REF-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
+- Follow the screenshot formatting rules in the Writing rules. <!-- REF-BEHAV-H3-SHOT-REFER-WRITING-RULES -->
 - If code is present, use a fenced code block. <!-- REF-STRUCT-H3-FENCED-CODE -->
 - Code snippets are short and illustrative. <!-- REF-BEHAV-H3-CODE-SHORT-ILLUSTRATIVE -->
-- Follow the code formatting rules in the Writing Rules. <!-- REF-BEHAV-H3-CODE-REFER-WRITING-RULES -->
+- Follow the code formatting rules in the Writing rules. <!-- REF-BEHAV-H3-CODE-REFER-WRITING-RULES -->
 
 ## Extra guidelines <!-- group: REF-EXTRA -->
 
@@ -160,5 +166,6 @@ Every reference requires a short introduction that provides context.
 
 ## Forbidden content <!-- group: REF-FORBID -->
 
+- This section is guidance only; do not render a visible heading or body. <!-- REF-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
 - Do not use H4–H6 headings. <!-- REF-STRUCT-FORBID-H4-H6 -->
 - Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- REF-BEHAV-FORBID-NO-FURTHER-READING -->

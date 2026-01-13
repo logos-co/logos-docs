@@ -91,7 +91,7 @@ Example:
   > - **Permissions**: Node operators, Site operators
   > - **Product**: Logos Storage v1.4.0 or later
 
-## Callouts <!-- CONC-CALLOUTS -->
+## Callouts <!-- group: CONC-CALLOUTS -->
 
 - Use callouts sparingly and avoid placing them consecutively. <!-- CONC-STRUCT-CALLOUTS-NOT-CONSECUTIVE -->
 - One callout maximum per section <!-- CONC-STRUCT-CALLOUTS-PER-SECTION-ONE -->
@@ -234,5 +234,6 @@ Every concept requires an introduction that provides context and helps readers u
 
 ## Forbidden content <!-- group: CONC-FORBID -->
 
+- This section is guidance only; do not render a visible heading or body. <!-- CONC-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
 - Do not use H4–H6 headings. <!-- CONC-STRUCT-FORBID-H4-H6 -->
 - Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- CONC-BEHAV-FORBID-NO-FURTHER-READING -->

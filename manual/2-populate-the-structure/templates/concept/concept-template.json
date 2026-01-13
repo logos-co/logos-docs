@@ -4,10 +4,10 @@
   "frontMatter": {
     "title": null,
     "doc_type": "concept",
-    "product": null,
+    "product": "# [storage | blockchain | messaging]",
     "topics": [],
     "steps_layout": null,
-    "authors": [],
+    "authors": "# GitHub username",
     "owner": "logos",
     "slug": null
   },
@@ -138,12 +138,12 @@
         {
           "id": "CONC-BEHAV-SUBTITLE-ADDS-VALUE",
           "group": "BEHAV",
-          "description": "Add new value beyond the title; don't repeat or rephrase the H1.",
+          "description": "Add new value beyond the title; don’t repeat or rephrase the H1.",
           "examples": []
         }
       ],
       "examples": [
-        "**Title**: *About Logos Connect communication protocol* / **Subtitle**: *Understand Waku's peer-to-peer protocol for private, censorship-resistant messaging*",
+        "**Title**: *About Logos Connect communication protocol* / **Subtitle**: *Understand Waku’s peer-to-peer protocol for private, censorship-resistant messaging*",
         "**Title**: *Guide to Logos Storage API* / **Subtitle**: *Learn how Codex provides real-time blockchain data through a single API*"
       ]
     },
@@ -289,7 +289,7 @@
         {
           "id": "CONC-BEHAV-OVERVIEW-LENGTH-50-100",
           "group": "BEHAV",
-          "description": "Write a 50-100 word paragraph explaining the concept, its purpose, and its relevance.",
+          "description": "Write a 50–100 word paragraph explaining the concept, its purpose, and its relevance.",
           "examples": []
         },
         {
@@ -473,7 +473,11 @@
           "examples": []
         }
       ],
-      "examples": []
+      "examples": [
+        ">- *Codespaces are fully managed, cloud-based development environments you can spin up in seconds.*",
+        "- *They run in containers that match your repository’s configuration, so every contributor gets the same setup.*  ",
+        "- *You connect from your browser, VS Code, or the JetBrains Gateway. No local installation required.*"
+      ]
     },
     {
       "id": "CONC-H2-SECTION",
@@ -647,9 +651,15 @@
       "format": null,
       "rules": [
         {
+          "id": "CONC-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
           "id": "CONC-STRUCT-FORBID-H4-H6",
           "group": "STRUCT",
-          "description": "Do not use H4-H6 headings.",
+          "description": "Do not use H4–H6 headings.",
           "examples": []
         },
         {
@@ -665,18 +675,7 @@
   "forbidden": [
     {
       "id": "CONC-FORBID",
-      "rules": [
-        {
-          "id": "CONC-STRUCT-FORBID-H4-H6",
-          "group": "FORBID",
-          "description": "Do not use H4-H6 headings."
-        },
-        {
-          "id": "CONC-BEHAV-FORBID-NO-FURTHER-READING",
-          "group": "FORBID",
-          "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document."
-        }
-      ]
+      "rules": []
     }
   ],
   "validation": {
@@ -686,7 +685,8 @@
     "forbiddenViolations": [],
     "notes": [
       "NO_SECTION_TABLE",
-      "md_sha256:c29f9e1747a9c8ddb24794e9e07780a8de42e262e8b888cbefe93bb07c1970a5"
+      "NO_FRONT_MATTER",
+      "SOURCE:md:ef35186559a60c5d9592ef6809cc1aa693d80e6e2db1652a8369baa48a049251"
     ]
   }
 }

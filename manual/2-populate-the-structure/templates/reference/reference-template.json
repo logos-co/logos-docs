@@ -1,0 +1,526 @@
+{
+  "documentName": "Reference template",
+  "docVersion": null,
+  "frontMatter": {
+    "title": null,
+    "doc_type": "reference",
+    "product": "# [storage | blockchain | messaging]",
+    "topics": [],
+    "steps_layout": null,
+    "authors": "# GitHub username",
+    "owner": "logos",
+    "slug": null
+  },
+  "sections": [
+    {
+      "id": "REF-TITLE",
+      "title": "Title",
+      "required": "required",
+      "format": "H1",
+      "rules": [
+        {
+          "id": "REF-STRUCT-TITLE-H1",
+          "group": "STRUCT",
+          "description": "Use Markdown H1 headings.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-LENGTH-25-80",
+          "group": "BEHAV",
+          "description": "Aim for 25 to 60 characters; 80 characters maximum.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-NOUN-PHRASE",
+          "group": "BEHAV",
+          "description": "Reference titles use a precise noun phrase.",
+          "examples": [
+            {
+              "Bad (vague, verb-led)": "Understanding authentication",
+              "Good (precise noun phrase)": "OAuth 2.0 token request parameters"
+            },
+            {
+              "Bad (vague, verb-led)": "Handling errors",
+              "Good (precise noun phrase)": "CLI exit codes and meanings"
+            },
+            {
+              "Bad (vague, verb-led)": "Working with storage",
+              "Good (precise noun phrase)": "Object storage bucket lifecycle rules"
+            }
+          ]
+        },
+        {
+          "id": "REF-BEHAV-TITLE-CUE-WORDS",
+          "group": "BEHAV",
+          "description": "If necessary, use cue words to signal the content type, such as *reference*, *syntax*, or *commands*.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-OMIT-CERTAIN-WORDS",
+          "group": "BEHAV",
+          "description": "Omit verbs, imperatives, and questions, such as *configure*, *using*, *how to*, or *what is*.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-LOOKUP-OBJECT",
+          "group": "BEHAV",
+          "description": "Lead the sentence with the lookup object.",
+          "examples": [
+            "Use: *Logos Storage API limits*",
+            "Avoid: *Limits of the Logos Storage API*"
+          ]
+        },
+        {
+          "id": "REF-BEHAV-TITLE-OMIT-META",
+          "group": "BEHAV",
+          "description": "Avoid meta-descriptions, such as *list of*, *table of*, *overview of*, *description of*, or similar.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-SENTENCE-CASE",
+          "group": "BEHAV",
+          "description": "Capitalize only the first word and any proper nouns (sentence-style capitalization).",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-TITLE-NO-PUNCT",
+          "group": "BEHAV",
+          "description": "Don't use punctuation marks, such as colons, semicolons, or dashes.",
+          "examples": []
+        }
+      ],
+      "examples": [
+        "*Workflow syntax for Logos Storage Actions*",
+        "*Logos Messaging CLI commands reference*",
+        "*Environment variables for GitHub Codespaces*",
+        "*Logos Blockchain v2 protocol reference*"
+      ]
+    },
+    {
+      "id": "REF-SUBTITLE",
+      "title": "Subtitle",
+      "required": "required",
+      "format": "H4",
+      "rules": [
+        {
+          "id": "REF-STRUCT-SUBTITLE-H4",
+          "group": "STRUCT",
+          "description": "Use a Markdown H4 for the subtitle placed right under the H1 title.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-SUBTITLE-SINGLE-SENTENCE",
+          "group": "BEHAV",
+          "description": "One sentence only; no links, lists, or inline formatting.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-SUBTITLE-END-PERIOD",
+          "group": "BEHAV",
+          "description": "Ends with a period.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-SUBTITLE-LENGTH-20",
+          "group": "BEHAV",
+          "description": "Stay under 20 words.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-SUBTITLE-IMPERATIVE",
+          "group": "BEHAV",
+          "description": "Use neutral verbs that state the purpose or benefit; avoid persuasive language.",
+          "examples": [
+            "Use *Understand*, *Review*, *See*, *Check*"
+          ]
+        },
+        {
+          "id": "REF-BEHAV-SUBTITLE-ADDS-VALUE",
+          "group": "BEHAV",
+          "description": "Add new value beyond the title; don't repeat or rephrase the H1.",
+          "examples": []
+        }
+      ],
+      "examples": [
+        "**Title**: *Logos Storage limits* / **Subtitle**: *Understand the limits and resource constraints that apply to Logos Storage.*",
+        "**Title**: *Logos Blockchain v2 protocol reference* / **Subtitle**: *Review the network parameters and consensus rules used in Logos Blockchain.*"
+      ]
+    },
+    {
+      "id": "REF-ACCESS",
+      "title": "Access callout",
+      "required": "optional",
+      "format": "Note-type callout",
+      "rules": [
+        {
+          "id": "REF-STRUCT-ACCESS-OMIT-IF-EMPTY",
+          "group": "STRUCT",
+          "description": "Omit the callout entirely if no permission/product constraints exist.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-ACCESS-AFTER-SUBTITLE",
+          "group": "STRUCT",
+          "description": "Place it after the title and subtitle, before the introduction.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-ACCESS-NOTE-STYLE",
+          "group": "STRUCT",
+          "description": "Use the *Note* callout style.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-ACCESS-LABELED",
+          "group": "BEHAV",
+          "description": "Use label-led, scannable content (no explanations).",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-ACCESS-PERMISSIONS",
+          "group": "BEHAV",
+          "description": "Include permissions (software role or permission level), if applicable.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-ACCESS-PRODUCT",
+          "group": "BEHAV",
+          "description": "Include product (product version or edition), if applicable.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-ACCESS-LIST-IF-MANY",
+          "group": "BEHAV",
+          "description": "If multiple permissions/products apply, use commas.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-ACCESS-SCOPE-ONLY",
+          "group": "BEHAV",
+          "description": "Do not include knowledge, skills, or required tools.",
+          "examples": []
+        }
+      ],
+      "examples": [
+        "**Note** - **Permissions**: Node operators, Site operators - **Product**: Logos Storage v1.4.0 or later"
+      ]
+    },
+    {
+      "id": "REF-CALLOUTS",
+      "title": "Callouts",
+      "required": "optional",
+      "format": "Tip, Note, Important, Caution",
+      "rules": [
+        {
+          "id": "REF-STRUCT-CALLOUTS-NOT-CONSECUTIVE",
+          "group": "STRUCT",
+          "description": "Use callouts sparingly and avoid placing them consecutively.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-CALLOUTS-PER-SECTION-ONE",
+          "group": "STRUCT",
+          "description": "One callout maximum per section.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-CALLOUTS-CONCISE",
+          "group": "BEHAV",
+          "description": "Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-CALLOUTS-RELEVANT",
+          "group": "BEHAV",
+          "description": "Ensure the callout content is directly relevant to the nearby text.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-CALLOUTS-TYPE",
+          "group": "BEHAV",
+          "description": "Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES",
+          "group": "BEHAV",
+          "description": "For the allowed callout types and when to use them, see the [Writing rules](../../3-validating-design/writing-rules/README.md).",
+          "examples": []
+        }
+      ],
+      "examples": [
+        "**Note:** Keep container resources within the documented limits to avoid throttling."
+      ]
+    },
+    {
+      "id": "REF-INTRO",
+      "title": "Intro",
+      "required": "required",
+      "format": null,
+      "rules": [
+        {
+          "id": "REF-BEHAV-INTRO-LENGTH-50-100",
+          "group": "BEHAV",
+          "description": "Write one or two 50-100 word paragraphs explaining the purpose and relevance of the reference article.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-INTRO-CONTEXT",
+          "group": "BEHAV",
+          "description": "Provide context or background information to help readers understand the information.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-INTRO-LINK-HEADERS",
+          "group": "BEHAV",
+          "description": "Link only when it helps disambiguate or deep-dive (aim ≤2 links).",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-INTRO-LINK-DOCS",
+          "group": "BEHAV",
+          "description": "If the intro is long or complex, link to other supportive documents.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-INTRO-OMIT-META",
+          "group": "BEHAV",
+          "description": "Avoid meta-descriptions, such as *The following table [...]*, *This article includes the list of [...]*, or similar.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-INTRO-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        }
+      ],
+      "examples": []
+    },
+    {
+      "id": "REF-H2-SECTION",
+      "title": "H2 section",
+      "required": "required",
+      "format": "H2 + body (container)",
+      "rules": [
+        {
+          "id": "REF-STRUCT-H2-SECTION-TITLE",
+          "group": "STRUCT",
+          "description": "Use a title that clearly indicates the content, even if there is a single H2 section in the document.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-H3-SECTIONS-COMMON-TITLES",
+          "group": "BEHAV",
+          "description": "Use this list of common heading keywords for H2 and H3 titles:",
+          "examples": [
+            {
+              "Typical content": "Brief definition + when/why to use it",
+              "Heading keyword (choose one)": "*Overview* / *Description* / *Purpose*"
+            },
+            {
+              "Typical content": "Command or short config example with required/optional parts",
+              "Heading keyword (choose one)": "*Usage* / *Synopsis* / *Syntax*"
+            },
+            {
+              "Typical content": "Options/parameters with purpose, accepted values, defaults",
+              "Heading keyword (choose one)": "*Options* / *Flags* / *Parameters* / *Arguments*"
+            },
+            {
+              "Typical content": "Runnable examples of common tasks",
+              "Heading keyword (choose one)": "*Examples* / *Example usage*"
+            },
+            {
+              "Typical content": "Log lines or exit codes and their meaning",
+              "Heading keyword (choose one)": "*Return values* / *Output* / *Exit codes*"
+            },
+            {
+              "Typical content": "Typical errors, causes, and concise fixes",
+              "Heading keyword (choose one)": "*Errors* / *Troubleshooting*"
+            }
+          ]
+        },
+        {
+          "id": "REF-BEHAV-H2-SECTION-BREAKDOWN",
+          "group": "BEHAV",
+          "description": "Break down long lists or tables into smaller, more manageable sections using H2 headings.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-SECTION-ONE-IDEA",
+          "group": "BEHAV",
+          "description": "One heading = one concept. Don't mix two concepts under the same heading.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-SECTION-ORDER",
+          "group": "BEHAV",
+          "description": "Arrange H2 sections from general to specific, or from most important to least important.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST",
+          "group": "STRUCT",
+          "description": "Start with a paragraph before you add lists or tables.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-SECTION-TABLES-LISTS",
+          "group": "BEHAV",
+          "description": "Use tables or lists primarily to present reference data.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H2-SHOT-ALT-TEXT",
+          "group": "STRUCT",
+          "description": "If present, screenshots have non-empty alt text.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-SHOT-REFER-WRITING-RULES",
+          "group": "BEHAV",
+          "description": "Follow the screenshot formatting rules in the Writing rules.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H2-FENCED-CODE",
+          "group": "STRUCT",
+          "description": "If code is present, use a fenced code block.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-CODE-SHORT-ILLUSTRATIVE",
+          "group": "BEHAV",
+          "description": "Code snippets are short and illustrative.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H2-CODE-REFER-WRITING-RULES",
+          "group": "BEHAV",
+          "description": "Follow the code formatting rules in the Writing rules.",
+          "examples": []
+        }
+      ],
+      "examples": []
+    },
+    {
+      "id": "REF-H3-SECTION",
+      "title": "H3 section",
+      "required": "optional",
+      "format": "H3 + body (container)",
+      "rules": [
+        {
+          "id": "REF-STRUCT-H3-SECTION-NESTED",
+          "group": "STRUCT",
+          "description": "H3 sections expand the preceding H2 section and must be nested under it (no orphan H3).",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H3-SECTION-SIBLING",
+          "group": "STRUCT",
+          "description": "If you add an H3, at least one sibling H3 must follow or the split is unnecessary.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H3-SECTION-TABLES-LISTS",
+          "group": "BEHAV",
+          "description": "Use tables or lists primarily to present reference data.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H3-SECTION-PARAGRAPH-FIRST",
+          "group": "STRUCT",
+          "description": "Optionally, write a brief first sentence or paragraph with a description of the content.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H3-SHOT-ALT-TEXT",
+          "group": "STRUCT",
+          "description": "If present, screenshots have non-empty alt text.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H3-SHOT-REFER-WRITING-RULES",
+          "group": "BEHAV",
+          "description": "Follow the screenshot formatting rules in the Writing rules.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-H3-FENCED-CODE",
+          "group": "STRUCT",
+          "description": "If code is present, use a fenced code block.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H3-CODE-SHORT-ILLUSTRATIVE",
+          "group": "BEHAV",
+          "description": "Code snippets are short and illustrative.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-H3-CODE-REFER-WRITING-RULES",
+          "group": "BEHAV",
+          "description": "Follow the code formatting rules in the Writing rules.",
+          "examples": []
+        }
+      ],
+      "examples": []
+    },
+    {
+      "id": "REF-EXTRA",
+      "title": "Extra guidelines",
+      "required": "required",
+      "format": null,
+      "rules": [
+        {
+          "id": "REF-STRUCT-EXTRA-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-EXTRA-CONCISE-NARRATIVE",
+          "group": "BEHAV",
+          "description": "Keep narrative text concise (aim 400–900 words). Tables and parameter lists are not included in this count.",
+          "examples": []
+        }
+      ],
+      "examples": []
+    },
+    {
+      "id": "REF-FORBID",
+      "title": "Forbidden content",
+      "required": "forbidden",
+      "format": null,
+      "rules": [
+        {
+          "id": "REF-STRUCT-FORBID-GUIDELINES-NO-RENDER",
+          "group": "STRUCT",
+          "description": "This section is guidance only; do not render a visible heading or body.",
+          "examples": []
+        },
+        {
+          "id": "REF-STRUCT-FORBID-H4-H6",
+          "group": "STRUCT",
+          "description": "Do not use H4–H6 headings.",
+          "examples": []
+        },
+        {
+          "id": "REF-BEHAV-FORBID-NO-FURTHER-READING",
+          "group": "BEHAV",
+          "description": "Do not include a \"Further reading\" section or links to other related topics at the end of the document.",
+          "examples": []
+        }
+      ],
+      "examples": []
+    }
+  ],
+  "forbidden": [],
+  "validation": {
+    "missingRuleIds": [],
+    "duplicateRuleIds": [],
+    "groupViolations": [],
+    "forbiddenViolations": [],
+    "notes": []
+  }
+}

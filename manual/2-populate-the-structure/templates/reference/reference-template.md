@@ -64,7 +64,7 @@ Examples:
 - Stay under 20 words. <!-- REF-BEHAV-SUBTITLE-LENGTH-20 -->
 - Use neutral verbs that state the purpose or benefit; avoid persuasive language. <!-- REF-BEHAV-SUBTITLE-IMPERATIVE -->
 	- Examples: <!-- EXAMPLE: REF-BEHAV-SUBTITLE-IMPERATIVE -->
-		- Use `Understand`, `Review`, `See`, `Check`
+		- Use *Understand*, *Review*, *See*, *Check*
 - Add new value beyond the title; don’t repeat or rephrase the H1. <!-- REF-BEHAV-SUBTITLE-ADDS-VALUE -->
 
 Examples:
@@ -99,7 +99,7 @@ Example:
 - Keep each callout concise (≤ 2 short sentences). If the content needs a list or multiple paragraphs, move it into the body under a heading. <!-- REF-BEHAV-CALLOUTS-CONCISE -->
 - Ensure the callout content is directly relevant to the nearby text. <!-- REF-BEHAV-CALLOUTS-RELEVANT -->
 - Use the appropriate type: *Tip*, *Note*, *Important*, or *Caution*. <!-- REF-BEHAV-CALLOUTS-TYPE -->
-- For the allowed callout types and when to use them, see the [writing rules](../../3-validating-design/writing-rules/README.md). <!-- REF-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
+- For the allowed callout types and when to use them, see the [Writing rules](../../3-validating-design/writing-rules/README.md). <!-- REF-BEHAV-CALLOUTS-TYPES-REFER-WRITING-RULES -->
 
 Example:
 
@@ -120,20 +120,20 @@ Every reference requires a short introduction that provides context.
 
 ## H2 section (optional) <!-- group:REF-H2-SECTION -->
 
-- Use a title that clearly indicates the content, even if there in a single H2 section in the document. <!-- REF-STRUCT-H2-SECTION-TITLE -->
+- Use a title that clearly indicates the content, even if there is a single H2 section in the document. <!-- REF-STRUCT-H2-SECTION-TITLE -->
 - Use this list of common heading keywords for H2 and H3 titles: <!-- REF-BEHAV-H2-H3-SECTIONS-COMMON-TITLES -->
 
 	| Typical content | Heading keyword (choose one) |
-	|:---|:---|
-	| Brief definition + when/why to use it | `Overview` / `Description` / `Purpose` |
-	| Command or short config example with required/optional parts | `Usage` / `Synopsis` / `Syntax` |
-	| Options/parameters with purpose, accepted values, defaults | `Options` / `Flags` / `Parameters` / `Arguments` |
-	| Runnable examples of common tasks | `Examples` / `Example usage` |
-	| Log lines or exit codes and their meaning | `Return values` / `Output` / `Exit codes` |
-	| Typical errors, causes, and concise fixes | `Errors` / `Troubleshooting` |
+		|:---|:---|
+		| Brief definition + when/why to use it | *Overview* / *Description* / *Purpose* |
+		| Command or short config example with required/optional parts | *Usage* / *Synopsis* / *Syntax* |
+		| Options/parameters with purpose, accepted values, defaults | *Options* / *Flags* / *Parameters* / *Arguments* |
+		| Runnable examples of common tasks | *Examples* / *Example usage* |
+		| Log lines or exit codes and their meaning | *Return values* / *Output* / *Exit codes* |
+		| Typical errors, causes, and concise fixes | *Errors* / *Troubleshooting* |
 
 - Break down long lists or tables into smaller, more manageable sections using H2 headings. <!-- REF-BEHAV-H2-SECTION-BREAKDOWN -->
-- Use different lists or tables for different categories, like `Configuration`, `Authentication`, or `Networking`.
+- Use different lists or tables for different categories, like *Configuration*, *Authentication*, or *Networking*.
 - One heading = one concept. Don't mix two concepts under the same heading. <!-- REF-BEHAV-H2-SECTION-ONE-IDEA -->
 - Arrange H2 sections from general to specific, or from most important to least important. <!-- REF-BEHAV-H2-SECTION-ORDER -->
 - Start with a paragraph before you add lists or tables. <!-- REF-STRUCT-H2-SECTION-PARAGRAPH-FIRST -->

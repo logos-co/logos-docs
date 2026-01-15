@@ -1,5 +1,9 @@
 # Command line
 
+## Example
+
+Inli
+
 Provide an inline link to the command reference. A good place for that link is in the text that introduces the command or a series of steps.
 
 
@@ -8,7 +12,7 @@ Provide an inline link to the command reference. A good place for that link is i
 - Use fenced code blocks (triple backticks) and language identifiers like `bash` and `sh` depending on what you are showing.
 - Show the command and its output in separate code blocks.
 - When showing multiple commands to be run in sequence, put them in the same code block if there's no output. Otherwise, separate them into different code blocks.
-- When a line exceeds 80 characters, break it at a logical point, such as after a hyphen or question mark. Indent each continuation line by four spaces for readability and use the backslash (`\`) at the end of each line to indicate continuation. For example:
+- When a line exceeds 60 characters, break it at a logical point, such as after a hyphen or question mark. Indent each continuation line by four spaces for readability and use the backslash (`\`) at the end of each line to indicate continuation. For example:
 
     ```shell
     gcloud ml-engine jobs submit training ${JOB_NAME} \

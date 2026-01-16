@@ -11,14 +11,14 @@ Use sentence-case headings.
 |:----|:------------------ |:---------------------- |:---------- |
 | 1   | Title              | H1                     | Yes        |
 | 2   | Subtitle           | H4                     | Yes        |
-| 3   | Callout            | Information callout    | No         |
+| 3   | Callout            | Info callout           | No         |
 | 4   | Introduction       | Paragraph              | Yes        |
 | 5   | H2 section title   | H2                     | Yes        |
 | 6   | H2 section content | Paragraph/list/table   | Yes        |
 | 7   | → Section body     | Paragraph/list/table   | Yes        |
 | 8   | → Code             | Fenced block           | No         |
 | 9   | → Screenshot       | Image                  | No         |
-| 10  | → Callout          | Information callout    | No         |
+| 10  | → Callout          | Callout                | No         |
 | 11  | H3 section title   | H3                     | No         |
 | 12  | H3 section content | Same as H2             | No         |
 | 13  | H4 section title   | H4                     | No         |

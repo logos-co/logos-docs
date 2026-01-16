@@ -11,14 +11,14 @@ Use sentence-case headings.
 |:----|:------------------ |:---------------------- |:---------- |
 | 1   | Title              | H1                     | Yes        |
 | 2   | Subtitle           | H4                     | Yes        |
-| 3   | Admonition         | Info admonition        | No         |
+| 3   | Callout            | Info callout           | No         |
 | 4   | Introduction       | Paragraph              | Yes        |
 | 5   | H2 section title   | H2                     | Yes        |
 | 6   | H2 section content | Paragraph/list/table   | Yes        |
 | 7   | → Section body     | Paragraph/list/table   | Yes        |
 | 8   | → Code             | Fenced block           | No         |
 | 9   | → Screenshot       | Image                  | No         |
-| 10  | → Admonition       | Admonition             | No         |
+| 10  | → Callout          | Callout                | No         |
 | 11  | H3 section title   | H3                     | No         |
 | 12  | H3 section content | Same as H2             | No         |
 | 13  | H4 section title   | H4                     | No         |
@@ -80,10 +80,10 @@ Guidelines:
 > For more information, check out the [reference subtitle](../../docs-standards/10-structure-the-content/01-document-types/reference.md#subtitle) standards.
 -->
 
-(Optional) { Admonition }
+(Optional) { Callout }
 
 <!--
-This information-type admonition is exclusively to alert readers about who can use this feature and shouldn't be used for any other information. For example, a feature is only available to specific application role or using a specific tool or interface.
+This information-type callout is exclusively to alert readers about who can use this feature and shouldn't be used for any other information. For example, a feature is only available to specific application role or using a specific tool or interface.
 
 > ⚙️ **Example:**
 >
@@ -91,7 +91,7 @@ This information-type admonition is exclusively to alert readers about who can u
 
 > ℹ️ **Note:**
 >
-> For more information, check out [Admonitions](../../docs-standards/20-style-the-content/12-admonitions.md).
+> For more information, check out [Callouts](../../docs-standards/20-style-the-content/12-callouts.md).
 -->
 
 { Introduction }

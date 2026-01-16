@@ -46,7 +46,7 @@ Concept topics follow a specific structure to ensure consistency and clarity. Th
 |:----|:------------------------------------------|:------------------------------|:-----------|
 | 1   | [Title](#title)                           | H1                            | Yes        |
 | 2   | [Subtitle](#subtitle)                     | H4                            | Yes        |
-| 3   | [Admonition](#admonition)                 | Information admonition        | No         |
+| 3   | [Callout](#callout)                       | Information callout           | No         |
 | 4   | [Introduction](#introduction)             | Paragraph                     | Yes        |
 | 5   | [Diagram or image](#diagram-or-image)     | Mermaid diagram or image      | No         |
 | 6   | [Use case example](#use-case-example)     | Paragraph, list               | No         |
@@ -103,9 +103,9 @@ Guidelines:
 >- *Understand Waku’s peer-to-peer protocol for private, censorship-resistant messaging.*
 >- *Learn how Codex provides real-time blockchain data through a single API.*
 
-### Admonition (optional)
+### Callout (optional)
 
-This information-type [admonition](../../20-style-the-content/12-admonitions.md) is exclusively to alert readers about who can use this feature and shouldn't be used for any other information. For example, a feature is only available to specific application role or using a specific tool or interface.
+This information-type [callout](../../20-style-the-content/12-callouts.md) is exclusively to alert readers about who can use this feature and shouldn't be used for any other information. For example, a feature is only available to specific application role or using a specific tool or interface.
 
 > ⚙️ **Example:**
 >

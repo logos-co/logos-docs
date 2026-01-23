@@ -19,9 +19,9 @@ Create a new topic branch and give the branch a name. Replace `BRANCH-NAME` with
 
     | Usage | Example |
     |:---|:---|
-    | Correct | git checkout -b BRANCH-NAME |
-    | Incorrect | git checkout -b BRANCH_NAME |
-    | Incorrect | git checkout -b <branch-name> |
-    | Incorrect | git checkout -b _BRANCH_NAME_ |
+    | **Correct** | git checkout -b BRANCH-NAME |
+    | Incorrect   | git checkout -b BRANCH_NAME |
+    | Incorrect   | git checkout -b <branch-name> |
+    | Incorrect   | git checkout -b _BRANCH_NAME_ |
 
 - When mentioning a placeholder the first time, describe what the placeholder represents and the expected replacement value.

@@ -1,8 +1,6 @@
 # Callouts
 
-## Format
-
-Logos documentation uses four types of callouts. Follow the format of these examples:
+## Examples
 
 > [!NOTE]  
 > This project reads the configuration from `config.toml`.
@@ -16,9 +14,9 @@ Logos documentation uses four types of callouts. Follow the format of these exam
 > [!CAUTION]
 > This command permanently deletes the database. Back up your data before you continue.
 
-## Rules
+## Formatting
 
-- Use different callouts for different purposes:
+- Logos documentation uses four types of callouts for different purposes:
 
     | Callout       | Description |
     |:--------------|:------------|
@@ -28,5 +26,8 @@ Logos documentation uses four types of callouts. Follow the format of these exam
     | **Caution**   | Information on actions that can potentially result in data corruption or data loss. |
 
 - Don't use *warning*, *error*, *danger*, *bug*, *important*, or *info*.
+
+## Usage
+
 - In procedural steps, place the callout after the procedure. If you need a callout for a specific step, write the callout after the step.
 - For other content, add the callout after the relevant information.

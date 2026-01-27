@@ -1,6 +1,6 @@
 # Documentation packet (Doc Packet) for Testnet v0.1 docs
 
-Use this template to provide the minimum technical input the docs team needs to publish or upgrade documentation for a specific user journey. The goal is speed and correctness: you provide the authoritative details (repo version, runnable steps, expected outputs, limits), and the docs team turns that into a documented workflow and tracks it via a PR.
+Use this template to provide the minimum technical input the docs team needs to publish or upgrade documentation for a specific user journey. You provide the authoritative details (repo version, runnable steps, expected outputs, limits), and the docs team turns that into a documented workflow and tracks it via a PR.
 
 Without this information, we can only publish a Stub/Unverified page and cannot mark the doc as SME-verified or Verified (see the [Contribution guide](../../../CONTRIBUTING.md) for a description of document statuses).
 

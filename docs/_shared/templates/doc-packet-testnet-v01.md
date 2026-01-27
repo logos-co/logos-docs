@@ -30,17 +30,26 @@ Without this information, we can only publish a Stub/Unverified page and cannot 
 - **Example config snippet:** Minimal working config.
 - **Default ports/endpoints:** What must be open and what the user should connect to.
 
-## E. Verify + troubleshoot
+## E. Hardware requirements (required for node/client journeys)
+
+Include the minimum and recommended hardware needed to complete the journey successfully.
+
+- **Target devices:** For example, x86_64 or RPi 4/5.
+- **Minimum requirements:** CPU, RAM, storage (type + free space), network bandwidth/latency, and any required peripherals.
+- **Recommended requirements:** CPU, RAM, storage, network, and why the extra headroom matters.
+- **Storage profile:** expected disk growth rate (rough estimate) and whether SSD is required.
+
+## F. Verify + troubleshoot
 
 - **Verification step:** One command/command block that proves success.
 - **Known failures (top 3-5):** Symptom -> cause (if known) -> fix/workaround.
 
-## F. Limits for v0.1
+## G. Limits for v0.1
 
 - **Not supported:** Features/workflows that are out of scope for v0.1.
 - **Known issues:** Bugs or sharp edges, with links to issues if they exist.
 
-## G. References
+## H. References
 
 - **Existing sources:** Links to docs/README/specs/Notion pages we should reference.
 - **Optional:** Diagrams, API endpoints, example requests/responses.

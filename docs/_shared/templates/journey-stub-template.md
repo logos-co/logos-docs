@@ -16,7 +16,7 @@ Tracking: <link to spreadsheet row or tracking issue>
 
 - <developer | node operator | end user | tester | other>
 
-## Known gaps
+## Known gaps / Blockers
 
 - Doc Packet missing: <repo@sha/tag | runnable steps | expected outputs | v0.1 limits | reviewer handle | ...>
 - Notion/repo mapping needed: <links + what they map to>

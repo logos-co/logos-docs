@@ -8,7 +8,7 @@
 
 - Command block showing one command:
 
-    To transfer tokens from one public account to another, run the following command:
+    To transfer tokens from one public account to another, run the following command.
 
         ```sh
         wallet auth-transfer send \
@@ -18,7 +18,7 @@
         ```
 - Command block showing multiple commands run in sequence:
 
-    From the local clone of the repository on a computer, run the following commands to update the name of the default branch:
+    From the local clone of the repository on a computer, run the following commands to update the name of the default branch.
 
         ```sh
         git branch -m OLD-BRANCH-NAME NEW-BRANCH-NAME
@@ -28,7 +28,7 @@
         ```
 - Command block showing a command with output:
 
-    Use the `adb devices` command to list connected devices:
+    Use the `adb devices` command to list connected devices.
 
         ```sh
         adb devices
@@ -42,10 +42,11 @@
         ```
 ## Format
 
-- Include a brief description before each command or group of commands to explain their purpose. If there is a command reference, provide a link to it. Use a colon (:) at the end of the description.
+- Include a brief description before each command or group of commands to explain their purpose. If there is a command reference, provide a link to it.
+- Put information that requires special attention in [callouts](./callouts.md).
 - When referencing commands in text, wrap their full names in backticks, including any prefixes (for example, `gcloud compute instances create`).
 - Use fenced code blocks (triple backticks) and language identifiers for command blocks.
-- When a line exceeds 60 characters, break between flags or arguments. Indent each continuation line by four spaces for readability and use the backslash (`\`) at the end of each line to indicate continuation. For example:
+- Wrap lines at 60-80 characters. Break between flags or arguments. Indent each continuation line by four spaces for readability and use the backslash (`\`) at the end of each line to indicate continuation. For example:
 
     ```sh
     wallet auth-transfer send \

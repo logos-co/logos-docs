@@ -40,7 +40,7 @@
       }
       ```
 
-## Formatting
+## Format
 
 - Wrap lines at 60-80 characters.
 - Use backticks (`) for inline code. Use fenced code blocks (triple backticks) and language identifiers for code blocks.

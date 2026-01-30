@@ -54,7 +54,7 @@
 - Indent every line of the code block by four spaces to group the code with the description paragraph.
 - Before the code example, add a description to describe the context and purpose of the example.
 - Use code comments sparingly. Explain the code in the description. Include short comments inside the snippet when they prevent mistakes or clarify non-obvious behavior.
-- Put information that requires special attention in [callouts](./callouts.md) after the code block.
+- Put information that requires special attention in [callouts](./callouts.md).
 - Place expected output in a separate code block using the `text` identifier, or explain the output using text.
 
 ## Usage

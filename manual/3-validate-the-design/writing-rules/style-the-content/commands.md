@@ -53,8 +53,8 @@
         --to Public/RECEIVER-ACCOUNT-ID \
         --amount TOKEN-AMOUNT
     ```
-- Group commands in one block only when they're a single logical step and the reader should run them together. 
-- Separte commands into multiple blocks when you need the reader to check the output between commands, or when they are to be executed in different environments.
+- Group commands in one block only when they're a single logical step, and the reader should run them together. 
+- Separate commands into multiple blocks when you need the reader to check the output between commands, or when they are to be executed in different environments.
 - Don't use command prompts like `$`.
 
     | Usage | Example |

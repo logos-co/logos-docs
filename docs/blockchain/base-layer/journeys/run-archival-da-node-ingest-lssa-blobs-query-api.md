@@ -5,7 +5,7 @@ Runtime target: Logos testnet v0.1
 Last checked: 2026-01-28  
 Status: Stub  
 Owner: Owner needed  
-Tracking: https://github.com/logos-co/logos-docs/issues/138
+Tracking: GitHub issue [#138](https://github.com/logos-co/logos-docs/issues/138)
 
 ## Outcome + value
 
@@ -69,7 +69,7 @@ Tracking: https://github.com/logos-co/logos-docs/issues/138
 
   ```sh
   UNKNOWN
-````
+ ```
 
 - Expected:
 

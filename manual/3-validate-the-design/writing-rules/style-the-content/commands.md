@@ -4,42 +4,42 @@
 
 - Referencing command in text: 
 
-    Use the `adb devices` command to list connected devices.
+    The `adb devices` command lists connected devices.
 
 - Command block showing one command:
 
     To transfer tokens from one public account to another, run the following command:
 
-    ```sh
-    wallet auth-transfer send \
-        --from Public/SENDER-ACCOUNT-ID \
-        --to Public/RECEIVER-ACCOUNT-ID \
-        --amount TOKEN-AMOUNT
-    ```
+        ```sh
+        wallet auth-transfer send \
+            --from Public/SENDER-ACCOUNT-ID \
+            --to Public/RECEIVER-ACCOUNT-ID \
+            --amount TOKEN-AMOUNT
+        ```
 - Command block showing multiple commands run in sequence:
 
     From the local clone of the repository on a computer, run the following commands to update the name of the default branch:
 
-    ```sh
-    git branch -m OLD-BRANCH-NAME NEW-BRANCH-NAME
-    git fetch origin
-    git branch -u origin/NEW-BRANCH-NAME NEW-BRANCH-NAME
-    git remote set-head origin -a
-    ```
+        ```sh
+        git branch -m OLD-BRANCH-NAME NEW-BRANCH-NAME
+        git fetch origin
+        git branch -u origin/NEW-BRANCH-NAME NEW-BRANCH-NAME
+        git remote set-head origin -a
+        ```
 - Command block showing a command with output:
 
     Use the `adb devices` command to list connected devices:
 
-    ```sh
-    adb devices
-    ```
+        ```sh
+        adb devices
+        ```
     
     The output is similar to the following:
 
-    ```text
-    List of devices attached
-    emulator-5554   device
-    ```
+        ```text
+        List of devices attached
+        DEVICE-ID   device
+        ```
 ## Format
 
 - Include a brief description before each command or group of commands to explain their purpose. If there is a command reference, provide a link to it. Use a colon (:) at the end of the description.
@@ -53,6 +53,7 @@
         --to Public/RECEIVER-ACCOUNT-ID \
         --amount TOKEN-AMOUNT
     ```
+
 - Group commands in one block only when they're a single logical step, and the reader should run them together. 
 - Separate commands into multiple blocks when you need the reader to check the output between commands, or when they are to be executed in different environments.
 - Don't use command prompts like `$`.

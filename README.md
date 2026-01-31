@@ -9,44 +9,42 @@
 
 ## What is Logos
 
-Logos is a modular technology stack for building decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
+Logos is a modular technology stack for building decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load for developers and users.
 
-To learn more about Logos, visit the [Logos main site](https://logos.co).
+The current Web3 developer and user experience is fragmented. Developers need to build and deploy smart contracts on-chain, write front ends that are hosted centrally, use centralized third-party services for applications to work, and rely heavily on web-browser access, which is prone to privacy leaks.
+
+Logos is a ground-up re-imagination of the technology stack. It brings together discrete but necessary components in one tech stack that solves for both the developer experience as well as the user experience.
+
+To learn more about Logos, visit (https://logos.co/tech-stack)
 
 ## Logos stack components
-
-- **Blockchain (base layer):** Runs the base chain for the testnet (consensus + data availability + settlement) and provides the foundation other components build on.
-- **LSSA rollup:** Execution layer for wallet, token operations, and program deployment with support for public and private contexts.
+- **Blockchain (consensus and data availability layer):** Runs the consensus layer in the technolgy stack (i.e. consensus + data availability + settlement) and provides the foundation other components build on. Logos Blockchain provides a resilient, censorship resistant foundation for building applications while protecting the privacy of individual participants including node operators.
+- **Logos Execution Zone:** Execution zone (Rollup) running on the Base layer for wallet, token operations, and program deployment with support for public and private contexts (previously referred to as Logos State Separation Architecture or LSSA). 
 - **Messaging:** Peer-to-peer messaging protocols and client libraries that apps use to publish and retrieve messages.
 - **Storage:** Node-side content storage and retrieval functionality.
-
-  > [!NOTE]
-  >
-  > Public end-to-end docs for Storage are not published yet.
-
-- **Core:** A host runtime + SDKs for running modules and apps in the Logos ecosystem.
+- **Logos App:** An app built on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables discovery of published applications, running local modules (e.g. node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions typically seen in Web3. 
 - **AnonComms:** Mixnet and capability-discovery components used to route messages with improved metadata privacy.
 
 ## Choose your path
 
-The sections below include the information and links for the things that you can do now in Logos. When a journey has no public docs yet, you will see an explicit "docs not published yet" note.
+The sections below include the information and links for the things that you can do now in Logos. When a journey has no public docs yet, you will see an explicit "docs not published yet" note. The set of use cases listed here are categorised by the component of the technology stack that the users can interact with. These use cases are evolving fast and we recommend users to review this documentation frequently for updates. While some documentation allows for these use cases to be performed via the CLI, additional documentation will be added as these use cases can be performed via the Logos App as well. 
 
-### LSSA rollup
+### Logos Execution Zone 
 
-- **Set up a wallet for an LSSA-based chain:** Create a wallet and connect it to the LSSA environment so you can run the token and program flows.
+- **Set up a wallet in the Logos Execution Zone:** Create a wallet on a LEZ environment (e.g. testnet) and change token visibility between private context and public contexts.
 
   - LSSA repo (start here): https://github.com/logos-blockchain/lssa
   - Try the Wallet CLI: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
 
-- **Transfer tokens in public and private contexts:** Send native tokens using the wallet CLI across public/private combinations.
+- **Transfer tokens in public and private contexts:** Send native tokens using the wallet CLI in both private and public contexts.
 
   - Wallet CLI walkthrough: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
 
-- **Create and transfer custom tokens (public and private contexts):** Define a custom token and execute transfers with different privacy modes.
+- **Create and transfer custom tokens (public and private contexts):** Define a custom token and execute transfers in private and public contexts.
 
   - Token program section (same README): https://github.com/logos-blockchain/lssa#the-token-program
 
-- **Deploy custom programs using LSSA templates:** Build and deploy a sample program using the provided tutorial and templates.
+- **Deploy custom programs using LEZ templates:** Build and deploy a sample program (i.e. contracts) using the provided tutorial and templates.
 
   - Program deployment tutorial: https://github.com/logos-blockchain/lssa/tree/main/examples/program_deployment
 
@@ -58,17 +56,17 @@ The sections below include the information and links for the things that you can
     >
     > This repo is still evolving; some apps may be prototypes without full docs.
 
-- **Track transactions through an LSSA explorer:** View LSSA transactions and state via an explorer UI/API.
+- **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
 
   - Docs not published yet.
 
-- **Use an LSSA transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
+- **Use an LEZ transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
 
   - Docs not published yet.
 
 ### Blockchain (base layer)
 
-- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
+- **Set up a user wallet for the base layer (consensus):** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
 
   - Wallet UI: https://github.com/logos-co/logos-wallet-ui
   - Wallet module: https://github.com/logos-co/logos-wallet-module
@@ -77,7 +75,7 @@ The sections below include the information and links for the things that you can
 
   - Docs not published yet.
 
-- **Run a validator / consensus node (includes staking):** Run a base-layer node and participate in consensus.
+- **Run a validator node:** Run a base-layer node and participate in consensus by staking tokens.
   - Node repo: https://github.com/logos-co/nomos
 
     > [!NOTE]

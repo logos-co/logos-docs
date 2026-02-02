@@ -26,6 +26,10 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 - **Storage (serve frontends)** provides the node-side content storage and retrieval functionality.
 
+  > [!NOTE]
+  >
+  > Public end-to-end docs for Storage are not published yet.
+
 - **User Modules** represent pluggable modules that extend Logos' capabilities such as wallet and key management, messaging features, identity, access control, or module installation.
 
 - **Discovery, Peering, Mix-net** is a shared networking layer. "Discovery" and "peering" are the fundamentals for finding and maintaining peer connections, while "mix-net" aligns with the stack’s **AnonComms** goal (routing with improved metadata privacy) and capability discovery.
@@ -35,8 +39,6 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 > [!NOTE]
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
-
-## Logos stack components
 
 - **Blockchain (base layer):** Runs the base chain for the testnet (consensus + data availability + settlement) and provides the foundation on which other components build.
 - **LSSA rollup:** Execution layer for wallet, token operations, and program deployment with support for public and private contexts.

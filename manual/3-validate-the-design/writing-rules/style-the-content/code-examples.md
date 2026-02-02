@@ -4,41 +4,41 @@
 
 - Code in text:
 
-  The `greet(name)` function generates a greeting message based on the provided name parameter.
+    The `greet(name)` function generates a greeting message based on the provided name parameter.
 
 - Code block:
 
-  The following example demonstrates a greeting system that handles multiple users and stores their greetings in a history object.
+    The following example demonstrates a greeting system that handles multiple users and stores their greetings in a history object.
 
-      ```js
-      const greetingHistory = {};
+        ```js
+        const greetingHistory = {};
 
-      function greet(name) {
-          return `Hello, ${name}!`;
-      }
+        function greet(name) {
+            return `Hello, ${name}!`;
+        }
 
-      function greetAndStore(name) {
-          const greeting = greet(name);
-          if (!greetingHistory[name]) {
-              greetingHistory[name] = [];
-          }
-          greetingHistory[name].push(greeting);
-          return greeting;
-      }
+        function greetAndStore(name) {
+            const greeting = greet(name);
+            if (!greetingHistory[name]) {
+                greetingHistory[name] = [];
+            }
+            greetingHistory[name].push(greeting);
+            return greeting;
+        }
 
-      greetAndStore("Alice");
-      greetAndStore("Bob");
-      greetAndStore("Alice");
-      ```
+        greetAndStore("Alice");
+        greetAndStore("Bob");
+        greetAndStore("Alice");
+        ```
 
-      Expected output:
+    Expected output:
 
-      ```text
-      {
-        "Alice": ["Hello, Alice!", "Hello, Alice!"],
-        "Bob": ["Hello, Bob!"]
-      }
-      ```
+        ```text
+        {
+            "Alice": ["Hello, Alice!", "Hello, Alice!"],
+            "Bob": ["Hello, Bob!"]
+        }
+        ```
 
 ## Format
 

@@ -14,7 +14,7 @@
 > [!CAUTION]
 > This command permanently deletes the database. Back up your data before you continue.
 
-## Formatting
+## Format
 
 - Logos documentation uses four types of callouts for different purposes:
 

@@ -16,6 +16,7 @@
             --to Public/RECEIVER-ACCOUNT-ID \
             --amount TOKEN-AMOUNT
         ```
+        
 - Command block showing multiple commands run in sequence:
 
     From the local clone of the repository on a computer, run the following commands to update the name of the default branch.
@@ -26,6 +27,7 @@
         git branch -u origin/NEW-BRANCH-NAME NEW-BRANCH-NAME
         git remote set-head origin -a
         ```
+
 - Command block showing a command with output:
 
     Use the `adb devices` command to list connected devices.
@@ -40,6 +42,7 @@
         List of devices attached
         DEVICE-ID   device
         ```
+
 ## Format
 
 - Include a brief description before each command or group of commands to explain their purpose. If there is a command reference, provide a link to it.

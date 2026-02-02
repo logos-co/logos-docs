@@ -40,18 +40,6 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
 
-- **Blockchain (base layer):** Runs the base chain for the testnet (consensus + data availability + settlement) and provides the foundation on which other components build.
-- **LSSA rollup:** Execution layer for wallet, token operations, and program deployment with support for public and private contexts.
-- **Messaging:** Peer-to-peer messaging protocols and client libraries that apps use to publish and retrieve messages.
-- **Storage:** Node-side content storage and retrieval functionality.
-
-  > [!NOTE]
-  >
-  > Public end-to-end docs for Storage are not published yet.
-
-- **Core:** A host runtime + SDKs for running modules and apps in the Logos ecosystem.
-- **AnonComms:** Mixnet and capability-discovery components used to route messages with improved metadata privacy.
-
 ## Choose your path
 
 The sections below include the information and links for the things that you can do now in Logos. When a journey has no public docs yet, you will see an explicit "docs not published yet" note.

@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 >
->**Work in progress.** We are consolidating public developer docs for Logos into this repository.
+> **Work in progress.** We are consolidating public developer docs for Logos into this repository.
 > Until the first curated documentation set lands in the **first half of 2026**, expect rough edges: links may move or break, some use cases have no public docs yet, and many instructions are still being written.
 >
 > We appreciate your patience as we work to provide a coherent and comprehensive developer experience.
@@ -11,11 +11,34 @@
 
 Logos is a modular technology stack for building decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-To learn more about Logos, visit the [Logos main site](https://logos.co).
+This diagram is a conceptual view of Logos as a layered stack. Dapps sit on top of Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
+
+![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
+
+Inside Logos, the top row shows the subsystems that Dapps interact with most directly:
+
+- **Blockchain (decentralized compute)** represents the main compute/state layer, with two responsibilities:
+
+  - **Data Availability and Consensus** is the base layer that ensures (1) transaction data is published and retrievable by the network, and (2) nodes agree on a single, ordered history of blocks.
+  - **Execution Zone** is where application logic runs and state is updated (separate from the layers that only order blocks and guarantee data availability).
+
+- **Messaging (coordination)** is the peer-to-peer communication layer used by apps to publish or retrieve messages.
+
+- **Storage (serve frontends)** provides the node-side content storage and retrieval functionality.
+
+- **User Modules** represent pluggable modules that extend Logos' capabilities such as wallet and key management, messaging features, identity, access control, or module installation.
+
+- **Discovery, Peering, Mix-net** is a shared networking layer. "Discovery" and "peering" are the fundamentals for finding and maintaining peer connections, while "mix-net" aligns with the stack’s **AnonComms** goal (routing with improved metadata privacy) and capability discovery.
+
+- Everything sits on the **Logos Kernel**, which is the lowest layer in the picture. In the public repos, you can see two building blocks that match that "kernel/runtime foundation" idea.
+
+> [!NOTE]
+>
+> To learn more about Logos, visit the [Logos main site](https://logos.co).
 
 ## Logos stack components
 
-- **Blockchain (base layer):** Runs the base chain for the testnet (consensus + data availability + settlement) and provides the foundation other components build on.
+- **Blockchain (base layer):** Runs the base chain for the testnet (consensus + data availability + settlement) and provides the foundation on which other components build.
 - **LSSA rollup:** Execution layer for wallet, token operations, and program deployment with support for public and private contexts.
 - **Messaging:** Peer-to-peer messaging protocols and client libraries that apps use to publish and retrieve messages.
 - **Storage:** Node-side content storage and retrieval functionality.
@@ -77,7 +100,7 @@ The sections below include the information and links for the things that you can
 
   - Docs not published yet.
 
-- **Run a validator / consensus node (includes staking):** Run a base-layer node and participate in consensus.
+- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
   - Node repo: https://github.com/logos-co/nomos
 
     > [!NOTE]
@@ -99,7 +122,7 @@ The sections below include the information and links for the things that you can
 
 ### Messaging
 
-- **Tests the Messaging module via its API:** Integrate messaging into an external app and validate basic publish/subscribe and message retrieval flows.
+- **Test the Messaging module via its API:** Integrate messaging into an external app and validate basic publish/subscribe and message retrieval flows.
 
   - Public docs entry point: https://docs.waku.org
   - Reference implementation (protocols in Nim): https://github.com/logos-messaging/logos-messaging-nim
@@ -112,7 +135,7 @@ The sections below include the information and links for the things that you can
 
 ### Core
 
-  - Docs not published yet.
+- Docs not published yet.
 
 ### AnonComms
 

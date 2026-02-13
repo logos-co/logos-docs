@@ -7,7 +7,7 @@
 
 ## B. Scope + ownership
 
-- **Journey name:** Discover nodes with mix capability and send messages via the AnonComms mixnet demo app
+- **Journey name:** Use the Mix Push Message App to send messages over the libp2p mixnet
 - **Owner (GitHub + Discord):** [GitHub](https://github.com/chaitanyaprem), Discord: prem_chaitanya
 - **Applies to:**
   - [Chat UI App](https://github.com/logos-co/logos-chat-ui), branch: logos-testnet-demo
@@ -48,7 +48,7 @@
      If you don't have flakes enabled globally, add experimental flags:
 
      ```shell
-     nix build --extra-experimental-features 'nix-command flakes'
+     nix build '.#app' --extra-experimental-features 'nix-command flakes'
      ```
 
   4. Run the application
@@ -129,7 +129,7 @@
 
 ---
 
-### Optional (only if you can)
+### Time and Security (optional)
 
 - **Estimated time-to-complete:** 15-20 minutes
 - **Security / safety notes:** None

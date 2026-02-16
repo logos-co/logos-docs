@@ -281,42 +281,4 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ## Next steps
 
-- [Try the wallet CLI in the LSSA repository](https://github.com/logos-blockchain/lssa#try-the-wallet-cli)
-- [Review the LSSA repository README](https://github.com/logos-blockchain/lssa)
-- [Repeat this flow and extend it with private-recipient checks](#complete-a-minimal-wallet-flow)
-
-<!-- POST-DOC SECTION (outside quickstart) -->
-
-## Missing information and SME questions
-- task-wallet-install: Install the wallet tooling
-  - Missing: Concrete success output lines for dependency and toolchain install commands.
-    Where searched: SNIP-0007, SNIP-0022.
-    Question: Which exact output lines should be documented as authoritative success signals for each prerequisite install command?
-  - Missing: Official OS support policy and minimum hardware baseline for this wallet quickstart.
-    Where searched: SNIP-0007, evidence-pack.md (Gaps and SME questions section).
-    Question: Which OS versions and minimum hardware profile are officially supported for this workflow?
-- task-wallet-connect: Connect the wallet to an LEZ sequencer endpoint
-  - Missing: Canonical public sequencer endpoint value and official external credential onboarding path.
-    Where searched: SNIP-0011, SNIP-0005, evidence-pack.md (Gaps and SME questions section).
-    Question: What exact endpoint URL and credential-request process should external users follow?
-  - Missing: Official expected output guidance when endpoint/auth values are invalid.
-    Where searched: SNIP-0011, SNIP-0013.
-    Question: What failure output should this quickstart document when `wallet check-health` fails due to endpoint or auth issues?
-- task-wallet-first-transaction: Complete a minimal wallet flow
-  - Missing: Immediate success signal for `wallet auth-transfer send` before balance checks.
-    Where searched: SNIP-0016, SNIP-0017.
-    Question: Should the quickstart document a tx hash or another direct success signal for `wallet auth-transfer send`?
-  - Missing: Canonical requirement level for private-recipient transfer in this baseline quickstart.
-    Where searched: doc-intent.yml (task-wallet-first-transaction and decisions), SNIP-0019, SNIP-0017, SNIP-0020.
-    Question: Should private-recipient transfer be required in the base path, or kept as follow-up guidance?
-
-## Unavailable sources
-- Source: None - none
-  Reason: No unavailable or fetch-failed source entries are recorded in `drafts/lez-quickstart/evidence-pack.md`.
-
-## Evidence snippets used
-| Task | Snippet IDs used |
-|---|---|
-| task-wallet-install | SNIP-0007, SNIP-0008, SNIP-0009, SNIP-0010, SNIP-0012, SNIP-0013, SNIP-0022 |
-| task-wallet-connect | SNIP-0011, SNIP-0012, SNIP-0013, SNIP-0024 |
-| task-wallet-first-transaction | SNIP-0014, SNIP-0015, SNIP-0016, SNIP-0017, SNIP-0019, SNIP-0020 |
+- 

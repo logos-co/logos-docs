@@ -226,7 +226,19 @@
         {
           "id": "QST-BEHAV-OVERVIEW-LENGTH",
           "group": "BEHAV",
-          "description": "Write one or two 50 to 100-word paragraphs.",
+          "description": "Write two to three 50 to 150-word paragraphs.",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-OVERVIEW-MENTAL-MODEL",
+          "group": "BEHAV",
+          "description": "Include a 1–2 sentence mental model: name the 2–4 main components the reader will interact with in this quickstart, and how they relate.",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-OVERVIEW-KEY-TERMS",
+          "group": "BEHAV",
+          "description": "Define 3–6 key terms inline at first mention (term + short parenthetical definition). If not evidenced, write \"Unknown\".",
           "examples": []
         },
         {
@@ -313,6 +325,12 @@
           "id": "QST-STRUCT-TASK-GUIDELINES-SCOPE-ALL",
           "group": "STRUCT",
           "description": "Scope: these guidelines apply to all task sections (title, intro, callouts, steps, clarifiers, code, image).",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-GUIDELINES-VERIFICATION",
+          "group": "BEHAV",
+          "description": "Each task must include at least one verification moment: either a dedicated \"Verify…\" step, or an \"Expected result\" clarifier with a concrete signal. If no signal is evidenced, mark it \"Unknown\".",
           "examples": []
         },
         {
@@ -412,13 +430,25 @@
     {
       "id": "QST-TASK-INTRO",
       "title": "Task intro",
-      "required": "optional",
+      "required": "required",
       "format": "Paragraph",
       "rules": [
         {
-          "id": "QST-BEHAV-TASK-INTRO-BRIEF",
+          "id": "QST-BEHAV-TASK-INTRO",
           "group": "BEHAV",
-          "description": "Write 1–2 short sentences that provide context.",
+          "description": "Write 2 sentences that provide context.",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-INTRO-OUTCOME",
+          "group": "BEHAV",
+          "description": "Sentence 1: describe what this task accomplishes (outcome).",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-INTRO-WHY",
+          "group": "BEHAV",
+          "description": "Sentence 2: describe why this task matters in the overall flow (how it connects to the previous and next tasks).",
           "examples": []
         },
         {
@@ -565,7 +595,7 @@
     {
       "id": "QST-TASK-CLARIFIERS",
       "title": "Step clarifiers",
-      "required": "optional",
+      "required": "required",
       "format": "Unordered bullets (depth 1) (1)",
       "rules": [
         {
@@ -577,13 +607,49 @@
         {
           "id": "QST-STRUCT-TASK-CLARIFIERS-BULLETS",
           "group": "STRUCT",
-          "description": "Use bullets for subactions, such as clarifiers or alternatives.",
+          "description": "Use bullets for clarifiers beneath a step (one level only).",
           "examples": []
         },
         {
-          "id": "QST-STRUCT-TASK-CLARIFIERS-LIMIT",
+          "id": "QST-STRUCT-TASK-CLARIFIERS-WHEN-CMD-OR-CONFIG",
           "group": "STRUCT",
-          "description": "Limit clarifiers to 2–4 items in one level.",
+          "description": "For any step that includes a command or configuration change, add clarifier bullets directly under that step.",
+          "examples": []
+        },
+        {
+          "id": "QST-STRUCT-TASK-CLARIFIERS-COUNT-2-3",
+          "group": "STRUCT",
+          "description": "For command/config steps, include exactly 2-3 clarifier bullets.",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-CLARIFIERS-LABELS",
+          "group": "BEHAV",
+          "description": "Each clarifier bullet must start with one of these labels: \"Purpose:\", \"Expected result:\", optionally \"Verify:\".",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-CLARIFIERS-PURPOSE",
+          "group": "BEHAV",
+          "description": "\"Purpose:\" is one short sentence explaining what the step does.",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-CLARIFIERS-EXPECTED-UNKNOWN",
+          "group": "BEHAV",
+          "description": "\"Expected result:\" describes what the reader should observe (output, log line, created file, running service, etc.). If not evidenced, write \"Expected result: Unknown\".",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-CLARIFIERS-VERIFY-NO-GUESS",
+          "group": "BEHAV",
+          "description": "Use \"Verify:\" only when you can provide a concrete check without guessing. Do not invent. If you cannot verify with evidence, omit \"Verify:\" (or write \"Verify: Unknown\" only if verification is explicitly required elsewhere).",
+          "examples": []
+        },
+        {
+          "id": "QST-BEHAV-TASK-CLARIFIERS-NO-WHY",
+          "group": "BEHAV",
+          "description": "Do not use the literal phrase \"Why this step:\". Use clarifier bullets instead.",
           "examples": []
         }
       ],
@@ -667,7 +733,7 @@
         {
           "id": "QST-BEHAV-EXTRA-LENGTH",
           "group": "BEHAV",
-          "description": "Keep the quickstart word count between 600 and 1200 words.",
+          "description": "Keep the quickstart word count between 800 and 1500 words.",
           "examples": []
         }
       ],
@@ -688,7 +754,7 @@
         {
           "id": "QST-STRUCT-FORBID-H4-H6",
           "group": "STRUCT",
-          "description": "Do not use H4-H6 headings.",
+          "description": "Do not use H4-H6 headings except for the subtitle.",
           "examples": []
         },
         {

@@ -150,6 +150,7 @@ Once funded, your node will automatically participate in the consensus lottery a
 - Not supported: Dynamic wallet key management. To add new keys, you must manually edit the config file and restart the node.
 - Known issues/sharp edges: No key generation tooling exists yet.
 - Minimal information is displayed in the node UI. Users need to query the HTTP API (e.g. `/cryptarchia/info`, `/network/info`) to check chain health and node status.
+- Block rewards are not yet visible through the UI.
 
 ## References (links)
 

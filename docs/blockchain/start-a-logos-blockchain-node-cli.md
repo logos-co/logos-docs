@@ -18,21 +18,20 @@ Tracking: https://github.com/logos-co/logos-docs/issues/171
 
 ## Known gaps / Blockers
 
-- Doc Packet missing: runnable steps, expected outputs, v0.1 limits
-- Notion source needs mapping: https://nomos-tech.notion.site/Internal-Devnet-Launch-February-2026-2fe261aa09df8025ad94e380933b4cf9
+- 
 
 ## Prerequisites
 
 - OS: macOS, Linux x86_64, Raspberry Pi OS, Windows
-- Dependencies: 
-- Accounts/keys: <!-- TODO: e.g. validator key, staking key -->
+- Dependencies: glibc version 2.39
+- Accounts/keys: Credentials to access faucet (if required).
 - Network/chain: <!-- TODO: chain ID, network name, endpoints -->
 - Other: <!-- TODO -->
 
-## Hardware requirements
+## Hardware Requirements
 
-- Target devices: <!-- TODO: e.g. x86_64 computer -->
-- Minimum: <!-- TODO: CPU, RAM, storage (type + free space), network -->
+- Target devices: Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- Minimum: 64 GB memory
 - Recommended: <!-- TODO: CPU, RAM, storage, network -->
 - Storage profile: <!-- TODO: expected disk growth / SSD required? -->
 
@@ -62,21 +61,21 @@ Instructions for downloading the node binary and circuits on a Raspberry Pi with
 
 ```sh
 # download circuits
-wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.5/logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
+wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-circuits-v{version}-linux-aarch64.tar.gz
 
 # download node binary
-wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.5/logos-blockchain-node-linux-aarch64-0.1.5.tar.gz
+wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-node-linux-aarch64-{version}.tar.gz
 ```
 
 Then, extract the `tar.gz` files as shown below.
 
 ```sh
-tar -xf logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
-tar -xf logos-blockchain-node-linux-aarch64-0.1.5.tar.gz
+tar -xf logos-blockchain-circuits-v{version}-linux-aarch64.tar.gz
+tar -xf logos-blockchain-node-linux-aarch64-{version}.tar.gz
 
 # Optional: Shorten names
-mv logos-blockchain-node-linux-aarch64-0.1.5 ./logos-blockchain-node
-mv logos-blockchain-circuits-v0.4.1-linux-aarch64 ./logos-blockchain-circuits
+mv logos-blockchain-node-linux-aarch64-{version} ./logos-blockchain-node
+mv logos-blockchain-circuits-v{version}-linux-aarch64 ./logos-blockchain-circuits
 ```
 
 Make sure to set the `LOGOS_BLOCKCHAIN_CIRCUITS` to the location of the extracted circuits folder. By default, this is `~/.logos-blockchain-circuits`.
@@ -85,19 +84,23 @@ Make sure to set the `LOGOS_BLOCKCHAIN_CIRCUITS` to the location of the extracte
 export LOGOS_BLOCKCHAIN_CIRCUITS=./logos-blockchain-circuits
 ```
 
+> If you do not install circuits at ~/.logos-blockchain-circuits, you must set the `LOGOS_BLOCKCHAIN_CIRCUITS` variable!
+
 ### 2. Run the Node
 
 Before running the node, you need to generate a unique user configuration for your node in the `user_config.yaml`. This can be done by running the following command:
 
 ```sh
 ./logos-blockchain-node init \
-    -p /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWNzrYagh1S3EbmPpywFkLK2gGFApFaHYc4VgvqMGLLmeP \
-    -p /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWH5pQ7KeLEZJsc933UXBXPQDMHLa897opPP9YaS3kEMi1 \
-    -p /ip4/65.109.51.37/udp/3003/quic-v1/p2p/12D3KooWGdkKHAQ6ZRQ7YW6zhMgMQjAaidyp4LuATNgKUtmB68GU \
-    -p /ip4/65.109.51.37/udp/3000/quic-v1
+    -p {peer1} \
+    -p {peer2}
 ```
 
-Then, run the node with this command:
+The bootstrap peers used for this command can be found in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/).
+
+You can change the port associated with your node by changing the `api_port` field in `user_config.yaml`. By default, it is set to `8080`.
+
+Once you are satisfied with your settings, run the node with this command:
 
 ```sh
 ./logos-blockchain-node user_config.yaml
@@ -119,8 +122,6 @@ known_keys:
     de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
 voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
 ```
-
-Any of these keys, except for the voucher key, can be used to send and receive funds.
 
 Choose any of the keys in `known_keys` and navigate to the [public faucet](https://devnet.blockchain.logos.co/node/0/faucet). Enter your chosen key into the box labelled "Destination Public Key" and press "Request Funds".
 
@@ -204,7 +205,7 @@ Verify that `n_peers` is greater than 0.
 ## Limits (for Testnet v0.1)
 
 - Not supported: Dynamic wallet key management. To add new keys, you must manually edit the config file and restart the node.
-- Known issues/sharp edges: No key generation tooling exists yet.
+- Known issues/sharp edges: No key generation tooling exists yet outside of the init command.
 - Minimal information is displayed in the node UI. Users need to query the HTTP API (e.g. `/cryptarchia/info`, `/network/info`) to check chain health and node status.
 - Block rewards are not yet visible through the UI.
 

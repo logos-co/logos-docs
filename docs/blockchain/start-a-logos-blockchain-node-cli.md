@@ -14,7 +14,7 @@ Tracking: https://github.com/logos-co/logos-docs/issues/171
 
 ## Audience
 
-- Node operators who wish to run the node on a server.
+- Node operators who wish to run the node on a server or Raspberry Pi.
 
 ## Known gaps / Blockers
 
@@ -30,8 +30,8 @@ Tracking: https://github.com/logos-co/logos-docs/issues/171
 
 ## Hardware Requirements
 
-- Target devices: Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
-- Minimum: 64 GB memory
+- Target devices: Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed, or modern Linux server.
+- Minimum: 64 GB storage. See also the minimum hardware requirements listed [here](https://www.notion.so/nomos-tech/Hardware-Requirements-1fd261aa09df81a4a52be19e90b60891).
 - Recommended: <!-- TODO: CPU, RAM, storage, network -->
 - Storage profile: <!-- TODO: expected disk growth / SSD required? -->
 
@@ -47,7 +47,12 @@ Tracking: https://github.com/logos-co/logos-docs/issues/171
   - <!-- TODO: key=example - purpose -->
 
 - Default endpoints/ports:
-  - <!-- TODO: port/proto - what uses it -->
+  - API server: localhost:8080 
+  - Swarm: 0.0.0.0:3000
+  - Blend listening address: /ip4/0.0.0.0/udp/3400/quic-v1
+  - Testing address: 0.0.0.0:8081
+  - Time server: pool.ntp.org:123
+  
 
 ## Steps (Happy Path)
 
@@ -61,7 +66,7 @@ Instructions for downloading the node binary and circuits on a Raspberry Pi with
 
 ```sh
 # download circuits
-wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-circuits-v{version}-linux-aarch64.tar.gz
+wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-circuits-v{circuits-version}-linux-aarch64.tar.gz
 
 # download node binary
 wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-node-linux-aarch64-{version}.tar.gz
@@ -70,21 +75,18 @@ wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{ver
 Then, extract the `tar.gz` files as shown below.
 
 ```sh
-tar -xf logos-blockchain-circuits-v{version}-linux-aarch64.tar.gz
+tar -xf logos-blockchain-circuits-v{circuits-version}-linux-aarch64.tar.gz
 tar -xf logos-blockchain-node-linux-aarch64-{version}.tar.gz
 
 # Optional: Shorten names
-mv logos-blockchain-node-linux-aarch64-{version} ./logos-blockchain-node
-mv logos-blockchain-circuits-v{version}-linux-aarch64 ./logos-blockchain-circuits
+mv logos-blockchain-circuits-v{circuits-version}-linux-aarch64 ./logos-blockchain-circuits
 ```
 
-Make sure to set the `LOGOS_BLOCKCHAIN_CIRCUITS` to the location of the extracted circuits folder. By default, this is `~/.logos-blockchain-circuits`.
+If you don't want to move the circuits to `~/.logos-blockchain-circuits`, you need to set the `LOGOS_BLOCKCHAIN_CIRCUITS` environment variable to the location of the extracted circuits folder.
 
 ```sh
 export LOGOS_BLOCKCHAIN_CIRCUITS=./logos-blockchain-circuits
 ```
-
-> If you do not install circuits at ~/.logos-blockchain-circuits, you must set the `LOGOS_BLOCKCHAIN_CIRCUITS` variable!
 
 ### 2. Run the Node
 
@@ -98,7 +100,7 @@ Before running the node, you need to generate a unique user configuration for yo
 
 The bootstrap peers used for this command can be found in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/).
 
-You can change the port associated with your node by changing the `api_port` field in `user_config.yaml`. By default, it is set to `8080`.
+You can change the API port of your node by changing the `api_port` field in `user_config.yaml`. By default, it is set to `8080`.
 
 Once you are satisfied with your settings, run the node with this command:
 
@@ -118,7 +120,7 @@ The result should look something like this:
 
 ```sh
 known_keys:
-    my_key_29e5f7ca28281eca974146689f8f1c9b712380c07089dabcb60a8cee: ...
+    57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923: ...
     de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
 voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
 ```
@@ -149,7 +151,7 @@ The known_keys in your `user_config.yaml` file should look something like this:
 
 ```sh
 known_keys:
-    my_key_29e5f7ca28281eca974146689f8f1c9b712380c07089dabcb60a8cee: ...
+    57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923: ...
     de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
 voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
 ```
@@ -160,7 +162,7 @@ If you successfully received funds from the faucet, querying the balance should 
 {
   "tip": "5d16d4bd3712dc5869fc624e59774552b4fb0c974a6efa516563b3778bac9258",
   "balance": 5,
-  "address": "my_key_29e5f7ca28281eca974146689f8f1c9b712380c07089dabcb60a8cee"
+  "address": "57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923"
 }
 ```
 
@@ -206,12 +208,9 @@ Verify that `n_peers` is greater than 0.
 
 - Not supported: Dynamic wallet key management. To add new keys, you must manually edit the config file and restart the node.
 - Known issues/sharp edges: No key generation tooling exists yet outside of the init command.
-- Minimal information is displayed in the node UI. Users need to query the HTTP API (e.g. `/cryptarchia/info`, `/network/info`) to check chain health and node status.
-- Block rewards are not yet visible through the UI.
 
 ## References (links)
 
 - Node repo: https://github.com/logos-blockchain/logos-blockchain
-- Blockchain UI repo: https://github.com/logos-blockchain/logos-blockchain-ui
 - Internal devnet launch notes: https://nomos-tech.notion.site/Internal-Devnet-Launch-February-2026-2fe261aa09df8025ad94e380933b4cf9
 - Docs inventory spreadsheet: https://docs.google.com/spreadsheets/d/1V94fhGxwTGbyLy2u8OcZmJQIzIctIGUHHfqyyY01V3E/edit?usp=sharing

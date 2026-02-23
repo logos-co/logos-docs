@@ -51,8 +51,7 @@ Tracking: https://github.com/logos-co/logos-docs/issues/171
   - Swarm: 0.0.0.0:3000
   - Blend listening address: /ip4/0.0.0.0/udp/3400/quic-v1
   - Testing address: 0.0.0.0:8081
-  - Time server: pool.ntp.org:123
-  
+
 
 ## Steps (Happy Path)
 
@@ -78,7 +77,7 @@ Then, extract the `tar.gz` files as shown below.
 tar -xf logos-blockchain-circuits-v{circuits-version}-linux-aarch64.tar.gz
 tar -xf logos-blockchain-node-linux-aarch64-{version}.tar.gz
 
-# Optional: Shorten names
+# Install circuits
 mv logos-blockchain-circuits-v{circuits-version}-linux-aarch64 ./logos-blockchain-circuits
 ```
 

@@ -1,15 +1,19 @@
 ---
 title: Quickstart for the Logos Execution Zone wallet
 doc_type: quickstart
-product: Logos Execution Zone
+product: lez
 topics:
   - wallet
   - sequencer
   - Logos Execution Zone
   - LEZ
+  - Logos Execution Environment
+  - LEE
+  - zero-knowledge proofs
+  - ZKPs
 authors: [jorge-campo]
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: lez-quickstart
 ---
 
@@ -19,70 +23,106 @@ slug: lez-quickstart
 
 > **Note**
 >
-> - **Permissions**: Access to LSSA testnet credentials for wallet authentication.
-> - **Product**: LEZ/LSSA wallet CLI flow; version Unknown.
+> - **Permissions**: No special permissions required.
+> - **Product**: Logos Execution Zone wallet CLI; version Unknown.
 
-LEZ (Logos Execution Zone, a programmable blockchain with interoperable public and private state) is used here through the wallet (a CLI for account, transfer, config, and health commands). LSSA (the protocol-level v0.3 specification context) defines the account model and transaction formats behind this flow. The sequencer (the service that collects transactions and finalizes blocks) is the remote component that the wallet communicates with.
+The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 
-The mental model is straightforward: the local wallet CLI reads local configuration, then builds a sequencer client with an endpoint (the `sequencer_addr` value) and credentials/authentication (basic auth in `user` or `user:password` format). That client is reused across health checks, account commands, and transfer commands. Public and private execution share the same chain workflow, while private execution relies on proof verification.
+LEZ separates account state into public (visible, on-chain) and private (hidden, off-chain). You choose which one you are using by creating a public or private account and using it in transactions. This ability to maintain a public and private state is provided by the Logos Execution Environment (LEE), that defines what an account is, how transactions are structured, and how executions are validated when some data must remain private. You can think of LEZ as the blockchain you connect to and where transactions are recorded, and LEE as the execution model that powers it.
 
-In this quickstart, you will install the wallet tooling, configure endpoint and auth settings, and complete a minimal transfer flow with balance checks.
+When a transaction touches the private state, the client runs the private part locally using your private keys and local client data and produces a zero-knowledge proof (ZKP). Validators verify the proof and accept the state update (for example, updating public balances), so the network stays correct even though the private data is never published.
 
-In this quickstart, a "privacy-preserving transaction" means the network can confirm a transaction is valid without exposing sensitive account data. The wallet runs the private part of the transaction locally, then generates a "zero-knowledge proof" (ZKP), which is cryptographic evidence that the rules were followed without revealing private inputs. The sequencer and validators verify that proof instead of re-running private logic or reading private state. This gives you both privacy and trust: private data stays hidden, and invalid transactions are still rejected. In this workflow, Risc0 is the proof toolchain used to generate those ZKPs.
+> [!NOTE]
+>
+> In the context of the Logos Execution Zone, a zero-knowledge proof (ZKP) is a cryptographic proof that lets the blockchain client, such as a wallet, prove a private transaction followed LEE’s rules without revealing the private inputs (like balances). Using ZKPs, LEZ can safely accept the resulting state update and keep the public chain consistent with private execution, even though the network never sees the private values.
+
+In this quickstart, you install the wallet tooling, connect to a local sequencer endpoint, and complete a minimal transfer flow with balance checks. In wallet terms, the wallet client is your control panel for the system: you install it, create and manage public or private accounts, sync private state, and send commands.
+
+> [!NOTE]
+>
+> This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Send tokens to a private account with the LEZ wallet](./send-tokens-to-a-private-account-with-the-lez-wallet.md).
 
 ## Before you start
 
-- Developer audience with CLI-first workflow familiarity.
-- Local clone of the [LSSA repository](https://github.com/logos-blockchain/lssa).
-- Wallet journey context from [Try the Wallet CLI](https://github.com/logos-blockchain/lssa#try-the-wallet-cli).
-- Build dependency package access for Ubuntu/Debian, Fedora, or macOS.
-- Rust and Risc0 toolchains available in the local shell.
-- LSSA testnet endpoint and credential values for sequencer access.
-- Official OS support policy and hardware baseline: Unknown.
+- This quickstart is intended for a developer audience with CLI-first workflow familiarity.
+- You should have basic knowledge of blockchain concepts like accounts, transactions, and balances to understand the flow.
+- You will use the Rust toolchain to complete this tutorial, but you don't need prior Rust experience.
 
-## Install the wallet tooling
+## Install the build prerequisites
 
-Install the local toolchain and wallet CLI so the command surface is available in your terminal. This setup step gives you a runnable wallet binary before you apply endpoint and auth settings in the next task.
-
-The key component in this task is the local `wallet` executable. Later tasks use the same binary with configuration values to connect to a sequencer.
+Install the build prerequisites you need to compile the sequencer and wallet.
 
 1. Install the build dependencies for your operating system.
 
    ```sh
    # Ubuntu / Debian
-   apt install git curl build-essential clang libclang-dev libssl-dev pkg-config
+   sudo apt update
+   apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
 
    # Fedora
-   sudo dnf install git curl clang clang-devel openssl-devel pkgconf
+   sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
 
    # macOS
    xcode-select --install
    brew install pkg-config openssl
    ```
 
-1. Clone the Logos Execution Zone GitHub repository:
-
-   ```sh
-   git clone https://github.com/logos-blockchain/lssa.git
-   cd lssa
-   ```
-
-1. Install Rust and Risc0, then install the Risc0 toolchain component.
+1. Install Rust and Risc0 components.
 
    > [!NOTE]
    > 
    > Rust is the language used for wallet development, while Risc0 is the proof toolchain used to generate the ZKPs.
 
    ```sh
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   curl -L https://risczero.com/install | bash
-   rzup install
+   # Install the official Rust compiler with the standard installation option
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
    ```
 
-After installing Rust and rzup, restart your shell to ensure the `cargo` and `rzup` commands are available. The `rzup install` command adds Risc0 components to your Rust toolchain.
+   ```sh
+   # Source the env file under $HOME/.cargo and install the Risc0 component
+   . "$HOME/.cargo/env" 
+   curl -L https://risczero.com/install | bash  
+   ```
+
+Restart your shell to ensure the `cargo` and `rzup` commands are available.
+
+1. Add Risc0 components to your Rust toolchain with `rzup`.
 
    ```sh
    rzup install
+   ```
+
+## Install the `wallet` binary prerequisites and build the wallet
+
+The Logos Blockchain repository provides a script that downloads a circuits release required by the `wallet` build.
+
+1. Clone the Logos Blockchain GitHub repository:
+
+   ```sh
+   git clone https://github.com/logos-blockchain/logos-blockchain.git
+   ```
+
+1. Run the script to download the circuits release.
+
+> [!NOTE]
+>
+> This script downloads `logos-blockchain-circuits-<VERSION>-<platform>.tar.gz` and installs it under `~/.logos-blockchain-circuits` by default.
+
+   ```sh
+   cd logos-blockchain
+   ./scripts/setup-logos-blockchain-circuits.sh
+   ```
+
+> [!TIP]
+> 
+> In this quickstart, "circuits" are files that the wallet build expects to find to support privacy-preserving transactions. Even when you are only running public transactions in this quickstart guide, the wallet still needs the circuits to build successfully. The `setup-logos-blockchain-circuits.sh` script ensures you have the files in place for the build to work.
+
+1. Clone the Logos Execution Zone GitHub repository:
+
+   ```sh
+   cd .. # change directory back to the parent of logos-blockchain before cloning lssa
+   git clone https://github.com/logos-blockchain/lssa.git
+   cd lssa
    ```
 
 1. From the repository root, install the wallet CLI.
@@ -90,23 +130,13 @@ After installing Rust and rzup, restart your shell to ensure the `cargo` and `rz
    ```bash
    cargo install --path wallet --force
 
-   # Output:
-   Finished `release` profile [optimized] target(s) in 3m 34s
-   ```
-
-   - Purpose: Build and install the `wallet` binary from the repository.
-   - Expected result: Install output ends with the line "Finished `release` profile [optimized] target(s) ...".
-   - Verify: Continue after the install command finishes without an error.
-
-1. Confirm that the wallet command surface is available.
+1. Confirm that the wallet command is available.
 
    ```bash
    wallet help
    ```
 
-   - Purpose: Verify that the installed binary is callable from your shell.
-   - Expected result: Help output shows wallet commands, including `wallet check-health` and `wallet config`.
-   - Verify: Continue only if help output appears and no command-not-found error is shown.
+This should output the `wallet` help information, showing the available wallet commands, including `wallet check-health` and `wallet config`.
 
 1. Run a health check if endpoint and auth settings are already configured.
 
@@ -114,11 +144,58 @@ After installing Rust and rzup, restart your shell to ensure the `cargo` and `rz
    wallet check-health
    ```
 
-   - Purpose: Check wallet connectivity and remote/local program ID consistency.
-   - Expected result: `✅All looks good!`.
-   - Verify: If first-run password setup appears, complete it, then rerun until the success line appears.
+## Start the LEZ sequencer in standalone mode
 
-## Connect the wallet to an LEZ sequencer endpoint
+Open a dedicated terminal window and start the LEZ sequencer in standalone mode.
+
+```bash
+# Run this command from the root of the `lssa` repository you cloned before
+RUST_LOG=info cargo run --features standalone -p sequencer_runner sequencer_runner/configs/debug
+```
+
+You should see the sequencer starting up at localhost:3040 and logging information to the terminal:
+
+```bash
+2026-02-24T16:27:58Z INFO  sequencer_runner] Sequencer core set up
+[2026-02-24T16:27:58Z INFO  network] Starting HTTP server at 0.0.0.0:3040
+[2026-02-24T16:27:58Z INFO  network] HTTP server started at 0.0.0.0:3040
+[2026-02-24T16:27:58Z INFO  actix_server::builder] starting 4 workers
+[2026-02-24T16:27:58Z INFO  sequencer_runner] HTTP server started
+[2026-02-24T16:27:58Z INFO  actix_server::server] Tokio runtime found; starting in existing Tokio runtime
+[2026-02-24T16:27:58Z INFO  actix_server::server] starting service: "actix-web-service-0.0.0.0:3040", workers: 4, listening on: 0.0.0.0:3040
+[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting main sequencer loop
+[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting pending block retry loop
+[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting bedrock block listening loop
+[2026-02-24T16:27:58Z INFO  sequencer_runner] Sequencer running. Monitoring concurrent tasks...
+[2026-02-24T16:28:10Z INFO  sequencer_runner] Collecting transactions from mempool, block creation
+[2026-02-24T16:28:10Z INFO  sequencer_core] Created block with 0 transactions in 0 seconds
+[2026-02-24T16:28:10Z INFO  sequencer_runner] Block with id 2 created
+[2026-02-24T16:28:10Z INFO  sequencer_runner] Waiting for new transactions
+```
+
+## Configure the wallet to connect to the sequencer
+
+1. Point the wallet at the standalone LEZ sequencer endpoint
+
+The wallet works by reading its configuration from a "wallet home" directory. It uses the `NSSA_WALLET_HOME_DIR` environment variable if set; otherwise, it falls back to `~/.nssa/wallet`. A ready-to-copy sample config exists in the repo at wallet/configs/debug/wallet_config.json, and it already points to http://127.0.0.1:3040 (the sequencer address).
+
+Run these command from the root of the `lssa` repository you cloned before:
+
+```bash
+export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
+mkdir -p "$NSSA_WALLET_HOME_DIR"
+cp wallet/configs/debug/wallet_config.json "$NSSA_WALLET_HOME_DIR/wallet_config.json"
+``` 
+
+1. Initialize the wallet local storage and verify connectivity
+
+<!--
+==============================================================
+CONTENT BELOW THIS COMMENT IS STILL IN PROGRESS. DO NOT REVIEW
+==============================================================
+-->
+
+---
 
 Set endpoint and authentication values so wallet requests target the correct sequencer. This task links the local install step to live chain interaction, which you use in the transfer flow next.
 
@@ -161,7 +238,7 @@ The relationship to keep in mind is config-to-client wiring: `sequencer_addr` an
 
 ## Complete a minimal wallet flow
 
-Run a compact account-and-transfer sequence to verify end-to-end wallet usability. You will create and initialize an account, claim testnet funds, send a transfer, and confirm resulting balances.
+In this flow, you create and initialize an account, claim testnet funds, send a transfer, and confirm resulting balances.
 
 In this task, wallet account and transfer commands interact with the authenticated-transfer program, and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
 

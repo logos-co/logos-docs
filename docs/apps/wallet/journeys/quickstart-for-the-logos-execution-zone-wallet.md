@@ -17,7 +17,7 @@ doc_version: 2
 slug: lez-quickstart
 ---
 
-# Quickstart for Logos Execution Zone wallet
+# Quickstart for the Logos Execution Zone wallet
 
 #### Set up the wallet, connect to a sequencer, and run a minimal transfer flow.
 
@@ -45,64 +45,82 @@ In this quickstart, you install the wallet tooling, connect to a local sequencer
 ## Before you start
 
 - This quickstart is intended for a developer audience with CLI-first workflow familiarity.
-- You should have basic knowledge of blockchain concepts like accounts, transactions, and balances to understand the flow.
+- You should have basic knowledge of blockchain concepts like accounts, transactions, and balances to understand the wallet flow.
 - You will use the Rust toolchain to complete this tutorial, but you don't need prior Rust experience.
 
-## Install the build prerequisites
+## Step 1: Install the build prerequisites
+
+To run the LEZ wallet CLI, you first need to install system dependencies, the Rust toolchain, and the Logos Blockchain circuits files.
+
+### Install system build dependencies
 
 Install the build prerequisites you need to compile the sequencer and wallet.
 
-1. Install the build dependencies for your operating system.
+1. Choose the instructions for your operating system.
 
    ```sh
    # Ubuntu / Debian
    sudo apt update
    apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+   ```
 
+   ```sh
    # Fedora
    sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+   ```
 
+   ```sh
    # macOS
    xcode-select --install
    brew install pkg-config openssl
    ```
 
-1. Install Rust and Risc0 components.
+> [!TIP]
+>
+> These prerequisites include a working C toolchain and linker on your machine. You may already have these installed if you have experience building software from source.
 
-   > [!NOTE]
-   > 
-   > Rust is the language used for wallet development, while Risc0 is the proof toolchain used to generate the ZKPs.
+### Install Rust and RISC Zero components
+
+> [!NOTE]
+>
+> Rust is the language used for wallet development, while RISC Zero is the proof toolchain used to generate the ZKPs.
+
+1. Install Rust with rustup.
 
    ```sh
    # Install the official Rust compiler with the standard installation option
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
    ```
 
+1. Install the RISC Zero components.
+
    ```sh
-   # Source the env file under $HOME/.cargo and install the Risc0 component
+   # Source the env file under $HOME/.cargo and install the RISC Zero component
    . "$HOME/.cargo/env" 
    curl -L https://risczero.com/install | bash  
    ```
 
-Restart your shell to ensure the `cargo` and `rzup` commands are available.
+1. estart your shell to ensure the `cargo` and `rzup` commands are available.
 
-1. Add Risc0 components to your Rust toolchain with `rzup`.
+1. Add the RISC Zero components to your Rust toolchain with `rzup`.
 
    ```sh
    rzup install
    ```
 
-## Install the `wallet` binary prerequisites and build the wallet
+### Set up the `wallet` binary prerequisites and build the wallet
 
 The Logos Blockchain repository provides a script that downloads a circuits release required by the `wallet` build.
 
-1. Clone the Logos Blockchain GitHub repository:
+1. Create a workspace folder and clone the Logos Blockchain repository:
 
    ```sh
+   mkdir -p ~/logos/src
+   cd ~/logos/src
    git clone https://github.com/logos-blockchain/logos-blockchain.git
    ```
 
-1. Run the script to download the circuits release.
+1. Run the script to download the circuits release:
 
 > [!NOTE]
 >
@@ -114,44 +132,41 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
    ```
 
 > [!TIP]
-> 
-> In this quickstart, "circuits" are files that the wallet build expects to find to support privacy-preserving transactions. Even when you are only running public transactions in this quickstart guide, the wallet still needs the circuits to build successfully. The `setup-logos-blockchain-circuits.sh` script ensures you have the files in place for the build to work.
+>
+> In this quickstart, "circuits" are prebuilt files used for privacy-preserving execution (zero-knowledge proofs). Even though the main quickstart flow uses public transactions, the current `wallet` build still requires these files to be present locally.
 
-1. Clone the Logos Execution Zone GitHub repository:
+1. From the same workspace folder, clone the Logos Execution Zone repository:
 
    ```sh
-   cd .. # change directory back to the parent of logos-blockchain before cloning lssa
+   cd ~/logos/src
    git clone https://github.com/logos-blockchain/lssa.git
    cd lssa
    ```
 
-1. From the repository root, install the wallet CLI.
+1. From the repository root, install the wallet CLI:
 
    ```bash
    cargo install --path wallet --force
+   ```
 
-1. Confirm that the wallet command is available.
+1. Confirm that the `wallet` command is available:
 
    ```bash
    wallet help
    ```
 
-This should output the `wallet` help information, showing the available wallet commands, including `wallet check-health` and `wallet config`.
+## Step 2: Start the LEZ sequencer in standalone mode
 
-1. Run a health check if endpoint and auth settings are already configured.
-
-   ```bash
-   wallet check-health
-   ```
-
-## Start the LEZ sequencer in standalone mode
-
-Open a dedicated terminal window and start the LEZ sequencer in standalone mode.
+Open a new terminal window and start the LEZ sequencer from the root of the Logos Execution Zone repository:
 
 ```bash
-# Run this command from the root of the `lssa` repository you cloned before
+cd ~/logos/src/lssa
 RUST_LOG=info cargo run --features standalone -p sequencer_runner sequencer_runner/configs/debug
 ```
+
+> [!NOTE]
+>
+> This quickstart uses standalone mode, which runs only the LEZ sequencer locally. The full local stack also runs a Logos Blockchain node and the indexer service for development and block exploration, but it adds extra components and is covered separately.
 
 You should see the sequencer starting up at localhost:3040 and logging information to the terminal:
 
@@ -173,153 +188,109 @@ You should see the sequencer starting up at localhost:3040 and logging informati
 [2026-02-24T16:28:10Z INFO  sequencer_runner] Waiting for new transactions
 ```
 
-## Configure the wallet to connect to the sequencer
+## Step 3: Configure the wallet to connect to the sequencer
 
-1. Point the wallet at the standalone LEZ sequencer endpoint
+The wallet works by reading its configuration from a "wallet home" directory. It uses the `NSSA_WALLET_HOME_DIR` environment variable if set; otherwise, it falls back to `~/.nssa/wallet`. A ready-to-copy sample config exists in the repo at `wallet/configs/debug/wallet_config.json`, and it already points to http://127.0.0.1:3040 (the sequencer address). This `wallet_config.json` file defines how the wallet CLI talks to the sequencer.
 
-The wallet works by reading its configuration from a "wallet home" directory. It uses the `NSSA_WALLET_HOME_DIR` environment variable if set; otherwise, it falls back to `~/.nssa/wallet`. A ready-to-copy sample config exists in the repo at wallet/configs/debug/wallet_config.json, and it already points to http://127.0.0.1:3040 (the sequencer address).
+1. To point the wallet at the standalone LEZ sequencer endpoint, run these command from the root of the `lssa` repository:
 
-Run these command from the root of the `lssa` repository you cloned before:
+> [!TIP]
+>
+> Leave the sequencer running in the other terminal window while you configure the wallet.
 
 ```bash
+cd ~/logos/src/lssa
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
 mkdir -p "$NSSA_WALLET_HOME_DIR"
 cp wallet/configs/debug/wallet_config.json "$NSSA_WALLET_HOME_DIR/wallet_config.json"
-``` 
+```
 
-1. Initialize the wallet local storage and verify connectivity
+## Step 4: Initialize the wallet local storage and verify connectivity
 
-<!--
-==============================================================
-CONTENT BELOW THIS COMMENT IS STILL IN PROGRESS. DO NOT REVIEW
-==============================================================
--->
+The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialize the wallet storage.
 
----
+1. Run a `wallet` command to initialize the storge. Use the built-in health check:
 
-Set endpoint and authentication values so wallet requests target the correct sequencer. This task links the local install step to live chain interaction, which you use in the transfer flow next.
+```sh
+wallet check-health
+```
 
-The relationship to keep in mind is config-to-client wiring: `sequencer_addr` and `basic_auth` are read from wallet config and passed into sequencer client construction.
+If the wallet storage was not previously initialized, this command prints `Persistent storage not found, need to execute setup`, and prompts you to create a password.You can choose any password you like, but make sure to remember it, as you will need it to access the wallet in the future.
 
-1. Collect your sequencer address and basic auth values in `username:password` format.
+> [!IMPORTANT]
+>
+> The wallet uses this password to encrypt the local storage and initialize both the public and private key trees. It is the wallet's local master key use to derive other keys.
 
-1. Set the sequencer endpoint value.
-
-   ```bash
-   wallet config set sequencer_addr address_from_credentials
-   ```
-
-   - Purpose: Store the sequencer address used by wallet network requests.
-   - Expected result: Unknown.
-
-1. Set the sequencer authentication value.
-
-   ```bash
-   wallet config set basic_auth username_from_credentials:password_from_credentials
-   ```
-
-   - Purpose: Store the basic auth value used for sequencer HTTP requests.
-   - Expected result: Unknown.
-
-1. Edit local config directly if you prefer file-based configuration.
-
-   - Purpose: Apply `sequencer_addr` and `basic_auth` in `wallet_config.json` under `~/.nssa/wallet` after running a wallet command at least once.
-   - Expected result: Unknown.
-
-1. Validate connectivity after setting endpoint and auth values.
-
-   ```bash
-   wallet check-health
-   ```
-
-   - Purpose: Confirm that wallet-to-sequencer communication is working.
-   - Expected result: `✅All looks good!`.
-   - Verify: Use this success line as the gate before running transfer commands.
-
-## Complete a minimal wallet flow
+## Step 5: Complete a minimal wallet flow
 
 In this flow, you create and initialize an account, claim testnet funds, send a transfer, and confirm resulting balances.
 
 In this task, wallet account and transfer commands interact with the authenticated-transfer program, and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
 
-> **Important**
->
-> Sending to a private recipient uses the same transfer command shape, but local proof generation may take 30 seconds to 4 minutes.
-
-1. Create a sender public account and record the account ID.
+1. Create a sender public account and record the `account_id` value:
 
    ```bash
+   cd ~/logos/src/lssa
    wallet account new public
-
-   # Output:
-   Generated new account with account_id Public/...
    ```
 
-   - Purpose: Create a sender account for the transfer flow.
-   - Expected result: Output includes `Generated new account with account_id Public/...`.
-
-1. Check sender status before initialization.
+1. Check sender status before initialization:
 
    ```bash
    wallet account get --account-id <sender_public_account_id>
-
-   # Output:
-   Account is Uninitialized
    ```
 
-   - Purpose: Confirm the starting state of the new sender account.
-   - Expected result: Output includes `Account is Uninitialized`.
-   - Verify: Continue only after the uninitialized state is confirmed.
+   Example:
 
-1. Initialize the sender account, then check the updated state.
+   ```bash
+   wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
+   ```
+
+   You should see `Account is Uninitialized` in the output. New accounts start uninitialized, so no program owns them yet. A program can claim an uninitialized account (for example, the authenticated-transfer program or the token program). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program. In this flow, you initialize the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
+
+1. Initialize the sender account, then check the updated state:
+
+> [!NOTE]
+>
+> Running `wallet auth-transfer init` lets the authenticated-transfer program own the account, which means only that program can modify the account state (with the exception that any program may still credit native tokens).
 
    ```bash
    wallet auth-transfer init --account-id <sender_public_account_id>
    ```
 
+In the output, you should see `status: "Transaction submitted"`, and the transaction hash. If you change to the terminal session where the sequencer is running, you can see a message similar to this: `Validated transaction with hash <hash_id>, including it in block`.
+
+1. Check the account updated state:
+
    ```bash
    wallet account get --account-id <sender_public_account_id>
 
-   # Output:
-   Account owned by authenticated-transfer program
-   {"balance":0}
-   ```
+In the output you should see `Account owned by authenticated transfer program`, with a `"balance":0`
 
-   - Purpose: Register sender ownership under the authenticated-transfer program.
-   - Expected result: Output changes to `Account owned by authenticated-transfer program` with `{"balance":0}`.
-   - Verify: Continue only after ownership and zero balance are both visible.
-
-1. Claim Piñata funds, then confirm sender balance.
+1. Claim faucet funds via Piñata, then confirm sender balance.
 
    ```bash
+   # This may take a few seconds to complete
    wallet pinata claim --to <sender_public_account_id>
    ```
 
    ```bash
    wallet account get --account-id <sender_public_account_id>
-
-   # Output:
-   Account owned by authenticated-transfer program
-   {"balance":150}
    ```
 
-   - Purpose: Fund the initialized sender account for transfer execution.
-   - Expected result: Sender output includes `{"balance":150}`.
-   - Verify: Use `{"balance":150}` as the funding success signal.
+In the output you should see `Account owned by authenticated transfer program`, with a `"balance":150`
 
-1. Create a recipient public account and record the account ID.
+> [!TIP]
+>
+> "Piñata" is the name of the the LEZ-specific testnet faucet program that funds accounts with native tokens.
+
+1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSAS_WALLET_HOME_DIR` again.
 
    ```bash
    wallet account new public
-
-   # Output:
-   Generated new account with account_id Public/...
    ```
 
-   - Purpose: Create the destination account for token transfer.
-   - Expected result: Output includes `Generated new account with account_id Public/...`.
-
-1. Send 37 tokens from sender to recipient.
+1. Send 37 tokens from sender to recipient:
 
    ```bash
    wallet auth-transfer send \
@@ -328,33 +299,30 @@ In this task, wallet account and transfer commands interact with the authenticat
        --amount 37
    ```
 
-   - Purpose: Execute the public-to-public transfer operation.
-   - Expected result: Unknown.
-   - Verify: Complete the next balance-check step to confirm transfer results.
+   Example:
 
-1. Check sender and recipient balances.
+   ```bash
+   wallet auth-transfer send \
+       --from Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N \
+       --to Public/74zHyMW81mtfcd6VMaLnpnAna8k2V4AN2Ygyy9LcEAQQ \
+       --amount 37
+   ```
+
+1. Check sender and recipient balances:
 
    ```bash
    # Sender account
    wallet account get --account-id <sender_public_account_id>
-
-   # Output:
-   Account owned by authenticated-transfer program
-   {"balance":113}
    ```
+
+This should show a `"balance":113` (150 - 37 = 113).
 
    ```bash
    # Recipient account
    wallet account get --account-id <recipient_public_account_id>
-
-   # Output:
-   Account owned by authenticated-transfer program
-   {"balance":37}
    ```
 
-   - Purpose: Verify debit and credit effects of the transfer.
-   - Expected result: Sender shows `{"balance":113}` and recipient shows `{"balance":37}`.
-   - Verify: Treat matching balances as task completion.
+This should show a `"balance":37`.
 
 ## Next steps
 

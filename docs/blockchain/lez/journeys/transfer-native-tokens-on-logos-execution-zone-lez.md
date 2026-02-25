@@ -111,7 +111,7 @@ Before you begin, you need:
 
     The output looks like this:
 
-        ```sh
+        ```text
         Account owned by authenticated-transfer program
         {"balance":150}
         ```
@@ -203,7 +203,7 @@ For example, to check the balance of the private account with ID `HacPU3hakLYzWt
 
 The output looks like this:
 
-        ```sh
+        ```text
         Account owned by authenticated-transfer program
         {"balance":BALANCE-AMOUNT}
         ```

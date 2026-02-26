@@ -1,5 +1,5 @@
 ---
-title: Transfer native tokens on Logos Execution Zone (LEZ)
+title: Transfer native tokens on the Logos Execution Zone
 doc_type: procedure
 product: LEZ
 topics: LEZ
@@ -7,19 +7,21 @@ steps_layout: flat
 authors: cheny0, jorge-campo, moudyellaz
 owner: logos
 doc_version: 1
-slug: transfer-native-tokens-on-logos-execution-zone-lez
+slug: transfer-native-tokens-on-the-logos-execution-zone
 ---
 
-# Transfer native tokens on Logos Execution Zone (LEZ)
+# Transfer native tokens on the Logos Execution Zone
 
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
 > [!NOTE]
 >
->  - **Permissions**: LEZ sequensor operators
->  - **Product**: Logos LEZ Testnet 0.1
+>  - **Permissions**: No special permissions required.
+>  - **Product**: Logos Execution Zone wallet CLI.
 
-Logos Execution Zone (LEZ) is a programmable blockchain with interoperable public and private state. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers program to transfer native tokens between public and private accounts.
+The Logos Execution Zone (LEZ) is a programmable blockchain with interoperable public and private state. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers program to transfer native tokens between public and private accounts.
+
+On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 
 - Public accounts
     - Live on-chain.
@@ -45,10 +47,10 @@ Logos Execution Zone (LEZ) is a programmable blockchain with interoperable publi
 >
 > Transfers are irreversible. Double-check all details before proceeding.
 
-Before you begin, you need:
+Before you begin, ensure that you have the following:
 
-- [LEZ sequencer](https://github.com/logos-blockchain/lssa/blob/main/README.md#standalone-mode) running standalone on your computer
-- The [Wallet CLI](https://github.com/logos-blockchain/lssa/blob/main/LEZ%20testnet%20v0.1%20tutorials/wallet-setup.md) installed
+- The [LEZ sequencer running in standalone mode](./quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
+- The [Wallet CLI installed](./quickstart-for-the-logos-execution-zone-wallet.md#step-1-set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
 
 ## What to expect
 

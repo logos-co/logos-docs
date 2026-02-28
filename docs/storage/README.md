@@ -23,6 +23,8 @@ Logos Storage can currently be used in the following ways:
 
 ## Tutorials
 
+* [The Logos Module API tutorial](https://github.com/logos-co/logos-storage-module?tab=readme-ov-file#api) shows how to build an app on top of the Logos Module API. It can be coupled with the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton) to build a simple, cli-based app.
+
 * [The simplified libstorage tutorial](./libstorage-tutorial.md) shows how to build an app on top of libstorage using the simple C bindings.
 
 ## API Documentation

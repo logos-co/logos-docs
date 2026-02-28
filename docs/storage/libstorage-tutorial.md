@@ -1,6 +1,6 @@
 # Getting Started with libstorage
 
-In this tutorial, we will build a simple [libstorage-based](https://github.com/logos-storage/logos-storage-nim) C application which allows sharing files over the Logos Storage network. Since libstorage is a low-level API and its main use case are library and not  application developers, however, we will use a higher-level C wrapper developed for this tutorial which we refer to as [easylibstorage](https://github.com/logos-storage/easylibstorage).
+In this tutorial, we will build a simple [libstorage-based](https://github.com/logos-storage/logos-storage-nim) C application which allows sharing files over the Logos Storage network. Since libstorage is a low-level API and its main use case is library and not application developers, however, we will use a higher-level C wrapper developed for this tutorial which we refer to as [easylibstorage](https://github.com/logos-storage/easylibstorage).
 
 This is, in fact, the way libstorage is supposed to be used: as the building block for higher-level libraries or language bindings. Officially, we currently provide [Go bindings](https://github.com/logos-storage/logos-storage-go-bindings) and [Rust bindings](https://github.com/logos-storage/logos-storage-rust-bindings).
 
@@ -91,40 +91,33 @@ The code for the uploader is shown in Listing 1. It first defines some configura
 32|     char *filepath = argv[1];
 33|
 34|     STORAGE_NODE node = e_storage_new(cfg);
-34|     if (node == NULL) panic("Failed to create storage node");
-35|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-36|
-37|     char *cid = e_storage_upload(node, filepath, progress);
-38|     if (cid == NULL) panic("Upload failed");
-39|     char *spr = e_storage_spr(node);
-40|     if (spr == NULL) panic("Failed to get node's signed peer record");
-41|
-42|     printf("Run: downloader %s %s ./output-file\n", spr, cid);
-45|
-46|     printf("\nPress Enter to exit\n");
-47|     getchar();
-48|
-49|     printf("Deleting file (this could take a while)...");
-50|     fflush(stdout);
-51|     if (e_storage_delete(node, cid) != RET_OK) panic("Failed to delete file");
-52|     printf("Done\n");
-53|
-54|     free(cid);
-55|     free(spr);
-56|     e_storage_stop(node);
-57|     e_storage_destroy(node);
-58|
-59|     return 0;
-60| }
+35|     if (node == NULL) panic("Failed to create storage node");
+36|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
+37|
+38|     char *cid = e_storage_upload(node, filepath, progress);
+39|     if (cid == NULL) panic("Upload failed");
+40|     char *spr = e_storage_spr(node);
+41|     if (spr == NULL) panic("Failed to get node's signed peer record");
+42|
+43|     printf("Run: downloader %s %s ./output-file\n", spr, cid);
+44|     free(cid);
+45|     free(spr);
+46|
+47|     printf("\nPress Enter to exit\n");
+48|     getchar();
+49|
+50|     e_storage_stop(node);
+51|     e_storage_destroy(node);
+52|
+53|     return 0;
+54| }
 ```
 **Listing 1.** Uploader.
 
-It then starts the node (line 37), and uploads the file into the local node (line 37). From that moment on, the file becomes available over the network. The program then gathers some critical pieces of information we will need later:
+It then starts the node (line 36), and uploads the file into the local node (line 38). From that moment on, the file becomes available over the network. The program then gathers some critical pieces of information we will need later:
 
 * the node's [Signed Peer Record](https://github.com/libp2p/specs/blob/master/RFC/0002-signed-envelopes.md). This a string encoding our node's public key, its network ID, and its connection addresses. It can be used to find the node in the network.
 * the Content ID ([CID](https://github.com/multiformats/cid)). This is a string that uniquely identifies the file we have just uploaded within the network.
-
-Those get printed to stdout (line 42), and the program them pauses until the user presses Enter (line 46). After that, the program deletes the file from the local node (line 49), and finally stops and destroys the node (lines 54-57).
 
 You should place the listing above in an `uploader.c` file in the `easylibstorage/tutorial` folder you created before.
 
@@ -167,72 +160,11 @@ You should place the listing above in an `uploader.c` file in the `easylibstorag
 34|     };
 35|
 36|     STORAGE_NODE node = e_storage_new(cfg);
-37|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-38|     if (e_storage_download(node, cid, filepath, progress) != RET_OK)
-39|         panic("Failed to download file");
+37|     if (node == NULL) panic("Failed to create storage node");
+38|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
+39|     if (e_storage_download(node, cid, filepath, progress) != RET_OK) panic("Failed to download file");
 40|     e_storage_stop(node);
 41|     e_storage_destroy(node);
 42| }
 ```
 **Listing 2.** Downloader.
-
-### Build
-
-To build the downloader, you will need to modify the `CMakeLists.txt` file in the `easylibstorage` folder so that it builds our new files. You can append the following to the end of the file:
-
-```cmake
-# ---- Tutorial uploader/downloader
-add_executable(uploader tutorial/uploader.c)
-add_executable(downloader tutorial/downloader.c)
-
-target_link_libraries(uploader PRIVATE easystorage)
-target_link_libraries(downloader PRIVATE easystorage)
-target_link_libraries(uploader PRIVATE ${LIBSTORAGE_PATH})
-target_link_libraries(downloader PRIVATE ${LIBSTORAGE_PATH})
-```
-
-This will make sure that cmake will include the right files and libraries as it tries to build our files. Now run cmake as before:
-
-```bash
-cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
-cmake --build build
-```
-
-And you should end up with two executables under `./build`: `uploader` and `downloader`.
-
-### Run
-
-**Upload.** To upload a file, do:
-
-```bash
-./build/uploader ./myfile
-```
-
-and replace `myfile` with a file you would like to upload. This will print something like:
-
-```bash
-> ./build/uploader ./myfile
-...
-
-Run: downloader spr:CiUIAhIhAkHse4QPQIFlu0xeE9ebpASP946ZRgvUpQEcCsGEc73MEgIDARpJCicAJQgCEiECQex7hA9AgWW7TF4T15ukBI_3jplGC9SlARwKwYRzvcwQkp6IzAYaCwoJBH8AAAGRAiOCGgsKCQTAqFj-kQIjgipGMEQCICMJdw19UmnubC5zeaV2TwSzMRr_sc1U057YwnvFhOkGAiB7020QxcZJ1kL_xrDLpzEnHEgkTVogydnsuR0oevFFbg zDvZRwzm4ABJVP5E6ujcsvZmJjaH76bhaJivirnMhrrhisYbxdGy ./output-file
-
-Press Enter to exit
-```
-
-This will start up the node and upload a file to it. The node will then be left running until you press Enter in the terminal. Leave it running and open a new terminal.
-
-You can now copy the line after `Run: downloader` and paste it into the new terminal to download the file:
-
-```bash
-./build/downloader spr:CiUIAhIhAkHse4QPQIFlu0xeE9ebpASP946ZRgvUpQEcCsGEc73MEgIDARpJCicAJQgCEiECQex7hA9AgWW7TF4T15ukBI_3jplGC9SlARwKwYRzvcwQkp6IzAYaCwoJBH8AAAGRAiOCGgsKCQTAqFj-kQIjgipGMEQCICMJdw19UmnubC5zeaV2TwSzMRr_sc1U057YwnvFhOkGAiB7020QxcZJ1kL_xrDLpzEnHEgkTVogydnsuR0oevFFbg zDvZRwzm4ABJVP5E6ujcsvZmJjaH76bhaJivirnMhrrhisYbxdGy ./output-file
-```
-
-The command should eventually finish, and you should end up with a file named `./output-file`. You can now test that the two files are indeed the same. The command:
-
-```bash
-cmp ./myfile ./output-file
-```
-
-should return nothing.
-
-And there you have it! You have just uploaded and downloaded a file over the Logos Storage network using libstorage.

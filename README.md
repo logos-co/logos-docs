@@ -44,6 +44,13 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 The sections below include the information and links for the things that you can do now in Logos. When a journey has no public docs yet, you will see an explicit "docs not published yet" note.
 
+### Logos App
+
+**Build and run the Logos App:** Build and run the Logos App: Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+
+- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
 ### LSSA rollup
 
 - **Set up a wallet for an LSSA-based chain:** Create a wallet and connect it to the LSSA environment so you can run the token and program flows.

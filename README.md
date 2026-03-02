@@ -3,15 +3,15 @@
 > [!IMPORTANT]
 >
 > **Work in progress.** We are consolidating public developer docs for Logos into this repository.
-> Until the first curated documentation set lands in the **first half of 2026**, expect rough edges: links may move or break, some use cases have no public docs yet, and many instructions are still being written.
+> As we work through the documentation for each component of the Logos stack, expect rough edges: links may move or break and some documentation is still work-in-progress.
 >
 > We appreciate your patience as we work to provide a coherent and comprehensive developer experience.
 
 ## What is Logos
 
-Logos is a modular technology stack for building decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
+Logos is a modular technology stack for building local first, decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-This diagram is a conceptual view of Logos as a layered stack. Dapps sit on top of Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
+This diagram is a conceptual view of Logos as a layered stack. Dapps sit use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
 
 ![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
 
@@ -40,13 +40,16 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
 
-## Choose your path
+## Explore Logos
 
-The sections below include the information and links for the things that you can do now in Logos. When a journey has no public docs yet, you will see an explicit "docs not published yet" note.
+The sections below include the information and links for the things that you can do now in Logos. When a use case has no public docs yet, you will see an explicit "docs not published yet" note. 
 
 ### Logos App
 
 **Build and run the Logos App:** Build and run the Logos App: Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+### Logos Execution Zone (LEZ)
+
+- **Set up a wallet in the LEZ:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
 
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
@@ -95,7 +98,7 @@ The sections below include the information and links for the things that you can
 
 - **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows.
 
-  - Docs not published yet.
+  - Docs in progress.
 
 - **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
   - Node repo: https://github.com/logos-co/nomos
@@ -114,7 +117,7 @@ The sections below include the information and links for the things that you can
 
 - **Use the Storage module API:** Integrate with the storage module from an app or a local node operator setup.
 
-  - Full documentation does not exist yet.
+  - Documentation is not available just yet.
   - Code entry point: https://github.com/logos-storage/logos-storage-nim
 
 ### Messaging

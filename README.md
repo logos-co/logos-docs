@@ -66,7 +66,7 @@ The sections below include the information and links for the things that you can
 
   - Token program section (same README): https://github.com/logos-blockchain/lssa#the-token-program
 
-- **Deploy custom programs using LSSA templates:** Build and deploy a sample program using the provided tutorial and templates.
+- **Deploy custom programs using LEZ templates:** Build and deploy a sample program using the provided tutorial and templates.
 
   - Program deployment tutorial: https://github.com/logos-blockchain/lssa/tree/main/examples/program_deployment
 

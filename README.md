@@ -46,7 +46,11 @@ The sections below include the information and links for the things that you can
 
 ### Logos App
 
-**Build and run the Logos App:** Build and run the Logos App: Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+
+- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
 ### Logos Execution Zone (LEZ)
 
 - **Set up a wallet in the LEZ:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.

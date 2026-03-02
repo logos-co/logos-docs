@@ -51,11 +51,11 @@ The sections below include the information and links for the things that you can
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 
-### LSSA rollup
+### LEZ rollup
 
-- **Set up a wallet for an LSSA-based chain:** Create a wallet and connect it to the LSSA environment so you can run the token and program flows.
+- **Set up a wallet for an LEZ-based chain:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
 
-  - LSSA repo (start here): https://github.com/logos-blockchain/lssa
+  - LEZ repo (start here): https://github.com/logos-blockchain/lssa
   - Try the Wallet CLI: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
 
 - **Transfer tokens in public and private contexts:** Send native tokens using the wallet CLI across public/private combinations.
@@ -78,11 +78,11 @@ The sections below include the information and links for the things that you can
     >
     > This repo is still evolving; some apps may be prototypes without full docs.
 
-- **Track transactions through an LSSA explorer:** View LSSA transactions and state via an explorer UI/API.
+- **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
 
   - Docs not published yet.
 
-- **Use an LSSA transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
+- **Use an LEZ transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
 
   - Docs not published yet.
 

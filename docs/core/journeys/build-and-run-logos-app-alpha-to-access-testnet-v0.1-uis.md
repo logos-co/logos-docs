@@ -1,5 +1,9 @@
 # Build and run Logos App (alpha) to access Testnet v0.1 UIs
 
+> [!IMPORTANT]
+>
+> This page is not ready to follow as a guide. Expect missing sections, incomplete steps, and placeholders. Use it only to understand what we plan to document and what is still missing. We are actively working to complete and verify this content.
+
 Applies to: https://github.com/logos-co/logos-app-poc@master
 Runtime target: Logos testnet v0.1 (Logos App runs locally, and provides alpha UIs for v0.1 modules/apps)  
 Last checked: 2026-02-13  

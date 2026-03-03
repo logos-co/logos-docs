@@ -14,6 +14,10 @@ slug: create-and-transfer-custom-tokens-on-the-logos-execution-zone
 
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
+> [!IMPORTANT]
+>
+> This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
 > [!NOTE]
 >
 > - **Permissions**: No special permissions required.

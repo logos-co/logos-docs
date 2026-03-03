@@ -23,7 +23,7 @@ slug: transfer-native-tokens-on-the-logos-execution-zone
 >  - **Permissions**: No special permissions required.
 >  - **Product**: Logos Execution Zone wallet CLI.
 
-The Logos Execution Zone (LEZ) is a programmable blockchain with interoperable public and private state. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers program to transfer native tokens between public and private accounts.
+The Logos Execution Zone (LEZ) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers program to transfer native tokens between public and private accounts.
 
 On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 
@@ -69,33 +69,39 @@ Before you begin, ensure that you have the following:
 
     - Public account:
 
-        ```sh
-        wallet account new public
-        ```
+    ```sh
+    wallet account new public
+    ```
 
     - Private account:
 
-        ```sh
-        wallet account new private
-        ```
+    ```sh
+    wallet account new private
+    ```
 
-   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and incoming viewing public key (`ipk`).
+   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and viewing public key (`vpk`).
 
 > [!NOTE]
 > 
-> Your account associated keys and data are stored in the local file `/Users/USER/.nssa/wallet/storage.json`.
+> Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
 
-1. Initialize the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialize.
+2. Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
 
-        ```sh
-        wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
-        ```
+    ```sh
+    wallet account ls
+    ```
+
+3. Initialize the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialize.
+
+    ```sh
+    wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
+    ```
 
     For example, to initialize the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS`, you run:
         
-        ```sh
-        wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
-        ```
+    ```sh
+    wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
+    ```
 
 > [!NOTE]
 >
@@ -103,31 +109,33 @@ Before you begin, ensure that you have the following:
 >
 > The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
 
-1. Fund the sender account using the Testnet Piñata program. Your account receives 150 tokens every time you fund it.
+4. Fund the sender account using the Testnet Piñata program. Your account receives 150 tokens every time you fund it.
 
-        ```sh
-        wallet pinata claim --to ACCOUNT-TYPE/ACCOUNT-ID
-        ```
+    ```sh
+    wallet pinata claim --to ACCOUNT-TYPE/ACCOUNT-ID
+    ```
 
-1. Confirm your account balance after funding using the `wallet account get` command:
+5. Confirm your account balance after funding using the `wallet account get` command:
 
-        ```sh
-        wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
-        ```
+    ```sh
+    wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
+    ```
 
     The output looks like this:
 
-        ```text
-        Account owned by authenticated-transfer program
-        {"balance":150}
-        ```
+    ```text
+    Account owned by authenticated-transfer program
+    {..."balance":150...}
+    ```
 
 ## Step 2: Transfer tokens
 
-Depending on the type of recipient account, there are two ways to specify the recipient account when transferring tokens:
+When transferring native tokens using the `wallet auth-transfer send` command, you specify the sender account with its account ID.
+
+There are two ways to specify the recipient account depending on the account type:
 
 - [Method 1: Use the recipient account ID](#method-1-transfer-tokens-using-the-recipient-account-id)
-- [Method 2: Use the recipient account `npk` and `ipk`](#method-2-transfer-tokens-using-the-recipient-account-npk-and-ipk)
+- [Method 2: Use the recipient account `npk` and `vpk`](#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk)
 
 With the recipient account ID, you can transfer native tokens across the following account types:
 
@@ -136,7 +144,11 @@ With the recipient account ID, you can transfer native tokens across the followi
 - Public → your private
 - Private → your private
 
-With the `npk` and `ipk` of the recipient account, you can transfer native tokens across the following account types:
+> [!NOTE]
+>
+> Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof. 
+
+With the `npk` and `vpk` of the recipient account, you can transfer native tokens across the following account types:
 
 - Public → uninitialized private (someone else's)
 - Private → uninitialized private (someone else's)
@@ -149,71 +161,92 @@ With the `npk` and `ipk` of the recipient account, you can transfer native token
 
 Use the `wallet auth-transfer send` to transfer tokens. Replace `ACCOUNT-TYPE` with the type of the account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
-        ```sh
-        wallet auth-transfer send \
-            --from ACCOUNT-TYPE/SENDER-ACCOUNT-ID \
-            --to ACCOUNT-TYPE/RECIPIENT-ACCOUNT-ID \
-            --amount TOKEN-AMOUNT
-        ```
+    ```sh
+    wallet auth-transfer send \
+        --from ACCOUNT-TYPE/SENDER-ACCOUNT-ID \
+        --to ACCOUNT-TYPE/RECIPIENT-ACCOUNT-ID \
+        --amount TOKEN-AMOUNT
+    ```
 
 For example, to transfer 17 tokens from the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS` to the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-        ```sh
-        wallet auth-transfer send \
-            --from Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS \
-            --to Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL \
-            --amount 17
-        ```
+    ```sh
+    wallet auth-transfer send \
+        --from Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS \
+        --to Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL \
+        --amount 17
+    ```
 
-### Method 2: Transfer tokens using the recipient account `npk` and `ipk`
+### Method 2: Transfer tokens using the recipient account `npk` and `vpk`
 
-When transferring someone else's private account, you need their account `npk` (nullifier public key)and `ipk` (incoming viewing public key) instead of the account ID because LEZ uses the `npk`  to confirm the ownership of the private account, and `ipk` to verify transactions without revealing the account owner. These keys do not expose sensitive information and allow others to verify transaction validity.
+When transferring someone else's private account, you need their account `npk` (nullifier public key)and `vpk` (viewing public key) instead of the account ID because LEZ uses the `npk`  to confirm the ownership of the private account, and `vpk` to verify transactions without revealing the account owner. These keys do not expose sensitive information and allow others to verify transaction validity.
 
-> [!NOTE]
+> [!TIP]
 >
-> Account `npk` and `ipk` are stored in the local file `/Users/USER/.nssa/wallet/storage.json`.
+> Check your account `npk` and `vpk` using the `wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID` command.
 
 1. Use the `wallet auth-transfer send` to transfer tokens to another user's private account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
-        ```sh
-        wallet auth-transfer send \
+    ```sh
+    wallet auth-transfer send \
         --from ACCOUNT-TYPE/SENDER-ACCOUNT-ID \
         --to-npk RECIPIENT-NPK \
-        --to-ipk RECIPIENT-IPK \
+        --to-vpk RECIPIENT-VPK \
         --amount TOKEN-AMOUNT
-        ```
+    ```
 
-> [!NOTE]
->
-> The privacy-preserving transaction may take a few minutes. 
+2. Once the transaction is accepted, run the following command to scan the chain for encrypted values in the transaction and update the local state accordingly.
 
-1. Once the transaction is accepted, run the following command to scan the chain for encrypted values in the transaction and update the local state accordingly.
-
-        ```sh
-        wallet account sync-private
-        ```
+    ```sh
+    wallet account sync-private
+    ```
 
 ## Step 3: Verify the transfer
 
 Confirm the transfer by checking the balances of both accounts using the `wallet account get` command.
 
-        ```sh
-        wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
-        ```
+    ```sh
+    wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
+    ```
 
 For example, to check the balance of the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-        ```sh
-        wallet account get --account-id Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL
-        ```
+    ```sh
+    wallet account get --account-id Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL
+    ```
 
 The output looks like this:
 
-        ```text
-        Account owned by authenticated-transfer program
-        {"balance":BALANCE-AMOUNT}
-        ```
+    ```text
+    Account owned by authenticated-transfer program
+    {..."balance":BALANCE-AMOUNT...}
+    ```
 
 > [!TIP]
 >
-> When checking the balance of a private account, the `wallet account get` command does not query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
+> When checking the balance of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
+
+> [!TIP]
+>
+> You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
+
+## Troubleshooting
+
+### Symptom 
+
+The wallet command panics and fails during proof generation with an assertion error when you try to send native tokens to an initialized private account.
+
+The error message looks like this:
+
+```text
+thread 'main' panicked at .../privacy_preserving_circuit.rs:394:13:
+assertion `left == right` failed: Found new private account with non default values
+  left: Account { ... }
+  right: Account { ... }
+...
+called `Result::unwrap()` on an `Err` value: CircuitProvingError("Guest panicked: assertion `left == right` failed: Found new private account with non default values ...")
+```
+
+### Explanation
+
+The transfer fails because the privacy-preserving circuit expects the recipient private account to be uninitialized (default state), but an initialized private account already contains non-default values and can only be modified by its owner.

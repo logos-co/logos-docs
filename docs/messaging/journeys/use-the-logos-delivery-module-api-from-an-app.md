@@ -1,4 +1,8 @@
-# External dev tests the Logos Messaging module via its API
+# Use the Logos Delivery Module API from an app
+
+> [!IMPORTANT]
+>
+> This page is not ready to follow as a guide. Expect missing sections, incomplete steps, and placeholders. Use it only to understand what we plan to document and what is still missing. We are actively working to complete and verify this content.
 
 Applies to:
 
@@ -18,11 +22,11 @@ Tracking: GitHub issue [#145](https://github.com/logos-co/logos-docs/issues/145)
 
 ## Audience
 
-- developer
+- developers
 
 ## Known gaps
 
-- Doc Packet missing
+- Doc Packet missings
 - Logos testnet specifics missing: which network endpoints/bootstraps to use, whether RLN is required, and what "success" means for v0.1 beyond basic API calls.
 
 ## Prerequisites

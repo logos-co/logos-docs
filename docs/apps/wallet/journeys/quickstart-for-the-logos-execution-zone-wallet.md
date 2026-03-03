@@ -181,28 +181,23 @@ You should see the sequencer starting up at `localhost:3040` and logging informa
 [2026-02-24T16:27:58Z INFO  sequencer_runner] Sequencer running. Monitoring concurrent tasks...
 ```
 
-## Step 3: Configure the wallet to connect to the sequencer
+## Step 3 (optional): Configure the wallet home directory
 
-The wallet works by reading its configuration from a "wallet home" directory. It uses the `NSSA_WALLET_HOME_DIR` environment variable if set. If not set, it falls back to `~/.nssa/wallet`.
+The wallet reads its configuration from a "wallet home" directory. If the `NSSA_WALLET_HOME_DIR` environment variable is not set, it falls back to `~/.nssa/wallet`.
 
-A ready-to-copy sample configuration exists in the repo at `wallet/configs/debug/wallet_config.json`, and it already points to http://127.0.0.1:3040 (the sequencer address). This `wallet_config.json` file defines how the wallet CLI talks to the LEZ sequencer endpoint.
-
-Run these commands from the root of the `lssa` repository:
-
-> [!TIP]
->
-> Leave the sequencer running in the other terminal window while you configure the wallet.
+If you want the wallet to initialize in a different location, set the variable before continuing. For example, to set the wallet home to a `.wallet-home` folder in the current directory, run:
 
 ```bash
-cd ~/logos/src/lssa
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
-mkdir -p "$NSSA_WALLET_HOME_DIR"
-cp wallet/configs/debug/wallet_config.json "$NSSA_WALLET_HOME_DIR/wallet_config.json"
 ```
 
 ## Step 4: Initialize the wallet local storage and verify connectivity
 
 The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialize the wallet storage.
+
+> [!TIP]
+>
+> Leave the sequencer running in the other terminal window while you initialize the wallet storage.
 
 Run a `wallet` command to initialize the storage. Use the built-in health check:
 
@@ -231,7 +226,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account new public
    ```
 
-1. Check sender status before initialization:
+1. Using the sender public `account_id` from the previous step, check the sender status:
 
    ```bash
    wallet account get --account-id <sender_public_account_id>
@@ -327,4 +322,5 @@ This should show a `"balance":37`.
 
 ## Next steps
 
-- 
+- [Transfer native tokens on the Logos Execution Zone](./transfer-native-tokens-on-the-logos-execution-zone.md)
+- [Create and transfer custom tokens on the Logos Execution Zone](./create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)

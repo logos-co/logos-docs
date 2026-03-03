@@ -1,4 +1,8 @@
-# Use a demo chat app in Logos Core to send and receive messages via Logos ChatSDK and Logos Messaging
+# Use the Logos Chat module API from an app
+
+> [!IMPORTANT]
+>
+> This page is not ready to follow as a guide. Expect missing sections, incomplete steps, and placeholders. Use it only to understand what we plan to document and what is still missing. We are actively working to complete and verify this content.
 
 Applies to:
 

@@ -44,11 +44,25 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 The sections below include the information and links for the things that you can do now in Logos. When a use case has no public docs yet, you will see an explicit "docs not published yet" note. 
 
+### Logos App
+
+**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+
+- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
 ### Logos Execution Zone (LEZ)
 
 - **Set up a wallet in the LEZ:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
 
-  - LSSA repo (start here): https://github.com/logos-blockchain/lssa
+- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
+### LEZ rollup
+
+- **Set up a wallet for an LEZ-based chain:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
+
+  - LEZ repo (start here): https://github.com/logos-blockchain/lssa
   - Try the Wallet CLI: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
 
 - **Transfer tokens in public and private contexts:** Send native tokens using the wallet CLI across public/private combinations.
@@ -59,7 +73,7 @@ The sections below include the information and links for the things that you can
 
   - Token program section (same README): https://github.com/logos-blockchain/lssa#the-token-program
 
-- **Deploy custom programs using LSSA templates:** Build and deploy a sample program using the provided tutorial and templates.
+- **Deploy custom programs using LEZ templates:** Build and deploy a sample program using the provided tutorial and templates.
 
   - Program deployment tutorial: https://github.com/logos-blockchain/lssa/tree/main/examples/program_deployment
 
@@ -71,11 +85,11 @@ The sections below include the information and links for the things that you can
     >
     > This repo is still evolving; some apps may be prototypes without full docs.
 
-- **Track transactions through an LSSA explorer:** View LSSA transactions and state via an explorer UI/API.
+- **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
 
   - Docs not published yet.
 
-- **Use an LSSA transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
+- **Use an LEZ transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
 
   - Docs not published yet.
 

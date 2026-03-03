@@ -21,6 +21,10 @@ slug: lez-quickstart
 
 #### Set up the wallet, connect to a sequencer, and run a minimal transfer flow.
 
+> [!IMPORTANT]
+>
+> This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
+
 > **Note**
 >
 > - **Permissions**: No special permissions required.

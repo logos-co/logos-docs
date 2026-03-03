@@ -16,7 +16,7 @@ slug: transfer-native-tokens-on-the-logos-execution-zone
 
 > [!IMPORTANT]
 >
-> This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+> This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
 
 > [!NOTE]
 >

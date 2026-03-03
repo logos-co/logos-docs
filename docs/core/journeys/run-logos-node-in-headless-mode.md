@@ -1,11 +1,8 @@
-# Run Logos Node in headless mode to start Blockchain, Storage, and Chat nodes
+# Run Logos Node in headless mode
 
-Applies to: https://github.com/logos-co/logos-liblogos  
-Runtime target: Logos testnet v0.1  
-Last checked: 2026-02-13  
-Status: Stub  
-Owner: @iurimatias  
-Tracking: GitHub issue [#167](https://github.com/logos-co/logos-docs/issues/167)
+> [!IMPORTANT]
+>
+> This page is not ready to follow as a guide. Expect missing sections, incomplete steps, and placeholders. Use it only to understand what we plan to document and what is still missing. We are actively working to complete and verify this content.
 
 ## Outcome + value
 

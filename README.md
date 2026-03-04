@@ -1,11 +1,4 @@
-# Build with Logos (temporary docs index)
-
-> [!IMPORTANT]
->
-> **Work in progress.** We are consolidating public developer docs for Logos into this repository.
-> As we work through the documentation for each component of the Logos stack, expect rough edges: links may move or break and some documentation is still work-in-progress.
->
-> We appreciate your patience as we work to provide a coherent and comprehensive developer experience.
+# Build with Logos
 
 ## What is Logos
 
@@ -26,10 +19,6 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 - **Storage (serve frontends)** provides the node-side content storage and retrieval functionality.
 
-  > [!NOTE]
-  >
-  > Public end-to-end docs for Storage are not published yet.
-
 - **User Modules** represent pluggable modules that extend Logos' capabilities such as wallet and key management, messaging features, identity, access control, or module installation.
 
 - **Discovery, Peering, Mix-net** is a shared networking layer. "Discovery" and "peering" are the fundamentals for finding and maintaining peer connections, while "mix-net" aligns with the stack’s **AnonComms** goal (routing with improved metadata privacy) and capability discovery.
@@ -40,7 +29,7 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
 
-## Explore Logos
+## Logos
 
 The sections below include the information and links for the things that you can do now in Logos. When a use case has no public docs yet, you will see an explicit "docs not published yet" note. 
 
@@ -50,6 +39,28 @@ The sections below include the information and links for the things that you can
 
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
+### Blockchain (base layer)
+
+- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
+  - Node repo: https://github.com/logos-co/nomos
+
+    > [!NOTE]
+    >
+    > Public docs exist, but some details may change as testnet packaging stabilizes.
+
+- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
+
+  - Wallet UI: https://github.com/logos-co/logos-wallet-ui
+  - Wallet module: https://github.com/logos-co/logos-wallet-module
+
+- **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows. !!!LINK!!!
+
+- **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
+
+  - Node repo (base layer): https://github.com/logos-co/nomos
+  - DA research notes/code: https://github.com/logos-storage/das-research
+  - Full documentation not published yet.
 
 ### Logos Execution Zone (LEZ)
 
@@ -81,10 +92,6 @@ The sections below include the information and links for the things that you can
 
   - Example apps entry point: https://github.com/logos-co/logos-app-poc
 
-    > [!NOTE]
-    >
-    > This repo is still evolving; some apps may be prototypes without full docs.
-
 - **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
 
   - Docs not published yet.
@@ -92,30 +99,6 @@ The sections below include the information and links for the things that you can
 - **Use an LEZ transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
 
   - Docs not published yet.
-
-### Blockchain (base layer)
-
-- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
-
-  - Wallet UI: https://github.com/logos-co/logos-wallet-ui
-  - Wallet module: https://github.com/logos-co/logos-wallet-module
-
-- **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows.
-
-  - Docs in progress.
-
-- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
-  - Node repo: https://github.com/logos-co/nomos
-
-    > [!NOTE]
-    >
-    > Public docs exist, but some details may change as testnet packaging stabilizes.
-
-- **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
-
-  - Node repo (base layer): https://github.com/logos-co/nomos
-  - DA research notes/code: https://github.com/logos-storage/das-research
-  - Full documentation not published yet.
 
 ### Storage
 
@@ -136,10 +119,6 @@ The sections below include the information and links for the things that you can
 - **Use a demo chat app in Core using the Chat SDK and Messaging:** Run the demo chat UI/app and validate end-to-end message send/receive.
 
   - Core PoC (start here): https://github.com/logos-co/logos-core-poc
-
-### Core
-
-- Docs not published yet.
 
 ### AnonComms
 
@@ -164,7 +143,7 @@ Our aim is to provide a predictable onboarding path for operators and developers
 
 ### What to expect next
 
-Starting in 2026, we will release documentation in phases aligned with the project milestones.
+In 2026, we will release documentation in phases aligned with the project milestones.
 
 We will provide operator guides for those who want to run and support the Logos Blockchain, and developer guides for contributors building decentralized applications on the Logos stack (blockchain, storage, messaging).
 

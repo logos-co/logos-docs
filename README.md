@@ -1,17 +1,10 @@
-# Build with Logos (temporary docs index)
-
-> [!IMPORTANT]
->
-> **Work in progress.** We are consolidating public developer docs for Logos into this repository.
-> As we work through the documentation for each component of the Logos stack, expect rough edges: links may move or break and some documentation is still work-in-progress.
->
-> We appreciate your patience as we work to provide a coherent and comprehensive developer experience.
+# Build with Logos
 
 ## What is Logos
 
 Logos is a modular technology stack for building local first, decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-This diagram is a conceptual view of Logos as a layered stack. Dapps sit use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
+This diagram is a conceptual view of Logos as a layered stack. Dapps use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
 
 ![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
 
@@ -26,10 +19,6 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 - **Storage (serve frontends)** provides the node-side content storage and retrieval functionality.
 
-  > [!NOTE]
-  >
-  > Public end-to-end docs for Storage are not published yet.
-
 - **User Modules** represent pluggable modules that extend Logos' capabilities such as wallet and key management, messaging features, identity, access control, or module installation.
 
 - **Discovery, Peering, Mix-net** is a shared networking layer. "Discovery" and "peering" are the fundamentals for finding and maintaining peer connections, while "mix-net" aligns with the stack’s **AnonComms** goal (routing with improved metadata privacy) and capability discovery.
@@ -40,9 +29,9 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
 
-## Explore Logos
+## Logos
 
-The sections below include the information and links for the things that you can do now in Logos. When a use case has no public docs yet, you will see an explicit "docs not published yet" note. 
+The sections below include the information and links for the things that you can do now in Logos. 
 
 ### Logos App
 
@@ -50,6 +39,28 @@ The sections below include the information and links for the things that you can
 
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+
+### Blockchain (base layer)
+
+- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
+  - Node repo: https://github.com/logos-co/nomos
+
+    > [!NOTE]
+    >
+    > Public docs exist, but some details may change as testnet packaging stabilizes.
+
+- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
+
+  - Wallet UI: https://github.com/logos-co/logos-wallet-ui
+  - Wallet module: https://github.com/logos-co/logos-wallet-module
+
+- **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows. !!!LINK!!!
+
+- **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
+
+  - Node repo (base layer): https://github.com/logos-co/nomos
+  - DA research notes/code: https://github.com/logos-storage/das-research
+  - Full documentation not published yet.
 
 ### Logos Execution Zone (LEZ)
 
@@ -81,10 +92,6 @@ The sections below include the information and links for the things that you can
 
   - Example apps entry point: https://github.com/logos-co/logos-app-poc
 
-    > [!NOTE]
-    >
-    > This repo is still evolving; some apps may be prototypes without full docs.
-
 - **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
 
   - Docs not published yet.
@@ -93,30 +100,6 @@ The sections below include the information and links for the things that you can
 
   - Docs not published yet.
 
-### Blockchain (base layer)
-
-- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
-
-  - Wallet UI: https://github.com/logos-co/logos-wallet-ui
-  - Wallet module: https://github.com/logos-co/logos-wallet-module
-
-- **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows.
-
-  - Docs in progress.
-
-- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
-  - Node repo: https://github.com/logos-co/nomos
-
-    > [!NOTE]
-    >
-    > Public docs exist, but some details may change as testnet packaging stabilizes.
-
-- **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
-
-  - Node repo (base layer): https://github.com/logos-co/nomos
-  - DA research notes/code: https://github.com/logos-storage/das-research
-  - Full documentation not published yet.
-
 ### Storage
 
 - **Use the Storage module API:** Integrate with the storage module from an app or a local node operator setup.
@@ -124,35 +107,43 @@ The sections below include the information and links for the things that you can
   - Documentation is not available just yet.
   - Code entry point: https://github.com/logos-storage/logos-storage-nim
 
+### Logos App
+
+**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
+
+- [[Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [[Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+- [[Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md)](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
+- [[Run Logos Node in headless mode](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/run-logos-node-in-headless-mode.md)](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/run-logos-node-in-headless-mode.md) — Run a Logos node without a graphical interface for server or automated environments.
+
+### Logos Execution Zone
+
+- [[Set up a wallet for the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
+- [[Transfer native tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
+- [[Create and transfer custom tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
+- [[Create and use an AMM liquidity pool in the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
+
+### Blockchain
+
+- [[Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md)](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md) — Set up and run a Logos blockchain node from the command line.
+
+### Storage
+
+- [[Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/)](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.
+- [[Store and retrieve a file using the Simple Filesharing App](https://logos-storage-docs.netlify.app/tutorials/libstorage/)](https://logos-storage-docs.netlify.app/tutorials/libstorage/) — Walk through storing and retrieving files using the Simple Filesharing application.
+
 ### Messaging
 
-- **Test the Messaging module via its API:** Integrate messaging into an external app and validate basic publish/subscribe and message retrieval flows.
+- [[Use the Logos Delivery Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md) — Integrate the Logos Delivery Module API into your application to send and receive messages.
+- [[Use the Logos Chat Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md) — Integrate the Logos Chat Module API into your application to enable chat functionality.
 
-  - Public docs entry point: https://docs.waku.org
-  - Reference implementation (protocols in Nim): https://github.com/logos-messaging/logos-messaging-nim
+### AnonComs
 
-### Core + Messaging (demo chat app)
-
-- **Use a demo chat app in Core using the Chat SDK and Messaging:** Run the demo chat UI/app and validate end-to-end message send/receive.
-
-  - Core PoC (start here): https://github.com/logos-co/logos-core-poc
-
-### Core
-
-- Docs not published yet.
-
-### AnonComms
-
-- **Use the AnonComms demo and capability discovery (work in progress):** Explore how the stack discovers nodes with specific capabilities and routes messages through a mixnet; public how-to docs and stable APIs are not published yet.
-
-  - Roadmap (start here): https://roadmap.logos.co/anoncomms/roadmap/
-  - Mixnet milestone context: https://roadmap.logos.co/messaging/milestones/closed/2025-introduce-mixnet-for-message-sending
-  - Recent update context: https://roadmap.logos.co/anoncomms/updates/2025-12-08
-  - Docs not published yet.
+- [[Discover nodes and send messages via the AnonComms Mixnet demo app](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
 
 ## If you get stuck
 
-If you cannot complete a journey with public docs, please open an issue in this repository describing the journey you are trying to complete and where you got blocked.
+Please open an issue in this repository describing your what you are trying to complete and where you got blocked.
 
 ## Documentation status and timeline
 
@@ -164,7 +155,7 @@ Our aim is to provide a predictable onboarding path for operators and developers
 
 ### What to expect next
 
-Starting in 2026, we will release documentation in phases aligned with the project milestones.
+In 2026 we will release documentation in phases aligned with the project milestones.
 
 We will provide operator guides for those who want to run and support the Logos Blockchain, and developer guides for contributors building decentralized applications on the Logos stack (blockchain, storage, messaging).
 

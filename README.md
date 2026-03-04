@@ -109,25 +109,37 @@ The sections below include the information and links for the things that you can
 
 ### Messaging
 
-- **Test the Messaging module via its API:** Integrate messaging into an external app and validate basic publish/subscribe and message retrieval flows.
+- [[Use the Logos Delivery Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md) — Integrate the Logos Delivery Module API into your application to send and receive messages.
+- [[Use the Logos Chat Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md) — Integrate the Logos Chat Module API into your application to enable chat functionality.
 
-  - Public docs entry point: https://docs.waku.org
-  - Reference implementation (protocols in Nim): https://github.com/logos-messaging/logos-messaging-nim
+### Storage
 
-### Core + Messaging (demo chat app)
+- [[Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/)](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.
+- [[Store and retrieve a file using the Simple Filesharing App](https://logos-storage-docs.netlify.app/tutorials/libstorage/)](https://logos-storage-docs.netlify.app/tutorials/libstorage/) — Walk through storing and retrieving files using the Simple Filesharing application.
 
-- **Use a demo chat app in Core using the Chat SDK and Messaging:** Run the demo chat UI/app and validate end-to-end message send/receive.
+### Logos App
 
-  - Core PoC (start here): https://github.com/logos-co/logos-core-poc
+**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
 
-### AnonComms
+- [[Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
+- [[Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+- [[Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md)](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
+- [[Run Logos Node in headless mode](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/run-logos-node-in-headless-mode.md)](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/run-logos-node-in-headless-mode.md) — Run a Logos node without a graphical interface for server or automated environments.
 
-- **Use the AnonComms demo and capability discovery (work in progress):** Explore how the stack discovers nodes with specific capabilities and routes messages through a mixnet; public how-to docs and stable APIs are not published yet.
+### AnonComs
 
-  - Roadmap (start here): https://roadmap.logos.co/anoncomms/roadmap/
-  - Mixnet milestone context: https://roadmap.logos.co/messaging/milestones/closed/2025-introduce-mixnet-for-message-sending
-  - Recent update context: https://roadmap.logos.co/anoncomms/updates/2025-12-08
-  - Docs not published yet.
+- [[Discover nodes and send messages via the AnonComms Mixnet demo app](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md)](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
+
+### Logos Execution Zone
+
+- [[Set up a wallet for the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
+- [[Transfer native tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
+- [[Create and transfer custom tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
+- [[Create and use an AMM liquidity pool in the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
+
+### Blockchain
+
+- [[Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md)](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md) — Set up and run a Logos blockchain node from the command line.
 
 ## If you get stuck
 

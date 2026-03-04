@@ -105,7 +105,7 @@ The sections below include the information and links for the things that you can
   - Docs in progress.
 
 - **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
-  - Node repo: https://github.com/logos-co/nomos
+  - Node repo: https://github.com/logos-blockchain/logos-blockchain
 
     > [!NOTE]
     >
@@ -113,7 +113,7 @@ The sections below include the information and links for the things that you can
 
 - **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
 
-  - Node repo (base layer): https://github.com/logos-co/nomos
+  - Node repo (base layer): https://github.com/logos-blockchain/logos-blockchain
   - DA research notes/code: https://github.com/logos-storage/das-research
   - Full documentation not published yet.
 

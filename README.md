@@ -31,7 +31,7 @@ Inside Logos, the top row shows the subsystems that Dapps interact with most dir
 
 ## Logos
 
-The sections below include the information and links for the things that you can do now in Logos. When a use case has no public docs yet, you will see an explicit "docs not published yet" note. 
+The sections below include the information and links for the things that you can do now in Logos. 
 
 ### Logos App
 

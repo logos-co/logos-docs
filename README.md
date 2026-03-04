@@ -131,7 +131,7 @@ The sections below include the information and links for the things that you can
 
 ## If you get stuck
 
-If you cannot complete a journey with public docs, please open an issue in this repository describing the journey you are trying to complete and where you got blocked.
+Please open an issue in this repository describing your what you are trying to complete and where you got blocked.
 
 ## Documentation status and timeline
 
@@ -143,7 +143,7 @@ Our aim is to provide a predictable onboarding path for operators and developers
 
 ### What to expect next
 
-In 2026, we will release documentation in phases aligned with the project milestones.
+In 2026 we will release documentation in phases aligned with the project milestones.
 
 We will provide operator guides for those who want to run and support the Logos Blockchain, and developer guides for contributors building decentralized applications on the Logos stack (blockchain, storage, messaging).
 

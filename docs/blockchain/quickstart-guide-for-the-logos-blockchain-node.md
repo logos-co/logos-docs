@@ -182,20 +182,7 @@ Before your node can participate in the consensus mechanism, the UTXO you receiv
     {"listen_addresses":["/ip4/127.0.0.1/udp/3001/quic-v1"],"peer_id":"12D3...fuS2","n_peers":16,"n_connections":19,"n_pending_connections":0}
     ```
 
-1. Confirm `slot` and `height` values are increasing.
-
-    ```sh
-    curl localhost:8080/cryptarchia/info
-    ```
-
-    Example response:
-
-    ```json
-    {"lib":"3d0c...4e6d","tip":"f44d...e2f5","slot":70899,"height":120,"mode":"Bootstrapping"}
-    ```
-
-    `height` counts confirmed blocks while `slot` counts elapsed time intervals. You should see the `height` increasing at an average rate of 1 block every 10 seconds. The timing is probabilistic, so expect some variance.
-
+1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm that `slot` and `height` have increased compared to the previous output.
 ## Step 5: Participate in the consensus mechanism
 
 Once the faucet UTXO has aged, your node automatically enters the consensus lottery and may begin proposing blocks. No further action is required.

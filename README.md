@@ -37,80 +37,6 @@ The sections below include the information and links for the things that you can
 
 **Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
 
-- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
-- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
-
-### Blockchain (base layer)
-
-- **Run a validator/consensus node (including staking):** Run a base-layer node and participate in consensus.
-  - Node repo: https://github.com/logos-co/nomos
-
-    > [!NOTE]
-    >
-    > Public docs exist, but some details may change as testnet packaging stabilizes.
-
-- **Set up a user wallet for the base layer:** Install and run the base-layer wallet UI/module so you can hold assets and interact with the chain.
-
-  - Wallet UI: https://github.com/logos-co/logos-wallet-ui
-  - Wallet module: https://github.com/logos-co/logos-wallet-module
-
-- **Receive tokens from a faucet:** Obtain test tokens needed to run the v0.1 flows. !!!LINK!!!
-
-- **Run an archival DA node:** Operate an archival data-availability node and serve queries needed by rollup tooling.
-
-  - Node repo (base layer): https://github.com/logos-co/nomos
-  - DA research notes/code: https://github.com/logos-storage/das-research
-  - Full documentation not published yet.
-
-### Logos Execution Zone (LEZ)
-
-- **Set up a wallet in the LEZ:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
-
-- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
-- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
-
-### LEZ rollup
-
-- **Set up a wallet for an LEZ-based chain:** Create a wallet and connect it to the LEZ environment so you can run the token and program flows.
-
-  - LEZ repo (start here): https://github.com/logos-blockchain/lssa
-  - Try the Wallet CLI: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
-
-- **Transfer tokens in public and private contexts:** Send native tokens using the wallet CLI across public/private combinations.
-
-  - Wallet CLI walkthrough: https://github.com/logos-blockchain/lssa#try-the-wallet-cli
-
-- **Create and transfer custom tokens (public and private contexts):** Define a custom token and execute transfers with different privacy modes.
-
-  - Token program section (same README): https://github.com/logos-blockchain/lssa#the-token-program
-
-- **Deploy custom programs using LEZ templates:** Build and deploy a sample program using the provided tutorial and templates.
-
-  - Program deployment tutorial: https://github.com/logos-blockchain/lssa/tree/main/examples/program_deployment
-
-- **Interact with sample apps in public and private contexts:** Run apps that exercise public/private context flows.
-
-  - Example apps entry point: https://github.com/logos-co/logos-app-poc
-
-- **Track transactions through an LEZ explorer:** View LEZ transactions and state via an explorer UI/API.
-
-  - Docs not published yet.
-
-- **Use an LEZ transaction generator to stress-test the Logos testnet:** Generate high-volume transactions to measure performance.
-
-  - Docs not published yet.
-
-### Storage
-
-- **Use the Storage module API:** Integrate with the storage module from an app or a local node operator setup.
-
-  - Documentation is not available just yet.
-  - Code entry point: https://github.com/logos-storage/logos-storage-nim
-
-### Logos App
-
-**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
-
 - [[Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [[Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 - [[Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md)](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
@@ -143,7 +69,7 @@ The sections below include the information and links for the things that you can
 
 ## If you get stuck
 
-Please open an issue in this repository describing your what you are trying to complete and where you got blocked.
+Please open an issue in this repository describing what you are trying to complete and where you got blocked.
 
 ## Documentation status and timeline
 

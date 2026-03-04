@@ -28,7 +28,7 @@ In this quickstart you install the Logos Blockchain node, connect to the public 
 - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed, or modern Linux.
 - Minimum: 64 GB storage. See also the minimum hardware requirements listed [here](https://www.notion.so/nomos-tech/Hardware-Requirements-1fd261aa09df81a4a52be19e90b60891).
 
-## Step 1. Download and install the node binary and set up ZK circuits
+## Step 1: Download and install the node binary and set up ZK circuits
 
 The node requires zero-knowledge circuit files for cryptographic operations. Zero-knowledge proofs let the ledger validate transactions without revealing the underlying data: the prover demonstrates correctness and the verifier checks the proof without seeing the transaction details. You must install these circuit binaries before running the node.
 

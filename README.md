@@ -4,7 +4,7 @@
 
 Logos is a modular technology stack for building local first, decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-This diagram is a conceptual view of Logos as a layered stack. Dapps sit use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
+This diagram is a conceptual view of Logos as a layered stack. Dapps use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
 
 ![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
 

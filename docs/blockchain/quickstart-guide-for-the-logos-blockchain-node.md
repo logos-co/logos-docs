@@ -20,8 +20,8 @@ In this quickstart you install the Logos Blockchain node, connect to the public 
 
 **Software:**
 
-- OS: macOS, Linux x86_64, Raspberry Pi OS, Windows
-- Dependencies: glibc version 2.39
+- OS: Linux x86_64, Raspberry Pi OS (Raspberry Pi 5)
+- On Linux, dependencies: glibc version 2.39 or later
 
 **Minimum hardware:**
 

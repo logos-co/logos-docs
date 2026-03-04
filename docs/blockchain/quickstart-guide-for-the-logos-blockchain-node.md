@@ -103,7 +103,7 @@ Bootstrap nodes are the initial contact points for joining the network. Once you
     ./logos-blockchain-node user_config.yaml
     ```
 
-There is currenlty no dynamic wallet key management. To add new keys you must manually edit the `user_config.yaml` file and restart the node.
+There is currently no dynamic wallet key management. To add new keys you must manually edit the `user_config.yaml` file and restart the node.
 
 ## Step 3: Request tokens from the faucet
 

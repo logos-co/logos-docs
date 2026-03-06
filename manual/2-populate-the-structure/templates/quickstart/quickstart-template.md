@@ -23,10 +23,10 @@ slug:
 | "Before you start"            | List                                | No        | `QST-BEFORE-START`    |
 | Task guidelines               |                                     | Yes       | `QST-TASK-GUIDELINES` |
 | Task title                    | H2                                  | Yes       | `QST-TASK-TITLE`      |
-| Task intro                    | Paragraph                           | No        | `QST-TASK-INTRO`      |
+| Task intro                    | Paragraph                           | Yes       | `QST-TASK-INTRO`      |
 | Task callouts                 | Tip, Note, Important, Caution       | No        | `QST-TASK-CALLOUTS`   |
 | Task actions                  | Numbered list                       | Yes       | `QST-TASK-STEP`       |
-| Step clarifiers               | Unordered bullets (depth 1) (1)     | No        | `QST-TASK-CLARIFIERS` |
+| Step clarifiers               | Unordered bullets (depth 1) (1)     | Yes       | `QST-TASK-CLARIFIERS` |
 | Code                          | Fenced code block (2)               | No        | `QST-TASK-CODE`       |
 | Screenshot                    | Image (2)                           | No        | `QST-TASK-IMG`        |
 | "Next steps"                  | Bullet list                         | No        | `QST-NEXT`            |
@@ -93,7 +93,9 @@ Examples:
 
 - Do not add a visible subheading. <!-- QST-STRUCT-OVERVIEW-NO-HEADING -->
 - Describe the product or feature' core purposes and what the user will achieve in this quickstart. <!-- QST-BEHAV-OVERVIEW-CONTENT -->
-- Write one or two 50 to 100-word paragraphs. <!-- QST-BEHAV-OVERVIEW-LENGTH -->
+- Write two to three 50 to 150-word paragraphs. <!-- QST-BEHAV-OVERVIEW-LENGTH -->
+- Include a 1–2 sentence mental model: name the 2–4 main components the reader will interact with in this quickstart, and how they relate. <!-- QST-BEHAV-OVERVIEW-MENTAL-MODEL -->
+- Define 3–6 key terms inline at first mention (term + short parenthetical definition). If not evidenced, write "Unknown". <!-- QST-BEHAV-OVERVIEW-KEY-TERMS -->
 - Avoid lengthy discussions of the product or feature. Link to a [concept](./concept-help-me-to-understand.md) article if you need to provide more information. <!-- QST-BEHAV-OVERVIEW-MORE-INFO -->
 - Link to related documents or headings in the same document to support the reader's gathering of information. <!-- QST-BEHAV-OVERVIEW-LINK -->
 - Use at most one short alert only if it prevents confusion; otherwise keep this section free of callouts. <!-- QST-BEHAV-OVERVIEW-ALERT-SPARING -->
@@ -122,6 +124,7 @@ Example:
 
 - This section is guidance only; do not render a visible heading or body. <!-- QST-STRUCT-TASK-GUIDELINES-NO-RENDER -->
 - Scope: these guidelines apply to all task sections (title, intro, callouts, steps, clarifiers, code, image). <!-- QST-STRUCT-TASK-GUIDELINES-SCOPE-ALL -->
+- Each task must include at least one verification moment: either a dedicated "Verify…" step, or an "Expected result" clarifier with a concrete signal. If no signal is evidenced, mark it "Unknown". <!-- QST-BEHAV-TASK-GUIDELINES-VERIFICATION -->
 - Use imperative mood throughout the tasks. <!-- QST-BEHAV-TASK-GUIDELINES-IMPERATIVE -->
 - Choose two or three tasks that are essential, quick to complete, and provide immediate value to the user. <!-- QST-STRUCT-TASK-COUNT -->
 - The first task is usually about setting up or installing the product or feature. <!-- QST-BEHAV-TASK-FIRST-SETUP -->
@@ -145,9 +148,11 @@ Examples:
 	- *Connect to the Logos Blockchain network*
 	- *Configure system admin access*
 
-### Task intro (optional) <!-- group: QST-TASK-INTRO -->
+### Task intro <!-- group: QST-TASK-INTRO -->
 
-- Write 1–2 short sentences that provide context. <!-- QST-BEHAV-TASK-INTRO-BRIEF -->
+- Write 2 sentences that provide context. <!-- QST-BEHAV-TASK-INTRO -->
+- Sentence 1: describe what this task accomplishes (outcome). <!-- QST-BEHAV-TASK-INTRO-OUTCOME -->
+- Sentence 2: describe why this task matters in the overall flow (how it connects to the previous and next tasks). <!-- QST-BEHAV-TASK-INTRO-WHY -->
 - Do not repeat the task title wording. <!-- QST-BEHAV-TASK-INTRO-NO-REPEAT -->
 - Add cross-references here, not inside steps. <!-- QST-BEHAV-TASK-INTRO-LINKS -->
 
@@ -187,11 +192,17 @@ Examples:
 		| If the Network Status is Disconnected, an error message will display. | An error message will display if the Network Status is Disconnected. |
 		| Only use the `$API_KEY` if you are calling the external service. | Use the `$API_KEY` only if you are calling the external service. |
 
-### Step clarifiers (optional) <!-- group: QST-TASK-CLARIFIERS -->
+### Step clarifiers <!-- group: QST-TASK-CLARIFIERS -->
 
 - Don't use numbered substeps beneath a step (nested ordered lists). <!-- QST-STRUCT-TASK-CLARIFIERS-NOSUBSTEPS -->
-- Use bullets for subactions, such as clarifiers or alternatives. <!-- QST-STRUCT-TASK-CLARIFIERS-BULLETS -->
-- Limit clarifiers to 2–4 items in one level. <!-- QST-STRUCT-TASK-CLARIFIERS-LIMIT -->
+- Use bullets for clarifiers beneath a step (one level only). <!-- QST-STRUCT-TASK-CLARIFIERS-BULLETS -->
+- For any step that includes a command or configuration change, add clarifiers directly under that step. <!-- QST-STRUCT-TASK-CLARIFIERS-WHEN-CMD-OR-CONFIG -->
+- For command/config steps, include exactly 2-3 clarifier bullets. <!-- QST-STRUCT-TASK-CLARIFIERS-COUNT-2-3 -->
+- Each clarifier bullet must start with one of these labels: "Purpose:", "Expected result:", optionally "Verify:". <!-- QST-BEHAV-TASK-CLARIFIERS-LABELS -->
+- "Purpose:" is one short sentence explaining what the step does. <!-- QST-BEHAV-TASK-CLARIFIERS-PURPOSE -->
+- "Expected result:" describes what the reader should observe (output, log line, created file, running service, etc.). If not evidenced, write "Expected result: Unknown". <!-- QST-BEHAV-TASK-CLARIFIERS-EXPECTED-UNKNOWN -->
+- Use "Verify:" only when you can provide a concrete check without guessing. Do not invent. If you cannot verify with evidence, omit "Verify:" (or write "Verify: Unknown" only if verification is explicitly required elsewhere). <!-- QST-BEHAV-TASK-CLARIFIERS-VERIFY-NO-GUESS -->
+- Do not use the literal phrase "Why this step:". Use clarifier bullets instead. <!-- QST-BEHAV-TASK-CLARIFIERS-NO-WHY -->
 
 ### Task code (optional) <!-- group: QST-TASK-CODE -->
 
@@ -219,10 +230,10 @@ Follow the code rules in the writing rules document. <!-- QST-BEHAV-TASK-CODE-RE
 ## Extra guidelines <!-- group: QST-EXTRA -->
 
 - This section is guidance only; do not render a visible heading or body. <!-- QST-STRUCT-EXTRA-GUIDELINES-NO-RENDER -->
-- Keep the quickstart word count between 600 and 1200 words. <!-- QST-BEHAV-EXTRA-LENGTH -->
+- Keep the quickstart word count between 800 and 1500 words. <!-- QST-BEHAV-EXTRA-LENGTH -->
 
 ## Forbidden content <!-- group: QST-FORBID -->
 
 - This section is guidance only; do not render a visible heading or body. <!-- QST-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
-- Do not use H4-H6 headings. <!-- QST-STRUCT-FORBID-H4-H6 -->
+- Do not use H4-H6 headings except for the subtitle. <!-- QST-STRUCT-FORBID-H4-H6 -->
 - Do not include a "Further reading" section or links to other related topics at the end of the document. <!-- PROC-BEHAV-FORBID-NO-FURTHER-READING -->

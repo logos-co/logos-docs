@@ -40,7 +40,6 @@ The sections below include the information and links for the things that you can
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 - [Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
-- [Run Logos Node in headless mode](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/run-logos-node-in-headless-mode.md) — Run a Logos node without a graphical interface for server or automated environments.
 
 ### Logos Execution Zone
 

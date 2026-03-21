@@ -2,36 +2,37 @@
 
 ## What is Logos
 
-Logos is a modular technology stack for building local first, decentralized applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
+Logos is a modular technology stack for building local-first, decentralised applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
 
-This diagram is a conceptual view of Logos as a layered stack. Dapps use one or more Logos components (storage, messaging, blockchain, and user modules), which rely on shared networking and kernel layers underneath.
+If you've ever used Linux, you already understand how Logos works. A Linux distribution isn't solely a single binary it's a runtime foundation, a networking stack, a set of system services, and the applications that together create a complete operating system. Logos follows the same pattern: a core runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and decentralised applications on top that compose those modules. Logos ships with an opinionated default configuration with storage, messaging, and blockchain modules that work out of the box, but you can assemble entirely different distributions with your own selection of modules and configurations.
 
 ![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
 
-Inside Logos, the top row shows the subsystems that Dapps interact with most directly:
+### Architecture
 
-- **Blockchain (decentralized compute)** represents the main compute/state layer, with two responsibilities:
+The stack is organised into distinct layers, each with a clear responsibility. From the bottom up:
 
-  - **Data Availability and Consensus** is the base layer that ensures (1) transaction data is published and retrievable by the network, and (2) nodes agree on a single, ordered history of blocks.
-  - **Execution Zone** is where application logic runs and state is updated (separate from the layers that only order blocks and guarantee data availability).
+**Discovery, Peering, and Mixnet: the networking layer.** This layer handles how Logos nodes find each other, establish connections, and communicate. Unlike conventional networking stacks, privacy is built in from the ground up. The mixnet routes messages through multiple relay nodes and mixes traffic patterns so that observers cannot determine who is talking to whom. A capability discovery protocol lets nodes advertise and find peers without centralised registries, and the peering layer manages connections across the decentralised network. This shared foundation treats all traffic alike, whether modules above it are storing files, sending chat messages, or processing transactions.
 
-- **Messaging (coordination)** is the peer-to-peer communication layer used by apps to publish or retrieve messages.
+**Modules: the system services.** Modules are self-contained components that sit on top of the networking layer, each providing a specific capability. Logos ships with three foundational modules, and the architecture is open for anyone to create their own:
 
-- **Storage (serve frontends)** provides the node-side content storage and retrieval functionality.
+- **Blockchain (decentralised compute)** provides consensus and programmable state. **Data Availability and Consensus** is the base layer that ensures transaction data is published and retrievable and that nodes agree on a single ordered history of blocks. The **Execution Zone** is where application logic runs and state is updated, supporting both public and private state, you can deploy programs, run AMMs, transfer tokens, and create financial primitives with built-in privacy.
 
-- **User Modules** represent pluggable modules that extend Logos' capabilities such as wallet and key management, messaging features, identity, access control, or module installation.
+- **Messaging (coordination)** handles private, censorship-resistant communication between parties. **Logos Delivery** provides publish-subscribe messaging for reliable transport. **Logos Chat** uses Delivery as its transport layer, providing encrypted one-to-one conversations and evolving toward group conversations.
 
-- **Discovery, Peering, Mix-net** is a shared networking layer. "Discovery" and "peering" are the fundamentals for finding and maintaining peer connections, while "mix-net" aligns with the stack's **AnonComms** goal (routing with improved metadata privacy) and capability discovery.
+- **Storage (serve frontends and files)** provides decentralised, content-addressed file storage and retrieval. Need to host a frontend, serve assets, or store user data without relying on corporate cloud providers? You interact with a straightforward API: store a file, get back a content identifier; provide a content identifier, get back the file.
 
-- Everything sits on the **Logos Kernel**, which is the lowest layer in the picture. In the public repos, you can see two building blocks that match that "kernel/runtime foundation" idea.
+- **User Modules** are the wild card. Because Logos follows a modular architecture, anyone can build modules that plug into the same infrastructure. The runtime loads them, manages their lifecycle, and enables them to communicate with other modules, whether they are Logos defaults or third-party additions. Use cases include wallet and key management, identity, access control, and anything else your application needs.
+
+**Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos App** is the default launcher, it starts the runtime, loads the configured module profile, and provides a unified interface with built-in apps for wallet management, encrypted chat, filesharing, and blockchain exploration. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
 
 > [!NOTE]
 >
 > To learn more about Logos, visit the [Logos main site](https://logos.co).
 
-## Logos
+The sections below link to the guides and references for what you can build and run on Logos today.
 
-The sections below include the information and links for the things that you can do now in Logos.
+## Logos
 
 ### Logos App
 

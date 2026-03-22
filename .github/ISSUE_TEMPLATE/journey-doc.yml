@@ -1,0 +1,200 @@
+name: Journey documentation
+description: Request documentation for a new user journey. R&D SMEs use this form to provide the doc packet.
+title: "[Journey] "
+labels: ["type:journey"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Required sections** are the minimum for the Docs team to start a draft. If any required field is left blank, Docs will publish a stub page and flag the gap.
+
+        **This doc packet does not replace your PR review.** After Docs writes the draft, you will review it for technical correctness on the pull request.
+
+        Even if you provide a draft covering the user journey, you must still fill out this form. Your draft may lack details that are important for the Docs team and the end user.
+
+  - type: markdown
+    attributes:
+      value: "## Required"
+
+  - type: markdown
+    attributes:
+      value: "### 1. Outcome and purpose"
+
+  - type: input
+    id: outcome
+    attributes:
+      label: What the user achieves
+      description: One sentence. What is the end state after completing this journey?
+      placeholder: "e.g., The user has a running Logos blockchain node connected to the devnet."
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-it-matters
+    attributes:
+      label: Why it matters
+      description: One to two sentences. What does this enable, unblock, or prove? Why should a developer or operator care?
+    validations:
+      required: true
+
+  - type: textarea
+    id: key-components
+    attributes:
+      label: Key components
+      description: List 2-5 main components or services involved in this journey. For each one, write one sentence on what it does and how it relates to the others.
+      placeholder: |
+        - Component A: Does X. Connects to B via Y.
+        - Component B: Does Z. Receives input from A.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "### 2. Scope"
+
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      description: URL + branch, tag, or commit SHA.
+      placeholder: "e.g., https://github.com/logos-co/nomos @ v0.2.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime-target
+    attributes:
+      label: Runtime target
+      options:
+        - local
+        - devnet
+        - testnet v0.1
+        - testnet v0.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: OS, minimum hardware requirements, tools, versions, accounts, keys, tokens, or other setup the user needs before starting.
+      placeholder: |
+        - OS: Linux (Ubuntu 22.04+)
+        - Rust 1.93+
+        - 8 GB RAM, 50 GB free disk
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "### 3. Happy path"
+
+  - type: textarea
+    id: happy-path
+    attributes:
+      label: Commands and expected outputs
+      description: Provide the exact commands a user runs from a clean setup to a working result. Include expected output or success indicators after each major step. Copy-paste a working terminal session if possible - this is the single most valuable thing you can provide.
+      render: sh
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "### 4. Verification"
+
+  - type: input
+    id: success-command
+    attributes:
+      label: Success command
+      description: One command or action that proves the journey is complete.
+      placeholder: "e.g., curl http://localhost:8080/cryptarchia/info"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: Expected result
+      description: What the user should see when running the success command.
+      render: sh
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Optional (improves doc quality)
+
+        The fields below are not required but help the Docs team write a higher-quality document.
+
+  - type: markdown
+    attributes:
+      value: "### 5. Configuration"
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration details
+      description: Required env vars, flags, config keys (name + purpose + example value), minimal working config snippet, default ports and endpoints.
+      render: sh
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: "### 6. Known issues and troubleshooting"
+
+  - type: textarea
+    id: troubleshooting
+    attributes:
+      label: Failure modes and limits
+      description: Top 3 failure modes (symptom, cause if known, fix or workaround) and any features or workflows explicitly out of scope for this release.
+      placeholder: |
+        - Symptom: "epoch state is not available"
+          Cause: chain_start_time too far in past
+          Fix: regenerate timestamp and update config
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: "### 7. Additional context"
+
+  - type: textarea
+    id: existing-docs
+    attributes:
+      label: Existing docs or specs
+      description: Links to READMEs, Notion pages, specs, diagrams, or any supplementary material (drafts, recorded demos, walkthroughs).
+    validations:
+      required: false
+
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Hardware requirements
+      description: If this is a node or client journey, list CPU, RAM, disk, and network requirements.
+    validations:
+      required: false
+
+  - type: input
+    id: time-estimate
+    attributes:
+      label: Estimated time to complete
+      description: Rough happy-path duration.
+      placeholder: "e.g., 15-20 minutes"
+    validations:
+      required: false
+
+  - type: textarea
+    id: security-notes
+    attributes:
+      label: Security notes
+      description: Anything that could cause data loss, key leakage, or irreversible actions.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **Reminder:** Completing this doc packet starts the documentation process. You will still be asked to review the draft on the pull request. For more information, see the [contributing guide](../../CONTRIBUTING.md).

@@ -91,11 +91,11 @@ Labels are organized into four groups. Every issue gets exactly one label from e
 
 **Area (required, one per issue).** Maps to the R&D team responsible for the subject matter.
 
+- `area:anoncomms`
 - `area:apps`
-- `area:blockchain-l1`
-- `area:connect`
+- `area:blockchain`
 - `area:core`
-- `area:lssa-l2`
+- `area:lez`
 - `area:messaging`
 - `area:storage`
 

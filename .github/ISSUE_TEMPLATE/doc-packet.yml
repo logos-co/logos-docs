@@ -1,4 +1,4 @@
-name: Journey documentation
+name: Journey documentation (doc packet)
 description: Request documentation for a new user journey. R&D SMEs use this form to provide the doc packet.
 title: "[Journey] "
 labels: ["type:journey"]

@@ -1,5 +1,5 @@
 ---
-name: Journey documentation
+name: Journey documentation (doc packet)
 about: Request documentation for a new user journey. R&D SMEs use this template to provide the doc packet.
 title: "[Journey] "
 labels: type:journey

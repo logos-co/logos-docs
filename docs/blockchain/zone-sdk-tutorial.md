@@ -2,14 +2,15 @@
 ## Introduction
 Applications built on Logos are not implemented on the Logos Blockchain directly. Instead, they live in Layer 2 execution environments known as *Sovereign Zones*, henceforth *Zones* for short (*Native Zones* are planned for future versions of Logos). A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md). It could also be a simple, standalone Zone keeping track of the state of just one application, or anything in between.
 
-### Actors
+The **Zone SDK** is a ready-to-use toolbox of code that handles basic interactions with a Logos Zone. Develops can use the SDK to simplify the process of building their own Zones and Zone apps.
 
-Every Zone is managed by a **sequencer**, an execution node publishes updates to the Logos Blockchain. A Zone can also have multiple sequencers taking turns or competing to submit updates.
+### Who Interacts with a Zone?
 
-Depending on the type of environment the Zone maintains, there could be other actors interacting with the Zone as well. These may include:
-* **Indexers**: Nodes following the Zone's updates on-chain and re-executing them locally to obtain a copy of the Zone state.
-* **Prover**: For ZK rollups, a node that publishes proofs for the Zone's state transitions.
-* **Validators**: Validator nodes verify the correctness of state transitions published by the sequencer, or (if applicable) the state transition proofs published by the prover.
+Every Zone is maintained by a **sequencer**, an execution node publishes updates to the Logos Blockchain. A Zone can also have multiple sequencers taking turns or competing to submit updates.
+
+**Indexers** are nodes that follow a Zone's updates on the Logos Blockchain. They re-execute these updates locally to obtain an updated copy of the Zone state, as set by the sequencer. The Zone SDK provides functionality for implementing both sequencers and indexers.
+
+Depending on the type of environment the Zone maintains, there could be other actors interacting with the Zone as well. For example, ZK rollup Zones may use provers and validators to ensure the correctness of state transitions. These more complex roles are not directly supported by the Zone SDK, but can be built by integrating basic features from the SDK's sequencer and indexer types.
 
 ### Channels
 To safeguard the correct ordering of updates from Sovereign Zones, data posted to the blockchain is assigned to a *Logos channel* dedicated to that Zone. Logos channels (sometimes called Mantle channels) are implemented as permissioned hash chains of messages. Each message, or *inscription*, is signed by the Zone’s sequencer, who stores the message on-chain via an operation sent to the Logos Blockchain. For Sovereign Zones, an inscription typically consists of a Zone state update, although channel messages can be used for other purposes, too. 

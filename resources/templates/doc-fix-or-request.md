@@ -23,7 +23,7 @@ labels: type:bug
 ### Area
 
 <!-- Which part of the Logos stack does this relate to? Select all that apply. -->
-<!-- - Blockchain (L1) -->
+<!-- - Blockchain -->
 <!-- - LSSA (L2) -->
 <!-- - Messaging -->
 <!-- - Storage -->

@@ -14,7 +14,7 @@ body:
 
   - type: markdown
     attributes:
-      value: "## Required"
+      value: "## Minimum required information"
 
   - type: markdown
     attributes:
@@ -123,9 +123,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## Optional (improves doc quality)
+        ## Additional information (improves doc quality)
 
-        The fields below are not required but help the Docs team write a higher-quality document.
+        The fields below help the Docs team write a higher-quality document.
 
   - type: markdown
     attributes:

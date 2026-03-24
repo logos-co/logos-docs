@@ -13,7 +13,7 @@ labels: type:journey
 
 ---
 
-## Required
+## Minimum required information
 
 ### 1. Outcome and purpose
 
@@ -42,7 +42,9 @@ labels: type:journey
 
 ---
 
-## Optional (improves doc quality)
+## Additional information (improves doc quality)
+
+The next sections help the Docs team write a higher-quality document.
 
 ### 5. Configuration
 

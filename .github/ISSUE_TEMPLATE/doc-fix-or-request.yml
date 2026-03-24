@@ -38,7 +38,7 @@ body:
       description: Which part of the Logos stack does this relate to? Select all that apply.
       multiple: true
       options:
-        - Blockchain (L1)
+        - Blockchain
         - LSSA (L2)
         - Messaging
         - Storage

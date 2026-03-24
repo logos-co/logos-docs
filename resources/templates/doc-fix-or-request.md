@@ -28,6 +28,6 @@ labels: type:bug
 <!-- - Messaging -->
 <!-- - Storage -->
 <!-- - Core -->
-<!-- - Connect -->
+<!-- - Anoncomms -->
 <!-- - Apps -->
 <!-- - Not sure -->

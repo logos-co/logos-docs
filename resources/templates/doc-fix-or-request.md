@@ -24,7 +24,7 @@ labels: type:bug
 
 <!-- Which part of the Logos stack does this relate to? Select all that apply. -->
 <!-- - Blockchain -->
-<!-- - LSSA (L2) -->
+<!-- - LEZ -->
 <!-- - Messaging -->
 <!-- - Storage -->
 <!-- - Core -->

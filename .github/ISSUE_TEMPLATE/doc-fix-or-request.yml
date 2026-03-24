@@ -39,7 +39,7 @@ body:
       multiple: true
       options:
         - Blockchain
-        - LSSA (L2)
+        - LEZ
         - Messaging
         - Storage
         - Core

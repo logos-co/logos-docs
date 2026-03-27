@@ -24,8 +24,8 @@
 
 ## Prerequisites
 
-- OS: Linux or macOS (supported platforms listed for `logos-liblogos`).
-- Dependencies (build tools for `logos-liblogos`):
+- OS: Linux or macOS (supported platforms listed for `logos-logoscore-cli`).
+- Dependencies (build tools for `logos-logoscore-cli`):
   - CMake (>= 3.14)
   - Ninja
   - pkg-config
@@ -41,7 +41,7 @@
 
 ## Hardware requirements
 
-- Target devices: x86_64 computer (Linux/macOS); aarch64 Linux/macOS also listed as supported by `logos-liblogos`.
+- Target devices: x86_64 computer (Linux/macOS); aarch64 Linux/macOS also listed as supported by `logos-logoscore-cli`.
 - Recommended: UNKNOWN
 - Storage profile: UNKNOWN
 
@@ -68,14 +68,14 @@
 > Notes:
 > - The steps below only cover what is directly supported by the public sources: building and starting `logoscore`, and the mechanism for building/copying modules in the (deprecated) Core PoC repo. The exact v0.1 module set and how to connect to testnet are UNKNOWN.
 
-1. Get the Core runtime (`logos-liblogos`):
+1. Get the Core runtime (`logos-logoscore-cli`):
 
    - Option A (Nix build, recommended in repo docs):
 
      ```sh
-     git clone https://github.com/logos-co/logos-liblogos.git
-     cd logos-liblogos
-     nix build '.#logos-liblogos'
+     git clone https://github.com/logos-co/logos-logoscore-cli.git
+     cd logos-logoscore-cli
+     nix build '.#clid'
      ```
 
      This produces artifacts under `./result/`, including `./result/bin/logoscore`.
@@ -83,8 +83,8 @@
    - Option B (manual build):
 
      ```sh
-     git clone https://github.com/logos-co/logos-liblogos.git
-     cd logos-liblogos
+     git clone https://github.com/logos-co/logos-logoscore-cli.git
+     cd logos-logoscore-cli
      git submodule update --init --recursive
      ./scripts/compile.sh
      ```
@@ -95,7 +95,7 @@
 
    - UNKNOWN (no public “Doc Packet” describing which repos, which versions, and which build outputs are required for v0.1 headless mode).
 
-   - Implementation clue (legacy Core PoC approach): build modules separately and copy the resulting `*.so/*.dylib/*.dll` plugin libraries into the Core build’s modules directory (example path: `logos-liblogos/build/modules`).
+   - Implementation clue (legacy Core PoC approach): build modules separately and copy the resulting `*.so/*.dylib/*.dll` plugin libraries into the Core build’s modules directory (example path: `logos-logoscore-cli/build/modules`).
 
 3. Start Logos Node in headless mode by running `logoscore` and loading the required modules:
 
@@ -155,7 +155,7 @@ The mechanism is supported; actual module method names are UNKNOWN. ([GitHub][1]
 
 ## Troubleshooting (top 3-5)
 
-- Symptom: `nix build '.#logos-liblogos'` fails with `#`-related target parsing in zsh.
+- Symptom: `nix build '.#clid'` fails with `#`-related target parsing in zsh.
   Cause: zsh glob expansion for `#`.
   Fix/workaround: Quote the target, as shown in the repo docs. ([GitHub][1])
 
@@ -169,7 +169,7 @@ The mechanism is supported; actual module method names are UNKNOWN. ([GitHub][1]
 
 - Symptom: Build fails due to missing Qt / build tooling.
   Cause: missing dependencies (Qt, CMake/Ninja/pkg-config).
-  Fix/workaround: install the dependencies listed by `logos-liblogos` (and, if following the Core PoC legacy flow, also install `protobuf-compiler` and `patchelf`). ([GitHub][1])
+  Fix/workaround: install the dependencies listed by `logos-logoscore-cli` (and, if following the Core PoC legacy flow, also install `protobuf-compiler` and `patchelf`). ([GitHub][1])
 
 ## Limits (for Testnet v0.1)
 
@@ -179,7 +179,7 @@ The mechanism is supported; actual module method names are UNKNOWN. ([GitHub][1]
 ## References (links)
 
 - Journey tracker issue: [https://github.com/logos-co/logos-docs/issues/167](https://github.com/logos-co/logos-docs/issues/167) ([GitHub][2])
-- `logos-liblogos` (Core runtime; provides `logoscore`): [https://github.com/logos-co/logos-liblogos](https://github.com/logos-co/logos-liblogos) ([GitHub][4])
+- `logos-logoscore-cli` (Core runtime; provides `logoscore`): [https://github.com/logos-co/logos-logoscore-cli](https://github.com/logos-co/logos-logoscore-cli) ([GitHub][4])
 - Testnet v0.1 dependency diagram (defines “Logos Node (Headless Mode)” and its relationship to Blockchain/Storage/Chat modules): [https://roadmap.logos.co/testnets/v01_dependencies](https://roadmap.logos.co/testnets/v01_dependencies) ([roadmap.logos.co][5])
 - Legacy Core PoC scripts showing how modules were built/copied alongside `logoscore` (may not reflect v0.1 packaging, but illustrates the plugin workflow):
 

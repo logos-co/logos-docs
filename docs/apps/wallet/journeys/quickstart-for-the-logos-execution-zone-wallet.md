@@ -144,8 +144,8 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
 
    ```bash
    cd ~/logos/src
-   git clone https://github.com/logos-blockchain/lssa.git
-   cd lssa
+   git clone https://github.com/logos-blockchain/logos-execution-zone.git
+   cd logos-execution-zone
    ```
 
 1. From the repository root, install the wallet CLI:
@@ -165,7 +165,7 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
 Open a new terminal window and start the LEZ sequencer from the root of the Logos Execution Zone repository:
 
 ```bash
-cd ~/logos/src/lssa
+cd ~/logos/src/logos-execution-zone
 RUST_LOG=info cargo run --features standalone -p sequencer_runner sequencer_runner/configs/debug
 ```
 
@@ -226,7 +226,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 1. Create a sender public account and record the `account_id` value:
 
    ```bash
-   cd ~/logos/src/lssa
+   cd ~/logos/src/logos-execution-zone
    wallet account new public
    ```
 

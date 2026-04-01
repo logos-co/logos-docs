@@ -158,7 +158,29 @@ body:
 
   - type: markdown
     attributes:
-      value: "### 7. Additional context"
+      value: "### 7. Point of contact"
+
+  - type: input
+    id: poc-github
+    attributes:
+      label: GitHub handle
+      description: GitHub username of the Logos R&D point of contact for this journey.
+      placeholder: "e.g., @username"
+    validations:
+      required: true
+
+  - type: input
+    id: poc-discord
+    attributes:
+      label: Discord handle
+      description: Discord username of the Logos R&D point of contact for this journey.
+      placeholder: "e.g., username"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "### 8. Additional context"
 
   - type: textarea
     id: existing-docs

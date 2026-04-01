@@ -152,6 +152,8 @@ A faucet distributes free tokens on test networks to experiment without financia
 
 Before your node can participate in the consensus mechanism, the UTXO you received from the faucet must age for approximately 3.5 hours (two epochs). While you wait, confirm the node is connected and syncing.
 
+> **Note:** Initial blockchain synchronisation can take up to **12 hours** depending on your network connection and hardware. The node must download and verify all historical blocks before it can participate in consensus. You can monitor sync progress by checking that the `height` value increases over time.
+
 1. Check the consensus state:
 
     ```sh

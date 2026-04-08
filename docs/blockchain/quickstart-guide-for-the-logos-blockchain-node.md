@@ -38,21 +38,35 @@ The node requires zero-knowledge circuit files for cryptographic operations. Zer
     >
     > The node file has a name beginning with `logos-blockchain-node-`, and the circuits file has a name beginning with `logos-blockchain-circuits-`.
 
-    Use these instructions for downloading the node binary and circuits on a Raspberry Pi with `wget`:
+    For example, to download the current release (0.2.1) on Linux x86_64 with `wget`:
 
     ```sh
     # download ZK circuits
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-circuits-v{circuits-version}-linux-aarch64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-circuits-v0.4.1-linux-x86_64.tar.gz
 
     # download node binary
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/{version}/logos-blockchain-node-linux-aarch64-{version}.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-node-linux-x86_64-0.2.1.tar.gz
     ```
+
+    On a Raspberry Pi (aarch64):
+
+    ```sh
+    # download ZK circuits
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
+
+    # download node binary
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-node-linux-aarch64-0.2.1.tar.gz
+    ```
+
+    > [!TIP]
+    >
+    > Check the [releases page](https://github.com/logos-blockchain/logos-blockchain/releases/) for a newer version before downloading.
 
 1. Extract the `tar.gz` files:
 
     ```sh
-    tar -xf logos-blockchain-circuits-v{circuits-version}-{architecture}.tar.gz
-    tar -xf logos-blockchain-node-{architecture}-{version}.tar.gz
+    tar -xf logos-blockchain-circuits-*.tar.gz
+    tar -xf logos-blockchain-node-*.tar.gz
     ```
 
 1. Install the ZK circuits.
@@ -60,7 +74,7 @@ The node requires zero-knowledge circuit files for cryptographic operations. Zer
     By default, the node looks for circuit files in `~/.logos-blockchain-circuits`. Rename and move the extracted folder to that location:
 
     ```sh
-    mv logos-blockchain-circuits-v{circuits-version}-{architecture} ~/.logos-blockchain-circuits
+    mv logos-blockchain-circuits-*/ ~/.logos-blockchain-circuits
     ```
 
     If you want to store the circuits in a different location, move them there instead and set the `LOGOS_BLOCKCHAIN_CIRCUITS` environment variable to that path:
@@ -105,7 +119,63 @@ Bootstrap nodes are the initial contact points for joining the network. Once you
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit the `user_config.yaml` file and restart the node.
 
-## Step 3: Request tokens from the faucet
+## Step 3: Verify that your node is running and connected to peers
+
+Before requesting tokens, wait for your node to finish syncing. The node must be fully synced (mode `Online`, not `Bootstrapping`) before wallet balances are visible.
+
+> [!TIP]
+>
+> Pipe any `curl` command through `jq .` to format the JSON output, for example: `curl -s http://localhost:8080/cryptarchia/info | jq .`
+
+1. Check the consensus state:
+
+    ```sh
+    curl -s http://localhost:8080/cryptarchia/info | jq .
+    ```
+
+    Example response:
+
+    ```json
+    {
+      "lib": "3d0c...4e6d",
+      "tip": "f44d...e2f5",
+      "slot": 70899,
+      "height": 120,
+      "mode": "Bootstrapping"
+    }
+    ```
+
+    Observe the following fields in the response:
+
+    - `mode` indicates the node's current state. It starts in `Bootstrapping` while syncing and transitions to `Online` once caught up.
+    - Confirm `slot` and `height` values are increasing. `height` counts confirmed blocks while `slot` counts elapsed time intervals.
+    - You should see the `height` increasing at an average rate of 1 block every 10 seconds. The timing is probabilistic, so expect some variance.
+
+1. Check peer connectivity and confirm `n_peers` is greater than 0:
+
+    ```sh
+    curl -s http://localhost:8080/network/info | jq .
+    ```
+
+    Example response:
+
+   ```json
+   {
+     "listen_addresses": [
+       "/ip4/127.0.0.1/udp/3001/quic-v1"
+     ],
+     "peer_id": "12D3...fuS2",
+     "n_peers": 16,
+     "n_connections": 19,
+     "n_pending_connections": 0
+   }
+   ```
+
+1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm that `slot` and `height` have increased compared to the previous output.
+
+1. Wait until `mode` transitions from `Bootstrapping` to `Online` before continuing to the next step. Bootstrapping may take 12 to 24 hours.
+
+## Step 4: Request tokens from the faucet
 
 A faucet distributes free tokens on test networks to experiment without financial risk. The devnet faucet is a separate service that transfers tokens to a specified ZK public key through the node's wallet API.
 
@@ -128,10 +198,10 @@ A faucet distributes free tokens on test networks to experiment without financia
 
     ![Image of the faucet UI after requesting funds with a public key](./quickstart-guide-for-the-logos-blockchain-node/image1.png)
 
-1. Wait 1 to 2 minutes, then verify that your funds were received by querying the balance of your wallet:
+1. Wait 1 to 2 minutes, then verify that your funds were received by querying the balance of your wallet. Replace `<your-chosen-key>` with the key you used in the previous step:
 
     ```sh
-    curl http://localhost:8080/wallet/{your-chosen-key}/balance
+    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
     ```
 
     Example response:
@@ -148,47 +218,19 @@ A faucet distributes free tokens on test networks to experiment without financia
     >
     > If you don't see your balance updated, consider that only one faucet transaction can be included per block. During high demand, your transaction may be dropped. Retry the request and wait 1 to 2 minutes before checking your balance again.
 
-## Step 4: Verify that your node is running and connected to peers
-
-Before your node can participate in the consensus mechanism, the UTXO you received from the faucet must age for approximately 3.5 hours (two epochs). While you wait, confirm the node is connected and syncing.
-
-1. Check the consensus state:
-
-    ```sh
-    curl -w "\n" http://localhost:8080/cryptarchia/info
-    ```
-
-    Example response:
-
-    ```json
-    {"lib":"3d0c...4e6d","tip":"f44d...e2f5","slot":70899,"height":120,"mode":"Bootstrapping"}
-    ```
-
-    Observe the following fields in the response:
-
-    - `mode` indicates the node's current state. It starts in `Bootstrapping` while syncing and transitions to `Online` once caught up.
-    - Confirm `slot` and `height` values are increasing. `height` counts confirmed blocks while `slot` counts elapsed time intervals.
-    - You should see the `height` increasing at an average rate of 1 block every 10 seconds. The timing is probabilistic, so expect some variance.
-
-1. Check peer connectivity and confirm `n_peers` is greater than 0:
-
-    ```sh
-    curl -w "\n" http://localhost:8080/network/info
-    ```
-
-    Example response:
-
-    ```json
-    {"listen_addresses":["/ip4/127.0.0.1/udp/3001/quic-v1"],"peer_id":"12D3...fuS2","n_peers":16,"n_connections":19,"n_pending_connections":0}
-    ```
-
-1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm that `slot` and `height` have increased compared to the previous output.
 ## Step 5: Participate in the consensus mechanism
 
-Once the faucet UTXO has aged, your node automatically enters the consensus lottery and may begin proposing blocks. No further action is required.
+Once the faucet UTXO has aged (approximately 3.5 hours, or two epochs on the current devnet), your node automatically enters the consensus lottery and may begin proposing blocks. No further action is required.
 
 You can compare your node's chain state against the devnet fleet at the [Logos devnet dashboard](https://devnet.blockchain.logos.co/web/).
 
 > [!NOTE]
 >
 > Block proposal is probabilistic. Your node will not propose a block on every slot - participation depends on your stake relative to the total active stake in the network.
+
+
+## Known limitations
+
+- The [devnet explorer](https://devnet.blockchain.logos.co/web/) shows an error when clicking on a transaction. Searching by address is not supported.
+- Transaction hashes returned by the faucet may appear truncated, and the transaction may not be immediately findable in the explorer.
+- If the node is restarted while bootstrapping, it does not save sync progress and will restart from the beginning.

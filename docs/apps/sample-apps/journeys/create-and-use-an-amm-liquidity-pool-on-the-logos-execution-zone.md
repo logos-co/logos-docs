@@ -56,10 +56,10 @@ Holding account owned by token program
 
 ## 2. Swapping
 
-Use `wallet amm swap` to perform a token swap:
+Use `wallet amm swap-exact-input` to perform a token swap:
 
 ```bash
-wallet amm swap \
+wallet amm swap-exact-input \
     --user-holding-a Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw \
     --user-holding-b Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
     # The amount of tokens to swap

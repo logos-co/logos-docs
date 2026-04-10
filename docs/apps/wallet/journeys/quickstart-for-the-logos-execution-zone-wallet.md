@@ -166,7 +166,7 @@ Open a new terminal window and start the LEZ sequencer from the root of the Logo
 
 ```bash
 cd ~/logos/src/logos-execution-zone
-RUST_LOG=info cargo run --features standalone -p sequencer_runner sequencer_runner/configs/debug
+RUST_LOG=info cargo run --features standalone -p sequencer_service sequencer/service/configs/debug/sequencer_config.json
 ```
 
 > [!NOTE]

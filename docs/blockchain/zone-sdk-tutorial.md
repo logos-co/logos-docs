@@ -1,12 +1,12 @@
 # Creating a Logos Zone with the Zone SDK
 ## Introduction
-Applications built on Logos are not implemented on the Logos Blockchain directly. Instead, they live in Layer 2 execution environments known as *Sovereign Zones*, henceforth *Zones* for short (*Native Zones* are planned for future versions of Logos). A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md). It could also be a simple, standalone Zone keeping track of the state of just one application, or anything in between.
+Applications built on Logos are implemented in execution environments known as *Zones*, which are lightweight appchains that use the Logos Blockchain for settlement and ordering. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md). It could also be a simple, standalone Zone keeping track of the state of just one application, or anything in between.
 
-The **Zone SDK** is a ready-to-use toolbox of code that handles basic interactions with a Logos Zone. Develops can use the SDK to simplify the process of building their own Zones and Zone apps.
+The **Zone SDK** is a ready-to-use toolbox of code that handles basic interactions with a Logos Zone. Developers can use the SDK to simplify the process of building their own Zones and Zone apps.
 
 ### Who Interacts with a Zone?
 
-Every Zone is maintained by a **sequencer**, an execution node publishes updates to the Logos Blockchain. A Zone can also have multiple sequencers taking turns or competing to submit updates.
+Every Zone is operated by one or more **sequencers**. These sequencers collect transactions from users, batch them, and publish them in the form of an inscription to a Channel on the Logos Blockchain.
 
 **Indexers** are nodes that follow a Zone's updates on the Logos Blockchain. They re-execute these updates locally to obtain an updated copy of the Zone state, as set by the sequencer. The Zone SDK provides functionality for implementing both sequencers and indexers.
 
@@ -57,7 +57,7 @@ It's also important for your sequencer and indexers to have access to a Logos Bl
 The first step to creating a Logos Zone is defining the Zone state - what application(s) it will host, how the state is updated, and in what form updates are posted on-chain.
 
 #### Example
-In this tutorial, we'll be adapting an existing Rust [password manager](https://github.com/H2CO3/steelsafe) application to the Logos Zone context. The goal is for the user to be able to update their passwords on one device, with other devices syncing their state to match the main device. This design is useful for users who want to avoid relying on managed hosting for their password manager, and cannot self-host it on their own server. 
+In this tutorial, we'll be adapting an existing Rust [password manager](https://github.com/H2CO3/steelsafe) application to the Logos Zone context. The goal is for the user to be able to update their passwords on one device, with other devices syncing their state to match the main device. This design is useful for users who want to avoid relying on managed hosting for their password manager, and don't want to be burdened by self-hosting on their own server. 
 
 > Read **Decentralise the Log, Not the Server** (ADD LINK) for the motivation behind this design.
 
@@ -536,7 +536,7 @@ After you add the code from the tutorial, your password manager should be ready 
 ### More Zone Possibilities
 This tutorial illustrated the basic functionality of the Zone SDK to build a simple appchain Zone. However, this is far from the only possibility for custom Zones on Logos. You could use the SDK to build traditional ZK or optimistic rollups, customised high transaction throughput appchains, or even applications with functionality compartmentalised across several Zones.
 
-Despite their autonomy and customisability, Logos Zones support several key interoperability features. Bridging Layer 1 (Bedrock) tokens into Zones, on-chain message passing between Zones, as well as complex cross-Zone transaction coordination are all supported by the Logos Blockchain. See [**The Secret to Sovereign Zone Interoperability on Logos**](https://press.logos.co/article/sovereign-zone-interoperability) for more details.
+Despite their autonomy and customisability, Logos Zones support several key interoperability features. Bridging Layer 1 tokens into Zones, on-chain message passing between Zones, as well as complex cross-Zone transaction coordination are all supported by the Logos Blockchain. See [**The Secret to Sovereign Zone Interoperability on Logos**](https://press.logos.co/article/sovereign-zone-interoperability) for more details.
 
 ### Start Building!
 Building your app on Logos has never been easier. The testnet is live (at the time of writing), and members of the Logos team are available to help you if you get stuck.

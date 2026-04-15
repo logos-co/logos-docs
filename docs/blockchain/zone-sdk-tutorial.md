@@ -30,24 +30,23 @@ To make things easier, we’ve provided a bare-bones implementation skeleton tha
 
 ## Getting Started
 ### Clone Logos Blockchain Repo
-Before beginning this tutorial, you should clone the [Logos Blockchain Node](https://github.com/logos-blockchain/logos-blockchain) repository, which contains the Zone SDK in the [`zone-sdk`](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) folder.
+Before beginning this tutorial, you should clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) repository.
 
 To clone the repository with git, run the following in your desired path:
 
 ```bash
-git clone https://github.com/logos-blockchain/logos-blockchain.git
+git clone https://github.com/logos-blockchain/logos-sql-zone.git
 ```
 
 #### Example Application Skeleton
-To follow along with the tutorial example, switch to the `sql-zone-tutorial` branch:
+To follow along with the tutorial example, switch to the `tutorial` branch:
 
 ```bash
-cd logos-blockchain
-git checkout sql-zone-tutorial
-cd testnet/sqlite-zone-demo
+cd logos-sql-zone
+git checkout tutorial
 ```
 
-The complete demo is available in the `sql-zone` branch.
+The complete demo is available in the `master` branch.
 
 ### Access to Logos Blockchain Node
 It's also important for your sequencer and indexers to have access to a Logos Blockchain Node. See the [documentation](../quickstart-guide-for-the-logos-blockchain-node.md) for instructions on how to start your own node and connect to the Testnet.
@@ -59,7 +58,7 @@ The first step to creating a Logos Zone is defining the Zone state - what applic
 #### Example
 In this tutorial, we'll be adapting an existing Rust [password manager](https://github.com/H2CO3/steelsafe) application to the Logos Zone context. The goal is for the user to be able to update their passwords on one device, with other devices syncing their state to match the main device. This design is useful for users who want to avoid relying on managed hosting for their password manager, and don't want to be burdened by self-hosting on their own server. 
 
-> Read **Decentralise the Log, Not the Server** (ADD LINK) for the motivation behind this design.
+> Read [**Decentralise the Log, Not the Server**](https://press.logos.co/article/decentralise-log-not-server) for the motivation behind this design.
 
 This application maintains its state by using a sqlite database, with updates taking the form of SQL transactions applied to the database. To work as a Logos Zone, we will adopt the design as follows:
 
@@ -71,13 +70,14 @@ This application maintains its state by using a sqlite database, with updates ta
 The implementation skeleton already has most of this password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 
 ### Initialise the `ZoneSequencer` Struct
-Your sequencer will be implemented as a wrapper for the `ZoneSequencer` struct from the Zone SDK, found in the `../zone-sdk/src/sequencer.rs` file. When initialising this struct, you must provide the following arguments:
+Your sequencer will be implemented as a wrapper for the `ZoneSequencer` struct from the Zone SDK, found in the `logos-blockchain/zone-sdk/src/sequencer.rs` file. When initialising this struct, you must provide the following arguments:
 
 * `channel_id: ChannelId` - The ID of the channel associated with the Zone.
 * `signing_key: Ed25519Key` - A key authorised to post updates to the channel.
-* `node_url: Url` - The Url of your Logos Blockchain node.
-* `auth: Option<BasicAuthCredentials>` - [Optional] Credentials to access the Logos Blockchain node.
+* `node: Node` - A Node struct referring to your Logos Blockchain node, together with the credentials to access it. It is created by `NodeHttpClient::new()`.
 * `checkpoint: Option<SequencerCheckpoint>` - [Optional] The checkpoint representing the most recently-pushed channel update.
+
+Initialising a `ZoneSequencer` also creates an associated `SequencerHandle` that is used for interacting with the sequencer.
 
 Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **The public key defines the channel ID, while the private key becomes the signing key**. The channel is created when the sequencer posts a message with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) Mantle Operation.
 
@@ -89,11 +89,11 @@ In the `sequencer/src/sequencer.rs` file, add the `Sequencer` struct definition:
 ```rust
 // The sequencer that handles transactions using the Zone SDK
 //
-// zone_sequencer: The sequencer from the Zone SDK
+// SequencerHandle<NodeHttpClient>: Handle for submitting requests to Zone SDK sequencer
 // queue_file: The path to a file that holds SQL transactions not yet posted to the channel
 // checkpoint_path: The path to the channel checkpoint file
 pub struct Sequencer {
-    zone_sequencer: ZoneSequencer,
+    handle: SequencerHandle<NodeHttpClient>,
     queue_file: String,
     checkpoint_path: String,
 }
@@ -185,11 +185,12 @@ impl Sequencer {
             .expect("failed to write channel id");
 
         // Initialise the ZoneSequencer
-        let zone_sequencer =
-            ZoneSequencer::init(channel_id, signing_key, node_url, basic_auth, checkpoint);
+        let node = NodeHttpClient::new(CommonHttpClient::new(basic_auth), node_url);
+        let (zone_sequencer, handle) = ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
+        zone_sequencer.spawn();
 
         Ok(Self {
-            zone_sequencer,
+            handle,
             queue_file: queue_file.to_owned(),
             checkpoint_path: checkpoint_path.to_owned(),
         })
@@ -201,7 +202,7 @@ impl Sequencer {
 ```
 
 ### Publish Data
-Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing it to the sequencer's `publish` function. This function returns a struct consisting of the inscription (message) ID and the current checkpoint.
+Once the `ZoneSequencer` and its handle are set up, posting data to the channel is as easy as passing it to the sequencer handle's `publish` function. This function returns a struct consisting of the inscription (message) ID and the current checkpoint.
 
 Once you have the inscription ID, you can choose to query the on-chain status of the submitted transaction with the `status` function. The status returned will be one of:
 
@@ -284,7 +285,7 @@ impl Sequencer {
 
         // Publish SQL transactions
         let data = pending.join("\n").into_bytes();
-        let result = self.zone_sequencer.publish(data).await?;
+        let result = self.handle.publish(data).await?;
 
         info!(
             "Inscription published with tx_hash: {:?}",
@@ -349,11 +350,10 @@ impl Sequencer {
 
 ## Indexer
 ### Initialise the Indexer
-Your indexer will be implemented as a wrapper for the `ZoneIndexer` struct from the Zone SDK, found in the `../zone-sdk/src/indexer.rs` file. When initialising this struct, you must provide the following arguments:
+Your indexer will be implemented as a wrapper for the `ZoneIndexer` struct from the Zone SDK, found in the `logos-blockchain/zone-sdk/src/indexer.rs` file. When initialising this struct, you must provide the following arguments:
 
 * `channel_id: ChannelId` - The ID of the channel associated with the Zone.
-* `node_url: Url` - The Url of your Logos Blockchain node.
-* `auth: Option<BasicAuthCredentials>` - [Optional] Credentials to access the Logos Blockchain node.
+* `node: Node` - A Node struct referring to your Logos Blockchain node, together with the credentials to access it. It is created by `NodeHttpClient::new()`.
 
 The indexer must obtain the channel ID used by the sequencer to check for new messages in that channel. This must be done via another medium before starting the indexer.
 
@@ -364,10 +364,10 @@ In the `indexer/src/indexer.rs` file, add the `Indexer` struct definition:
 // Indexer struct
 //
 // zone_indexer: SDK indexer
-// db: Mutable password database
+// db_path: Path to password database file
 pub struct Indexer {
     zone_indexer: ZoneIndexer,
-    db: Arc<Mutex<DatabaseReadOnly>>,
+    db_path: String,
 }
 ```
 
@@ -429,33 +429,12 @@ impl Indexer {
         info!("Channel ID: {}", hex::encode(channel_id.as_ref()));
 
         // New ZoneIndexer
-        let zone_indexer = ZoneIndexer::new(channel_id, node_url, basic_auth);
+        let node = NodeHttpClient::new(CommonHttpClient::new(basic_auth), node_url);
+        let zone_indexer = ZoneIndexer::new(channel_id, node);
 
-        // New password database
-        let database = DatabaseReadOnly::open(db_path)?;
-        let db = Arc::new(Mutex::new(database));
-
-        Ok(Self { zone_indexer, db })
+        Ok(Self { zone_indexer, db_path.to_owned() })
     }
 
-    ...
-
-}
-```
-
-Within the `Indexer` struct implementation, add a function exposing the database for public access:
-
-```rust
-impl Indexer {
-
-    ...
-
-    // Access db outside of struct
-    #[must_use]
-    pub fn db(&self) -> Arc<Mutex<DatabaseReadOnly>> {
-        Arc::clone(&self.db)
-    }
-    
     ...
 
 }
@@ -474,6 +453,16 @@ impl Indexer {
 
     // Follow the Zone channel & apply updates
     pub async fn run(&self) {
+
+        // Open database at db_path
+        let db = match DatabaseReadOnly::open(&self.db_path) {
+            Ok(db) => db,
+            Err(e) => {
+                error!("Failed to open database: {e}");
+                return;
+            }
+        };
+
         loop {
 
             // Follow channel & create stream
@@ -490,7 +479,12 @@ impl Indexer {
 
             // Get next message from stream
             futures::pin_mut!(stream);
-            while let Some(zone_block) = stream.next().await {
+            while let Some(zone_msg) = stream.next().await {
+
+                // zone_block include the inscriptions but not the deposit operations in the block
+                let logos_blockchain_zone_sdk::ZoneMessage::Block(zone_block) = zone_msg else {
+                    continue;
+                };
                 let sql_text = match String::from_utf8(zone_block.data) {
                     Ok(s) => s,
                     Err(e) => {
@@ -513,7 +507,6 @@ impl Indexer {
                 info!("Applying {} SQL statement(s)", statements.len());
 
                 // Apply statements to db
-                let db = self.db.lock().await;
                 for stmt in &statements {
                     if let Err(e) = db.execute_batch(stmt) {
                         error!("Failed to execute SQL '{}': {e}", stmt);
@@ -531,7 +524,7 @@ impl Indexer {
 
 ## Conclusion
 ### Using the Password Manager
-After you add the code from the tutorial, your password manager should be ready to use. Instructions on building and interacting with the sequencer and indexer applications can be found within the `testnet/sqlite-zone-demo` folder, in the `README.md` file.
+After you add the code from the tutorial, your password manager should be ready to use. Instructions on building and interacting with the sequencer and indexer applications can be found in the `README.md` file.
 
 ### More Zone Possibilities
 This tutorial illustrated the basic functionality of the Zone SDK to build a simple appchain Zone. However, this is far from the only possibility for custom Zones on Logos. You could use the SDK to build traditional ZK or optimistic rollups, customised high transaction throughput appchains, or even applications with functionality compartmentalised across several Zones.

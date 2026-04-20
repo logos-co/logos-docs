@@ -38,24 +38,24 @@ The node requires zero-knowledge circuit files for cryptographic operations. Zer
     >
     > The node file has a name beginning with `logos-blockchain-node-`, and the circuits file has a name beginning with `logos-blockchain-circuits-`.
 
-    For example, to download the current release (0.2.1) on Linux x86_64 with `wget`:
+    For example, to download the current release (0.1.2) on Linux x86_64 with `wget`:
 
     ```sh
     # download ZK circuits
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-circuits-v0.4.1-linux-x86_64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.1-linux-x86_64.tar.gz
 
     # download node binary
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-node-linux-x86_64-0.2.1.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-x86_64-0.1.2.tar.gz
     ```
 
     On a Raspberry Pi (aarch64):
 
     ```sh
     # download ZK circuits
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
 
     # download node binary
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.2.1/logos-blockchain-node-linux-aarch64-0.2.1.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-aarch64-0.1.2.tar.gz
     ```
 
     > [!TIP]
@@ -97,7 +97,7 @@ Bootstrap nodes are the initial contact points for joining the network. Once you
         -p {peer2}
     ```
 
-    The bootstrap peers used for this command can be found in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/). For example, the 0.2.1 release uses:
+    The bootstrap peers used for this command can be found in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/). For example, the 0.1.2 release uses:
 
     ```sh
     ./logos-blockchain-node init \

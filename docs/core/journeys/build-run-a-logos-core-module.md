@@ -291,7 +291,7 @@ There are two ways to install `.lgx` packages:
 1. Create the `modules/` directory and install the `.lgx` package.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir ./modules install --file result/*.lgx
+   ./package-manager/bin/lgpm --modules-dir ./modules install --file result/<module-name>.lgx
    ```
 
    - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `./package-manager/bin/lgpm --modules-dir ./modules install --dir ./packages/`
@@ -413,7 +413,7 @@ Logos Basecamp is a desktop application that provides a graphical interface for 
 1. Install the module's dev LGX package into basecamp's modules directory.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file result/*.lgx
+   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file result/<module-name>.lgx
    ```
 
 ## Troubleshooting

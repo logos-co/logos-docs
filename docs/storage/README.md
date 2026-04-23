@@ -17,16 +17,6 @@ Logos Storage can currently be used in the following ways:
 
 **Programmatically.**
 
-* **Logos Module API.** The [Logos Storage Module](https://github.com/logos-co/logos-storage-module) is a high-level C++ API which can be used to build applications on top of Logos Storage. It underpins the Logos UI App.
+* **Logos Module API.** The [Logos Storage Module](https://github.com/logos-co/logos-storage-module) - a high-level C++ API - is the recommended way of using Logos Storage in your app. Make sure to check: [[API Tutorial](https://logos-co.github.io/logos-storage-module/api_tutorial.html) | [API reference](https://logos-co.github.io/logos-storage-module/api_reference.html)]
 
-* **libstorage.** [libstorage](https://github.com/logos-co/logos-storage-nim) is a lower-level C API that goes under the Logos Module API. If you need to construct bindings for a language other than C++, this is what you would use. We have [Go](https://github.com/logos-storage/logos-storage-go), [Rust](https://github.com/nipsysdev/storage-rust-bindings), and higher-level, simple [C](https://github.com/logos-storage/easylibstorage) bindings available.
-
-## Tutorials
-
-* [The Logos Module API tutorial](https://github.com/logos-co/logos-storage-module?tab=readme-ov-file#api) shows how to build an app on top of the Logos Module API. It can be coupled with the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton) to build a simple, cli-based app.
-
-* [The simplified libstorage tutorial](./libstorage-tutorial.md) shows how to build an app on top of libstorage using the simple C bindings.
-
-## API Documentation
-
-* [libstorage API reference](https://github.com/logos-storage/logos-storage-nim/blob/master/library/README.md).
+* **libstorage.** [libstorage](https://github.com/logos-co/logos-storage-nim) is a lower-level C API that goes under the Logos Module API. If you need to construct bindings for a language other than C++, this is what you would use. We have [Go](https://github.com/logos-storage/logos-storage-go), [Rust](https://github.com/nipsysdev/storage-rust-bindings), and higher-level, simple [C](https://github.com/logos-storage/easylibstorage) bindings available. [[API tutorial](./libstorage-tutorial.md) | [API reference](https://github.com/logos-storage/logos-storage-nim/blob/master/library/README.md)]

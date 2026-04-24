@@ -26,7 +26,7 @@ Tracking: GitHub issue [#145](https://github.com/logos-co/logos-docs/issues/145)
 
 ## Known gaps
 
-- Doc Packet missings
+- Doc Packet missing
 - Logos testnet specifics missing: which network endpoints/bootstraps to use, whether RLN is required, and what "success" means for v0.1 beyond basic API calls.
 
 ## Prerequisites

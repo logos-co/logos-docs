@@ -32,7 +32,7 @@ In this quickstart you install the Logos Blockchain node, connect to the public 
 
 The node requires zero-knowledge circuit files for cryptographic operations. Zero-knowledge proofs let the ledger validate transactions without revealing the underlying data: the prover demonstrates correctness and the verifier checks the proof without seeing the transaction details. You must install these circuit binaries before running the node.
 
-1. Download the latest node binary and circuits archive for your device's architecture from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/).
+1. Download the latest node binary and circuits archive for your device's architecture from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest).
 
     > [!TIP]
     >

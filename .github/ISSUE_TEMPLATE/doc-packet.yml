@@ -93,7 +93,7 @@ body:
     id: happy-path
     attributes:
       label: Commands and expected outputs
-      description: Link to an existing document that covers these steps (for example, a `README.md` or `docs/setup.md` in your repo) or enter the commands below. Cover the exact steps from a clean setup to a working result, with expected output or success indicators after each major step — a copy-pasted terminal session is ideal.
+      description: Link to an existing document that covers these steps (for example, a `README.md` or `docs/setup.md` in your repo) or enter the commands below. Describe any UI elements, button labels or interactions if applicable. Cover the exact steps from a clean setup to a working result, with expected output or success indicators after each major step — a copy-pasted terminal session is ideal.
       render: sh
     validations:
       required: true

@@ -45,10 +45,6 @@ Before you start, make sure you have the following:
 
 The `logos-module-builder` provides four scaffolding templates for different module types. To create a Logos core module, choose the `default` template that produces a minimal core module with a C++ backend and no UI.
 
-> [!Important]
->
-> All commands below pin Logos repositories to the `tutorial-v1` tag. Using unpinned references may pull incompatible versions that fail at the install step.
-
 1. Create a new directory using your module's name and initialize it from the module builder template. Replace `<module-name>` with your module's name, for example, `my_module`.
 
    ```bash

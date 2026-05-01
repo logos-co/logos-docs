@@ -104,8 +104,13 @@ Tracking: GitHub issue [#174](https://github.com/logos-co/logos-docs/issues/174)
 3. Run the app:
 
    ```sh
-   ./result/bin/logos-app-poc
+   ./result/bin/LogosBasecamp
    ```
+   > ⚠️ **Note:** Earlier builds used `logos-app-poc`.  
+   > If you don’t see `LogosBasecamp`, verify your branch or build version.
+
+
+
 
 4. In the Logos App, open one of the v0.1 “Simple App” UIs:
 
@@ -120,7 +125,7 @@ Tracking: GitHub issue [#174](https://github.com/logos-co/logos-docs/issues/174)
 
 ## Expected outputs
 
-- After step 2: a `result/` directory exists with an executable at `./result/bin/logos-app-poc`.
+- After step 2: a `result/` directory exists with an executable at `./result/bin/LogosBasecamp`.
 - After step 3: the Logos App window opens successfully (what you see first is UNKNOWN).
 - After step 4: the selected v0.1 UI screen opens inside the Logos App (what “success” looks like for each UI is UNKNOWN).
 
@@ -129,7 +134,7 @@ Tracking: GitHub issue [#174](https://github.com/logos-co/logos-docs/issues/174)
 - Command:
 
   ```sh
-  ./result/bin/logos-app-poc
+  ./result/bin/LogosBasecamp
   ```
 
 - Expected:

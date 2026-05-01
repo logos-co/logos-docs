@@ -265,7 +265,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ### Claim funds using the Piñata faucet
 
-"Piñata" is the name of the the LEZ-specific testnet faucet program that funds accounts with native tokens.
+"Piñata" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
 
 1. Fund the sender account via Piñata:
 

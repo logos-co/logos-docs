@@ -26,7 +26,7 @@ Tracking: GitHub issue [#145](https://github.com/logos-co/logos-docs/issues/145)
 
 ## Known gaps
 
-- Doc Packet missings
+- Doc Packet missing
 - Logos testnet specifics missing: which network endpoints/bootstraps to use, whether RLN is required, and what "success" means for v0.1 beyond basic API calls.
 
 ## Prerequisites
@@ -189,7 +189,7 @@ Tracking: GitHub issue [#145](https://github.com/logos-co/logos-docs/issues/145)
 - Existing sources:
 
   - Inventory spreadsheet points to: [https://docs.waku.org/](https://docs.waku.org/) and [https://github.com/logos-messaging/nwaku](https://github.com/logos-messaging/nwaku)
-  - Run a Waku Node (nwaku quickstart + system requirements + health check): [https://docs.waku.org/run-node/](https://docs.waku.org/run-node/)
+  - Run a Logos Messaging Node (nwaku quickstart + system requirements + health check): [https://docs.waku.org/run-node/](https://docs.waku.org/run-node/)
   - Run nwaku with Docker Compose (interaction + store query examples): [https://docs.waku.org/guides/nwaku/run-docker-compose](https://docs.waku.org/guides/nwaku/run-docker-compose)
   - Compose deployment repo (nwaku-compose fork used by Logos Messaging): [https://github.com/logos-messaging/logos-messaging-nim-compose](https://github.com/logos-messaging/logos-messaging-nim-compose)
   - Example publish request + deserialization behavior (`/relay/v1/auto/messages`): [https://github.com/waku-org/nwaku/issues/2643](https://github.com/waku-org/nwaku/issues/2643)

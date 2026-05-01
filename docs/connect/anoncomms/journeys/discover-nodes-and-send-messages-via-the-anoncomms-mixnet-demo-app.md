@@ -16,7 +16,7 @@
 - **Applies to:**
   - [Chat UI App](https://github.com/logos-co/logos-chat-ui), branch: logos-testnet-demo
   - [Chat module](https://github.com/logos-co/logos-chat-module), branch: logos-testnet-demo
-  - [Waku Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
+  - [Logos Messaging Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
 
 - **Runtime target:** Logos testnet v0.1.
 
@@ -116,7 +116,7 @@
        pkill -f logos_host
        ```
 
-  2. Sent messages may not appear in the received messages section if the underlying connectivity of `Waku-relay` is not healthy.
+  2. Sent messages may not appear if the underlying connectivity of `Logos Messaging relay` is not healthy.
 
 ## G. Limits for v0.1
 

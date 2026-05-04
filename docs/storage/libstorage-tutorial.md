@@ -1,170 +1,238 @@
-# Getting Started with libstorage
+---
+title: Share files over the Logos Storage network using libstorage
+doc_type: procedure
+product: storage
+topics: [libstorage, file-sharing, c, easylibstorage]
+steps_layout: sectioned
+authors:
+owner: logos
+doc_version: 1
+slug: libstorage-share-files
+---
 
-In this tutorial, we will build a simple [libstorage-based](https://github.com/logos-storage/logos-storage-nim) C application which allows sharing files over the Logos Storage network. Since libstorage is a low-level API and its main use case is library and not application developers, however, we will use a higher-level C wrapper developed for this tutorial which we refer to as [easylibstorage](https://github.com/logos-storage/easylibstorage).
+# Share files over the Logos Storage network using libstorage
 
-This is, in fact, the way libstorage is supposed to be used: as the building block for higher-level libraries or language bindings. Officially, we currently provide [Go bindings](https://github.com/logos-storage/logos-storage-go-bindings) and [Rust bindings](https://github.com/logos-storage/logos-storage-rust-bindings).
+#### Get started building a file uploader and downloader with the easylibstorage C wrapper.
 
-# Building
-To build easylibstorage, you'll need:
+This tutorial shows you how to use libstorage — a low-level C API — to upload and download files over the Logos Storage network. Because libstorage is designed as a building block for higher-level libraries, this tutorial uses [easylibstorage](https://github.com/logos-storage/easylibstorage), a higher-level C wrapper developed to simplify the API.
 
-- git
-- CMake 3.14+
-- a C11 compiler
-- libstorage (https://github.com/logos-storage/logos-storage-nim). To make this tutorial simpler, we suggest using the script bundled with easylibstorage (Step 2 below) to download prebuilt binaries instead of trying to build it from scratch.
+By the end of this tutorial, you will have two CLI applications: one that uploads a local file to the network and one that downloads it by content ID.
 
-**Step 1.** Clone the [easylibstorage repository](https://github.com/logos-storage/easylibstorage):
+**Before you start**, ensure the following tools are installed:
 
-```bash
-git clone https://github.com/logos-storage/easylibstorage.git
-cd easylibstorage
-```
+- `git`
+- CMake 3.14 or later
+- A C11-compatible compiler
 
-**Step 2.** Download prebuilt binaries for libstorage:
+## What to expect
 
-```bash
-./scripts/fetch-libstorage.sh
-```
+- You will be able to share any local file over the Logos Storage network from a self-hosted node.
+- You will be able to retrieve a shared file from any machine using its SPR and CID strings.
+- You will be able to verify file integrity after a network round-trip.
 
-Ensure that the script completed successfully.
+## Step 1: Clone and build easylibstorage locally
 
-**Step 3.** Build easylibstorage:
+Clone the easylibstorage repository and fetch prebuilt libstorage binaries using the bundled script.
 
-```bash
-cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
-cmake --build build
-```
+> **Note**
+>
+> Use the bundled fetch script rather than building libstorage from source — it is the simplest way to get working binaries for this tutorial.
 
-# The Application
+1. Clone the repository and enter the project directory:
 
-Now that we have a working build for easylibstorage, we can focus on the application. Our application will be composed of two simple CLI apps - a file uploader and a file downloader. Once we are done, you will be able to use the application as follows:
+   ```bash
+   git clone https://github.com/logos-storage/easylibstorage.git
+   cd easylibstorage
+   ```
 
-```bash
-./uploader ./myfile
-./downloader <spr_string> <cid_string> ./myfile-copy
-```
+1. Download the prebuilt libstorage binaries:
 
-The meaning of `<spr_string>` and `<cid_string>` will be explained as we go.
+   ```bash
+   ./scripts/fetch-libstorage.sh
+   ```
 
-First, create a `tutorial` folder under `easylibstorage`:
+   Confirm the script completes without errors before continuing.
 
-```bash
-cd easylibstorage # or wherever it was that you cloned your repo
-mkdir tutorial
-```
+1. Build easylibstorage:
 
-### Uploader
+   ```bash
+   cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
+   cmake --build build
+   ```
 
-The code for the uploader is shown in Listing 1. It first defines some configuration options for the storage node (lines 25-29), including the discovery listen port (UDP 9090), and the directory where the node will store its data (`./uploader-data`). It sets `nat` to `none` as we will be running a local node, and the bootstrap node to `NULL` as we will be creating a network from scratch.
+## Step 2: Create the tutorial directory and source files
 
-```c
-01| /* uploader.c: makes a local file available to the Logos
-02| Storage network. */
-03|
-04| #include <stdio.h>
-05| #include <stdlib.h>
-06| #include "easystorage.h"
-07|
-08| void panic(const char *msg) {
-09|     fprintf(stderr, "Panic: %s\n", msg);
-10|     exit(1);
-11| }
-12|
-13| void progress(int total, int complete, int status) {
-14|     printf("\r  %d / %d bytes", complete, total);
-15|     fflush(stdout);
-16| }
-17|
-18| int main(int argc, char *argv[]) {
-19|     if (argc < 2) {
-20|         printf("Usage: %s <filepath>\n", argv[0]);
-21|         exit(1);
-22|     }
-23|
-24|     node_config cfg = {
-25|             .disc_port = 9090,
-26|             .data_dir = "./uploader-data",
-27|             .log_level = "INFO",
-28|             .bootstrap_node = NULL,
-29|             .nat = "none",
-30|     };
-31|
-32|     char *filepath = argv[1];
-33|
-34|     STORAGE_NODE node = e_storage_new(cfg);
-35|     if (node == NULL) panic("Failed to create storage node");
-36|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-37|
-38|     char *cid = e_storage_upload(node, filepath, progress);
-39|     if (cid == NULL) panic("Upload failed");
-40|     char *spr = e_storage_spr(node);
-41|     if (spr == NULL) panic("Failed to get node's signed peer record");
-42|
-43|     printf("Run: downloader %s %s ./output-file\n", spr, cid);
-44|     free(cid);
-45|     free(spr);
-46|
-47|     printf("\nPress Enter to exit\n");
-48|     getchar();
-49|
-50|     e_storage_stop(node);
-51|     e_storage_destroy(node);
-52|
-53|     return 0;
-54| }
-```
-**Listing 1.** Uploader.
+Create a `tutorial` folder inside the cloned repository and add the uploader and downloader source files.
 
-It then starts the node (line 36), and uploads the file into the local node (line 38). From that moment on, the file becomes available over the network. The program then gathers some critical pieces of information we will need later:
+1. Create the tutorial directory:
 
-* the node's [Signed Peer Record](https://github.com/libp2p/specs/blob/master/RFC/0002-signed-envelopes.md). This a string encoding our node's public key, its network ID, and its connection addresses. It can be used to find the node in the network.
-* the Content ID ([CID](https://github.com/multiformats/cid)). This is a string that uniquely identifies the file we have just uploaded within the network.
+   ```bash
+   mkdir tutorial
+   ```
 
-You should place the listing above in an `uploader.c` file in the `easylibstorage/tutorial` folder you created before.
+1. Create `tutorial/uploader.c` with the following content:
 
-### Downloader
+   ```c
+   /* uploader.c: makes a local file available to the Logos Storage network. */
 
-```c
-01| /* downloader.c: Download files from a Logos Storage node into the local disk.
-02|  */
-03| #include <stdio.h>
-04| #include <stdlib.h>
-05| #include "easystorage.h"
-06|
-07| void panic(const char *msg) {
-08|     fprintf(stderr, "Panic: %s\n", msg);
-09|     exit(1);
-10| }
-11|
-12| void progress(int total, int complete, int status) {
-13|     printf("\r  %d / %d bytes", complete, total);
-14|     fflush(stdout);
-15| }
-16|
-17| int main(int argc, char *argv[]) {
-18|     if (argc < 4) {
-19|         printf("Usage: %s BOOTSTRAP_SPR CID <output_file>\n", argv[0]);
-20|         exit(1);
-21|     }
-22|
-23|     char *spr = argv[1];
-24|     char *cid = argv[2];
-25|     char *filepath = argv[3];
-26|
-27|     node_config cfg = {
-28|             .api_port = 8081,
-29|             .disc_port = 9091,
-30|             .data_dir = "./downloader-data",
-31|             .log_level = "INFO",
-32|             .bootstrap_node = spr,
-33|             .nat = "none",
-34|     };
-35|
-36|     STORAGE_NODE node = e_storage_new(cfg);
-37|     if (node == NULL) panic("Failed to create storage node");
-38|     if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-39|     if (e_storage_download(node, cid, filepath, progress) != RET_OK) panic("Failed to download file");
-40|     e_storage_stop(node);
-41|     e_storage_destroy(node);
-42| }
-```
-**Listing 2.** Downloader.
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include "easystorage.h"
+
+   void panic(const char *msg) {
+       fprintf(stderr, "Panic: %s\n", msg);
+       exit(1);
+   }
+
+   void progress(int total, int complete, int status) {
+       printf("\r  %d / %d bytes", complete, total);
+       fflush(stdout);
+   }
+
+   int main(int argc, char *argv[]) {
+       if (argc < 2) {
+           printf("Usage: %s <filepath>\n", argv[0]);
+           exit(1);
+       }
+
+       node_config cfg = {
+               .disc_port = 9090,
+               .data_dir = "./uploader-data",
+               .log_level = "INFO",
+               .bootstrap_node = NULL,
+               .nat = "none",
+       };
+
+       char *filepath = argv[1];
+
+       STORAGE_NODE node = e_storage_new(cfg);
+       if (node == NULL) panic("Failed to create storage node");
+       if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
+
+       char *cid = e_storage_upload(node, filepath, progress);
+       if (cid == NULL) panic("Upload failed");
+       char *spr = e_storage_spr(node);
+       if (spr == NULL) panic("Failed to get node's signed peer record");
+
+       printf("Run: downloader %s %s ./output-file\n", spr, cid);
+       free(cid);
+       free(spr);
+
+       printf("\nPress Enter to exit\n");
+       getchar();
+
+       e_storage_stop(node);
+       e_storage_destroy(node);
+
+       return 0;
+   }
+   ```
+
+   The configuration sets the discovery port to UDP 9090, stores node data in `./uploader-data`, and sets `nat` to `none` for local-only operation.
+
+   After upload, it prints two values you will need for the download step:
+   - The node's **Signed Peer Record (SPR)** — encodes the node's public key, network ID, and connection addresses.
+   - The **Content ID (CID)** — uniquely identifies the uploaded file on the network.
+
+1. Create `tutorial/downloader.c` with the following content:
+
+   ```c
+   /* downloader.c: Download files from a Logos Storage node into the local disk. */
+
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include "easystorage.h"
+
+   void panic(const char *msg) {
+       fprintf(stderr, "Panic: %s\n", msg);
+       exit(1);
+   }
+
+   void progress(int total, int complete, int status) {
+       printf("\r  %d / %d bytes", complete, total);
+       fflush(stdout);
+   }
+
+   int main(int argc, char *argv[]) {
+       if (argc < 4) {
+           printf("Usage: %s BOOTSTRAP_SPR CID <output_file>\n", argv[0]);
+           exit(1);
+       }
+
+       char *spr = argv[1];
+       char *cid = argv[2];
+       char *filepath = argv[3];
+
+       node_config cfg = {
+               .api_port = 8081,
+               .disc_port = 9091,
+               .data_dir = "./downloader-data",
+               .log_level = "INFO",
+               .bootstrap_node = spr,
+               .nat = "none",
+       };
+
+       STORAGE_NODE node = e_storage_new(cfg);
+       if (node == NULL) panic("Failed to create storage node");
+       if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
+       if (e_storage_download(node, cid, filepath, progress) != RET_OK) panic("Failed to download file");
+       e_storage_stop(node);
+       e_storage_destroy(node);
+   }
+   ```
+
+## Step 3: Update the build configuration and compile
+
+Add the uploader and downloader targets to `CMakeLists.txt` and rebuild.
+
+1. Append the following to the end of `CMakeLists.txt` in the `easylibstorage` root:
+
+   ```cmake
+   # Tutorial uploader/downloader
+   add_executable(uploader tutorial/uploader.c)
+   add_executable(downloader tutorial/downloader.c)
+
+   target_link_libraries(uploader PRIVATE easystorage)
+   target_link_libraries(downloader PRIVATE easystorage)
+   target_link_libraries(uploader PRIVATE ${LIBSTORAGE_PATH})
+   target_link_libraries(downloader PRIVATE ${LIBSTORAGE_PATH})
+   ```
+
+1. Rebuild the project:
+
+   ```bash
+   cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
+   cmake --build build
+   ```
+
+   After the build completes, the `uploader` and `downloader` executables appear under `./build/`.
+
+## Step 4: Upload and download a file with Logos Storage
+
+Run the uploader and then use its output to download the file in a second terminal.
+
+1. Upload a local file:
+
+   ```bash
+   ./build/uploader ./myfile
+   ```
+
+   The program outputs a `Run:` line containing the SPR and CID strings, then waits for input. Leave this terminal open.
+
+1. Open a second terminal and paste the `Run:` command from the uploader output. It will look similar to:
+
+   ```bash
+   ./build/downloader spr:<spr_string> <cid_string> ./output-file
+   ```
+
+   Wait for the command to finish. The file is saved to `./output-file`.
+
+1. Verify the downloaded file is identical to the original:
+
+   ```bash
+   cmp ./myfile ./output-file
+   ```
+
+   No output means the files match.
+
+1. Return to the first terminal and press **Enter** to shut down the uploader node.

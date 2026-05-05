@@ -25,7 +25,7 @@ Logos core modules are non-UI modules that provide backend functionality. Core m
 
 > [!NOTE]
 >
-> For other module types, check out [Wrapping a C Library as a Logos module](./wrapping-a-c-library-as-a-logos-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md).
+> For other module types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md).
 
 Before you start, make sure you have the following:
 
@@ -451,3 +451,41 @@ Verify the target directory exists and is writable. If installing from a local `
 ### LGX variant mismatch
 
 Dev builds of `logos-basecamp` expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Use `nix build '.#lgx'` for dev and `nix build '.#lgx-portable'` for portable.
+
+### `initLogos` marked 'override', but does not override                     
+                                                                               
+The compiler reports this when `initLogos` is declared with the `override` keyword, because the base `PluginInterface` class does not declare it as virtual. Logos calls `initLogos` reflectively through `QMetaObject::invokeMethod`, not through the C++ vtable, so the method is `Q_INVOKABLE` rather than `virtual`. Drop the `override` keyword from the declaration.
+
+```cpp
+Q_INVOKABLE void initLogos(LogosAPI* api);
+```
+                                                                               
+### `initLogos` stores the API pointer in the wrong variable
+                                                                               
+If inter-module calls or API features fail silently, make sure `initLogos` assigns to the global `logosAPI` variable (defined in the Logos SDK / `liblogos`), rather than to a class member such as `m_logosAPI`.
+
+```cpp
+// CORRECT — uses the global variable from liblogos
+void MyPlugin::initLogos(LogosAPI* api)
+{
+    logosAPI = api;
+}
+
+// WRONG — stores in a local member, API calls won't work
+void MyPlugin::initLogos(LogosAPI* api)
+{
+    m_logosAPI = api;
+}
+```  
+
+### `nix build .#lib` does nothing or fails silently                               
+  
+Some shells (notably zsh) treats `#` as a comment character outside quotes. Quote the flake reference so the `#` reaches nix intact.         
+
+```bash
+nix build '.#lib'
+```
+
+### First build is slow
+
+The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and the rest of the build dependencies. This is a one-time cost, subsequent builds reuse the cache and typically complete in under 30 seconds.

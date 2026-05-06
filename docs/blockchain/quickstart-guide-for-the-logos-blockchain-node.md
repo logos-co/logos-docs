@@ -22,7 +22,7 @@ There is currently no dynamic wallet key management. To add new keys you must ma
 
 - Linux x86_64, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
-- At least 64 GB of storage — see the [minimum hardware requirements](https://www.notion.so/nomos-tech/Hardware-Requirements-1fd261aa09df81a4a52be19e90b60891)
+- At least 64 GB of storage
 
 ## What to expect
 
@@ -46,14 +46,14 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
     For example, to download release 0.1.2 on Linux x86_64 with `wget`:
 
     ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.1-linux-x86_64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3-rc.1/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
     wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-x86_64-0.1.2.tar.gz
     ```
 
     On a Raspberry Pi (aarch64):
 
     ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.1-linux-aarch64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-linux-aarch64.tar.gz
     wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-aarch64-0.1.2.tar.gz
     ```
 
@@ -74,19 +74,23 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
 
 ## Step 2: Configure and start the node
 
-The init subcommand generates a user configuration - covering per-node settings such as keys, ports, and peer addresses - with fresh cryptographic keys and auto-detected public IP. Find the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/).
+The init subcommand generates a user configuration - covering per-node settings such as keys, ports, and peer addresses - with fresh cryptographic keys and auto-detected public IP. 
+
+> [!NOTE]
+>
+> Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/) for your selected release.
 
 1. Generate your `user_config.yaml` by running `init` with the bootstrap peer addresses. For example, for release 0.1.2:
 
     ```sh
     ./logos-blockchain-node init \
-        -p /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWL7a8LBbLRYnabptHPFBCmAs49Y7cVMqvzuSdd43tAJk8 \
-        -p /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWPLeAcachoUm68NXGD7tmNziZkVeMmeBS5NofyukuMRJh \
-        -p /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWKFNe4gS5DcCcRUVGdMjZp3fUWu6q6gG5R846Ui1pccHD \
-        -p /ip4/65.109.51.37/udp/3003/quic-v1/p2p/12D3KooWAnriLgXyQnGTYz1zPWPkQL3rthTKYLzuAP7MMnbgsxzR
+    -p /ip4/65.108.203.235/udp/3000/quic-v1/p2p/12D3KooWD5Fb4oxFTfUshdevQ6CT6x4CZ77d1QUvNM2K64dzh9kN \
+    -p /ip4/65.108.203.235/udp/3001/quic-v1/p2p/12D3KooW9ttYQxksJUEwAq3HQd1sbzFS6VQTne8juapNCpnzx38M \
+    -p /ip4/65.108.203.235/udp/3002/quic-v1/p2p/12D3KooWDShdi17Py9iUFLph8w5jjfvc5iZM3f2s2x1Z8bBkKcrU \
+    -p /ip4/65.108.203.235/udp/3003/quic-v1/p2p/12D3KooWSqrYkptmyAW5uPiDtVUNFPi79v5jyPQkBPqQr3HNpTcA
     ```
 
-    - To change the API port, set `api_port` in `user_config.yaml` before starting. The default is `8080`.
+    - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
 1. Start the node:
 

@@ -4,7 +4,7 @@ doc_type: procedure
 product: core
 topics: core
 steps_layout: sectioned
-authors: cheny0, iurimatias
+authors: iurimatias, Khushboo-dev-cpp, cheny0
 owner: logos
 doc_version: 1
 slug: build-run-a-logos-core-module
@@ -82,7 +82,7 @@ The template generates files with placeholder names like `my_module` and `doSome
    - `NAME` must match the `name` field in `metadata.json`. A mismatch causes the build to succeed but the install phase to fail.
 
 1. Edit `flake.nix` and update the `description` field.
-   - The generated `flake.nix` uses an unpinned `logos-module-builder` URL. For reproducible builds, pin it to a specific commit.
+   - The generated `flake.nix` uses an unpinned `logos-module-builder` URL. For reproducible builds, pin it to `tutorial-v1`.
 
 1. Rename the source files in `src/` to match your module name.
 
@@ -285,7 +285,7 @@ There are two ways to install `.lgx` packages:
 1. Build the Logos Package Manager (`lgpm`) CLI.
 
    ```bash
-   nix build 'github:logos-co/logos-package-manager/e5c25989861f4487c3dc8c7b3bc0062bcbc3221f#cli' --out-link ./package-manager
+   nix build 'github:logos-co/logos-package-manager/tutorial-v1#cli' --out-link ./package-manager
    ```
 
 1. Create the `modules/` directory and install the `.lgx` package.
@@ -305,7 +305,7 @@ The Logos module catalog is hosted on GitHub Releases in the [logos-modules](htt
 1. Build the Logos Package Manager (`lgpm`) CLI.
 
    ```bash
-   nix build 'github:logos-co/logos-package-manager/e5c25989861f4487c3dc8c7b3bc0062bcbc3221f#cli' --out-link ./package-manager
+   nix build 'github:logos-co/logos-package-manager/tutorial-v1#cli' --out-link ./package-manager
    ```
 
 1. Build the Logos Package Downloader (`lgpd`) CLI.
@@ -450,33 +450,7 @@ Verify the target directory exists and is writable. If installing from a local `
 
 ### LGX variant mismatch
 
-Dev builds of `logos-basecamp` expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Use `nix build '.#lgx'` for dev and `nix build '.#lgx-portable'` for portable.
-
-### `initLogos` marked 'override', but does not override                     
-                                                                               
-The compiler reports this when `initLogos` is declared with the `override` keyword, because the base `PluginInterface` class does not declare it as virtual. Logos calls `initLogos` reflectively through `QMetaObject::invokeMethod`, not through the C++ vtable, so the method is `Q_INVOKABLE` rather than `virtual`. Drop the `override` keyword from the declaration.
-
-```cpp
-Q_INVOKABLE void initLogos(LogosAPI* api);
-```
-                                                                               
-### `initLogos` stores the API pointer in the wrong variable
-                                                                               
-If inter-module calls or API features fail silently, make sure `initLogos` assigns to the global `logosAPI` variable (defined in the Logos SDK / `liblogos`), rather than to a class member such as `m_logosAPI`.
-
-```cpp
-// CORRECT — uses the global variable from liblogos
-void MyPlugin::initLogos(LogosAPI* api)
-{
-    logosAPI = api;
-}
-
-// WRONG — stores in a local member, API calls won't work
-void MyPlugin::initLogos(LogosAPI* api)
-{
-    m_logosAPI = api;
-}
-```  
+Dev builds of `logos-basecamp` expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Use `nix build '.#lgx'` for dev and `nix build '.#lgx-portable'` for portable.                                                                           
 
 ### `nix build .#lib` does nothing or fails silently                               
   

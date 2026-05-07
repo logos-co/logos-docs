@@ -222,6 +222,10 @@ A faucet distributes free tokens on test networks to experiment without financia
 
 Once the faucet UTXO has aged (approximately 3.5 hours, or two epochs on the current testnet), your node automatically enters the consensus lottery and may begin proposing blocks. No further action is required.
 
+> [!TIP]
+>
+> [logosup](https://github.com/logosnode/logosup) is a community CLI tool that automates node setup, management, and monitoring via Docker. If you prefer a simpler path — or want to manage an already-running node with commands like `logosup status`, `logosup logs`, and `logosup monitor` — it can replace or complement the manual steps above.
+
 You can compare your node's chain state against the testnet fleet at the [Logos testnet dashboard](https://testnet.blockchain.logos.co/web/).
 
 > [!NOTE]

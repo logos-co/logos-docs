@@ -9,16 +9,17 @@ labels: type:journey
 
 ## 1. Outcome and purpose
 
-- **What the user achieves:** A developer builds the Logos Delivery module and calls its API from a C++ application to send and receive messages over the Logos messaging network.
-- **Why it matters:** Proves the Logos Delivery module is functioning and enables application developers to integrate Logos messaging into their C++ applications as a first-step integration.
+- **What the user achieves:** A developer builds a Logos module that calls the Logos Delivery API from C++ to subscribe to content topics, send messages, and react to delivery events on the Logos messaging network.
+- **Why it matters:** Proves the Logos Delivery module is functioning and gives application developers a working pattern for integrating Logos messaging into their C++ modules.
 - **Key components:**
-  - `logos-delivery-module` — Logos module exposing the Logos Delivery API.
-  - `logos-delivery` — Underlying implementation; a transitive dependency resolved automatically by Nix, linked statically to `logos-delivery-module`.
+  - `logos-delivery-module` — the Logos module exposing the Logos Delivery API. This doc targets **tag `v0.1.1`**.
+  - `logos-delivery` — underlying implementation, a transitive dependency resolved automatically by Nix and linked statically into `logos-delivery-module`.
+  - `logos-delivery-demo` — a complete, runnable example module that follows this doc end-to-end (referenced in §7).
 
 ## 2. Scope
 
 - **Repositories:**
-  - https://github.com/logos-co/logos-delivery-module
+  - https://github.com/logos-co/logos-delivery-module (pinned to [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/v0.1.1))
   - https://github.com/logos-messaging/logos-delivery
 - **Runtime target:** Testnet v0.1
 - **Prerequisites:**
@@ -30,7 +31,7 @@ labels: type:journey
 
 ### Step 1: Create a Logos module
 
-Scaffold a new module using [logos-module-builder](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see [logos-tutorial](https://github.com/logos-co/logos-tutorial).
+Scaffold a new module using [logos-module-builder](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Logos module developer guide](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md). For a complete worked example following this doc, see [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo).
 
 ### Step 2: Declare `delivery_module` as a dependency
 
@@ -44,83 +45,134 @@ In `metadata.json`:
 }
 ```
 
-In `flake.nix`, add a matching input (the attribute name must match the dependency name):
+In `flake.nix`, add a matching input. **Pin to a released tag** so the doc and your app remain stable when the module's API evolves:
 
 ```nix
 inputs = {
   logos-module-builder.url = "github:logos-co/logos-module-builder";
-  delivery_module.url = "github:logos-co/logos-delivery-module";
+  delivery_module.url = "github:logos-co/logos-delivery-module/v0.1.1";
 };
 ```
 
-`logos-module-builder` automatically generates the typed `delivery_module` wrapper at build time.
+> The flake input name (`delivery_module`) must match the dependency name in `metadata.json`. `logos-module-builder` automatically generates the typed `delivery_module` wrapper at build time.
 
 ### Step 3: Call the delivery module API
 
-> ![TIP] For full documentation on module's API, check: 
-> - [`README.md`](https://github.com/logos-co/logos-delivery-module#module-interface)
-> - [`src/delivery_module_plugin.h`](https://github.com/logos-co/logos-delivery-module/blob/main/src/delivery_module_plugin.h)
+> [!TIP]
+> For the full API reference, see:
+> - [`README.md`](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/README.md#module-interface)
+> - [`src/delivery_module_plugin.h`](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/src/delivery_module_plugin.h)
 
-In your module's `initLogos()`, instantiate `LogosModules` with the provided `LogosAPI*`. This gives you typed access to all declared dependencies, including `delivery_module`:
+In your module's `initLogos()`, construct `LogosModules` with the provided `LogosAPI*`. This gives you typed access to all declared dependencies, including `delivery_module`:
 
-```c++
+```cpp
 void MyPlugin::initLogos(LogosAPI* api) {
     m_logos = new LogosModules(api);
-    // m_logos->delivery_module is now the Logos Delivery module instance
+    // m_logos->delivery_module is now the typed wrapper for the Logos Delivery module.
 }
 ```
 
-Then call the delivery module in order:
+Then drive the module through the following sequence.
 
-1. Initialize the node with a JSON config
-    ```c++
-    m_logos->delivery_module.createNode({"logLevel":"INFO","mode":"Core","preset":"logos.dev"})
-    ```
+#### 1. Register event handlers (before starting)
 
-2. Register event handlers
-    ```c++
-    m_logos->delivery_module.on("connectionStateChanged", ...)
-    m_logos->delivery_module.on("messageReceived", ...)
-    m_logos->delivery_module.on("messageSent", ...)
-    m_logos->delivery_module.on("messageError", ...)
-    ```
+Wire your handlers **before** `start()` so you don't miss the first `connectionStateChanged` event:
 
-3. Connect to the network
-    ```c++
-    m_logos->delivery_module.start()
-    ```
+```cpp
+m_logos->delivery_module.on("connectionStateChanged", [](const QVariantList& data) {
+    // data[0]: QString — connection status
+    // data[1]: QString — ISO-8601 timestamp
+});
 
-4. Subscribe to a [LIP-23](https://lip.logos.co/messaging/informational/23/topics.html#content-topics) content topic
-    ```c++
-    m_logos->delivery_module.subscribe(contentTopic)
-    ```
+m_logos->delivery_module.on("messageReceived", [](const QVariantList& data) {
+    // data[0]: QString — messageHash
+    // data[1]: QString — contentTopic
+    // data[2]: QString — payload (base64-encoded; decode with QByteArray::fromBase64)
+    // data[3]: QString — timestamp (nanoseconds since epoch)
+});
 
-5. Send a message — returns a request ID; delivery confirmation arrives asynchronously via `messageSent` / `messageError`
-    ```c++
-    m_logos->delivery_module.send(contentTopic, payload)
-    ```
+m_logos->delivery_module.on("messageSent",       [](const QVariantList& data) { /* requestId, hash, ts */ });
+m_logos->delivery_module.on("messagePropagated", [](const QVariantList& data) { /* requestId, hash, ts */ });
+m_logos->delivery_module.on("messageError",      [](const QVariantList& data) { /* requestId, hash, error, ts */ });
+```
 
-6. Clean shutdown
-    ```c++
-    m_logos->delivery_module.unsubscribe(contentTopic)
-    m_logos->delivery_module.stop()
-    ```
+See `src/delivery_module_plugin.h` in the module repo for the exact event contracts.
 
-All lifecycle calls (`createNode`, `start`, `stop`, `subscribe`, `unsubscribe`, `send`) are synchronous. Events arrive off-thread via the Qt event loop.
+#### 2. Initialize the node
+
+Every lifecycle method returns a `LogosResult`. **Always check `success` before continuing**, and surface `getError()` on failure:
+
+```cpp
+const QString cfg = R"({"logLevel":"INFO","mode":"Core","preset":"logos.dev"})";
+
+LogosResult r = m_logos->delivery_module.createNode(cfg);
+if (!r.success) {
+    qWarning() << "createNode failed:" << r.getError();
+    return;
+}
+```
+
+#### 3. Connect to the network
+
+```cpp
+LogosResult r = m_logos->delivery_module.start();
+if (!r.success) {
+    qWarning() << "start failed:" << r.getError();
+    return;
+}
+```
+
+`connectionStateChanged` will fire on the Qt event loop once the node connects to peers.
+
+#### 4. Subscribe to a content topic
+
+Use a [LIP-23](https://lip.logos.co/messaging/informational/23/topics.html#content-topics) content-topic string:
+
+```cpp
+LogosResult r = m_logos->delivery_module.subscribe(contentTopic);
+if (!r.success) {
+    qWarning() << "subscribe failed:" << r.getError();
+}
+```
+
+#### 5. Send a message
+
+The module base64-encodes the payload internally — pass raw text. On success, `getString()` returns the request ID; track it through the `messageSent` → `messagePropagated` events (or `messageError`):
+
+```cpp
+LogosResult r = m_logos->delivery_module.send(contentTopic, payload);
+if (!r.success) {
+    qWarning() << "send failed:" << r.getError();
+    return;
+}
+const QString requestId = r.getString();
+```
+
+#### 6. Clean shutdown
+
+```cpp
+m_logos->delivery_module.unsubscribe(contentTopic);
+m_logos->delivery_module.stop();
+```
+
+All lifecycle calls (`createNode`, `start`, `stop`, `subscribe`, `unsubscribe`, `send`) are synchronous and return `LogosResult`. Events arrive off-thread via the Qt event loop.
 
 ### Step 4: Build and run
 
 ```sh
-nix build
-nix run
+nix build              # build the module
+nix run                # preview via logos-standalone-app (for ui_qml modules)
+nix build .#lgx        # package as .lgx for installation into logos-basecamp
 ```
 
 ## 4. Verification
 
 - **Success indicators:**
-  - `start()` returns `true`
-  - `connectionStateChanged` event fires with a non-empty status string
-  - `send()` returns a successful `LogosResult` with a request ID, and `messageSent` fires for that ID
+  - `createNode()` returns `result.success == true`
+  - `start()` returns `result.success == true`
+  - `connectionStateChanged` event fires with a non-empty status string within a few seconds
+  - `send()` returns a successful `LogosResult`; `result.getString()` is a non-empty request ID
+  - `messageSent` and then `messagePropagated` fire for that request ID
   - On the subscribing side, `messageReceived` fires on the subscribed content topic
 
 ## 5. Configuration
@@ -135,46 +187,48 @@ nix run
 }
 ```
 
-Full key reference and available presets (`logos.dev`, `twn`): [Module Interface](https://github.com/logos-co/logos-delivery-module#module-interface) in the README.
+Full key reference and available presets (`logos.dev`, `twn`): see the [Module Interface](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/README.md#module-interface) section of the README.
 
 Default P2P TCP listen port: `60000` (configurable via `tcpPort`).
 
 ## 6. Known issues and troubleshooting
 
-1. **`createNode` returns `false`**
+1. **`createNode` returns an unsuccessful `LogosResult`**
    - Cause: malformed JSON, or an internal initialization error.
-   - Fix: validate the JSON is well-formed and all key names are camelCase matching `WakuNodeConf` fields. Set `"logLevel": "DEBUG"` to get verbose output.
+   - Fix: validate the JSON is well-formed; key names are camelCase matching `WakuNodeConf` fields. Set `"logLevel": "DEBUG"` for verbose output. Inspect `result.getError()` for the underlying message.
 
-2. **`send()` returns an error result**
+2. **`send()` returns an unsuccessful `LogosResult`**
    - Cause: node was not started, or `contentTopic` is empty/invalid.
-   - Fix: call `start()` first and verify it returns `true`. Check the content topic follows the LIP-23 format.
+   - Fix: call `start()` first and verify it returned success. Confirm the content topic follows the LIP-23 format.
 
 3. **`messageSent` never fires after a successful `send()`**
    - Cause: node is not connected to peers yet, or the network layer rejected the message (e.g., RLN proof failure).
-   - Fix: wait for `connectionStateChanged` to fire before sending. If `messageError` fires, inspect `data[2]` (error message) for details.
+   - Fix: wait for `connectionStateChanged` before sending. If `messageError` fires, inspect `data[2]` (error message) for details.
 
 4. **`messageReceived` never fires**
-   - Cause: `subscribe()` not called before messages were sent, or the payload was sent on a different content topic.
+   - Cause: `subscribe()` was not called before messages were sent, or the payload was sent on a different content topic.
    - Fix: call `subscribe(topic)` before any messages are sent on that topic. Remember that `data[2]` (payload) is base64-encoded and must be decoded before display.
 
 **Out of scope for this doc:**
 
 - Private/encrypted messaging
-- Custom bootstrap peer configuration (use preset-provided defaults for logos.dev)
-- Running a self-hosted logos-delivery backend
+- Custom bootstrap peer configuration (use preset-provided defaults for `logos.dev`)
+- Running a self-hosted `logos-delivery` backend
 
 ## 7. Additional context
 
-- **Full API reference:** `src/delivery_module_plugin.h` in the `logos-delivery-module` repo contains complete Doxygen documentation for every method and event contract.
-- **Module development guide:** `logos-developer-guide.md` in the `logos-tutorial` repo covers scaffolding, inter-module communication, `LogosResult` handling, and the generated wrappers in detail.
+- **Complete example:** [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo) — a small `ui_qml` module that subscribes to user-managed content topics, sends/receives messages, and surfaces every `delivery_module` call with an `Info` button. Follows this doc end-to-end and is built against `logos-delivery-module/v0.1.1`.
+- **Full API reference:** `src/delivery_module_plugin.h` at `v0.1.1` contains Doxygen documentation for every method and event contract.
+- **Module development guide:** [`logos-developer-guide.md`](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md) in `logos-tutorial` covers scaffolding, inter-module communication, `LogosResult` handling, and the generated wrappers.
 - **Hardware requirements:** Standard developer machine. No special hardware required. Minimum ~1 GB RAM for the node process.
 - **Estimated time to complete:** 20–30 minutes (including Nix build times).
-- **Security notes:** `createNode` must be called exactly once per context; calling it multiple times without stopping and destroying the context is undefined behavior.
+- **Security notes:** `createNode` must be called exactly once per context; calling it multiple times without `stop()`-ing and destroying the context is undefined behavior.
 
 ## References
 
-- `logos-delivery-module` repo: https://github.com/logos-co/logos-delivery-module
+- `logos-delivery-module` (this doc targets [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/v0.1.1)): https://github.com/logos-co/logos-delivery-module
+- `logos-delivery-demo` (complete worked example): https://github.com/logos-co/logos-delivery-demo
 - `logos-module-builder` (build system + scaffolding): https://github.com/logos-co/logos-module-builder
 - `logos-tutorial` (module development walkthrough): https://github.com/logos-co/logos-tutorial
-- `logos-delivery`: https://github.com/logos-messaging/logos-delivery
+- `logos-delivery` (underlying implementation): https://github.com/logos-messaging/logos-delivery
 - LIP-23 content topics: https://lip.logos.co/messaging/informational/23/topics.html#content-topics

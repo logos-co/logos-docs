@@ -40,7 +40,6 @@ The sections below link to the guides and references for what you can build and 
 
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
-- [Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
 
 ### Logos Execution Zone
 
@@ -60,8 +59,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### Messaging
 
-- [Use the Logos Delivery Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md) — Integrate the Logos Delivery Module API into your application to send and receive messages.
-- [Use the Logos Chat Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md) — Integrate the Logos Chat Module API into your application to enable chat functionality.
+- We're working on the content.
 
 ### AnonComms
 

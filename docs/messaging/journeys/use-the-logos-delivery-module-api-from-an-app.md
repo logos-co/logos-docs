@@ -157,7 +157,7 @@ const QString requestId = r.getString();
 
 #### 6. Clean shutdown
 
-`stop()` tears down the underlying waku node, which drops every active subscription and event listener — no need to call `unsubscribe()` first.
+`stop()` tears down the underlying node, which drops every active subscription and event listener — no need to call `unsubscribe()` first.
 
 ```cpp
 LogosResult s = m_logos->delivery_module.stop();
@@ -236,7 +236,7 @@ To run two instances of the same app side-by-side on one machine, pass a unique 
 - **Full API reference:** `src/delivery_module_plugin.h` at `v0.1.1` contains Doxygen documentation for every method and event contract.
 - **Module development guide:** [`logos-developer-guide.md`](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md) in `logos-tutorial` covers scaffolding, inter-module communication, `LogosResult` handling, and the generated wrappers.
 - **Hardware requirements:** Standard developer machine. No special hardware required. Minimum ~1 GB RAM for the node process.
-- **Estimated time to complete:** ~10 minutes of hands-on work. Nix build time is excluded — it depends on your machine and cache state (first cold build pulls the full Nim / waku toolchain).
+- **Estimated time to complete:** ~10 minutes of hands-on work. Nix build time is excluded — it depends on your machine and cache state.
 - **Security notes:** `createNode` must be called exactly once per context; calling it multiple times without `stop()`-ing and destroying the context is undefined behavior.
 
 ## References

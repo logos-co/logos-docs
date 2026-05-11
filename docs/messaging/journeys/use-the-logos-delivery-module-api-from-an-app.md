@@ -90,12 +90,12 @@ m_logos->delivery_module.on("connectionStateChanged", [](const QVariantList& dat
 });
 
 m_logos->delivery_module.on("messageReceived", [](const QVariantList& data) {
-    // data[0]: QString — messageHash
-    // data[1]: QString — contentTopic
-    // data[2]: QString — payload (base64-encoded; decode with QByteArray::fromBase64)
-    // data[3]: QString — timestamp (ns since epoch — inconsistent with the
-    //                                ISO-8601 used by the other events;
-    //                                tracked at logos-delivery-module#26)
+    // data[0]: QString     — messageHash
+    // data[1]: QString     — contentTopic
+    // data[2]: QByteArray  — payload (raw bytes)
+    // data[3]: QString     — timestamp (ns since epoch — inconsistent with the
+    //                                   ISO-8601 used by the other events;
+    //                                   tracked at logos-delivery-module#26)
 });
 
 m_logos->delivery_module.on("messageSent",       [](const QVariantList& data) { /* requestId, hash, ts */ });
@@ -144,7 +144,7 @@ if (!r.success) {
 
 #### 5. Send a message
 
-The module base64-encodes the payload internally — pass raw text. On success, `getString()` returns the request ID; track it through the `messageSent` → `messagePropagated` events (or `messageError`):
+On success, `getString()` returns the request ID; track it through the `messageSent` → `messagePropagated` events (or `messageError`):
 
 ```cpp
 LogosResult r = m_logos->delivery_module.send(contentTopic, payload);
@@ -219,7 +219,7 @@ To run two instances of the same app side-by-side on one machine, pass a unique 
 
 4. **`messageReceived` never fires**
    - Cause: `subscribe()` was not called before messages were sent, or the payload was sent on a different content topic.
-   - Fix: call `subscribe(topic)` before any messages are sent on that topic. Remember that `data[2]` (payload) is base64-encoded and must be decoded before display.
+   - Fix: call `subscribe(topic)` before any messages are sent on that topic.
 
 5. **Two instances of the same app on one host fail to start (port collision)**
    - Cause: `delivery_module` defaults to fixed TCP / discv5 / REST / metrics / websocket ports per instance, so the second one fails to bind.

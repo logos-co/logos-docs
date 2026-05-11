@@ -157,10 +157,9 @@ const QString requestId = r.getString();
 
 #### 6. Clean shutdown
 
-```cpp
-LogosResult u = m_logos->delivery_module.unsubscribe(contentTopic);
-if (!u.success) qWarning() << "unsubscribe failed:" << u.getError();
+`stop()` tears down the underlying waku node, which drops every active subscription and event listener — no need to call `unsubscribe()` first.
 
+```cpp
 LogosResult s = m_logos->delivery_module.stop();
 if (!s.success) qWarning() << "stop failed:" << s.getError();
 ```

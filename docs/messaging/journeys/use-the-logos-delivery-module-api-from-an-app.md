@@ -19,13 +19,13 @@ labels: type:journey
 ## 2. Scope
 
 - **Repositories:**
-  - https://github.com/logos-co/logos-delivery-module (pinned to [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/v0.1.1))
+  - https://github.com/logos-co/logos-delivery-module (pinned to [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/0c346c0c2ab2404c11a62cd6c385e806e8465434))
   - https://github.com/logos-messaging/logos-delivery
 - **Runtime target:** Testnet v0.1
 - **Prerequisites:**
   - OS: macOS (aarch64 or x86_64) or Linux (aarch64 or x86_64)
-  - Nix with flakes enabled (recommended path)
-  - If not using Nix: CMake ≥ 3.14, Ninja, pkg-config, Qt6 (`qtbase` + `qtremoteobjects`)
+  - Nix with flakes enabled
+  - Advanced: a non-Nix build (CMake ≥ 3.14, Ninja, pkg-config, Qt6) is possible but requires hand-building the Logos toolchain — not covered here.
 
 ## 3. Happy path
 
@@ -60,12 +60,17 @@ inputs = {
 
 > [!TIP]
 > For the full API reference, see:
-> - [`README.md`](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/README.md#module-interface)
-> - [`src/delivery_module_plugin.h`](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/src/delivery_module_plugin.h)
+> - [`README.md`](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/README.md#module-interface)
+> - [`src/delivery_module_plugin.h`](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/src/delivery_module_plugin.h)
 
-In your module's `initLogos()`, construct `LogosModules` with the provided `LogosAPI*`. This gives you typed access to all declared dependencies, including `delivery_module`:
+In your module's `initLogos()`, construct `LogosModules` with the provided `LogosAPI*`. `LogosModules` is generated at build time by `logos-module-builder`; pull it in via the umbrella header and keep it on the plugin as a member.
 
 ```cpp
+#include "logos_sdk.h"   // generated umbrella — exposes LogosModules
+
+// In your plugin class:
+//   LogosModules* m_logos = nullptr;
+
 void MyPlugin::initLogos(LogosAPI* api) {
     m_logos = new LogosModules(api);
     // m_logos->delivery_module is now the typed wrapper for the Logos Delivery module.
@@ -88,7 +93,9 @@ m_logos->delivery_module.on("messageReceived", [](const QVariantList& data) {
     // data[0]: QString — messageHash
     // data[1]: QString — contentTopic
     // data[2]: QString — payload (base64-encoded; decode with QByteArray::fromBase64)
-    // data[3]: QString — timestamp (nanoseconds since epoch)
+    // data[3]: QString — timestamp (ns since epoch — inconsistent with the
+    //                                ISO-8601 used by the other events;
+    //                                tracked at logos-delivery-module#26)
 });
 
 m_logos->delivery_module.on("messageSent",       [](const QVariantList& data) { /* requestId, hash, ts */ });
@@ -151,8 +158,11 @@ const QString requestId = r.getString();
 #### 6. Clean shutdown
 
 ```cpp
-m_logos->delivery_module.unsubscribe(contentTopic);
-m_logos->delivery_module.stop();
+LogosResult u = m_logos->delivery_module.unsubscribe(contentTopic);
+if (!u.success) qWarning() << "unsubscribe failed:" << u.getError();
+
+LogosResult s = m_logos->delivery_module.stop();
+if (!s.success) qWarning() << "stop failed:" << s.getError();
 ```
 
 All lifecycle calls (`createNode`, `start`, `stop`, `subscribe`, `unsubscribe`, `send`) are synchronous and return `LogosResult`. Events arrive off-thread via the Qt event loop.
@@ -187,9 +197,11 @@ nix build .#lgx        # package as .lgx for installation into logos-basecamp
 }
 ```
 
-Full key reference and available presets (`logos.dev`, `twn`): see the [Module Interface](https://github.com/logos-co/logos-delivery-module/blob/v0.1.1/README.md#module-interface) section of the README.
+Full key reference and available presets (`logos.dev`, `twn`): see the [Module Interface](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/README.md#module-interface) section of the README.
 
 Default P2P TCP listen port: `60000` (configurable via `tcpPort`).
+
+To run two instances of the same app side-by-side on one machine, pass a unique `portsShift` value to `createNode` — it offsets every listener (TCP, REST, metrics, discv5 UDP, websocket) by the same amount. This is a temporary workaround; the planned permanent fix is per-port env-var overrides at the module level — TODO: track [`logos-delivery-module#18`](https://github.com/logos-co/logos-delivery-module/issues/18).
 
 ## 6. Known issues and troubleshooting
 
@@ -209,6 +221,10 @@ Default P2P TCP listen port: `60000` (configurable via `tcpPort`).
    - Cause: `subscribe()` was not called before messages were sent, or the payload was sent on a different content topic.
    - Fix: call `subscribe(topic)` before any messages are sent on that topic. Remember that `data[2]` (payload) is base64-encoded and must be decoded before display.
 
+5. **Two instances of the same app on one host fail to start (port collision)**
+   - Cause: `delivery_module` defaults to fixed TCP / discv5 / REST / metrics / websocket ports per instance, so the second one fails to bind.
+   - Fix: pass a unique `portsShift` value to `createNode` per instance. **TODO:** the planned permanent fix is per-port env-var overrides at the module level — track [`logos-delivery-module#18`](https://github.com/logos-co/logos-delivery-module/issues/18).
+
 **Out of scope for this doc:**
 
 - Private/encrypted messaging
@@ -221,12 +237,12 @@ Default P2P TCP listen port: `60000` (configurable via `tcpPort`).
 - **Full API reference:** `src/delivery_module_plugin.h` at `v0.1.1` contains Doxygen documentation for every method and event contract.
 - **Module development guide:** [`logos-developer-guide.md`](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md) in `logos-tutorial` covers scaffolding, inter-module communication, `LogosResult` handling, and the generated wrappers.
 - **Hardware requirements:** Standard developer machine. No special hardware required. Minimum ~1 GB RAM for the node process.
-- **Estimated time to complete:** 20–30 minutes (including Nix build times).
+- **Estimated time to complete:** ~10 minutes of hands-on work. Nix build time is excluded — it depends on your machine and cache state (first cold build pulls the full Nim / waku toolchain).
 - **Security notes:** `createNode` must be called exactly once per context; calling it multiple times without `stop()`-ing and destroying the context is undefined behavior.
 
 ## References
 
-- `logos-delivery-module` (this doc targets [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/v0.1.1)): https://github.com/logos-co/logos-delivery-module
+- `logos-delivery-module` (this doc targets [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/0c346c0c2ab2404c11a62cd6c385e806e8465434)): https://github.com/logos-co/logos-delivery-module
 - `logos-delivery-demo` (complete worked example): https://github.com/logos-co/logos-delivery-demo
 - `logos-module-builder` (build system + scaffolding): https://github.com/logos-co/logos-module-builder
 - `logos-tutorial` (module development walkthrough): https://github.com/logos-co/logos-tutorial

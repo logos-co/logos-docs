@@ -95,7 +95,7 @@ In the `sequencer/src/sequencer.rs` file, add the `Sequencer` struct definition:
 pub struct Sequencer {
     handle: SequencerHandle<NodeHttpClient>,
     queue_file: String,
-    checkpoint_path: String,
+    pub checkpoint_path: String,
 }
 ```
 
@@ -105,30 +105,23 @@ Below, add a function to create a new private signing key:
 // Load signing key from file or generate a new one if it doesn't exist
 //
 // path: The path to the signing key file
-fn load_or_create_signing_key(path: &Path) -> Result<Ed25519Key> {
+fn load_or_create_signing_key(path: &Path) -> Ed25519Key {
     if path.exists() {
-        debug!("Loading existing signing key from {:?}", path);
-        let key_bytes = fs::read(path)?;
-
-        // Ensure key is correct
-        if key_bytes.len() != ED25519_SECRET_KEY_SIZE {
-            return Err(SequencerError::InvalidKeyFile {
-                expected: ED25519_SECRET_KEY_SIZE,
-                actual: key_bytes.len(),
-            });
-        }
+        let key_bytes = fs::read(path).expect("failed to read key file");
+        assert!(
+            key_bytes.len() == ED25519_SECRET_KEY_SIZE,
+            "invalid key file: expected {} bytes, got {}",
+            ED25519_SECRET_KEY_SIZE,
+            key_bytes.len()
+        );
         let key_array: [u8; ED25519_SECRET_KEY_SIZE] =
             key_bytes.try_into().expect("length already checked");
-
-
-        Ok(Ed25519Key::from_bytes(&key_array))
+        Ed25519Key::from_bytes(&key_array)
     } else {
-        debug!("Generating new signing key and saving to {:?}", path);
         let mut key_bytes = [0u8; ED25519_SECRET_KEY_SIZE];
         rand::RngCore::fill_bytes(&mut rand::rng(), &mut key_bytes);
-        fs::write(path, key_bytes)?;
-
-        Ok(Ed25519Key::from_bytes(&key_bytes))
+        fs::write(path, key_bytes).expect("failed to write key file");
+        Ed25519Key::from_bytes(&key_bytes)
     }
 }
 ```
@@ -151,7 +144,17 @@ fn load_checkpoint(path: &Path) -> Option<SequencerCheckpoint> {
 Finally, you can begin filling in the implementation for the `Sequencer` struct, starting with the `new` function:
 ```rust
 impl Sequencer {
-    pub fn new(
+
+    // Create a new Sequencer
+    //
+    // node_endpoint: Address of Logos Blockchain node
+    // signing_key_path: Path to file containing signing key
+    // node_auth_username: Username to access node
+    // node_auth_password: Password to access node
+    // queue_file: Path to file storing queued SQL statements
+    // checkpoint_path: Path to file containing latest channel checkpoint
+    // channel_path: Path to file with channel ID
+    pub async fn new(
         node_endpoint: &str,
         signing_key_path: &str,
         node_auth_username: Option<String>,
@@ -177,17 +180,22 @@ impl Sequencer {
             println!("  Restored checkpoint from {checkpoint_path}");
         }
 
-        let signing_key = load_or_create_signing_key(Path::new(signing_key_path))?;
-
         // Produce channel ID from signing key
+        let signing_key = load_or_create_signing_key(Path::new(signing_key_path));
         let channel_id = ChannelId::from(signing_key.public_key().to_bytes());
         fs::write(channel_path, hex::encode(channel_id.as_ref()))
             .expect("failed to write channel id");
 
         // Initialise the ZoneSequencer
         let node = NodeHttpClient::new(CommonHttpClient::new(basic_auth), node_url);
-        let (zone_sequencer, handle) = ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
+        let (zone_sequencer, mut handle) =
+            ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
+
         zone_sequencer.spawn();
+
+        println!("Connecting to node...");
+        handle.wait_ready().await;
+        println!("Sequencer ready.");
 
         Ok(Self {
             handle,
@@ -202,7 +210,7 @@ impl Sequencer {
 ```
 
 ### Publish Data
-Once the `ZoneSequencer` and its handle are set up, posting data to the channel is as easy as passing it to the sequencer handle's `publish` function. This function returns a struct consisting of the inscription (message) ID and the current checkpoint.
+Once the `ZoneSequencer` and its handle are set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handle's `publish_message` function. Once the transaction is posted tp the network, this function will return a struct consisting of the inscription (message) ID and the current checkpoint.
 
 Once you have the inscription ID, you can choose to query the on-chain status of the submitted transaction with the `status` function. The status returned will be one of:
 
@@ -283,17 +291,19 @@ impl Sequencer {
         let count = pending.len();
         debug!("Processing batch of {} queries", count);
 
-        // Publish SQL transactions
-        let data = pending.join("\n").into_bytes();
-        let result = self.handle.publish(data).await?;
+        let sql_text = pending.join("\n").as_bytes().to_vec();
+        
+        match self.handle.publish_message(sql_text).await {
+            Ok(result) => {
+                info!("Submitted batch of {} statement(s)", count);
 
-        info!(
-            "Inscription published with tx_hash: {:?}",
-            result.inscription_id
-        );
-
-        // Save latest message checkpoint
-        save_checkpoint(Path::new(&self.checkpoint_path), &result.checkpoint);
+                // Save latest message checkpoint
+                save_checkpoint(Path::new(&self.checkpoint_path), &result.checkpoint);
+            }
+            Err(e) => {
+                println!("  error: {e}");
+            }
+        }
 
         Ok(())
     }
@@ -310,7 +320,7 @@ impl Sequencer {
 
     ...
 
-    // Check if the queue file is empty
+    // Check if the queue file is empty.
     pub fn queue_is_empty(&self) -> Result<bool> {
         match fs::metadata(self.queue_file.clone()) {
             Ok(meta) => Ok(meta.len() == 0),
@@ -319,7 +329,7 @@ impl Sequencer {
         }
     }
 
-    // Background processing loop - call this in a spawned task
+    // Background processing loop — call this in a spawned task.
     pub async fn run_processing_loop(&self) {
 
         // How long to wait between checks
@@ -407,7 +417,10 @@ impl Indexer {
     // Create new indexer
     //
     // db_path: Path to local password db
+    // node_endpoint: Address of Logos Blockchain node
     // channel_path: Path to file with channel ID
+    // node_auth_username: Username to access node
+    // node_auth_password: Password to access node
     pub fn new(
         db_path: &str,
         node_endpoint: &str,
@@ -452,7 +465,7 @@ impl Indexer {
     ...
 
     // Follow the Zone channel & apply updates
-    pub async fn run(&self) {
+    pub async fn run(self) {
 
         // Open database at db_path
         let db = match DatabaseReadOnly::open(&self.db_path) {
@@ -481,11 +494,12 @@ impl Indexer {
             futures::pin_mut!(stream);
             while let Some(zone_msg) = stream.next().await {
 
-                // zone_block include the inscriptions but not the deposit operations in the block
+                // Ensure zone_block includes the inscriptions but not the deposit operations in the block
                 let logos_blockchain_zone_sdk::ZoneMessage::Block(zone_block) = zone_msg else {
                     continue;
                 };
-                let sql_text = match String::from_utf8(zone_block.data) {
+                
+                let sql_text = match String::from_utf8(data) {
                     Ok(s) => s,
                     Err(e) => {
                         error!("Zone block data is not valid UTF-8: {e}");
@@ -496,8 +510,8 @@ impl Indexer {
                 // Extract SQL statements from message
                 let statements: Vec<&str> = sql_text
                     .lines()
-                    .map(|l| l.trim().trim_end_matches(';').trim())
-                    .filter(|s| !s.is_empty())
+                    .map(|l: &str| l.trim().trim_end_matches(';').trim())
+                    .filter(|s: &&str| !s.is_empty())
                     .collect();
 
                 if statements.is_empty() {

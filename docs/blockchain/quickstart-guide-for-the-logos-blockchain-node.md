@@ -7,14 +7,14 @@ steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
 doc_version: 1
-slug: run-a-logos-blockchain-node-on-public-devnet-from-cli
+slug: run-a-logos-blockchain-node-on-public-testnet-from-cli
 ---
 
-# Run a Logos Blockchain node on the public devnet from the CLI
+# Run a Logos Blockchain node on the public testnet from the CLI
 
 #### Start a node and verify runtime and consensus signals.
 
-This procedure covers installing the Logos Blockchain node, connecting to the public devnet, and verifying it is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized applications. This procedure is for node operators setting up a node for the first time.
+This procedure covers installing the Logos Blockchain node, connecting to the public testnet, and verifying it is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
@@ -26,7 +26,7 @@ There is currently no dynamic wallet key management. To add new keys you must ma
 
 ## What to expect
 
-- You can install the node binary and ZK circuits, generate a configuration, and join the public devnet.
+- You can install the node binary and ZK circuits, generate a configuration, and join the public testnet.
 - You can verify that your node is syncing and connected to peers using the local API.
 - You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
@@ -78,16 +78,16 @@ The init subcommand generates a user configuration - covering per-node settings 
 
 > [!NOTE]
 >
-> Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/) for your selected release.
+> Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 
 1. Generate your `user_config.yaml` by running `init` with the bootstrap peer addresses. For example, for release 0.1.2:
 
     ```sh
     ./logos-blockchain-node init \
-    -p /ip4/65.108.203.235/udp/3000/quic-v1/p2p/12D3KooWD5Fb4oxFTfUshdevQ6CT6x4CZ77d1QUvNM2K64dzh9kN \
-    -p /ip4/65.108.203.235/udp/3001/quic-v1/p2p/12D3KooW9ttYQxksJUEwAq3HQd1sbzFS6VQTne8juapNCpnzx38M \
-    -p /ip4/65.108.203.235/udp/3002/quic-v1/p2p/12D3KooWDShdi17Py9iUFLph8w5jjfvc5iZM3f2s2x1Z8bBkKcrU \
-    -p /ip4/65.108.203.235/udp/3003/quic-v1/p2p/12D3KooWSqrYkptmyAW5uPiDtVUNFPi79v5jyPQkBPqQr3HNpTcA
+    -p /ip4/65.108.203.235/udp/3000/quic-v1 \
+    -p /ip4/65.108.203.235/udp/3001/quic-v1 \
+    -p /ip4/65.108.203.235/udp/3002/quic-v1 \
+    -p /ip4/65.108.203.235/udp/3003/quic-v1
     ```
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
@@ -149,7 +149,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 ## Step 4: Request tokens from the faucet
 
-A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://devnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
+A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
 
 1. Find the keys associated with your node:
 
@@ -190,7 +190,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
 ## Step 5: Participate in the consensus mechanism
 
-Once the faucet UTXO has aged, your node automatically enters the consensus lottery and may begin proposing blocks. You can monitor your node's chain state at the [Logos devnet dashboard](https://devnet.blockchain.logos.co/web/).
+Once the faucet UTXO has aged, your node automatically enters the consensus lottery and may begin proposing blocks. You can monitor your node's chain state at the [Logos testnet dashboard](https://testnet.blockchain.logos.co/web/).
 
 1. Wait approximately 3.5 hours after receiving tokens for your UTXO to become eligible.
 
@@ -200,9 +200,9 @@ Once the faucet UTXO has aged, your node automatically enters the consensus lott
 
 ## Troubleshooting the Logos Blockchain node
 
-### The devnet explorer shows an error when I click on a transaction?
+### The testnet explorer shows an error when I click on a transaction?
 
-The [devnet explorer](https://devnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
+The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
 
 ### My wallet balance is not updating after requesting tokens?
 

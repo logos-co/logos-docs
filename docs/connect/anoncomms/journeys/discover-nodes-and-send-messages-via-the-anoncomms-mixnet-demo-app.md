@@ -33,7 +33,7 @@
   1. Clone the chat-ui repo
 
      ```shell
-     git clone git@github.com:logos-co/logos-chat-ui.git
+     git clone https://github.com/logos-co/logos-chat-ui.git
      ```
 
   2. Change into the repo directory and check out the demo branch
@@ -43,22 +43,16 @@
      git checkout logos-testnet-demo
      ```
 
-  3. Build the standalone application. You should not see any errors in the console.
+  3. Run the standalone application. You should not see any errors in the console.
 
      ```shell
-     nix build '.#app'
+     nix run '.'
      ```
 
      If you don't have flakes enabled globally, add experimental flags:
 
      ```shell
-     nix build '.#app' --extra-experimental-features 'nix-command flakes'
-     ```
-
-  4. Run the application
-
-     ```shell
-     ./result/bin/logos-chat-ui-app
+     nix run '.' --extra-experimental-features 'nix-command flakes'
      ```
 
 - **Expected outputs:**

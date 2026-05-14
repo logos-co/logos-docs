@@ -199,16 +199,6 @@ A faucet distributes free tokens on test networks to experiment without financia
 
     ![Image of the faucet UI after requesting funds with a public key](./quickstart-guide-for-the-logos-blockchain-node/image1.png)
 
-    > [!TIP]
-    >
-    > **Programmatic alternative.** The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
-    >
-    > ```sh
-    > curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
-    > ```
-    >
-    > The response includes the transaction hash; the explorer URL it returns currently uses the `devnet.blockchain.logos.co` subdomain (see issue #244 for the testnet/devnet branding split).
-
 1. Wait 1 to 2 minutes, then verify that your funds were received by querying the balance of your wallet. Replace `<your-chosen-key>` with the key you used in the previous step:
 
     ```sh

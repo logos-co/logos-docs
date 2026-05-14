@@ -197,7 +197,7 @@ export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
 
 > [!NOTE]
 >
-> The `wallet help` output currently states that `NSSA_WALLET_HOME_DIR` "must be set", but the binary in fact falls back to `~/.nssa/wallet` when the variable is unset, matching the description above. The mismatch is in the help string, not in the doc; if it confuses you, treat the doc as authoritative.
+> The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.nssa/wallet` when unset, as described above. The mismatch is in the help string.
 
 ## Step 4: Initialize the wallet local storage and verify connectivity
 
@@ -218,10 +218,6 @@ If the wallet storage was not previously initialized, this command prints `Persi
 > [!IMPORTANT]
 >
 > The wallet uses this password as a seed to deterministically generate your public and private key trees. The wallet stores the derived key material and local state in storage.json under the wallet home directory.
-
-> [!NOTE]
->
-> Once initialized, `wallet account ls` (used later in Step 5) will list four preconfigured accounts (`Preconfigured Public/...` and `Preconfigured Private/...`) alongside any accounts you create. They ship with the wallet binary for built-in tests; you can ignore them in normal use, or use them as send-to targets when experimenting.
 
 ## Step 5: Complete a minimal wallet flow
 

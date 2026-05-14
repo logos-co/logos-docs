@@ -12,7 +12,7 @@ slug: install-the-logos-basecamp-app
 
 # Install the Logos Basecamp app
 
-#### Get Basecamp running on Linux or macOS so you can load Logos modules and apps.
+#### Get Logos Basecamp running on your desktop.
 
 > [!NOTE]
 >
@@ -25,8 +25,8 @@ You can install Logos Basecamp in two ways:
 
 | Method | When to use it | Tooling required |
 |:--|:--|:--|
-| Prebuilt release (AppImage or DMG) | End users and most developers | None |
-| Build from source with Nix | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
+| [Prebuilt release (AppImage or DMG)](#install-from-a-prebuilt-release) | End users | None |
+| [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
 Before you start, make sure you have the following:
 
@@ -41,13 +41,11 @@ Before you start, make sure you have the following:
 
 ## Install from a prebuilt release
 
-Use this path if you are an end user. The release page ships a Linux AppImage and a macOS DMG.
-
 1. Go to the [latest release page](https://github.com/logos-co/logos-basecamp/releases/latest) and download the artifact for your OS:
     - Linux: the `AppImage` files
     - macOS: the `.dmg` files
 
-1. Depending on your OS, launch the app as follows:
+1. Depending on your OS, install and launch the app as follows:
 
 - On macOS, drag the `.dmg` file into `/Applications`. Then launch the app from `/Applications`.
 - On Linux, grant execute permission to the downloaded AppImage and launch it:
@@ -58,8 +56,6 @@ Use this path if you are an end user. The release page ships a Linux AppImage an
     ```
 
 ## Build and run Logos Basecamp from source
-
-Use this path if you are contributing to Logos Basecamp or need a build for an unsupported platform. Nix with flakes enabled is required.
 
 1. Clone the repository and enter it:
 

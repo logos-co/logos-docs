@@ -4,15 +4,13 @@ This guide explains how to contribute to the Logos documentation project hosted 
 
 ## Overview
 
-Logos documentation lives in the [`docs/`](./docs/) folder of this repository. Every document follows one of five [canonical templates](./resources/templates/README.md) loosely based on [DITA standards](https://docs.oasis-open.org/dita/dita/v1.3/os/part2-tech-content/archSpec/technicalContent/dita-technicalContent-InformationTypes.html), uses a shared set of [writing rules](./resources/writing-rules/README.md), and goes through a review process before publication.
+Logos documentation lives in the [`docs/`](./docs/) folder of this repository. Every document follows one of five canonical types loosely based on [DITA standards](https://docs.oasis-open.org/dita/dita/v1.3/os/part2-tech-content/archSpec/technicalContent/dita-technicalContent-InformationTypes.html) and goes through a review process before publication. Canonical templates and writing rules are not yet committed. Until they ship, mirror the structure of [`docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md`](./docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) as the reference example.
 
 The Docs team (Technical Writers) owns the documentation workflow. R&D teams provide technical input and review. The Red Team validates that published documentation works end-to-end in a testing environment.
 
 ## Document types
 
 Every document in this project uses one of these types. Choosing the right type is mandatory before writing.
-
-<!-- TODO: Add final templates links once all resources are committed. -->
 
 | Type | Purpose | Use when... |
 |:---|:---|:---|
@@ -28,8 +26,7 @@ If you are unsure which type fits, open an issue describing what you want to doc
 
 | Resource | Location | Purpose |
 |:---|:---|:---|
-| Canonical templates | [`resources/templates/`](./resources/templates/README.md) | Markdown and JSON templates for each document type. Non-negotiable structure. |
-| Writing rules | [`resources/writing-rules/`](./resources/writing-rules/README.md) | Style guide covering voice, formatting, code blocks, callouts, and terminology. |
+| Reference example | [`docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md`](./docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) | Interim model for structure, voice, and formatting until canonical templates and writing rules ship. |
 | Doc packet template | [`resources/templates/doc-packet.md`](./resources/templates/doc-packet.md) | Template R&D teams use to provide technical input for a new document. |
 | Project board | [Logos Docs project board](https://github.com/orgs/logos-co/projects/9) | Tracks every document from intake to publication. Read access is public. |
 | Labels reference | [Repository labels](https://github.com/logos-co/logos-docs/labels) | Label taxonomy used on issues and PRs. |
@@ -54,7 +51,7 @@ If you want to fix a typo, clarify a step, update a command, or make any other i
 
 1. Fork the repository.
 1. Create a branch with a descriptive name (for example, `fix/quickstart-node-typo`).
-1. Make your changes. Follow the [writing rules](./resources/writing-rules/README.md) and preserve the existing template structure. Do not reorganize sections or change the document type.
+1. Make your changes. Preserve the existing template structure. Do not reorganize sections or change the document type.
 1. Open a pull request against `main`. In the PR description, explain what you changed and why.
 1. The Docs team reviews your PR. For technical changes (commands, config values, expected outputs), an R&D SME may also review.
 
@@ -207,8 +204,7 @@ Quality labels track the document's reliability, not its position in the workflo
 
 All documents must follow these rules regardless of who writes them.
 
-1. **Use a canonical template.** Every document must use the Markdown template for its type. Templates are in [`resources/templates/`](./resources/templates/README.md). Do not invent your own structure.
-1. **Follow the writing rules.** The style guide in [`resources/writing-rules/`](./resources/writing-rules/README.md) defines voice, formatting, terminology, and code block conventions. Read it before writing.
+1. **Mirror the reference example.** Until canonical templates and writing rules are committed, mirror the structure, voice, and formatting of [`docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md`](./docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md). Do not invent your own structure.
 1. **One document, one type.** Do not mix types. If a quickstart needs a long conceptual explanation, write a separate concept document and link to it.
 1. **Mark unknowns explicitly.** If you do not have the information for a required section, do not skip it. Write a clear note for the reader (for example., "Technical details pending - contact the [team] for status"). Track the gap in the PR or issue.
 1. **Do not break existing structure.** When editing an existing document, preserve its template structure, section IDs, and numbering. Change only what you need to change.

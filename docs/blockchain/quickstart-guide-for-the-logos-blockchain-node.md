@@ -1,5 +1,5 @@
 ---
-title:
+title:  Run a Logos Blockchain node on the public testnet from the CLI
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -18,7 +18,7 @@ This procedure covers installing the Logos Blockchain node, connecting to the pu
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
-**Before you start**, ensure you have:
+Before you start, ensure you have:
 
 - Linux x86_64, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
@@ -74,7 +74,7 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
 
 ## Step 2: Configure and start the node
 
-The init subcommand generates a user configuration - covering per-node settings such as keys, ports, and peer addresses - with fresh cryptographic keys and auto-detected public IP. 
+The `init` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
 > [!NOTE]
 >

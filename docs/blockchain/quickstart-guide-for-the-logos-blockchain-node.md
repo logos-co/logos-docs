@@ -113,6 +113,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     ```json
     {
       "lib": "3d0c...4e6d",
+      "lib_slot": 0,
       "tip": "f44d...e2f5",
       "slot": 70899,
       "height": 120,

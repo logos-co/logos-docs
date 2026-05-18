@@ -93,8 +93,8 @@ Choose the instructions for your operating system:
 1. Install Rust with `rustup`:
 
    ```bash
-   # Install the official Rust compiler with the standard installation option
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
+   # Install the official Rust compiler. -y installs non-interactively (required in CI/Docker, where there is no TTY for the rustup TUI).
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
    ```
 
 1. Install the RISC Zero components:
@@ -195,6 +195,10 @@ If you want the wallet to initialize in a different location, set the variable b
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
 ```
 
+> [!NOTE]
+>
+> The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.nssa/wallet` when unset, as described above. The mismatch is in the help string.
+
 ## Step 4: Initialize the wallet local storage and verify connectivity
 
 The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialize the wallet storage.
@@ -260,8 +264,9 @@ In this task, wallet account and transfer commands interact with the authenticat
 
    ```bash
    wallet account get --account-id <sender_public_account_id>
+   ```
 
-   In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`
+   In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`.
 
 ### Claim funds using the Piñata faucet
 
@@ -284,7 +289,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ### Create and fund the recipient public account
 
-1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSAS_WALLET_HOME_DIR` again.
+1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSA_WALLET_HOME_DIR` again.
 
    ```bash
    wallet account new public

@@ -14,7 +14,7 @@ slug: run-a-logos-blockchain-node-on-public-testnet-from-cli
 
 #### Start a node and verify runtime and consensus signals.
 
-This procedure covers installing the Logos Blockchain node, connecting to the public testnet, and verifying it is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized applications. This procedure is for node operators setting up a node for the first time.
+With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 

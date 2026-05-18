@@ -19,7 +19,6 @@ An example of how messages from two Logos channels can be written to the Logos B
 
 ![Two Mantle channel message chains, depicted with the Logos Blockchain blocks they are inscribed in.](./zone-sdk-tutorial/image1.png)
 
-
 ### Tutorial
 
 This tutorial will walk you through the functionality provided by the Zone SDK, structured as a step-by-step guide to building your own Zone by progressively adding more SDK features to nodes interacting with a Zone.
@@ -67,7 +66,7 @@ This application maintains its state by using a sqlite database, with updates ta
 * Secondary devices will operate as **indexers**, following the channel and obtaining SQL transactions from the chain.
 * Secondary devices will run a read-only version of the password manager (in the `indexer` folder), applying SQL transactions from the channel to update the state.
 
-The implementation skeleton already has most of this password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
+The implementation skeleton already has most of this password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained primarily in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 
 ### Initialise the `ZoneSequencer` Struct
 Your sequencer will be implemented as a wrapper for the `ZoneSequencer` struct from the Zone SDK, found in the `logos-blockchain/zone-sdk/src/sequencer.rs` file. When initialising this struct, you must provide the following arguments:
@@ -89,13 +88,18 @@ In the `sequencer/src/sequencer.rs` file, add the `Sequencer` struct definition:
 ```rust
 // The sequencer that handles transactions using the Zone SDK
 //
-// SequencerHandle<NodeHttpClient>: Handle for submitting requests to Zone SDK sequencer
+// sequencer: The ZoneSequencer instance used by our wrapper
+// handle: Handle for submitting requests to Zone SDK sequencer
+// state: A helper struct for keeping track of transaction state,
+//          see more on this below.
 // queue_file: The path to a file that holds SQL transactions not yet posted to the channel
 // checkpoint_path: The path to the channel checkpoint file
 pub struct Sequencer {
+    sequencer: ZoneSequencer<NodeHttpClient>,
     handle: SequencerHandle<NodeHttpClient>,
+    state: InMemoryZoneState,
     queue_file: String,
-    pub checkpoint_path: String,
+    checkpoint_path: String,
 }
 ```
 
@@ -175,7 +179,7 @@ impl Sequencer {
             }
         }
 
-        let checkpoint = load_checkpoint(Path::new(&checkpoint_path));
+        let checkpoint = load_checkpoint(Path::new(checkpoint_path));
         if checkpoint.is_some() {
             println!("  Restored checkpoint from {checkpoint_path}");
         }
@@ -188,17 +192,12 @@ impl Sequencer {
 
         // Initialise the ZoneSequencer
         let node = NodeHttpClient::new(CommonHttpClient::new(basic_auth), node_url);
-        let (zone_sequencer, mut handle) =
-            ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
-
-        zone_sequencer.spawn();
-
-        println!("Connecting to node...");
-        handle.wait_ready().await;
-        println!("Sequencer ready.");
+        let (sequencer, handle) = ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
 
         Ok(Self {
+            sequencer,
             handle,
+            state: InMemoryZoneState::default(),
             queue_file: queue_file.to_owned(),
             checkpoint_path: checkpoint_path.to_owned(),
         })
@@ -210,21 +209,13 @@ impl Sequencer {
 ```
 
 ### Publish Data
-Once the `ZoneSequencer` and its handle are set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handle's `publish_message` function. Once the transaction is posted tp the network, this function will return a struct consisting of the inscription (message) ID and the current checkpoint.
-
-Once you have the inscription ID, you can choose to query the on-chain status of the submitted transaction with the `status` function. The status returned will be one of:
-
-* **Pending**: Not yet on the canonical chain, needs resubmitting.
-* **Safe**: On the canonical chain, but not yet finalised.
-* **Finalized**: Permanently finalised as part of the blockchain.
-* **Unknown**: Unknown transaction.
+Once the `ZoneSequencer` and is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handle's `publish_message` function. Once the transaction is posted to the network, this function will return a struct consisting of the inscription (message) ID and the current checkpoint.
 
 #### Example
 In our password manager example, a processing loop continuously checks if there are new SQL transactions produced by the password database. If so, these transactions are submitted as plain text to the Zone.
 
 Before you begin implementing this loop, add the following function to the `sequencer/src/sequencer.rs` file to enable you to save checkpoints to the checkpoint file whenever an update is published. 
 
-> This function must be outside the `Sequencer` struct implementation!
 ```rust
 // Write latest checkpoint to file
 //
@@ -238,121 +229,239 @@ fn save_checkpoint(path: &Path, checkpoint: &SequencerCheckpoint) {
 
 Whenever the password database is updated, the SQL transactions are also written to a queue file. This functionality is already implemented in the `sequencer/src/db.rs` file.
 
-In this tutorial, we will focus on reading these transactions from the queue file and submitting them to the channel. Within the `Sequencer` implementation, add the function below to read from queue file and clear it when done:
+In this tutorial, we will focus on reading these transactions from the queue file and submitting them to the channel. Add the function below to read from queue file and clear it when done:
 
 ```rust
-impl Sequencer {
+// Drain the queue file and return all pending queries
+//
+// queue_file: File for queued SQL statements
+fn queue_drain(queue_file: &str) -> Result<Vec<String>> {
 
-    ...
+    // Check if queue_file is empty
+    let file = match OpenOptions::new().read(true).write(true).open(queue_file) {
+        Ok(f) => f,
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(e) => return Err(SequencerError::Io(e)),
+    };
 
-    // Drain the queue file and return all pending queries
-    fn queue_drain(&self) -> Result<Vec<String>> {
-        let file = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .open(self.queue_file.clone())?;
+    file.lock_exclusive()?;
 
-        // Lock the queue file to prevent concurrent writes from the database
-        file.lock_exclusive()?;
-
-        let reader = BufReader::new(&file);
-        let mut queue_vec = Vec::new();
-        for query in reader.lines() {
-            queue_vec.push(query?.clone());
-        }
-
-        // Clear queue file
-        file.set_len(0)?;
-
-        Ok(queue_vec)
+    let reader = BufReader::new(&file);
+    let mut queue_vec = Vec::new();
+    for query in reader.lines() {
+        queue_vec.push(query?);
     }
 
-    ...
+    // Clear queue file
+    file.set_len(0)?;
 
+    Ok(queue_vec)
 }
 ```
 
-Continuing in the `Sequencer` struct implementation, add the following function to publish the pending SQL transactions obtained from the `queue_drain` function.
-
-The transaction status is not queried in this demo application.
+Then, add the following function to publish the pending SQL transactions obtained from the `queue_drain` function.
 
 ```rust
-impl Sequencer {
-
-    ...
-
-    // Process all pending queries as a single inscription
-    async fn process_pending_batch(&self) -> Result<()> {
-        let pending = self.queue_drain()?;
-        if pending.is_empty() {
-            return Ok(());
-        }
-
-        let count = pending.len();
-        debug!("Processing batch of {} queries", count);
-
-        let sql_text = pending.join("\n").as_bytes().to_vec();
-        
-        match self.handle.publish_message(sql_text).await {
-            Ok(result) => {
-                info!("Submitted batch of {} statement(s)", count);
-
-                // Save latest message checkpoint
-                save_checkpoint(Path::new(&self.checkpoint_path), &result.checkpoint);
-            }
-            Err(e) => {
-                println!("  error: {e}");
-            }
-        }
-
-        Ok(())
+// Process all pending queries as a single inscription
+//
+// queue_file: File for queued SQL statements
+// handle: Handle for Sequencer submissions
+async fn process_pending_batch(
+    queue_file: &str,
+    handle: &SequencerHandle<NodeHttpClient>,
+) -> Result<()> {
+    let pending = queue_drain(queue_file)?;
+    if pending.is_empty() {
+        return Ok(());
     }
 
-    ...
+    let count = pending.len();
+    debug!("Processing batch of {} queries", count);
 
+    let sql_text = pending.join("\n").as_bytes().to_vec();
+    if let Err(e) = handle.publish_message(sql_text).await {
+        error!("failed to publish batch: {e}");
+    } else {
+        info!("Submitted batch of {} statement(s)", count);
+    }
+
+    Ok(())
 }
 ```
 
-Complete the Sequencer struct implementation by adding the processing loop and a function to check if the queue is empty:
+Within the Sequencer struct implementation, add the following function to periodically check the queue_file and publish its contents. This function also handles channel events.
 
 ```rust
 impl Sequencer {
 
     ...
 
-    // Check if the queue file is empty.
-    pub fn queue_is_empty(&self) -> Result<bool> {
-        match fs::metadata(self.queue_file.clone()) {
-            Ok(meta) => Ok(meta.len() == 0),
-            Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(true),
-            Err(e) => Err(e.into()),
+    // Processing loop
+    pub async fn run(self) {
+        let Self { mut sequencer, handle, mut state, queue_file, checkpoint_path } = self;
+
+        // Loop to check queue and publish
+        let mut batch_handle = handle.clone();
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(Duration::from_millis(100));
+            loop {
+                interval.tick().await;
+                batch_handle.wait_ready().await;
+                if let Err(e) = process_pending_batch(&queue_file, &batch_handle).await {
+                    error!("Batch processing failed: {e}");
+                }
+            }
+        });
+
+        ...
+
+    }
+}
+```
+
+### Handle Channel Events
+It is important for your sequencer to keep track of the Zone state on the blockchain and how this differs from the state it maintains locally. A reorg could remove Zone update inscriptions from the canonical chain, or another sequencer could update the Zone state in a Zone with multiple sequencers. For this reason, the sequencer must be able to query the status of Zone updates they've published, and to what extent it is caught up with the latest blockchain state.
+
+The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
+
+* `FinalizedInscriptions` - Finalised inscriptions discovered during backfill.
+* `Ready` - The sequencer is caught up and ready to accept updates.
+* `Published` - When an inscription is published, provides the updated channel checkpoint and a key to distinguish identical payloads published separately.
+* `TxsFinalized` - Transaction hashes and inscriptions that have been finalised on-chain.
+* `ChannelUpdate` - Provides inscriptions published by other sequencers for this Zone ("adopted") and inscriptions that are no longer on the canonical chain ("orphaned").
+
+#### Example
+To keep track of the inscription IDs provided by the SDK via the events, add the following code in the `common/src/state.rs` file:
+
+```rust
+// Keep track of Zone state in memory
+//
+// published: Inscriptions published by your sequencer but not yet finalised or orphaned
+// adopted: Inscriptions published by other sequencers. Not applicable in our example.
+// finalized: All finalised inscriptions
+#[derive(Default)]
+pub struct InMemoryZoneState {
+    published: Vec<Msg>,
+    adopted: Vec<Msg>,
+    finalized: Vec<Msg>,
+}
+
+impl ZoneState for InMemoryZoneState {
+    fn on_published(&mut self, info: &InscriptionInfo) {
+        self.published
+            .push(Msg::from_payload(info.this_msg, &info.payload));
+    }
+
+    fn on_adopted(&mut self, adopted: &[InscriptionInfo]) {
+        for info in adopted {
+            if !self.adopted.iter().any(|m| m.msg_id == info.this_msg) {
+                self.adopted
+                    .push(Msg::from_payload(info.this_msg, &info.payload));
+            }
         }
     }
 
-    // Background processing loop — call this in a spawned task.
-    pub async fn run_processing_loop(&self) {
+    // Remove from our list of published inscriptions
+    fn on_orphaned(&mut self, msg_id: &MsgId) {
+        if let Some(i) = self.published.iter().position(|m| &m.msg_id == msg_id) {
+            self.published.remove(i);
+        }
+    }
 
-        // How long to wait between checks
-        let poll_interval = Duration::from_millis(100);
+    // Remove finalised inscriptions from published and adopted lists
+    fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+        for info in inscriptions {
+            if let Some(i) = self
+                .published
+                .iter()
+                .position(|m| m.msg_id == info.this_msg)
+            {
+                self.published.remove(i);
+            } else if let Some(i) = self.adopted.iter().position(|m| m.msg_id == info.this_msg) {
+                self.adopted.remove(i);
+            }
+            if !self.finalized.iter().any(|m| m.msg_id == info.this_msg) {
+                self.finalized
+                    .push(Msg::from_payload(info.this_msg, &info.payload));
+            }
+        }
+    }
+
+    fn published(&self) -> &[Msg] {
+        &self.published
+    }
+
+    fn adopted(&self) -> &[Msg] {
+        &self.adopted
+    }
+
+    fn finalized(&self) -> &[Msg] {
+        &self.finalized
+    }
+}
+```
+
+Then, back in the `sequencer/src/sequencer.rs` file, add the following function to handle events:
+
+```rust
+// Handle channel events
+//
+// event: Channel event enum.
+// handle: Sequencer handle for publishing messages
+// state: Zone state struct from common/src/state.rs
+// checkpoint_path: Path to checkpoint file
+async fn handle_event(
+    event: Event,
+    handle: &SequencerHandle<NodeHttpClient>,
+    state: &mut InMemoryZoneState,
+    checkpoint_path: &str,
+) {
+    match event {
+        Event::Ready => {
+            info!("Sequencer ready");
+        }
+        Event::ChannelUpdate { orphaned, adopted } => {
+            state.on_adopted(&adopted);
+            for info in &orphaned {
+                state.on_orphaned(&info.this_msg);
+                debug!(msg_id = %hex::encode(info.this_msg.as_ref()), "Auto-republishing orphan");
+
+                // Republish orphaned inscriptions
+                if let Err(e) = handle.publish_message(info.payload.clone()).await {
+                    error!("failed to auto-republish: {e}");
+                }
+            }
+        }
+        Event::TxsFinalized { inscriptions, .. } => {
+            state.on_finalized(&inscriptions);
+        }
+        Event::Published { info, checkpoint } => {
+            debug!(msg_id = %hex::encode(info.this_msg.as_ref()), "Published");
+            state.on_published(&info);
+            save_checkpoint(Path::new(checkpoint_path), &checkpoint);
+        }
+        Event::FinalizedInscriptions { inscriptions } => {
+            state.on_finalized(&inscriptions);
+        }
+    }
+}
+```
+
+Finally, add a loop to the Sequencer struct's `run` function to listen for events:
+
+```rust
+impl Sequencer {
+
+    ...
+
+    // Processing loop
+    pub async fn run(self) {
+
+        ...
 
         loop {
-            let is_empty = match self.queue_is_empty() {
-                Ok(empty) => empty,
-                Err(e) => {
-                    tracing::error!("Failed to check queue: {}", e);
-                    sleep(poll_interval).await;
-                    continue;
-                }
-            };
-
-            if is_empty {
-                sleep(poll_interval).await;
-                continue;
-            }
-
-            if let Err(e) = self.process_pending_batch().await {
-                tracing::error!("Batch processing failed: {}", e);
-            }
+            let Some(event) = sequencer.next_event().await else { continue; };
+            handle_event(event, &handle, &mut state, &checkpoint_path).await;
         }
     }
 }
@@ -499,7 +608,7 @@ impl Indexer {
                     continue;
                 };
                 
-                let sql_text = match String::from_utf8(data) {
+                let sql_text = match String::from_utf8(zone_block.data) {
                     Ok(s) => s,
                     Err(e) => {
                         error!("Zone block data is not valid UTF-8: {e}");
@@ -546,6 +655,6 @@ This tutorial illustrated the basic functionality of the Zone SDK to build a sim
 Despite their autonomy and customisability, Logos Zones support several key interoperability features. Bridging Layer 1 tokens into Zones, on-chain message passing between Zones, as well as complex cross-Zone transaction coordination are all supported by the Logos Blockchain. See [**The Secret to Sovereign Zone Interoperability on Logos**](https://press.logos.co/article/sovereign-zone-interoperability) for more details.
 
 ### Start Building!
-Building your app on Logos has never been easier. The testnet is live (at the time of writing), and members of the Logos team are available to help you if you get stuck.
+Building your app on Logos has never been easier. The testnet is live, and members of the Logos team are available to help you if you get stuck.
 
 > Check out the [**Builder Hub**](https://build.logos.co/) to get started!

@@ -189,16 +189,6 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
-## Step 5: Participate in the consensus mechanism
-
-Once the faucet UTXO has aged, your node automatically enters the consensus lottery and may begin proposing blocks. You can monitor your node's chain state at the [Logos testnet dashboard](https://testnet.blockchain.logos.co/web/).
-
-1. Wait approximately 3.5 hours after receiving tokens for your UTXO to become eligible.
-
-1. Confirm participation by checking that `mode` remains `Online` and `height` continues to increase.
-
-    - Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
-
 ## Troubleshooting the Logos Blockchain node
 
 ### The testnet explorer shows an error when I click on a transaction?

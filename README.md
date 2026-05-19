@@ -73,7 +73,7 @@ Please open an issue in this repository describing what you are trying to comple
 
 We are consolidating and updating previously fragmented materials into a single, coherent developer experience and source of truth, featuring consistent navigation and terminology. This process is ongoing, and we appreciate your patience as we work to provide comprehensive and up-to-date documentation.
 
-We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → Logos Blockchain, Codex → Logos Storage, and Waku → Logos Messaging. This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. [Legacy names may still appear in repositories and specifications](/docs/reference/naming-migration.md), but going forward the Logos-first names will be used across our docs.
+We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
 
 Our aim is to provide a predictable onboarding path for operators and developers, where they can find what they need and trust what they read.
 

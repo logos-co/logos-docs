@@ -189,6 +189,12 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
+> [!NOTE]
+>
+> Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
+>
+> Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
+
 ## Troubleshooting the Logos Blockchain node
 
 ### The testnet explorer shows an error when I click on a transaction?

@@ -1,16 +1,16 @@
 ---
-title: Start a Logos blockchain node via the app UI
+title: Start a Logos Blockchain node via the app UI
 doc_type: procedure
 product: blockchain
 topics: blockchain
 steps_layout: sectioned
-authors:  cheny0
+authors: davidrusu, cheny0
 owner: logos
 doc_version: 1
 slug: start-a-logos-blockchain-node-via-ui
 ---
 
-# Start a Logos blockchain node via the app UI
+# Start a Logos Blockchain node via the app UI
 
 #### Run a node that participates in consensus via a graphical interface.
 
@@ -19,7 +19,7 @@ slug: start-a-logos-blockchain-node-via-ui
 > - **Permissions**: Node operator
 > - **Product**: Logos Blockchain testnet v0.1
 
-The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blochain node [using the CLI](./run-a-logos-blockchain-node-on-public-testnet-from-cli.md) or the graphical interface.
+The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blockchain node [using the CLI](./run-a-logos-blockchain-node-on-public-testnet-from-cli.md) or the graphical interface.
 
 > [!NOTE]
 >
@@ -32,11 +32,11 @@ Before you start, make sure you have the following:
 
 ## What to expect
 
-- You have a Logos blockchain node running and connected to peers.
+- You have a Logos Blockchain node running and connected to peers.
 - Your wallet holds testnet funds requested from the faucet.
 - Your node is eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
 
-## Step 1: Run the Logos Core App
+## Step 1: Run the Logos Blockchain app
 
 1. Clone the repository:
 
@@ -63,7 +63,7 @@ Before you start, make sure you have the following:
 
 1. In the app, click **Generate Config**.
 
-1. In the [Logos blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
+1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
 
 1. In the app, paste the peer set information in the **Initial peers** and click **Generate Config** on the bottom.
 

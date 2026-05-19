@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors: davidrusu, cheny0
 owner: logos
 doc_version: 1
-slug: start-a-logos-blockchain-node-via-ui
+slug: start-a-logos-blockchain-node-via-the-app-ui
 ---
 
 # Start a Logos Blockchain node via the app UI

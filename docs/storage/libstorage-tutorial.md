@@ -1,238 +1,210 @@
 ---
-title: Share files over the Logos Storage network using libstorage
+title: Build a CLI app with Logos Storage
 doc_type: procedure
 product: storage
-topics: [libstorage, file-sharing, c, easylibstorage]
+topics: []
 steps_layout: sectioned
 authors:
 owner: logos
 doc_version: 1
-slug: libstorage-share-files
+slug: libstorage-tutorial
 ---
 
-# Share files over the Logos Storage network using libstorage
+# Build a CLI app with Logos Storage
 
-#### Get started building a file uploader and downloader with the easylibstorage C wrapper.
+#### Get started building a CLI application that transfers files over the Logos Storage network.
 
-This tutorial shows you how to use libstorage — a low-level C API — to upload and download files over the Logos Storage network. Because libstorage is designed as a building block for higher-level libraries, this tutorial uses [easylibstorage](https://github.com/logos-storage/easylibstorage), a higher-level C wrapper developed to simplify the API.
+This tutorial walks you through building a simple CLI application that uploads and downloads files over the Logos Storage network using the [Logos Storage Module API](https://logos-co.github.io/logos-storage-module/api_reference.html). It is intended for developers who are setting up a new application using the skeleton project and working through the module lifecycle for the first time.
 
-By the end of this tutorial, you will have two CLI applications: one that uploads a local file to the network and one that downloads it by content ID.
+The tutorial uses the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton), which provides a ready-made  entry point at `app_main` that uses the `LogosModules` object to access the API. The skeleton also provides a set of Qt-compatible synchronization utilities.
 
-**Before you start**, ensure the following tools are installed:
+**Before you start**, make sure you have the following:
 
-- `git`
-- CMake 3.14 or later
-- A C11-compatible compiler
+- Nix package manager
+- Git
 
 ## What to expect
 
-- You will be able to share any local file over the Logos Storage network from a self-hosted node.
-- You will be able to retrieve a shared file from any machine using its SPR and CID strings.
-- You will be able to verify file integrity after a network round-trip.
+- You can initialize, start, and cleanly shut down the storage module within your application.
+- You can upload a file to the network and receive a Content Identifier (CID) that uniquely identifies it.
+- You can download a file from the network using a CID and a Signed Peer Record (SPR).
 
-## Step 1: Clone and build easylibstorage locally
+## Step 1: Build the skeleton app
 
-Clone the easylibstorage repository and fetch prebuilt libstorage binaries using the bundled script.
+Clone the skeleton repository and compile the binary so you have a working entry point before adding any storage logic.
 
-> **Note**
+1. Clone the skeleton repository:
+
+   ```bash
+   git clone https://github.com/logos-storage/logos-storage-app-skeleton.git
+   cd logos-storage-app-skeleton
+   ```
+
+1. Build with Nix:
+
+   ```bash
+   nix build
+   ```
+
+1. Confirm the compiled binary is available at `./result/bin/storage-app`.
+
+## Step 2: Initialize the module
+
+Call `init()` with your configuration once at startup, passing a JSON configuration string. See the [API Reference]((https://logos-co.github.io/logos-storage-module/api_reference.html)) for all available options.
+
+   ```cpp
+   const QString jsonConfig = "{}";
+   bool result = m_logos->storage_module.init(jsonConfig);
+   ```
+
+> **Caution**
 >
-> Use the bundled fetch script rather than building libstorage from source — it is the simplest way to get working binaries for this tutorial.
+> Do not call `init()` more than once per instance unless you call `destroy()` first.
 
-1. Clone the repository and enter the project directory:
+## Step 3: Start the node
 
-   ```bash
-   git clone https://github.com/logos-storage/easylibstorage.git
-   cd easylibstorage
-   ```
+Subscribe to the `storageStart` event and call `start()` afterward, to be able to detect failures.
 
-1. Download the prebuilt libstorage binaries:
-
-   ```bash
-   ./scripts/fetch-libstorage.sh
-   ```
-
-   Confirm the script completes without errors before continuing.
-
-1. Build easylibstorage:
-
-   ```bash
-   cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
-   cmake --build build
-   ```
-
-## Step 2: Create the tutorial directory and source files
-
-Create a `tutorial` folder inside the cloned repository and add the uploader and downloader source files.
-
-1. Create the tutorial directory:
-
-   ```bash
-   mkdir tutorial
-   ```
-
-1. Create `tutorial/uploader.c` with the following content:
-
-   ```c
-   /* uploader.c: makes a local file available to the Logos Storage network. */
-
-   #include <stdio.h>
-   #include <stdlib.h>
-   #include "easystorage.h"
-
-   void panic(const char *msg) {
-       fprintf(stderr, "Panic: %s\n", msg);
-       exit(1);
-   }
-
-   void progress(int total, int complete, int status) {
-       printf("\r  %d / %d bytes", complete, total);
-       fflush(stdout);
-   }
-
-   int main(int argc, char *argv[]) {
-       if (argc < 2) {
-           printf("Usage: %s <filepath>\n", argv[0]);
-           exit(1);
+   ```cpp
+   m_logos->storage_module.on("storageStart", [this](const QVariantList& data) {
+       bool success = data[0].toBool();
+       if (!success) {
+           QString error = data[1].toString();
+           // Handle error
        }
+   });
 
-       node_config cfg = {
-               .disc_port = 9090,
-               .data_dir = "./uploader-data",
-               .log_level = "INFO",
-               .bootstrap_node = NULL,
-               .nat = "none",
-       };
-
-       char *filepath = argv[1];
-
-       STORAGE_NODE node = e_storage_new(cfg);
-       if (node == NULL) panic("Failed to create storage node");
-       if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-
-       char *cid = e_storage_upload(node, filepath, progress);
-       if (cid == NULL) panic("Upload failed");
-       char *spr = e_storage_spr(node);
-       if (spr == NULL) panic("Failed to get node's signed peer record");
-
-       printf("Run: downloader %s %s ./output-file\n", spr, cid);
-       free(cid);
-       free(spr);
-
-       printf("\nPress Enter to exit\n");
-       getchar();
-
-       e_storage_stop(node);
-       e_storage_destroy(node);
-
-       return 0;
-   }
+   bool result = m_logos->storage_module.start();
    ```
 
-   The configuration sets the discovery port to UDP 9090, stores node data in `./uploader-data`, and sets `nat` to `none` for local-only operation.
+## Step 4: Upload a file
 
-   After upload, it prints two values you will need for the download step:
-   - The node's **Signed Peer Record (SPR)** — encodes the node's public key, network ID, and connection addresses.
-   - The **Content ID (CID)** — uniquely identifies the uploaded file on the network.
+The Storage Module allows for two upload approaches. Choose `uploadUrl` for straightforward cases. Use the streaming API when you need fine-grained control over how data is sent.
 
-1. Create `tutorial/downloader.c` with the following content:
+### Upload with `uploadUrl`
 
-   ```c
-   /* downloader.c: Download files from a Logos Storage node into the local disk. */
+The simplest way to upload files is to subscribe to the upload events, then call `uploadUrl()` with the path to your file. The network returns a Content Identifier (CID) on success.
 
-   #include <stdio.h>
-   #include <stdlib.h>
-   #include "easystorage.h"
+1. Subscribe to the `storageUploadDone` and `storageUploadProgress` events:
 
-   void panic(const char *msg) {
-       fprintf(stderr, "Panic: %s\n", msg);
-       exit(1);
-   }
+   ```cpp
+   //m_logos is the LogosModules object, used for API calls
+   m_logos->storage_module.on("storageUploadDone", [this](const QVariantList& data) {
+       bool success = data[0].toBool();
+       QString sessionId = data[1].toString();
+       QString cidOrError = data[2].toString();
 
-   void progress(int total, int complete, int status) {
-       printf("\r  %d / %d bytes", complete, total);
-       fflush(stdout);
-   }
-
-   int main(int argc, char *argv[]) {
-       if (argc < 4) {
-           printf("Usage: %s BOOTSTRAP_SPR CID <output_file>\n", argv[0]);
-           exit(1);
+       if (success) {
+           qDebug() << "Upload complete. CID:" << cidOrError;
+       } else {
+           qDebug() << "Upload failed:" << cidOrError;
        }
+   });
 
-       char *spr = argv[1];
-       char *cid = argv[2];
-       char *filepath = argv[3];
-
-       node_config cfg = {
-               .api_port = 8081,
-               .disc_port = 9091,
-               .data_dir = "./downloader-data",
-               .log_level = "INFO",
-               .bootstrap_node = spr,
-               .nat = "none",
-       };
-
-       STORAGE_NODE node = e_storage_new(cfg);
-       if (node == NULL) panic("Failed to create storage node");
-       if (e_storage_start(node) != RET_OK) panic("Failed to start storage node");
-       if (e_storage_download(node, cid, filepath, progress) != RET_OK) panic("Failed to download file");
-       e_storage_stop(node);
-       e_storage_destroy(node);
-   }
+   m_logos->storage_module.on("storageUploadProgress", [this](const QVariantList& data) {
+       bool success = data[0].toBool();
+       QString sessionId = data[1].toString();
+       int bytes = data[2].toInt();
+       qDebug() << "Uploaded" << bytes << "bytes";
+   });
    ```
 
-## Step 3: Update the build configuration and compile
+1. Call `uploadUrl()` with the local file path:
 
-Add the uploader and downloader targets to `CMakeLists.txt` and rebuild.
-
-1. Append the following to the end of `CMakeLists.txt` in the `easylibstorage` root:
-
-   ```cmake
-   # Tutorial uploader/downloader
-   add_executable(uploader tutorial/uploader.c)
-   add_executable(downloader tutorial/downloader.c)
-
-   target_link_libraries(uploader PRIVATE easystorage)
-   target_link_libraries(downloader PRIVATE easystorage)
-   target_link_libraries(uploader PRIVATE ${LIBSTORAGE_PATH})
-   target_link_libraries(downloader PRIVATE ${LIBSTORAGE_PATH})
+   ```cpp
+   QUrl fileUrl = QUrl::fromLocalFile("/path/to/myfile");
+   LogosResult result = m_logos->storage_module.uploadUrl(fileUrl);
    ```
 
-1. Rebuild the project:
+### Upload with the streaming API
 
-   ```bash
-   cmake -B build -S . -DLOGOS_STORAGE_NIM_ROOT=./libstorage
-   cmake --build build
+Use the streaming upload API for chunk-level control.
+
+1. Initialize the session:
+     ```cpp
+     LogosResult result = m_logos->storage_module.uploadInit(filename);
+     QString sessionId = result.getValue<QString>();
+     ```
+
+1. . Upload chunks:
+     ```cpp
+     QFile file(filepath);
+     file.open(QIODevice::ReadOnly);
+     int chunkSize = 1024 * 64;
+     while (!file.atEnd()) {
+         QByteArray chunk = file.read(chunkSize);
+         result = m_logos->storage_module.uploadChunk(sessionId, chunk);
+         if (!result.success) {
+             // Handle error
+             break;
+         }
+     }
+     ```
+
+1. Finalize
+     ```cpp
+     result = m_logos->storage_module.uploadFinalize(sessionId);
+     if (result.success) {
+         QString cid = result.getValue<QString>();
+         qDebug() << "CID:" << cid;
+     }
+     ```
+
+## Step 5: Download a file
+
+To download content, you need the CID returned during upload and the Signed Peer Record (SPR) of a node that holds the content.
+
+1. Subscribe to the `storageDownloadDone` and `storageDownloadProgress` events:
+
+   ```cpp
+   //m_logos is the LogosModules object, used for API calls
+   m_logos->storage_module.on("storageDownloadDone", [this](const QVariantList& data) {
+       bool success = data[0].toBool();
+       QString message = data[1].toString();
+       if (success) {
+           qDebug() << "Download complete";
+       } else {
+           qDebug() << "Download failed:" << message;
+       }
+   });
+
+   m_logos->storage_module.on("storageDownloadProgress", [this](const QVariantList& data) {
+       bool success = data[0].toBool();
+       QString sessionId = data[1].toString();
+       int size = data[2].toInt();
+       qDebug() << "Downloaded" << size << "bytes";
+   });
    ```
 
-   After the build completes, the `uploader` and `downloader` executables appear under `./build/`.
+1. Call `downloadToUrl()` with the CID and the local destination path:
 
-## Step 4: Upload and download a file with Logos Storage
-
-Run the uploader and then use its output to download the file in a second terminal.
-
-1. Upload a local file:
-
-   ```bash
-   ./build/uploader ./myfile
+   ```cpp
+   QUrl destination = QUrl::fromLocalFile("/path/to/output");
+   LogosResult result = m_logos->storage_module.downloadToUrl(cid, destination /*, local = false*/);
    ```
 
-   The program outputs a `Run:` line containing the SPR and CID strings, then waits for input. Leave this terminal open.
+   - Set the `local` (third) parameter of `downloadToUrl` to `true` to retrieve only locally-cached data.
+   - Leave `local` as `false` (default) to fetch from the network.
 
-1. Open a second terminal and paste the `Run:` command from the uploader output. It will look similar to:
+## Step 6: Stop and clean up
 
-   ```bash
-   ./build/downloader spr:<spr_string> <cid_string> ./output-file
+Always stop the node before destroying resources to avoid leaving sessions open. To do so, call `stop()` and wait for the `storageStop` event, then call `destroy()`:
+
+   ```cpp
+   LogosResult result = m_logos->storage_module.stop();
+   // Wait for storageStop event...
+   result = m_logos->storage_module.destroy();
    ```
 
-   Wait for the command to finish. The file is saved to `./output-file`.
+## Frequently asked questions
 
-1. Verify the downloaded file is identical to the original:
+### Can I run the storage module without a UI?
 
-   ```bash
-   cmp ./myfile ./output-file
-   ```
+Yes. The storage module supports headless mode, which lets you run it from the command line:
 
-   No output means the files match.
-
-1. Return to the first terminal and press **Enter** to shut down the uploader node.
+```bash
+./logos/bin/logoscore -m ./modules --load-modules storage_module \
+  -c "storage_module.init(@config.json)" \
+  -c "storage_module.start()" \
+  -c "storage_module.importFiles(/path/to/files)"
+```

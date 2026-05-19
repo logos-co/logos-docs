@@ -14,7 +14,7 @@ slug: libstorage-tutorial
 
 #### Get started building a CLI application that transfers files over the Logos Storage network.
 
-This tutorial walks you through building a simple CLI application that uploads and downloads files over the Logos Storage network using the [Logos Storage Module API](https://logos-co.github.io/logos-storage-module/api_reference.html). It is intended for developers who are setting up a new application using the skeleton project and working through the module lifecycle for the first time.
+This tutorial walks you through building a simple CLI application that uploads and downloads files over the Logos Storage network using the [Logos Storage Module API v0.3.2](https://logos-co.github.io/logos-storage-module/api_reference.html). It is intended for developers who are setting up a new application using the skeleton project and working through the module lifecycle for the first time.
 
 The tutorial uses the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton), which provides a ready-made  entry point at `app_main` that uses the `LogosModules` object to access the API. The skeleton also provides a set of Qt-compatible synchronization utilities.
 

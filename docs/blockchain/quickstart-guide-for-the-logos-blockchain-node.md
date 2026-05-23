@@ -84,10 +84,10 @@ The `init` subcommand generates a user configuration that includes per-node sett
 
     ```sh
     ./logos-blockchain-node init \
-    -p /ip4/65.108.203.235/udp/3000/quic-v1 \
-    -p /ip4/65.108.203.235/udp/3001/quic-v1 \
-    -p /ip4/65.108.203.235/udp/3002/quic-v1 \
-    -p /ip4/65.108.203.235/udp/3003/quic-v1
+    -p /ip4/65.109.51.37/udp/3000/quic-v1 \
+    -p /ip4/65.109.51.37/udp/3001/quic-v1 \
+    -p /ip4/65.109.51.37/udp/3002/quic-v1 \
+    -p /ip4/65.109.51.37/udp/3003/quic-v1
     ```
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.

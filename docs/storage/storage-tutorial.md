@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors:
 owner: logos
 doc_version: 1
-slug: libstorage-tutorial
+slug: storage-tutorial
 ---
 
 # Build a CLI app with Logos Storage

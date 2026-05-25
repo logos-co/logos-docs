@@ -28,6 +28,10 @@ You can install Logos Basecamp in two ways:
 | [Prebuilt release (AppImage or DMG)](#install-from-a-prebuilt-release) | End users | None |
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
+> [!NOTE]
+>
+> To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
+
 Before you start, make sure you have the following:
 
 - Internet access.
@@ -73,5 +77,13 @@ Before you start, make sure you have the following:
 1. Run the resulting binary:
 
     ```bash
-    ./result/bin/logos-basecamp
+    ./result/bin/LogosBasecamp
     ```
+
+## Troubleshooting the Basecamp app
+### I see an `libEGL.so.1 / libOpenGL.so.0 missing` error when trying to launch the AppImage on Linux?
+Try running the following command:
+
+```bash
+sudo apt-get install -y fuse libegl1 libopengl0
+```

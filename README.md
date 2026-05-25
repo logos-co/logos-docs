@@ -50,7 +50,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### Blockchain
 
-- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md) — Set up and run a Logos blockchain node from the command line.
+- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
 
 ### Storage
 

@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
 doc_version: 1
-slug: run-a-logos-blockchain-node-on-public-testnet-from-cli
+slug: run-a-logos-blockchain-node-from-cli
 ---
 
 # Run a Logos Blockchain node on the public testnet from the CLI

@@ -25,7 +25,7 @@ Logos core modules are non-UI modules that provide backend functionality. Core m
 
 > [!NOTE]
 >
-> For other module types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md).
+> For other module types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](./logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
 
 Before you start, make sure you have the following:
 
@@ -55,15 +55,17 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 1. Review the project directory. The generated project structure looks like this:
 
    ```
-   my-module/
+   <module-name>/
    ├── flake.nix
    ├── metadata.json
    ├── CMakeLists.txt
    └── src/
-       ├── my_module_interface.h
-       ├── my_module_plugin.h
-       └── my_module_plugin.cpp
+       ├── minimal_interface.h
+       ├── minimal_plugin.h
+       └── minimal_plugin.cpp
    ```
+
+   The template uses `minimal` as a placeholder in the source filenames, class names, and identifiers. You replace these placeholders with your module's name in Step 2.
 
    > [!NOTE]
    >
@@ -71,11 +73,12 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 
 ## Step 2: Adapt the template for your module
 
-The template generates files with placeholder names like `my_module` and `doSomething`. Replace these in every generated file to match your module's name and methods.
+The template generates files with placeholder names like `minimal`/`Minimal` and `doSomething`. Replace these in every generated file to match your module's name and methods.
 
 1. Edit `metadata.json` and set `name`, `version`, `description`, and `main` to match your module.
    - `name` must be a valid C identifier; it is used in filenames, method calls, and module loading.
    - `main` must match the plugin filename without the extension (for example, `my_module_plugin` resolves to `my_module_plugin.so` or `.dylib`).
+   - Leave the other fields (`type`, `category`, `dependencies`, and the `nix` block with `packages`, `external_libraries`, `cmake.find_packages`) in place. The bundler relies on the `nix` block to build the LGX package.
 
 1. Edit `CMakeLists.txt` and update the `project()` name and the `NAME` and `SOURCES` values inside the `logos_module()` call.
    - The `CMakeLists.txt` uses the `logos_module()` macro to handle Qt plugin setup.
@@ -87,27 +90,27 @@ The template generates files with placeholder names like `my_module` and `doSome
 1. Rename the source files in `src/` to match your module name.
 
    ```bash
-   mv src/my_module_interface.h    src/<module_name>_interface.h
-   mv src/my_module_plugin.h       src/<module_name>_plugin.h
-   mv src/my_module_plugin.cpp     src/<module_name>_plugin.cpp
+   mv src/minimal_interface.h    src/<module-name>_interface.h
+   mv src/minimal_plugin.h       src/<module-name>_plugin.h
+   mv src/minimal_plugin.cpp     src/<module-name>_plugin.cpp
    ```
 
-1. Edit the interface header (`src/<module_name>_interface.h`) and replace the class name, include guard, and interface ID string.
+1. Edit the interface header (`src/<module-name>_interface.h`) and replace the class name, include guard, and interface ID string.
    - Declare each method your module exposes as `Q_INVOKABLE virtual` and pure-virtual.
    - The interface ID (for example, `"org.logos.MyModuleInterface"`) must be unique across all modules.
 
-1. Edit the plugin header (`src/<module_name>_plugin.h`) and replace the class name, include guard, and interface references.
+1. Edit the plugin header (`src/<module-name>_plugin.h`) and replace the class name, include guard, and interface references.
    - `Q_PLUGIN_METADATA(IID ... FILE "metadata.json")` embeds the metadata into the binary.
    - `Q_INTERFACES` must list both your interface and `PluginInterface`.
    - `name()` must return the same string as the `name` field in `metadata.json`.
    - Declare `initLogos(LogosAPI* api)` as `Q_INVOKABLE` but not `override`.
 
-1. Edit the plugin implementation (`src/<module_name>_plugin.cpp`) and replace the placeholder method bodies with your logic.
+1. Edit the plugin implementation (`src/<module-name>_plugin.cpp`) and replace the placeholder method bodies with your logic.
    - In `initLogos`, assign the `LogosAPI*` pointer to the global `logosAPI` variable, not to a class member.
 
 > [!TIP]
 >
-> Run `grep -r "<module_name>" .` after editing to catch any remaining placeholder references before building.
+> Run `grep -ri "minimal" .` after editing to catch any remaining placeholder references (`minimal`, `Minimal`, `MINIMAL_*`, `MinimalInterface_iid`) before building.
 
 ## Step 3: Build the module
 
@@ -125,20 +128,16 @@ The template generates files with placeholder names like `my_module` and `doSome
 
    - Use `nix build '.#lib'` to build only the plugin shared library.
    - Use `nix build '.#include'` to build only the generated SDK headers.
-   
-   > [!TIP] 
-   >
-   > For faster iteration on code changes, use `nix develop` to enter a shell with all build dependencies, then run `cmake -B build -GNinja && cmake --build build` manually. The manual build outputs to `build/` instead of `result/`. Switch back to `nix build` before packaging, since downstream steps expect the `result/` path.
 
 1. Verify the build output contains the plugin binary and generated headers:
 
    ```text
-      result/
+   result/
    ├── lib/
-   │   └── my_module_plugin.so       # (or .dylib on macOS)
+   │   └── <module-name>_plugin.so   # (or .dylib on macOS)
    └── include/
-      ├── my_module_api.h           # Generated type-safe wrapper header
-      └── my_module_api.cpp         # Generated wrapper implementation
+       ├── <module-name>_api.h       # Generated type-safe wrapper header
+       └── <module-name>_api.cpp     # Generated wrapper implementation
    ```
 
 ## Step 4: Inspect your module
@@ -209,9 +208,11 @@ The `lm` tool (from `logos-module`) lets you inspect compiled module binaries wi
    ]
    ```
 
+   The output also includes any Qt signals declared in the module (for example, `eventResponse`) with `isInvokable: false`.
+
 ### Inspect with the graphical tool
 
-The `logos-module-viewer`is a graphical tool for inspecting loaded modules. It displays the module's metadata and methods in a graphical interface and lets you call methods interactively.
+The `logos-module-viewer` is a graphical tool for inspecting loaded modules. It displays the module's metadata and methods in a graphical interface and lets you call methods interactively.
 
 1. Build the viewer.
 
@@ -250,7 +251,11 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 
    - Use `#lgx-portable` for a self-contained, all dependencies bundled package: `nix build .#lgx-portable`.
 
-1. Check the `result/` directory and confirm the `logos-<name>-module-lib.lgx` file is present.
+1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
+
+   > [!NOTE]
+   >
+   > `.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
 
 ### Use the `nix bundle` command
 
@@ -263,15 +268,15 @@ The `nix bundle` command is useful if your module does not use `logos-module-bui
    ```
 
    - Use `#portable` for a self-contained package with no `/nix/store` references: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#portable .#lib`.
-   - Use `#dual` to produce both dev and portable variants in a single `.lgx` file: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib`.
+   - Use `#dual` to produce both `-dev` and portable variants in a single `.lgx` file: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib`. Use this mode when you need to install the module into a dev build of `logos-basecamp`.
 
-1. Check the current directory and confirm the `logos-<name>-module-lib.lgx` file is present.
+1. Check the current directory for the bundle output. `nix bundle` creates a symlink directory in the current directory named `./logos-<module-name>-module-lib-lgx-<version>/`, and the `.lgx` file is inside it at `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx`.
 
 > [!TIP]
 > 
 > Check out [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
 
-## Step 5: Install the module
+## Step 6: Install the module
 
 Before you can run your module with `logoscore` or `logos-basecamp`, install the LGX package into a `modules/` directory that the runtime can load from.
 
@@ -291,16 +296,21 @@ There are two ways to install `.lgx` packages:
 1. Create the `modules/` directory and install the `.lgx` package.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir ./modules install --file result/<module-name>.lgx
+   ./package-manager/bin/lgpm --modules-dir ./modules install --file result/logos-<module-name>-module-lib.lgx
    ```
 
    - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `./package-manager/bin/lgpm --modules-dir ./modules install --dir ./packages/`
+   - If you bundled with `nix bundle`, the path is `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx` instead of `result/...`.
 
 1. Verify the installed module directory. The directory contains `manifest.json`, the plugin binary (`.so` or `.dylib`), and a `variant` file.
 
 ### Download and install a `.lgx` file from a registry
 
 The Logos module catalog is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
+
+> [!IMPORTANT]
+>
+> Registry packages currently ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They cannot be installed into a dev build of `logos-basecamp`, which expects `-dev` variants. To use a registry module with a dev build, you must build the module from source and bundle it with `#dual`. They install cleanly into `logoscore` and into portable builds of `logos-basecamp`.
 
 1. Build the Logos Package Manager (`lgpm`) CLI.
 
@@ -314,10 +324,10 @@ The Logos module catalog is hosted on GitHub Releases in the [logos-modules](htt
    nix build 'github:logos-co/logos-package-downloader/tutorial-v1#cli' --out-link ./downloader
    ```
 
-1. Search the catalog for the module you want to install. Replace `<module-name>` with the name of the module you want to find.
+1. Search the catalog for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
 
    ```bash
-   ./downloader/bin/lgpd search <module-name>
+   ./downloader/bin/lgpd search <registry-name>
    ```
 
    > [!TIP]
@@ -327,20 +337,21 @@ The Logos module catalog is hosted on GitHub Releases in the [logos-modules](htt
 1. Download the LGX package to a local directory.
 
    ```bash
-   ./downloader/bin/lgpd download <module-name> -o ./packages/
+   ./downloader/bin/lgpd download <registry-name> -o ./packages/
    ```
 
-   - Use `--release <tag>` to download from a specific release version. For example: `./downloader/bin/lgpd --release v2.0.0 download <module-name> -o ./packages/`
+   - Use `--release <tag>` to download from a specific release version. For example: `./downloader/bin/lgpd --release v2.0.0 download <registry-name> -o ./packages/`
+   - The downloaded file is named after the module's internal `name` field, not the registry name. For example, `lgpd download logos-chat-module` writes `./packages/chat_module.lgx`.
 
-1.  Create the `modules/` directory and install the downloaded package.
+1. Create the `modules/` directory and install the downloaded package. Replace `<downloaded-name>` with the actual filename written by `lgpd` (for example, `chat_module.lgx`).
 
-   ```bash 
-   ./package-manager/bin/lgpm --modules-dir ./modules install --file ./packages/<module-name>.lgx
+   ```bash
+   ./package-manager/bin/lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
    - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
 
-## Step 6: Run the module 
+## Step 7: Run the module 
 
 There are two Logos runtimes, `logoscore` and `logos-basecamp`, that can load and run your module. However, to interact with your module directly through the `logos-basecamp` interface, you need to [provide a UI module](./build-a-qml-ui-for-your-logos-module.md).
 
@@ -363,7 +374,6 @@ The `logoscore` CLI (from `logos-liblogos`) is a headless runtime that can load 
 1. From another terminal, load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
 
    ```bash
-   cd <module-name>
    ./logos/bin/logoscore load-module <module-name>
    ./logos/bin/logoscore call <module-name> <method> <args>
    ```
@@ -398,22 +408,22 @@ Logos Basecamp is a desktop application that provides a graphical interface for 
     ./logos-basecamp/bin/logos-basecamp
    ```
 
-   - To find the data directory, check the log output for `plugins directory` or look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/` (macOS) or `.local/share/Logos/LogosBasecampDev` (Linux).
+   - Look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/LogosBasecamp/` (macOS) or `~/.config/Logos/LogosBasecamp/` (Linux).
 
 1. Set the `BASECAMP_DIR` variable to your platform's path.
 
    ```bash
    # macOS
-   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecampDev"
+   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecamp"
 
    # Linux
-   BASECAMP_DIR="$HOME/.local/share/Logos/LogosBasecampDev"
+   BASECAMP_DIR="$HOME/.config/Logos/LogosBasecamp"
    ```
 
-1. Install the module's dev LGX package into basecamp's modules directory.
+1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib` as described in Step 5.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file result/<module-name>.lgx
+   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
    ```
 
 ## Troubleshooting
@@ -438,7 +448,7 @@ experimental-features = nix-command flakes
 
 ### Module not discovered by `logos-basecamp`
 
-Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains both the module binary and `metadata.json`. The `name` field in `metadata.json` must match the binary name (for example, `my_module` for `my_module_plugin.so`).
+Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains the module binary and `manifest.json`. The `name` field in `manifest.json` must match the binary name (for example, `my_module` for `my_module_plugin.so`).
 
 ### Module not discovered by `logoscore`
 
@@ -446,11 +456,22 @@ Confirm the module is in a subdirectory of the `modules/` directory (for example
 
 ### `lgpm` fails to install a module
 
-Verify the target directory exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct. If installing from the registry, check your internet connection, `lgpm` fetches packages from GitHub Releases. Try pinning a specific release version with `--release <tag>` if the latest release is unavailable.
+Verify the target directory exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the registry, check your internet connection — `lgpd` fetches packages from GitHub Releases. To pin a specific release version, pass `--release <tag>` to `lgpd` (not `lgpm`) when downloading.
 
 ### LGX variant mismatch
 
-Dev builds of `logos-basecamp` expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Use `nix build '.#lgx'` for dev and `nix build '.#lgx-portable'` for portable.                                                                           
+If `lgpm install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
+
+- `nix build .#lgx` produces a single variant (for example, `linux-amd64`) suitable for `logoscore` but not for a dev build of `logos-basecamp`.
+- `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
+- `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
+
+Registry packages downloaded with `lgpd` currently ship portable variants only.
+
+> [!NOTE]
+>
+> `lgpm` error messages report the platform as `linux-x86_64` while LGX manifests label it `linux-amd64`. These refer to the same architecture.
+
 
 ### `nix build .#lib` does nothing or fails silently                               
   

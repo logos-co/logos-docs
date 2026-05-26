@@ -250,7 +250,7 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 
    - Use `#lgx-portable` for a self-contained, all dependencies bundled package: `nix build .#lgx-portable`.
 
-1. Check the `result/` directory and confirm the `<module-name>-<version>.lgx` file is present.
+1. Check the `result/` directory and confirm the `logos-<name>-module-lib.lgx` file is present.
 
 ### Use the `nix bundle` command
 
@@ -265,7 +265,7 @@ The `nix bundle` command is useful if your module does not use `logos-module-bui
    - Use `#portable` for a self-contained package with no `/nix/store` references: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#portable .#lib`.
    - Use `#dual` to produce both dev and portable variants in a single `.lgx` file: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib`.
 
-1. Check the current directory and confirm the `<module-name>-<version>.lgx` file is present.
+1. Check the current directory and confirm the `logos-<name>-module-lib.lgx` file is present.
 
 > [!TIP]
 > 
@@ -395,10 +395,10 @@ Logos Basecamp is a desktop application that provides a graphical interface for 
 1. Launch `logos-basecamp` once to create its data directory and preinstall bundled modules, then close it. 
 
    ```bash
-   ./basecamp-result/bin/logos-basecamp
+    ./logos-basecamp/bin/logos-basecamp
    ```
 
-   - To find the data directory, check the log output for `plugins directory` or look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/` (macOS) or `~/.local/share/Logos/` (Linux).
+   - To find the data directory, check the log output for `plugins directory` or look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/` (macOS) or `.local/share/Logos/LogosBasecampDev` (Linux).
 
 1. Set the `BASECAMP_DIR` variable to your platform's path.
 

@@ -25,10 +25,17 @@ slug: lez-quickstart
 >
 > This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
 
-> **Note**
+> [!NOTE]
 >
 > - **Permissions**: No special permissions required.
 > - **Product**: Logos Execution Zone wallet CLI.
+
+> [!TIP]
+>
+> A public LEZ testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
+>
+> - Explorer: https://explorer.testnet.lez.logos.co/
+> - Sequencer RPC: https://testnet.lez.logos.co/
 
 The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 

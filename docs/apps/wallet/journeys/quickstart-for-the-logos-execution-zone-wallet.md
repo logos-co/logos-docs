@@ -25,10 +25,17 @@ slug: lez-quickstart
 >
 > This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
 
-> **Note**
+> [!NOTE]
 >
 > - **Permissions**: No special permissions required.
 > - **Product**: Logos Execution Zone wallet CLI.
+
+> [!TIP]
+>
+> A public LEZ testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
+>
+> - Explorer: https://explorer.testnet.lez.logos.co/
+> - Sequencer RPC: https://testnet.lez.logos.co/
 
 The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 
@@ -36,7 +43,7 @@ LEZ separates account state into public (visible, on-chain) and private (hidden,
 
 > [!NOTE]
 >
-> This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Send tokens to a private account with the LEZ wallet](./send-tokens-to-a-private-account-with-the-lez-wallet.md).
+> This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Transfer native tokens on the Logos Execution Zone](../../../apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md).
 
 When a transaction touches the private state, the client runs the private part locally using your private keys and local client data, producing a zero-knowledge proof (ZKP). Validators verify the proof and accept the state update (for example, updating public balances), so the network stays correct even though the private data is never published.
 
@@ -93,8 +100,8 @@ Choose the instructions for your operating system:
 1. Install Rust with `rustup`:
 
    ```bash
-   # Install the official Rust compiler with the standard installation option
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  
+   # Install the official Rust compiler. -y installs non-interactively (required in CI/Docker, where there is no TTY for the rustup TUI).
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
    ```
 
 1. Install the RISC Zero components:
@@ -195,6 +202,10 @@ If you want the wallet to initialize in a different location, set the variable b
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
 ```
 
+> [!NOTE]
+>
+> The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.nssa/wallet` when unset, as described above. The mismatch is in the help string.
+
 ## Step 4: Initialize the wallet local storage and verify connectivity
 
 The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialize the wallet storage.
@@ -260,8 +271,9 @@ In this task, wallet account and transfer commands interact with the authenticat
 
    ```bash
    wallet account get --account-id <sender_public_account_id>
+   ```
 
-   In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`
+   In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`.
 
 ### Claim funds using the Piñata faucet
 
@@ -284,7 +296,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ### Create and fund the recipient public account
 
-1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSAS_WALLET_HOME_DIR` again.
+1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSA_WALLET_HOME_DIR` again.
 
    ```bash
    wallet account new public

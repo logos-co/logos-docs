@@ -40,7 +40,6 @@ The sections below link to the guides and references for what you can build and 
 
 - [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
 - [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
-- [Build and run Logos App (alpha) to access Testnet v0.1 UIs](https://github.com/logos-co/logos-docs/blob/main/docs/core/journeys/build-and-run-logos-app-alpha-to-access-testnet-v0.1-uis.md) — Build and launch the Logos App alpha release to access the Testnet v0.1 user interfaces.
 
 ### Logos Execution Zone
 
@@ -51,7 +50,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### Blockchain
 
-- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md) — Set up and run a Logos blockchain node from the command line.
+- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
 
 ### Storage
 
@@ -60,8 +59,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### Messaging
 
-- [Use the Logos Delivery Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-delivery-module-api-from-an-app.md) — Integrate the Logos Delivery Module API into your application to send and receive messages.
-- [Use the Logos Chat Module API from an app](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/journeys/use-the-logos-chat-module-api-from-an-app.md) — Integrate the Logos Chat Module API into your application to enable chat functionality.
+- We're working on the content.
 
 ### AnonComms
 
@@ -75,7 +73,7 @@ Please open an issue in this repository describing what you are trying to comple
 
 We are consolidating and updating previously fragmented materials into a single, coherent developer experience and source of truth, featuring consistent navigation and terminology. This process is ongoing, and we appreciate your patience as we work to provide comprehensive and up-to-date documentation.
 
-We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → Logos Blockchain, Codex → Logos Storage, and Waku → Logos Messaging. This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
+We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
 
 Our aim is to provide a predictable onboarding path for operators and developers, where they can find what they need and trust what they read.
 

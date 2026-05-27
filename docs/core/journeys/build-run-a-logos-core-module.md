@@ -472,7 +472,6 @@ Registry packages downloaded with `lgpd` currently ship portable variants only.
 >
 > `lgpm` error messages report the platform as `linux-x86_64` while LGX manifests label it `linux-amd64`. These refer to the same architecture.
 
-
 ### `nix build .#lib` does nothing or fails silently                               
   
 Some shells (notably zsh) treats `#` as a comment character outside quotes. Quote the flake reference so the `#` reaches nix intact.         

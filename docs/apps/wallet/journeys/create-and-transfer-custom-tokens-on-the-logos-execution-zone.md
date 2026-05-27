@@ -52,7 +52,7 @@ Token program accounts fall into two types:
 Before you begin, ensure that you have the following:
 
 - The [LEZ sequencer running in standalone mode](./quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-- The [Wallet CLI installed](./quickstart-for-the-logos-execution-zone-wallet.md#step-1-set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- The [Wallet CLI installed](./quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
 
 ## What to expect
 

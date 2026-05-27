@@ -87,9 +87,9 @@ The template generates files with placeholder names like `my_module` and `doSome
 1. Rename the source files in `src/` to match your module name.
 
    ```bash
-   mv src/my_module_interface.h    src/<module_name>_interface.h
-   mv src/my_module_plugin.h       src/<module_name>_plugin.h
-   mv src/my_module_plugin.cpp     src/<module_name>_plugin.cpp
+   mv src/minimal_interface.h    src/<module_name>_interface.h
+   mv src/minimal_plugin.h       src/<module_name>_plugin.h
+   mv src/minimal_plugin.cpp     src/<module_name>_plugin.cpp
    ```
 
 1. Edit the interface header (`src/<module_name>_interface.h`) and replace the class name, include guard, and interface ID string.

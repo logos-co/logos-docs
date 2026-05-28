@@ -43,14 +43,14 @@ The sections below link to the guides and references for what you can build and 
 
 ### Logos Execution Zone
 
-- [Set up a wallet for the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
-- [Transfer native tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
-- [Create and transfer custom tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
-- [Create and use an AMM liquidity pool in the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
+- [Set up a wallet for the Logos Execution Zone](./docs/lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
+- [Transfer native tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
+- [Create and transfer custom tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
+- [Create and use an AMM liquidity pool in the Logos Execution Zone](./docs/build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
 
 ### Blockchain
 
-- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
+- [Start a Logos blockchain node using the CLI](./docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
 
 ### Storage
 
@@ -63,7 +63,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### AnonComms
 
-- [Discover nodes and send messages via the AnonComms Mixnet demo app](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
+- [Discover nodes and send messages via the AnonComms Mixnet demo app](./docs/mixnet/get-started/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
 
 ## If you get stuck
 

@@ -16,18 +16,18 @@ slug: storage-tutorial
 
 This tutorial walks you through building a simple CLI application that uploads and downloads files over the Logos Storage network using the [Logos Storage Module API v0.3.2](https://logos-co.github.io/logos-storage-module/api_reference.html). It is intended for developers who are setting up a new application using the skeleton project and working through the module lifecycle for the first time.
 
-The tutorial uses the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton), which provides a ready-made  entry point at `app_main` that uses the `LogosModules` object to access the API. The skeleton also provides a set of Qt-compatible synchronization utilities.
+The tutorial uses the [Logos Storage App Skeleton](https://github.com/logos-storage/logos-storage-app-skeleton), which provides a ready-made entry point at `app_main` that uses the `LogosModules` object to access the API. The skeleton also provides a set of Qt-compatible synchronization utilities.
 
 **Before you start**, make sure you have the following:
 
-- Nix package manager
+- [Nix package manager](https://nixos.org/download/)
 - Git
 
 ## What to expect
 
 - You can initialize, start, and cleanly shut down the storage module within your application.
 - You can upload a file to the network and receive a Content Identifier (CID) that uniquely identifies it.
-- You can download a file from the network using a CID and a Signed Peer Record (SPR).
+- You can download a file from the network using a Content Identifier (CID).
 
 ## Step 1: Build the skeleton app
 
@@ -46,36 +46,48 @@ Clone the skeleton repository and compile the binary so you have a working entry
    nix build
    ```
 
+   If you don't have flakes enabled globally, add experimental flags:
+
+   ```bash
+   nix build --extra-experimental-features 'nix-command flakes'
+   ```
+
 1. Confirm the compiled binary is available at `./result/bin/storage-app`.
 
 ## Step 2: Initialize the module
 
-Call `init()` with your configuration once at startup, passing a JSON configuration string. See the [API Reference]((https://logos-co.github.io/logos-storage-module/api_reference.html)) for all available options.
+The skeleton's `app_main` already initializes and starts the module, so you have a working baseline. The snippets in the rest of this tutorial show the calls in isolation; extend `app/main.cpp` to add upload and download logic on top.
 
-   ```cpp
-   const QString jsonConfig = "{}";
-   bool result = m_logos->storage_module.init(jsonConfig);
-   ```
+Call `init()` with your configuration once at startup, passing a JSON configuration string. See the [API Reference](https://logos-co.github.io/logos-storage-module/api_reference.html) for all available options.
 
-> **Caution**
->
+```cpp
+const QString jsonConfig = "{"
+    "\"listen-addrs\": [\"/ip4/0.0.0.0/tcp/8000\"],"
+    "\"disc-port\": 9000,"
+    "\"data-dir\": \"./app-data\","
+    "\"nat\": \"none\""
+"}";
+bool result = m_logos->storage_module.init(jsonConfig);
+```
+
+> [!CAUTION]
 > Do not call `init()` more than once per instance unless you call `destroy()` first.
 
 ## Step 3: Start the node
 
 Subscribe to the `storageStart` event and call `start()` afterward, to be able to detect failures.
 
-   ```cpp
-   m_logos->storage_module.on("storageStart", [this](const QVariantList& data) {
-       bool success = data[0].toBool();
-       if (!success) {
-           QString error = data[1].toString();
-           // Handle error
-       }
-   });
+```cpp
+m_logos->storage_module.on("storageStart", [this](const QVariantList& data) {
+    bool success = data[0].toBool();
+    if (!success) {
+        QString error = data[1].toString();
+        // Handle error
+    }
+});
 
-   bool result = m_logos->storage_module.start();
-   ```
+bool result = m_logos->storage_module.start();
+```
 
 ## Step 4: Upload a file
 
@@ -121,38 +133,41 @@ The simplest way to upload files is to subscribe to the upload events, then call
 Use the streaming upload API for chunk-level control.
 
 1. Initialize the session:
-     ```cpp
-     LogosResult result = m_logos->storage_module.uploadInit(filename);
-     QString sessionId = result.getValue<QString>();
-     ```
 
-1. . Upload chunks:
-     ```cpp
-     QFile file(filepath);
-     file.open(QIODevice::ReadOnly);
-     int chunkSize = 1024 * 64;
-     while (!file.atEnd()) {
-         QByteArray chunk = file.read(chunkSize);
-         result = m_logos->storage_module.uploadChunk(sessionId, chunk);
-         if (!result.success) {
-             // Handle error
-             break;
-         }
-     }
-     ```
+   ```cpp
+   LogosResult result = m_logos->storage_module.uploadInit(filename);
+   QString sessionId = result.getValue<QString>();
+   ```
 
-1. Finalize
-     ```cpp
-     result = m_logos->storage_module.uploadFinalize(sessionId);
-     if (result.success) {
-         QString cid = result.getValue<QString>();
-         qDebug() << "CID:" << cid;
-     }
-     ```
+1. Upload chunks:
+
+   ```cpp
+   QFile file(filepath);
+   file.open(QIODevice::ReadOnly);
+   int chunkSize = 1024 * 64;
+   while (!file.atEnd()) {
+       QByteArray chunk = file.read(chunkSize);
+       result = m_logos->storage_module.uploadChunk(sessionId, chunk);
+       if (!result.success) {
+           // Handle error
+           break;
+       }
+   }
+   ```
+
+1. Finalize:
+
+   ```cpp
+   result = m_logos->storage_module.uploadFinalize(sessionId);
+   if (result.success) {
+       QString cid = result.getValue<QString>();
+       qDebug() << "CID:" << cid;
+   }
+   ```
 
 ## Step 5: Download a file
 
-To download content, you need the CID returned during upload and the Signed Peer Record (SPR) of a node that holds the content.
+To download content, you need the CID returned during upload. The storage module discovers the content on the network using the CID.
 
 1. Subscribe to the `storageDownloadDone` and `storageDownloadProgress` events:
 
@@ -190,21 +205,14 @@ To download content, you need the CID returned during upload and the Signed Peer
 
 Always stop the node before destroying resources to avoid leaving sessions open. To do so, call `stop()` and wait for the `storageStop` event, then call `destroy()`:
 
-   ```cpp
-   LogosResult result = m_logos->storage_module.stop();
-   // Wait for storageStop event...
-   result = m_logos->storage_module.destroy();
-   ```
+```cpp
+LogosResult result = m_logos->storage_module.stop();
+// Wait for storageStop event...
+result = m_logos->storage_module.destroy();
+```
 
 ## Frequently asked questions
 
 ### Can I run the storage module without a UI?
 
-Yes. The storage module supports headless mode, which lets you run it from the command line:
-
-```bash
-./logos/bin/logoscore -m ./modules --load-modules storage_module \
-  -c "storage_module.init(@config.json)" \
-  -c "storage_module.start()" \
-  -c "storage_module.importFiles(/path/to/files)"
-```
+Yes. The storage module is a Qt plugin that can be loaded by any Logos Core host, including the headless [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) CLI. See the [`logoscore` README](https://github.com/logos-co/logos-logoscore-cli) for headless usage and how to wire the storage module plugin into it.

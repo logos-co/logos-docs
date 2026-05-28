@@ -34,7 +34,7 @@ Initialise a new directory and apply the `ui-qml-backend` template from `logos-m
 
 > [!NOTE]
 >
->  The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 4](#step-4-configure-flakenix) to ensure reproducible builds.
+>  The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 7](#step-7-configure-flakenix) to ensure reproducible builds.
 
 1. Run the scaffold command:
 
@@ -62,7 +62,7 @@ Set `metadata.json` to declare the module name, entry points, and the `calc_modu
      "version": "1.0.0",
      "type": "ui_qml",
      "category": "tools",
-     "description": "Calculator C++ UI",
+     "description": "Calculator (C++ backend)I",
      "main": "calc_ui_cpp_plugin",
      "view": "qml/Main.qml",
      "icon": "icons/calc.png",
@@ -438,7 +438,7 @@ Add `calc_module` as a flake input so the builder can resolve the dependency dec
 
    ```nix
    {
-     description = "Calculator C++ UI plugin — QML view with process-isolated backend";
+     description = "Calculator (C++ backend)";
 
      inputs = {
        logos-module-builder.url = "github:logos-co/logos-module-builder";
@@ -489,7 +489,7 @@ Stage all files and run the standalone app to verify the UI loads and calls the 
 1. To see changes in your view entry file immediately without re-syncing, set `DEV_QML_PATH` to the directory containing `Main.qml`:
 
    ```bash
-   DEV_QML_PATH=$PWD/qml nix run .
+   DEV_QML_PATH=$PWD/src/qml nix run .
    ```
 
    To skip Nix re-evaluation after the first build, run the binary directly:
@@ -500,7 +500,7 @@ Stage all files and run the standalone app to verify the UI loads and calls the 
    
    # Subsequent runs: invoke the bundled standalone wrapper directly,
    # skipping nix entirely. DEV_QML_PATH still redirects QML loading.
-   DEV_QML_PATH=$PWD/qml ./result/bin/run-logos-standalone-ui
+   DEV_QML_PATH=$PWD/src/qml ./result/bin/run-logos-standalone-ui
    ```
 
    > **Note:** `DEV_QML_PATH` is only honoured by `logos-standalone-app`, not `logos-basecamp`. See `repos/logos-standalone-app/README.md`.
@@ -527,10 +527,10 @@ Bundle both modules as `.lgx` packages and install them using `lgpm`.
 
    ```bash
    # Build logos-basecamp
-   nix build 'github:logos-co/logos-basecamp' -o basecamp-result
+   nix build 'github:logos-co/LogosBasecamp' -o basecamp-result
 
    # Launch once to preinstall bundled modules, then close it
-   ./basecamp-result/bin/logos-basecamp
+   ./basecamp-result/bin/LogosBasecamp
    ```
 
 1. Set `BASECAMP_DIR` to your platform's data directory. To find where it is, check the log output for plugins directory or look for the directory that contains modules/ and plugins/ subdirectories.
@@ -558,7 +558,7 @@ Bundle both modules as `.lgx` packages and install them using `lgpm`.
      install --file result-lgx/*.lgx
 
    # Launch basecamp -- your modules appear alongside the built-in ones
-   ./basecamp-result/bin/logos-basecamp
+   ./basecamp-result/bin/LogosBasecamp
    ```
 
     > [!NOTE]
@@ -597,13 +597,13 @@ Tests use the [logos-qt-mcp](https://github.com/logos-co/logos-qt-mcp) test fram
    test("calc_ui_cpp: loads and shows title", async (app) => {
      await app.waitFor(
        async () => {
-         await app.expectTexts(["Calculator C++ UI"]);
+         await app.expectTexts(["Calculator (C++ backend)"]);
        },
        { timeout: 15000, interval: 500, description: "UI to load" },
      );
    });
 
-   test("calc_ui: add button visible", async (app) => {
+   test("calc_ui_cpp: add button visible", async (app) => {
      await app.expectTexts(["Add"]);
    });
 

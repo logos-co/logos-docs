@@ -17,9 +17,9 @@ The Logos Blockchain is the foundational infrastructure of the Logos technology 
 
 ## The basics
 
-- The Logos Blockchain is the foundational infrastructure of the Logos stack, designed to host decentralised applications that require privacy and resilience.
+- The Logos Blockchain is designed to decentralised applications and institutions that require high levels of privacy and resilience.
 - Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low.
-- The network uses two layers: permissionless Zones built on a Layer 1 foundation called Bedrock, with the Blend Network improving privacy.
+- Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](./about-zones.md) built on top of a Layer 1 foundation called [Bedrock](./about-bedrock.md). The [Blend Network](./about-the-blend-network.md) service is used to improve the privacy of the network.
 
 ## Design principles
 
@@ -33,11 +33,11 @@ Resilience means the network stays operational and protects privacy under diffic
 
 ## Architecture
 
-The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](#about-zones.md), which are built on a Layer 1 foundation called [Bedrock](#about-bedrock.md). The [Blend Network](#about-blend-network.md) service extends Bedrock's privacy properties.
+The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](./about-zones.md), which are built on a Layer 1 foundation called [Bedrock](./about-bedrock.md). The [Blend Network](./about-the-blend-network.md) service extends Bedrock's privacy properties.
 
 ### Bedrock
 
-Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its Private Proof of Stake (PPoS) consensus protocol, [Cryptarchia](#about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, token bridging, and inter-Zone messaging.
+Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its Private Proof of Stake (PPoS) consensus protocol, [Cryptarchia](./about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, token bridging, and inter-Zone messaging.
 
 Running a Bedrock validator node means leaving the Logos node application running in the background, with a low-maintenance approach. This makes it straightforward to contribute to the security, consensus, and interoperability of the network.
 
@@ -47,8 +47,8 @@ The Blend Network is an opt-in service that provides network-level privacy for c
 
 ### Zones
 
-Applications do not run directly on Bedrock. They run on Layer 2 blockchains called [Zones](#about-zones.md), which define their own state transitions and validity but rely on Bedrock for consensus guarantees. This modular design lets creators customise a chain and maximise properties such as performance.
+Applications do not run directly on Bedrock. They run on Layer 2 blockchains called [Zones](./about-zones.md), which define their own state transitions and validity but rely on Bedrock for consensus guarantees. This modular design lets creators customise a chain and maximise properties such as performance.
 
 Zones can run as fully independent sovereign rollups, but Bedrock also enables token bridging and decentralised sequencing. Zones can exchange asynchronous messages through Bedrock, which allows limited interoperability without giving up the advantages of the sovereign rollup model.
 
-The primary example is the [Logos Execution Zone](#about-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and program execution.
+The primary example is the [Logos Execution Zone](../../lez/get-started/introduction-to-the-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and program execution.

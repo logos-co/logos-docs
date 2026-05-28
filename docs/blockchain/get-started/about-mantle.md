@@ -1,4 +1,4 @@
----
+76---
 title: About Mantle
 doc_type: concept
 product: blockchain
@@ -51,7 +51,7 @@ It is important to note that Logos channels can only be relied on if the sequenc
 
 ### Decentralised Sequencing
 
-A channel may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a “first write wins” model.
+A channel may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
 
 A given threshold of sequencers may also modify the sequencer list or change other channel properties by signing a message together, allowing an honest majority to remove a malicious sequencer. This form of decentralised Zone sequencing distributes the potential for MEV extraction across a set of parties rather than concentrating it as in the single-sequencer rollup design.
 

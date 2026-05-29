@@ -25,17 +25,6 @@ Before you start, have the following ready:
 - Ninja build system
 - pkg-config
 
-Dependencies
-- qtbase
-- qtremoteobjects
-- logos-liblogos
-- logos-cpp-sdk (for header generation)
-- logos-storage-module
-- logos-capability-module
-- zstd
-- krb5
-- abseil-cpp
-
 ## What to expect
 
 - You can build and run a standalone Logos Storage UI application using a single `nix build` command.

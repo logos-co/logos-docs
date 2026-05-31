@@ -17,13 +17,13 @@ Tracking: Journey [journeys.logos.co#15](https://github.com/logos-co/journeys.lo
 
 ## Outcome and purpose
 
-- **What the user achieves:** Two people each run the Chat App, exchange intro bundles, and send/receive end-to-end encrypted 1:1 messages over the Logos network.
-- **Why it matters:** Demonstrates, end to end, the private-messaging capability of `logos-chat-module` in a runnable UI — identity, intro-bundle handshake, and encrypted 1:1 delivery, with no central server.
+- **What the user achieves:** User is able send/receive end-to-end encrypted 1:1 messages over the Logos network.
+- **Why it matters:** Demonstrates, end to end, the private-messaging capability of `logos-chat-module` in a runnable UI — ephemeral identity, intro-bundle handshake and encrypted 1:1 messaging using Logos Delivery as transport, with no central server.
 - **Key components:**
   - **`logos-chatsdk-ui`** — the QML chat UI (this journey's app).
   - **`logos-chat-module`** — chat backend the UI drives for identity, bundles, conversations, and messaging.
-  - **Logos Core / module system** — loads the UI and backend modules and wires them via Qt Remote Objects.
-  - **Logos network (Logos Delivery transport)** — carries the encrypted messages between the two app instances.
+  - **Logos Core / module system** — loads the UI and backend modules in Logos Core.
+  - **Logos Delivery transport** — carries the encrypted messages between the two app instances.
 
 ## Scope
 
@@ -74,14 +74,14 @@ Do this on **both** instances; call them **A** and **B**.
 
 ## Configuration
 
-Connection settings default to Logos Delivery `clusterId=2`, `shardId=1`, a random port, and a randomly suffixed identity name. Override via environment variables before `nix run`:
+Connection settings default to Waku `clusterId=2`, `shardId=1`, a random port, and a randomly suffixed identity name. Override via environment variables before `nix run`:
 
 | Variable | Default | Purpose |
 |---|---|---|
 | `CHAT_NAME` | `LogosUser_NNN` | Identity display name |
-| `CHAT_PORT` | `0` (random) | Logos Delivery listen port |
-| `CHAT_CLUSTER_ID` | `2` | Logos Delivery cluster ID |
-| `CHAT_SHARD_ID` | `1` | Logos Delivery shard ID |
+| `CHAT_PORT` | `0` (random) | Waku listen port |
+| `CHAT_CLUSTER_ID` | `2` | Waku cluster ID |
+| `CHAT_SHARD_ID` | `1` | Waku shard ID |
 | `CHAT_STATIC_PEER` | *(unset)* | Static peer multiaddr to bootstrap connectivity |
 
 To test local backend changes, override the flake input, e.g. `nix run --override-input chat_module path:../logos-chat-module`.

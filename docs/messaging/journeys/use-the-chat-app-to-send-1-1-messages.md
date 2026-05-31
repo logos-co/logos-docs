@@ -1,23 +1,23 @@
-# Use the Chat PoC App to send 1:1 messages
+# Use the Chat App to send 1:1 messages
 
 > [!NOTE]
 >
-> The Chat PoC App is a small demo that exercises the abilities of `logos-chat-module` — not an official Logos product. This page is a quickstart for building, running, and using it, not full documentation of the UI.
+> The Chat App is a small demo that exercises the abilities of `logos-chat-module`
 
 Applies to:
 
 - https://github.com/logos-co/logos-chatsdk-ui@v0.1.0
 - https://github.com/logos-co/logos-chat-module@5e4d4d4 (pinned by the app's `flake.lock`)
 
-Runtime target: testnet v0.1
-Last checked: 2026-05-31
+Runtime target: testnet v0.1 \
+Last checked: 2026-05-31 \
 Status: Draft (UI flow derived from source; network connectivity pending SME verification)
 Owner: owner needed (recent commits by @sirotin, @osmaczko, @Khushboo-dev-cpp)
 Tracking: Journey [journeys.logos.co#15](https://github.com/logos-co/journeys.logos.co/issues/15)
 
 ## Outcome and purpose
 
-- **What the user achieves:** Two people each run the Chat PoC App, exchange intro bundles, and send/receive end-to-end encrypted 1:1 messages over the Logos network.
+- **What the user achieves:** Two people each run the Chat App, exchange intro bundles, and send/receive end-to-end encrypted 1:1 messages over the Logos network.
 - **Why it matters:** Demonstrates, end to end, the private-messaging capability of `logos-chat-module` in a runnable UI — identity, intro-bundle handshake, and encrypted 1:1 delivery, with no central server.
 - **Key components:**
   - **`logos-chatsdk-ui`** — the QML chat UI (this journey's app).

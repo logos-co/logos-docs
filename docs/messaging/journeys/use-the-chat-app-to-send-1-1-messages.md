@@ -102,6 +102,10 @@ Do this on **both** instances; call them **A** and **B**.
 
 Connection settings default to Logos Delivery `logos.dev` network and a randomly suffixed identity name. Override via environment variables before `nix run`:
 
+> [!NOTE]
+>
+> These environment variable overrides apply only when running as a standalone app (Option B). The Basecamp app (Option A) does not read them.
+
 | Variable           | Default         | Purpose                                         |
 | ------------------ | --------------- | ----------------------------------------------- |
 | `CHAT_NAME`        | `LogosUser_NNN` | Identity display name                           |

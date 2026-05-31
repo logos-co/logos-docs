@@ -41,6 +41,46 @@ The app auto-initializes and starts chat on launch, so most of the flow is UI cl
 
 ### 1. Build and run
 
+Pick one of the two options below. Each of the two instances you need can use either option.
+
+Either way, a chat window opens with a conversation list on the left and a chat panel on the right, and the bottom status bar shows the chat status and, once started, your identity ID.
+
+#### Option A — Run in Logos Basecamp (no local building)
+
+Install the published Chat App package from the registry into Logos Basecamp using the package manager — nothing is built from source. Registry packages ship portable variants only, so use a **portable build of Basecamp** (not a dev build).
+
+1. Get the package tooling — the downloader (`lgpd`) and the package manager (`lgpm`):
+
+   ```sh
+   nix build 'github:logos-co/logos-package-downloader/tutorial-v1#cli' --out-link ./downloader
+   nix build 'github:logos-co/logos-package-manager/tutorial-v1#cli' --out-link ./package-manager
+   ```
+
+2. Download the Chat App UI and its `chat_module` backend from the registry:
+
+   ```sh
+   ./downloader/bin/lgpd download logos-chatsdk-ui -o ./packages/
+   ./downloader/bin/lgpd download logos-chat-module -o ./packages/
+   ```
+
+   `lgpd` names each file after the module's internal `name`, so this writes `./packages/chat_ui.lgx` and `./packages/chat_module.lgx`.
+
+3. Install both into Basecamp's directories — the backend as a module, the UI as a plugin:
+
+   ```sh
+   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecamp"   # macOS
+   # BASECAMP_DIR="$HOME/.config/Logos/LogosBasecamp"                     # Linux
+
+   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./packages/chat_module.lgx
+   ./package-manager/bin/lgpm --ui-plugins-dir "$BASECAMP_DIR/plugins" install --file ./packages/chat_ui.lgx
+   ```
+
+4. Launch Logos Basecamp and open the Chat App from its app list.
+
+#### Option B — Run as a standalone app (`nix run`)
+
+Builds and runs the app locally with Nix:
+
 ```sh
 git clone https://github.com/logos-co/logos-chatsdk-ui
 cd logos-chatsdk-ui
@@ -51,11 +91,6 @@ nix run
 ```
 
 `nix run` starts Logos Core, loads `capability_module` and `chat_module`, then launches the QML UI in an isolated `ui-host` process.
-
-Expected output:
-
-- A chat window opens with a conversation list on the left and a chat panel on the right.
-- The bottom status bar shows the chat status and, once started, your identity ID.
 
 ### 2. Use the UI — send a 1:1 message
 

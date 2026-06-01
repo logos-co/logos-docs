@@ -1,0 +1,10 @@
+# GitBook configuration for the Logos Core documentation space.
+# Reference: https://docs.gitbook.com/getting-started/git-sync/content-configuration
+#
+# This file is read relative to the GitBook space's "Project directory"
+# setting (configured in the GitBook UI as docs/core).
+
+root: ./
+
+structure:
+  summary: SUMMARY.md

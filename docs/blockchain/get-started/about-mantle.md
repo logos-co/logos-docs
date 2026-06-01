@@ -36,7 +36,7 @@ Logos channels, or channels for short, are lightweight virtual chains overlaid o
 
 Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganize. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
 
-![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/two-channels.png)
+![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/about-mantle-two-channels.png)
 
 _A diagram illustrating how two channels are included in the Logos Blockchain._
 

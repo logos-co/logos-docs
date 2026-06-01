@@ -45,7 +45,7 @@ In order to achieve maximum decentralization, Cryptarchia was designed to have l
 
 Following the [Ouroboros ↗](https://www.drwx.org/papers/crypsinous.pdf) model, Cryptarchia divides time into basic units called slots that are grouped into larger units called epochs. Each slot allows for the addition of at most one block to a given chain, while each new epoch refreshes the randomness and eligibility set used for the leadership election. Every Cryptarchia slot is 1 second long, and an epoch is about 7.5 days long. These time units are illustrated in the diagram below.
 
-![The time units used by the Logos Blockchain.](../.gitbook/assets/time-units.png)
+![The time units used by the Logos Blockchain.](../.gitbook/assets/about-cryptarchia-time-units.png)
 
 _The time units used by the Logos Blockchain._
 
@@ -57,7 +57,7 @@ When a Logos node is connected to the broader network and sees new honest blocks
 
 When a Logos node is joining the network for the first time, or after a prolonged absence, it must use the boostrapping fork choice rule. Like the online rule, the bootstrapping rule selects the longest chain when competing chains diverged from the node’s preferred chain less than $k$ blocks ago. However, forks diverging more than $k$ blocks ago are not dismissed. On the contrary, such a chain is selected if it has the most blocks (i.e. is the most dense) in the period immediately after the fork. The contrast between these two rules can be seen in the diagram below.
 
-![The Cryptarchia bootstrapping fork choice rule.](../.gitbook/assets/fork-choice.png)
+![The Cryptarchia bootstrapping fork choice rule.](../.gitbook/assets/about-cryptarchia-fork-choice.png)
 
 _The Cryptarchia bootstrapping fork choice rule._
 

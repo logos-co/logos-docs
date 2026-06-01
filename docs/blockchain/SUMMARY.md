@@ -2,8 +2,8 @@
 
 ## Get started
 
-* [Run a Logos blockchain node from the CLI](/broken/pages/NYoFWc9DMX01pgXLV6kA)
 * [Introduction to the Logos Blockchain](README.md)
+* [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
 * [About Bedrock](get-started/about-bedrock.md)
 * [About Cryptarchia](get-started/about-cryptarchia.md)
 * [About Mantle](get-started/about-mantle.md)

@@ -1,5 +1,7 @@
 # Table of contents
 
+* [Introduction](build-modules/build-run-a-logos-core-module.md)
+
 ## Build modules
 
 * [Build and run a Logos core module](build-modules/build-run-a-logos-core-module.md)

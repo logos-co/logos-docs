@@ -1,5 +1,7 @@
 # Table of contents
 
+* [Introduction](get-started/run-a-logos-blockchain-node-from-cli.md)
+
 ## Get started
 
 * [Run a Logos blockchain node from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)

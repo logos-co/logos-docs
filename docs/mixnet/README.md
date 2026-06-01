@@ -1,4 +1,4 @@
-# Logos Messaging
+# Logos Mixnet
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

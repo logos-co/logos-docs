@@ -1,4 +1,4 @@
-# Logos Messaging
+# Logos Execution Zone
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

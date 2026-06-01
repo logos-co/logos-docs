@@ -1,9 +1,11 @@
 # Table of contents
 
+* [Introduction](get-started/lez-quickstart.md)
+
 ## Get started
 
-* [Use the Logos Delivery Module API from an app](get-started/use-the-logos-delivery-module-api-from-an-app.md)
-* [Use the Logos Chat Module API from an app](get-started/use-the-logos-chat-module-api-from-an-app.md)
+* [Quickstart for the Logos Execution Zone wallet](get-started/lez-quickstart.md)
+* [Introduction to the Logos Execution Zone](get-started/introduction-to-the-logos-execution-zone.md)
 
 ## Transfer tokens
 

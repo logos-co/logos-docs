@@ -1,10 +1,10 @@
 # Table of contents
 
-* [Introduction](get-started/lez-quickstart.md)
+* [Readme](README.md)
 
 ## Get started
 
-* [Quickstart for the Logos Execution Zone wallet](get-started/lez-quickstart.md)
+* [Quickstart for the Logos Execution Zone wallet](get-started/quickstart-for-the-logos-execution-zone-wallet.md)
 * [Introduction to the Logos Execution Zone](get-started/introduction-to-the-logos-execution-zone.md)
 
 ## Transfer tokens

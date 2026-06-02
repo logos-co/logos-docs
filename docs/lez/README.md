@@ -1,4 +1,10 @@
-# Logos Execution Zone
+---
+title: README
+slug: readme
+hidden: true
+---
+
+# Logos Execution Zone documentation
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

@@ -17,9 +17,9 @@ Cryptarchia, the Logos Blockchain's consensus protocol, ensures that the entire 
 
 ## The basics
 
-* Cryptarchia is a Private Proof of Stake (PPoS) consensus protocol, so nodes cannot be linked to the blocks they propose and their relative stake cannot be deduced from activity.
-* Cryptarchia maintains block production during failures, allowing the network to keep operating even if competing forks emerge temporarily.
-* Cryptarchia has low entry barriers, so validator nodes can run on a basic laptop with no minimum stake requirement.
+- Cryptarchia is a Private Proof of Stake (PPoS) consensus protocol, so nodes cannot be linked to the blocks they propose and their relative stake cannot be deduced from activity.
+- Cryptarchia maintains block production during failures, allowing the network to keep operating even if competing forks emerge temporarily.
+- Cryptarchia has low entry barriers, so validator nodes can run on a basic laptop with no minimum stake requirement.
 
 ## Properties of Cryptarchia
 

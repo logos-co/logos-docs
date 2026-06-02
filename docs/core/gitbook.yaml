@@ -1,10 +1,11 @@
-# GitBook configuration for the Logos Core documentation space.
+# GitBook configuration for the Logos Basecamp documentation space.
 # Reference: https://docs.gitbook.com/getting-started/git-sync/content-configuration
 #
 # This file is read relative to the GitBook space's "Project directory"
-# setting (configured in the GitBook UI as docs/core).
+# setting (configured in the GitBook UI as docs/basecamp).
 
 root: ./
 
 structure:
+  readme: README.md
   summary: SUMMARY.md

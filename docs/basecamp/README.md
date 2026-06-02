@@ -1,4 +1,10 @@
-# Logos Storage
+---
+title: README
+slug: readme
+hidden: true
+---
+
+# Logos Core documentation
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

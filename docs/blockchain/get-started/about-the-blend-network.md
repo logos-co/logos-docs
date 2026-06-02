@@ -17,9 +17,9 @@ The Blend Network adds a layer of anonymity for block proposers on top of [Crypt
 
 ## The basics
 
-* The Blend Network adds anonymity for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
-* Proposals are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
-* Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a note with a minimum stake.
+- The Blend Network adds anonymity for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
+- Proposals are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
+- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a note with a minimum stake.
 
 ## Objectives
 
@@ -71,9 +71,9 @@ The SDP provides a standardised mechanism for Logos nodes to declare their parti
 
 The SDP consists of three basic steps, each of which represents a type of message sent by a participating node to [Mantle](about-mantle.md):
 
-* Declare: A node elects to participate in a given service.
-* Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
-* Withdraw: A node withdraws its declaration and stops providing a service.
+- Declare: A node elects to participate in a given service.
+- Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
+- Withdraw: A node withdraws its declaration and stops providing a service.
 
 To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as locators) based on the [Multiaddr scheme ↗](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
 
@@ -81,8 +81,8 @@ To submit a service declaration, a node must prove that it owns a note with a se
 
 The Service Reward Distribution Protocol (SRDP) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
 
-* Activity tracking: Nodes participating in services submit active messages to attest to their participation in the previous epoch.
-* Reward calculation: At the end of the epoch, the system calculates rewards for nodes that participated in the previous epoch.
-* Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
+- Activity tracking: Nodes participating in services submit active messages to attest to their participation in the previous epoch.
+- Reward calculation: At the end of the epoch, the system calculates rewards for nodes that participated in the previous epoch.
+- Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
 
 The selection of nodes receiving rewards in each block follows a deterministic, pseudo-random process based on the Cryptarchia epoch randomness from the start of the epoch. This approach ensures fairness and prevents manipulation of the distribution order.

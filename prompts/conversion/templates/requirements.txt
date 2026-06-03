@@ -1,7 +1,0 @@
-# Core runtime deps for transform.py
-openai>=1.0.0
-requests>=2.31.0
-
-# --- Optional (uncomment if you later use them) ---
-# pyyaml>=6.0.1        # If you switch to real YAML front matter parsing
-# python-dotenv>=1.0.0 # If you want to load API keys from a .env file

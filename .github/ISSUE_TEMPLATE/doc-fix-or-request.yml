@@ -1,0 +1,50 @@
+name: Doc fix or request
+description: Report an error, request a change, or suggest a new document.
+title: ""
+labels: ["type:bug"]
+body:
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: What do you need?
+      options:
+        - Fix an error in an existing document
+        - Improve or update an existing document
+        - Request a new document
+    validations:
+      required: true
+
+  - type: input
+    id: document
+    attributes:
+      label: Document
+      description: Link to the document, or the name of the journey or topic. Leave blank for new document requests.
+      placeholder: "e.g., https://github.com/logos-co/logos-docs/blob/main/docs/..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe what is wrong, what should change, or what document you want created and why.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the Logos stack does this relate to? Select all that apply.
+      multiple: true
+      options:
+        - Blockchain
+        - LEZ
+        - Messaging
+        - Storage
+        - Core
+        - Aoncomms
+        - Apps
+        - Not sure
+    validations:
+      required: true

@@ -1,5 +1,5 @@
 ---
-title: Logos Ecosystem Repositories
+title: Logos ecosystem repositories
 doc_type: reference
 product: logos
 topics: Repositories
@@ -9,7 +9,7 @@ doc_version: 1
 slug: logos-ecosystem-repositories
 ---
 
-# Logos Ecosystem Repositories
+# Logos ecosystem repositories
 
 #### Review the key repositories across the logos organizations.
  
@@ -65,7 +65,7 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
 | [logos-execution-zone-module](https://github.com/logos-blockchain/logos-execution-zone-module) | Logos Execution Zone module for Logos Core. No official description; purpose inferred. |
 | [logos-execution-zone-wallet-ui](https://github.com/logos-blockchain/logos-execution-zone-wallet-ui) | Logos Execution Zone wallet UI. No official description; purpose inferred. |
  
-## Logos Blockchain repositories
+## Logos Blockchain
  
 The Logos Blockchain is the foundational infrastructure of the Logos technology stack.
  
@@ -75,7 +75,7 @@ The Logos Blockchain is the foundational infrastructure of the Logos technology 
 | [logos-blockchain-block-explorer-template](https://github.com/logos-blockchain/logos-blockchain-block-explorer-template) | Python block explorer and indexer template. |
 | [nimbos](https://github.com/logos-co/nimbos) | Nim client for the Logos chain. |
  
-## Logos Execution Zone repositories
+## Logos Execution Zone
  
 The Logos Execution Zone (LEZ) is the primary execution layer for applications built on the Logos stack.
  

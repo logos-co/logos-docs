@@ -25,10 +25,17 @@ slug: lez-quickstart
 >
 > This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
 
-> **Note**
+> [!NOTE]
 >
 > - **Permissions**: No special permissions required.
 > - **Product**: Logos Execution Zone wallet CLI.
+
+> [!TIP]
+>
+> A public LEZ testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
+>
+> - Explorer: https://explorer.testnet.lez.logos.co/
+> - Sequencer RPC: https://testnet.lez.logos.co/
 
 The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 
@@ -36,7 +43,7 @@ LEZ separates account state into public (visible, on-chain) and private (hidden,
 
 > [!NOTE]
 >
-> This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Transfer native tokens on the Logos Execution Zone](../../../apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md).
+> This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Transfer native tokens on the Logos Execution Zone](../transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md).
 
 When a transaction touches the private state, the client runs the private part locally using your private keys and local client data, producing a zero-knowledge proof (ZKP). Validators verify the proof and accept the state update (for example, updating public balances), so the network stays correct even though the private data is never published.
 

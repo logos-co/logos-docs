@@ -43,14 +43,14 @@ The sections below link to the guides and references for what you can build and 
 
 ### Logos Execution Zone
 
-- [Set up a wallet for the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
-- [Transfer native tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
-- [Create and transfer custom tokens on the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/wallet/journeys/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
-- [Create and use an AMM liquidity pool in the Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/apps/sample-apps/journeys/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
+- [Set up a wallet for the Logos Execution Zone](./docs/lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
+- [Transfer native tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
+- [Create and transfer custom tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
+- [Create and use an AMM liquidity pool in the Logos Execution Zone](./docs/build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
 
 ### Blockchain
 
-- [Start a Logos blockchain node using the CLI](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/quickstart-guide-for-the-logos-blockchain-node.md) — Set up and run a Logos blockchain node from the command line.
+- [Start a Logos blockchain node using the CLI](./docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
 
 ### Storage
 
@@ -63,7 +63,7 @@ The sections below link to the guides and references for what you can build and 
 
 ### AnonComms
 
-- [Discover nodes and send messages via the AnonComms Mixnet demo app](https://github.com/logos-co/logos-docs/blob/main/docs/connect/anoncomms/journeys/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
+- [Discover nodes and send messages via the AnonComms Mixnet demo app](./docs/mixnet/get-started/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
 
 ## If you get stuck
 
@@ -73,7 +73,7 @@ Please open an issue in this repository describing what you are trying to comple
 
 We are consolidating and updating previously fragmented materials into a single, coherent developer experience and source of truth, featuring consistent navigation and terminology. This process is ongoing, and we appreciate your patience as we work to provide comprehensive and up-to-date documentation.
 
-We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → Logos Blockchain, Codex → Logos Storage, and Waku → Logos Messaging. This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
+We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
 
 Our aim is to provide a predictable onboarding path for operators and developers, where they can find what they need and trust what they read.
 

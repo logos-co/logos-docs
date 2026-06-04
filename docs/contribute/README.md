@@ -1,4 +1,10 @@
-# Logos Messaging
+---
+title: README
+slug: readme
+hidden: true
+---
+
+# Peer Discovery documentation
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

@@ -1,14 +1,7 @@
-# GitBook configuration for the Logos Messaging documentation space.
+# GitBook configuration for the LEZ documentation space.
 # Reference: https://docs.gitbook.com/getting-started/git-sync/content-configuration
-#
-# This file is read relative to the GitBook space's "Project directory"
-# setting (configured in the GitBook UI as docs/messaging).
-
 root: ./
 
 structure:
   readme: README.md
   summary: SUMMARY.md
-
-# redirects:
-#   old-path: new-path.md

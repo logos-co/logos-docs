@@ -33,7 +33,7 @@ Prioritizing liveness means that block production will continue during a failure
 
 Cryptarchia provides PPoS consensus that hides the identity of a block proposer both before and after a proposal. Hiding a proposer’s identity before the proposal is accomplished by using a secret leadership election. This mechanism selects consensus leaders without revealing the leader schedule ahead of time.
 
-For full proposer privacy, a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them ↗](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](about-the-blend-network.md), which obfuscates the link between a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
+For full proposer privacy, a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them ↗](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](./about-the-blend-network.md), which obfuscates the link between a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
 
 ### Low barrier to entry
 
@@ -65,7 +65,7 @@ The bootstrapping rule ensures that honest parties can join or rejoin the protoc
 
 ### Leadership election
 
-Cryptarchia uses Logos notes - fungible assets - to select block proposers. Each note that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
+Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each note that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
 
 Each slot presents an opportunity for a block proposer to add a block to the chain, so long as they win the leadership election for that slot. The leadership election is run locally by each individual eligible note, without any public leadership schedule. Whether a particular note wins the leadership election for a given slot is determined by comparing a random “ticket” value to a threshold derived from the note’s relative stake. Due to the privacy properties of Cryptarchia, this relative stake relies on an estimate of the total participating stake derived from the block production rate.
 

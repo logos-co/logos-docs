@@ -13,7 +13,7 @@ slug: about-the-blend-network
 
 #### Understand how the Blend Network hides the link between a block proposer and their proposal.
 
-The Blend Network adds a layer of anonymity for block proposers on top of [Cryptarchia](about-cryptarchia.md), the Logos Private Proof of Stake consensus protocol. Cryptarchia uses a private leadership election as a first line of defense against deanonymization, but preventing adversaries from learning about proposers through network monitoring needs stronger obfuscation. The Blend Protocol provides it: an anonymous broadcasting protocol that makes it hard to link a proposal to its proposer through network analysis. The Blend Network is the service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
+The Blend Network adds a layer of anonymity for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos Private Proof of Stake consensus protocol. Cryptarchia uses a private leadership election as a first line of defense against deanonymization, but preventing adversaries from learning about proposers through network monitoring needs stronger obfuscation. The Blend Protocol provides it: an anonymous broadcasting protocol that makes it hard to link a proposal to its proposer through network analysis. The Blend Network is the service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
 
 ## The basics
 
@@ -39,6 +39,7 @@ While dedicated participation in the Blend Network is reserved for declared Blen
     ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../.gitbook/assets/about-the-blend-network-dissemination.png)
 
     _The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity._
+
 3. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
 4. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
 5. When the receiver finally receives its message, it decrypts this message and is able to retrieve the original payload. This payload is then broadcast to the Logos Blockchain as a block proposal.
@@ -69,7 +70,7 @@ Logos nodes that choose to participate in the Blend Network explicitly declare t
 
 The SDP provides a standardised mechanism for Logos nodes to declare their participation, demonstrate activity, and withdraw when desired. It operates around a schedule measured by consensus epochs. This protocol creates a single repository of identifiers used to establish secure communication between nodes and manage service participation.
 
-The SDP consists of three basic steps, each of which represents a type of message sent by a participating node to [Mantle](about-mantle.md):
+The SDP consists of three basic steps, each of which represents a type of message sent by a participating node to [Mantle](./about-mantle.md):
 
 - Declare: A node elects to participate in a given service.
 - Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.

@@ -16,7 +16,7 @@ slug: send-1-1-messages-logos-chat
 
 This procedure shows how to use the Logos Chat app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat Module: ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
-> **Caution**
+> [!IMPORTANT]
 >
 > Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
 
@@ -36,7 +36,7 @@ You need the following to complete this procedure:
 
 You need two running instances to complete this procedure. Each instance can use either of the options below independently.
 
-> **Note**
+> [!NOTE]
 >
 > When using Nix, all build dependencies — including Qt6, `logos-chat-module`, and `liblogoschat` — are fetched automatically.
 
@@ -106,7 +106,7 @@ The app auto-initializes on launch and displays your identity ID in the bottom s
 
 ### Messages never arrive and the left panel shows "Waiting for connection…"
 
-Both instances require a stable internet connection to reach a shared bootstrap peer. Verify that neither instance is behind a firewall or network that blocks the Logos network.
+Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for peer discovery.
 
 ### A previously open conversation has disappeared
 

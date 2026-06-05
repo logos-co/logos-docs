@@ -13,3 +13,4 @@
 ## Tutorials
 
 - [Create and use an AMM liquidity pool on the Logos Execution Zone](tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)
+- [Run the atomic swaps sample app locally](tutorials/run-the-atomic-swaps-sample-app-locally.md)

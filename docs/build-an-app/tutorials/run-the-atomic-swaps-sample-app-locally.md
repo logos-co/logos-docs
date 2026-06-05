@@ -176,15 +176,21 @@ cargo run --bin swap-cli -- --env-file .env status --hashlock <hashlock-hex>
 
 ## Clean up
 
+When you are done, shut everything down so ports and wallets are not left running:
+
+1. Quit both Basecamp windows (maker and taker).
+2. Press **Ctrl-C** in the `make infra` terminal.
+3. Optionally reset local Basecamp state:
+
 ```bash
-# Stop infra: Ctrl-C in the infra terminal
-make basecamp-clean   # optional — reset local Basecamp instance state
+make basecamp-clean
 ```
 
 ## Known limitations
 
 | Limitation | Notes |
 |------------|-------|
+| Stop processes when done | Quit Basecamp windows and Ctrl-C `make infra`; leftover processes can hold ports and wallets |
 | Four terminals | Setup, infra (persistent), maker Basecamp, taker Basecamp |
 | Build LGX yourself | `make swap-lgx-build` required; no prebuilt LGX path |
 | Maker must be live first | Offers are advertisements; swap only works if maker is listening |

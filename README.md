@@ -2,7 +2,9 @@
 
 ## What is Logos
 
-Logos is a modular technology stack for building local-first, decentralised applications. Logos consolidates previously separate efforts (Nomos, Codex, and Waku) under one public identity to reduce cognitive load and provide a unified developer experience.
+Logos is a modular technology stack for building local-first, decentralised applications. Logos consolidates previously separate efforts (Nomos, Codex, Nescience and Waku) under one public identity to reduce cognitive load for developers and users.
+
+The current Web3 developer and user experience is centralized. Developers need to build and deploy smart contracts on-chain, write front ends that are hosted centrally, use centralized third-party services for applications to work, and rely heavily on web-browser access, which is prone to privacy leaks.
 
 If you've ever used Linux, you already understand how Logos works. A Linux distribution isn't solely a single binary it's a runtime foundation, a networking stack, a set of system services, and the applications that together create a complete operating system. Logos follows the same pattern: a core runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and decentralised applications on top that compose those modules. Logos ships with an opinionated default configuration with storage, messaging, and blockchain modules that work out of the box, but you can assemble entirely different distributions with your own selection of modules and configurations.
 
@@ -16,7 +18,9 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 **Modules: the system services.** Modules are self-contained components that sit on top of the networking layer, each providing a specific capability. Logos ships with three foundational modules, and the architecture is open for anyone to create their own:
 
-- **Blockchain (decentralised compute)** provides consensus and programmable state. **Data Availability and Consensus** is the base layer that ensures transaction data is published and retrievable and that nodes agree on a single ordered history of blocks. The **Execution Zone** is where application logic runs and state is updated, supporting both public and private state, you can deploy programs, run AMMs, transfer tokens, and create financial primitives with built-in privacy.
+- **Blockchain (consensus and data availability layer):** Runs the consensus layer in the technolgy stack (i.e. consensus + data availability + settlement) and provides the foundation other components build on. Logos Blockchain provides a sovereign, censorship resistant foundation for building applications while protecting the privacy of individual participants including node operators.
+
+- **Logos Execution Zone (LEZ):** Execution zone (Rollup) running on the Base layer for wallet, token operations, and program deployment with support for public and private contexts (previously referred to as Logos State Separation Architecture or LSSA).
 
 - **Messaging (coordination)** handles private, censorship-resistant communication between parties. **Logos Delivery** provides publish-subscribe messaging for reliable transport. **Logos Chat** uses Delivery as its transport layer, providing encrypted one-to-one conversations and evolving toward group conversations.
 
@@ -24,7 +28,7 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 - **User Modules** are the wild card. Because Logos follows a modular architecture, anyone can build modules that plug into the same infrastructure. The runtime loads them, manages their lifecycle, and enables them to communicate with other modules, whether they are Logos defaults or third-party additions. Use cases include wallet and key management, identity, access control, and anything else your application needs.
 
-**Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos App** is the default launcher, it starts the runtime, loads the configured module profile, and provides a unified interface with built-in apps for wallet management, encrypted chat, filesharing, and blockchain exploration. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
+**Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos Basecamp** is an app built on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables access to third party published applications, running local modules (for example, the node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions typically seen in Web3. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
 
 > [!NOTE]
 >
@@ -32,38 +36,22 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 The sections below link to the guides and references for what you can build and run on Logos today.
 
-## Logos
+## Useful links
 
-### Logos App
-
-**Build and run the Logos App:** Build the application from source using Nix and launch it locally with all required modules and dependencies loaded automatically.
-
-- [Build instructions](https://github.com/logos-co/logos-app?tab=readme-ov-file#how-to-build)
-- [Modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
-
-### Logos Execution Zone
-
-- [Set up a wallet for the Logos Execution Zone](./docs/lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md) — Install and configure a wallet to interact with the Logos Execution Zone.
-- [Transfer native tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md) — Send and receive native tokens between wallets on the Logos Execution Zone.
-- [Create and transfer custom tokens on the Logos Execution Zone](./docs/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) — Mint your own custom tokens and transfer them on the Logos Execution Zone.
-- [Create and use an AMM liquidity pool in the Logos Execution Zone](./docs/build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) — Set up and interact with an automated market maker liquidity pool on the Logos Execution Zone.
-
-### Blockchain
-
-- [Start a Logos blockchain node using the CLI](./docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) — Set up and run a Logos blockchain node from the command line.
-
-### Storage
-
+- [Logos repositories](https://github.com/logos-co/logos-docs/tree/main/docs/get-started/logos-ecosystem-repositories.md) — A comprehensive list of important public repositories in the Logos ecosystem.
+- [Zero to Logos App](https://github.com/jzaki/logos-playground/blob/main/Zero-to-Logos-App.md) - A short tutorial to understand pieces and have a quick motivating win.
+- Logos stack documentation
+    - [Logos Basecamp documentation](https://github.com/logos-co/logos-docs/blob/main/docs/basecamp/SUMMARY.md)
+    - [Logos Core documentation](https://github.com/logos-co/logos-docs/blob/main/docs/core/SUMMARY.md)
+    - [Logos Blockchain documentation](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/SUMMARY.md)
+    - [LEZ documentation](https://github.com/logos-co/logos-docs/blob/main/docs/lez/SUMMARY.md)
+    - [Logos Storage documentation](https://github.com/logos-co/logos-docs/blob/main/docs/storage/SUMMARY.md)
+    - [Logos Messaging documentation](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/SUMMARY.md)
+    - [Mixnet documentation](https://github.com/logos-co/logos-docs/blob/main/docs/mixnet/SUMMARY.md)
+- [Logos modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
+- [Find and use an existing module](https://github.com/jzaki/logos-playground/blob/main/Find-and-use-a-module.md)
+- [Building Logos modules](https://github.com/logos-co/logos-tutorial) - How-to's on building modules and UIs to interact with them.
 - [Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.
-- [Store and retrieve a file using the Simple Filesharing App](https://logos-storage-docs.netlify.app/tutorials/libstorage/) — Walk through storing and retrieving files using the Simple Filesharing application.
-
-### Messaging
-
-- We're working on the content.
-
-### AnonComms
-
-- [Discover nodes and send messages via the AnonComms Mixnet demo app](./docs/mixnet/get-started/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app.md) — Use the AnonComms Mixnet demo application to discover network nodes and exchange messages anonymously.
 
 ## If you get stuck
 
@@ -73,7 +61,7 @@ Please open an issue in this repository describing what you are trying to comple
 
 We are consolidating and updating previously fragmented materials into a single, coherent developer experience and source of truth, featuring consistent navigation and terminology. This process is ongoing, and we appreciate your patience as we work to provide comprehensive and up-to-date documentation.
 
-We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
+We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), Nescience → [Logos Execution Zone (LEZ)](https://github.com/logos-blockchain/logos-execution-zone) and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
 
 Our aim is to provide a predictable onboarding path for operators and developers, where they can find what they need and trust what they read.
 

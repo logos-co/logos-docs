@@ -32,10 +32,6 @@ Before you start, make sure you have the following:
 - Basic familiarity with C and C++
 - The C library's source files, or a pre-built shared library plus its header
 
-> [!TIP]
->
-> If you don't have a C library, you can try the `libtictactoe.h` and `libtictactoe.c` from example [`libtictactoe`](https://github.com/fryorcraken/logos-module-tictactoe/tree/master/tictactoe/lib). Copy them into your `lib/` directory.
-
 ## What to expect
 
 - An `.lgx` package with the plugin binary and bundled C library, ready for `logos-basecamp` or `logoscore`.
@@ -48,7 +44,7 @@ Before you start, make sure you have the following:
 
 ## Step 1: Scaffold the module project with external-lib support
 
-Use the `with-external-lib` variant of the module builder template. Compared to the plain template, its `metadata.json` is pre-populated with an `external_libraries` block and `extra_include_dirs`, and its `CMakeLists.txt` calls `logos_module()` with `EXTERNAL_LIBS`.
+Create a template for your module using `logos-module-builder` with the `with-external-lib` variant. Compared to the plain template, its `metadata.json` is pre-populated with an `external_libraries` block and `extra_include_dirs`, and its `CMakeLists.txt` calls `logos_module()` with `EXTERNAL_LIBS`.
 
 > [!TIP]
 >

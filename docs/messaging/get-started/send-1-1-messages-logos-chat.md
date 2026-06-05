@@ -42,9 +42,15 @@ You need two running instances to complete this procedure. Each instance can use
 
 ### Option A — Run in Logos Basecamp
 
-1. Download and install the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
+1. Download and [install](../../basecamp/install-the-logos-basecamp-app.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 1. In the left bar, select **Package Manager**.
+
+   ![Logos Basecamp screenshot](../.gitbook/assets/basecamp-package-manager.png)
+
 1. Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
+
+   ![Logos Basecamp package installation screenshot](../.gitbook/assets/basecamp-install-packages.png)
+
 1. Wait until a green **Installed** label appears next to both modules.
 1. In the left bar, select **chat** to launch the Logos Chat app.
 

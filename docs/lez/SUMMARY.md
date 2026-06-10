@@ -1,7 +1,5 @@
 # Table of contents
 
-- [Readme](README.md)
-
 ## Get started
 
 - [Quickstart for the Logos Execution Zone wallet](get-started/quickstart-for-the-logos-execution-zone-wallet.md)

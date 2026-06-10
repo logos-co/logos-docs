@@ -1,7 +1,5 @@
 # Table of contents
 
-- [Readme](README.md)
-
 ## Build Logos modules
 
 - [Build and run a Logos core module](../core/build-modules/build-run-a-logos-core-module.md)

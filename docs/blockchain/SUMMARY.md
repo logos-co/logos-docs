@@ -1,7 +1,5 @@
 # Table of contents
 
-- [Readme](README.md)
-
 ## Get started
 
 - [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)

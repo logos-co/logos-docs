@@ -12,3 +12,6 @@
 - [About Mantle](concepts/about-mantle.md)
 - [About the Blend Network](concepts/about-the-blend-network.md)
 - [About Zones](concepts/about-zones.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

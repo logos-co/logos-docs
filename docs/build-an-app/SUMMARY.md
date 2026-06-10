@@ -11,3 +11,6 @@
 ## Tutorials
 
 - [Create and use an AMM liquidity pool on the Logos Execution Zone](tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

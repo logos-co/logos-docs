@@ -218,7 +218,7 @@ logos-calc-module/
 
 1. Create `metadata.json`. Set `name`, `description`, `main`, add `"interface": "universal"`, and declare your library under `nix.external_libraries`. This file is the single source of truth: it is embedded into the generated plugin binary, read by `logos-module-builder` to configure the Nix build, used by CMake to resolve and link external libraries, and used by `nix-bundle-lgx` to generate the LGX manifest.
 
-To fetch and build external libraries from source, add `"build_command": "make shared"` and `"output_pattern": "build_<libname>"` to `"external_libraries"`.
+To fetch and build external libraries from source, add `"build_command": "make shared"` and `"output_pattern": "build/<libname>"` to `"external_libraries"`.
 
    ```json
    {

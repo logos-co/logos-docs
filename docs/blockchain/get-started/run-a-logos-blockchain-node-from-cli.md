@@ -26,13 +26,13 @@ Before you start, ensure you have:
 
 ## What to expect
 
-- You can install the node binary and ZK circuits, generate a configuration, and join the public testnet.
+- You can install the node binary, generate a configuration, and join the public testnet.
 - You can verify that your node is syncing and connected to peers using the local API.
 - You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
-## Step 1: Install the node binary and ZK circuits
+## Step 1: Install the node binary
 
-The node requires zero-knowledge circuit files for cryptographic operations. Download the node binary and circuits archive from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest), then install both before running the node.
+Download the node binary from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest), then install it before running the node.
 
 {% hint style="info" %}
 ## Note
@@ -40,46 +40,31 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
 The wallet used here is the node's internal key store, not a general-purpose user wallet. It holds the staking keys that give your node the right to participate in the consensus lottery.
 {% endhint %}
 
-1. Download the latest node binary and circuits archive for your device's architecture.
+1. Download the latest node binary for your device's architecture. The node filename begins with `logos-blockchain-node-`.
 
-    - The node filename begins with `logos-blockchain-node-`.
-    - The circuits filename begins with `logos-blockchain-circuits-`.
-
-    For example, to download release 0.1.2 on Linux x86_64 with `wget`:
+    For example, to download release 0.1.3 on Linux x86_64 with `wget`:
 
     ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3-rc.1/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-x86_64-0.1.2.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3/logos-blockchain-node-linux-x86_64-0.1.3.tar.gz
     ```
 
     On macOS (aarch64):
 
     ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-macos-aarch64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-macos-aarch64-0.1.2.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3/logos-blockchain-node-macos-aarch64-0.1.3.tar.gz
     ```
 
     On a Raspberry Pi (aarch64):
 
     ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-linux-aarch64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-aarch64-0.1.2.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3/logos-blockchain-node-linux-aarch64-0.1.3.tar.gz
     ```
 
-1. Extract the downloaded archives:
+1. Extract the downloaded archive:
 
     ```sh
-    tar -xf logos-blockchain-circuits-*.tar.gz
     tar -xf logos-blockchain-node-*.tar.gz
     ```
-
-1. Move the extracted circuits folder to `~/.logos-blockchain-circuits`, the default location the node searches:
-
-    ```sh
-    mv logos-blockchain-circuits-*/ ~/.logos-blockchain-circuits
-    ```
-
-    - To store circuits elsewhere, move them to your preferred path and set `export LOGOS_BLOCKCHAIN_CIRCUITS=/path/to/your/circuits`.
 
 ## Step 2: Configure and start the node
 

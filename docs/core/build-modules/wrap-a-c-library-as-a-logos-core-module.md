@@ -203,14 +203,6 @@ Write the files that turn your C library into a Logos module. With the pure-C++ 
 
 After this step, your project will look like this:
 
-| File                          | Role                                                              |
-| ----------------------------- | ----------------------------------------------------------------- |
-| `metadata.json`               | Module metadata + nix build settings (note `interface: universal`)|
-| `CMakeLists.txt`              | Lists your impl source files                                      |
-| `flake.nix`                   | Nix build (description, dependency inputs)                        |
-| `src/calc_module_impl.h`      | Plain C++ class declaration — no Qt                               |
-| `src/calc_module_impl.cpp`    | Implementation: each method calls the C library                   |
-
 ```
 logos-calc-module/
 ├── flake.nix          # Nix build configuration (~10 lines)
@@ -220,7 +212,7 @@ logos-calc-module/
 │   ├── libcalc.h      # C library header
 │   └── libcalc.c      # C library source (compiled by CMake)
 └── src/
-    ├── calc_module_impl.h     # Plain C++ class (no Qt, no plugin macros)
+    ├── calc_module_impl.h     # Plain C++ class
     └── calc_module_impl.cpp   # Implementation (wrapping logic)
 ```
 

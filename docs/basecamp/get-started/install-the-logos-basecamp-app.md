@@ -14,10 +14,12 @@ slug: install-the-logos-basecamp-app
 
 #### Get Logos Basecamp running on your desktop.
 
-> [!NOTE]
->
-> - **Permissions**: No special permissions required.
-> - **Product**: Logos Basecamp.
+{% hint style="info" %}
+## Note
+
+- **Permissions**: No special permissions required.
+- **Product**: Logos Basecamp.
+{% endhint %}
 
 Logos Basecamp is the desktop shell for the Logos platform. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
 
@@ -28,9 +30,11 @@ You can install Logos Basecamp in two ways:
 | [Prebuilt release (AppImage or DMG)](#install-from-a-prebuilt-release) | End users | None |
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
-> [!NOTE]
->
-> To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
+{% hint style="info" %}
+## Note
+
+To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
+{% endhint %}
 
 Before you start, make sure you have the following:
 
@@ -39,9 +43,11 @@ Before you start, make sure you have the following:
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
 - For the source build only: [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
 
-> [!NOTE]
->
-> Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports. 
+{% hint style="info" %}
+## Note
+
+Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports. 
+{% endhint %}
 
 ## Install from a prebuilt release
 

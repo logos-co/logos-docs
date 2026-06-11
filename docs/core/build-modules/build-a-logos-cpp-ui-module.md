@@ -32,9 +32,11 @@ This guide shows you how to build a `calc_ui_cpp` module — a QML view backed b
 
 Initialise a new directory and apply the `ui-qml-backend` template from `logos-module-builder`.
 
-> [!NOTE]
->
->  The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 7](#step-7-configure-flakenix) to ensure reproducible builds.
+{% hint style="info" %}
+## Note
+
+ The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 7](#step-7-configure-flakenix) to ensure reproducible builds.
+{% endhint %}
 
 1. Run the scaffold command:
 
@@ -561,9 +563,11 @@ Bundle both modules as `.lgx` packages and install them using `lgpm`.
    ./basecamp-result/bin/LogosBasecamp
    ```
 
-    > [!NOTE]
-    >
-    >  The dev build requires dev `.lgx` variants (`result-lgx`). For a portable build of basecamp, use `result-lgx-portable` variants and the `LogosBasecamp` data directory instead. Mixing variants causes loading failures.
+    {% hint style="info" %}
+    ## Note
+
+     The dev build requires dev `.lgx` variants (`result-lgx`). For a portable build of basecamp, use `result-lgx-portable` variants and the `LogosBasecamp` data directory instead. Mixing variants causes loading failures.
+    {% endhint %}
 
 1. Alternatively, you can install modules through the basecamp UI:
 

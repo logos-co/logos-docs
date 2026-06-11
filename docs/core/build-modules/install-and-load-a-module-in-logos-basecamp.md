@@ -24,8 +24,11 @@ Before you start, make sure you have:
 - Internet access for online catalog install.
 - [An `.lgx` file](./build-and-run-a-logos-core-module.md) for local install.
 
-> [!NOTE]
-> The `.lgx` file's archive must contain a variant matching your platform. For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
+{% hint style="info" %}
+## Note
+
+The `.lgx` file's archive must contain a variant matching your platform. For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
+{% endhint %}
 
 ## What to expect
 
@@ -59,9 +62,11 @@ Loading a module turns an installed module into a running service you can actual
 1. Find the module to load under **UI Modules** or **Core Modules** depending on its type.
 1. Click **Load** next to the module.
 
-> [!NOTE]
->
-> You can click **Unload** in the Modules view or close the tab of a module to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.
+{% hint style="info" %}
+## Note
+
+You can click **Unload** in the Modules view or close the tab of a module to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.
+{% endhint %}
 
 ## Troubleshooting
 

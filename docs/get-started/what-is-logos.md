@@ -37,9 +37,11 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 **Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos Basecamp** is an app built on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables access to third party published applications, running local modules (for example, the node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
 
-> [!NOTE]
->
-> To learn more about Logos, visit the [Logos main site](https://logos.co).
+{% hint style="info" %}
+## Note
+
+To learn more about Logos, visit the [Logos main site](https://logos.co).
+{% endhint %}
 
 The sections below link to the guides and references for what you can build and run on Logos today.
 

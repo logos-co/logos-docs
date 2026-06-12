@@ -35,7 +35,7 @@ Initialise a new directory and apply the `ui-qml-backend` template from `logos-m
 {% hint style="info" %}
 ## Note
 
- The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 7](#step-7-configure-flakenix) to ensure reproducible builds.
+The generated `flake.nix` uses an unpinned `logos-module-builder` URL. Replace it with the pinned version in [Step 7](#step-7-configure-flakenix) to ensure reproducible builds.
 {% endhint %}
 
 1. Run the scaffold command:

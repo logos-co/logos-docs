@@ -1,3 +1,3 @@
 # Welcome 
 
-Welcome to the Contributor documentation! We're working on the content.
+Welcome to the contributor documentation! We're working on the content.

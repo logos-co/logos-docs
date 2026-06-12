@@ -94,8 +94,8 @@ Logos Messaging is the project's decentralized communication system.
 
 | Repository | Description |
 |:---|:---|
-| [logos-delivery](https://github.com/logos-messaging/logos-delivery) | The messaging protocols implemented in Nim, formerly nwaku. The primary node implementation. |
-| [logos-delivery-js](https://github.com/logos-messaging/logos-delivery-js) | JavaScript and TypeScript implementation of Waku v2; formerly js-waku. |
+| [logos-delivery](https://github.com/logos-messaging/logos-delivery) | Logos messaging protocols implemented in Nim, formerly nwaku. |
+| [logos-delivery-js](https://github.com/logos-messaging/logos-delivery-js) | Logos messaging protocols implemented in JavaScript and TypeScript, formerly Waku v2. |
 | [logos-delivery-python-bindings](https://github.com/logos-messaging/logos-delivery-python-bindings) | Python wrapper around the node. |
 | [sds-go-bindings](https://github.com/logos-messaging/sds-go-bindings) | Go bindings for the SDS reliability protocol. No official description; purpose inferred. |
 | [nim-sds](https://github.com/logos-messaging/nim-sds) | Nim implementation of the end-to-end reliability protocol. |
@@ -106,7 +106,7 @@ Logos Messaging is the project's decentralized communication system.
 | [logos-delivery-simulator](https://github.com/logos-messaging/logos-delivery-simulator) | Simulates a network with multiple nodes, traffic, and users. |
 | [logos-delivery-interop-tests](https://github.com/logos-messaging/logos-delivery-interop-tests) | Interoperability tests. No official description; purpose inferred. |
 | [libchat](https://github.com/logos-messaging/libchat) | Supporting library for Logos Chat, written in Rust. |
-| [awesome-logos-delivery](https://github.com/logos-messaging/awesome-logos-delivery) | Community-curated list of Waku-related resources. |
+| [awesome-logos-delivery](https://github.com/logos-messaging/awesome-logos-delivery) | Community-curated list of resources. |
 
 ## Logos Storage
 

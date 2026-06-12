@@ -174,12 +174,12 @@ The `lm` tool (from `logos-module`) lets you inspect compiled module binaries wi
    
    ```json
    {
-  "name": "my_module",
-  "version": "1.0.0",
-  "description": "My first Logos module",
-  "author": "",
-  "type": "core",
-  "dependencies": []
+      "name": "my_module",
+      "version": "1.0.0",
+      "description": "My first Logos module",
+      "author": "",
+      "type": "core",
+      "dependencies": []
    }
    ```
 

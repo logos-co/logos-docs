@@ -13,5 +13,9 @@
 - [About the Blend Network](concepts/about-the-blend-network.md)
 - [About Zones](concepts/about-zones.md)
 
+## Blend
+
+- [Join the Blend Network as a core node](./blend/join-the-blend-network-as-a-core-node.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

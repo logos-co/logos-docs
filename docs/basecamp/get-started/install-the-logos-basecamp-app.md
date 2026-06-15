@@ -15,8 +15,6 @@ slug: install-the-logos-basecamp-app
 #### Get Logos Basecamp running on your desktop.
 
 {% hint style="info" %}
-## Note
-
 - **Permissions**: No special permissions required.
 - **Product**: Logos Basecamp.
 {% endhint %}
@@ -31,8 +29,6 @@ You can install Logos Basecamp in two ways:
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
 {% hint style="info" %}
-## Note
-
 To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
 {% endhint %}
 
@@ -44,8 +40,6 @@ Before you start, make sure you have the following:
 - For the source build only: [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
 
 {% hint style="info" %}
-## Note
-
 Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports. 
 {% endhint %}
 

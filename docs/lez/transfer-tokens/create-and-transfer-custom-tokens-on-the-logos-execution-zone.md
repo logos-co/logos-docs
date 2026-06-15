@@ -15,14 +15,10 @@ slug: create-and-transfer-custom-tokens-on-the-logos-execution-zone
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
 {% hint style="warning" %}
-## Important
-
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
 {% endhint %}
 
 {% hint style="info" %}
-## Note
-
 - **Permissions**: No special permissions required.
 - **Product**: Logos Execution Zone wallet CLI.
 {% endhint %}
@@ -50,8 +46,6 @@ Token program accounts fall into two types:
   - It can be public or private.
 
 {% hint style="danger" %}
-## Caution
-
 Transfers are irreversible. Double-check all details before proceeding.
 {% endhint %}
 
@@ -67,8 +61,6 @@ Before you begin, ensure that you have the following:
 - You can transfer custom tokens to any uninitialized public or private account. Once the account is initialized, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 {% hint style="info" %}
-## Note
-
 Currently, it's impossible to change the token name or total supply after you create the token.
 {% endhint %}
 
@@ -91,8 +83,6 @@ Currently, it's impossible to change the token name or total supply after you cr
    If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and viewing public key (`vpk`).
 
 {% hint style="info" %}
-## Note
-
 Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
 {% endhint %}
 
@@ -141,8 +131,6 @@ Your account keys and data are stored in the local file `$HOME/.nssa/wallet/stor
     ```
 
 {% hint style="success" %}
-## Tip
-
 When checking the status of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
 {% endhint %}
 
@@ -151,8 +139,6 @@ When checking the status of a private account, the `wallet account get` command 
 When transferring custom tokens using the `wallet token send` command, you specify the sender and recipient accounts with the account IDs. Both accounts can be public or private, but they must have the same token definition ID.
 
 {% hint style="info" %}
-## Note
-
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof. 
 {% endhint %}
 
@@ -188,7 +174,5 @@ Transfers involving private accounts may take a few minutes because the wallet n
     ```
 
 {% hint style="success" %}
-## Tip
-
 You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
 {% endhint %}

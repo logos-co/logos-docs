@@ -35,8 +35,6 @@ Before you start, ensure you have:
 The node requires zero-knowledge circuit files for cryptographic operations. Download the node binary and circuits archive from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest), then install both before running the node.
 
 {% hint style="info" %}
-## Note
-
 The wallet used here is the node's internal key store, not a general-purpose user wallet. It holds the staking keys that give your node the right to participate in the consensus lottery.
 {% endhint %}
 
@@ -86,8 +84,6 @@ The wallet used here is the node's internal key store, not a general-purpose use
 The `init` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
 {% hint style="info" %}
-## Note
-
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 {% endhint %}
 
@@ -201,8 +197,6 @@ A faucet distributes free tokens on test networks so you can experiment without 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
 {% hint style="info" %}
-## Note
-
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
 
 Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.

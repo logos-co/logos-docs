@@ -15,14 +15,10 @@ slug: transfer-native-tokens-on-the-logos-execution-zone
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
 {% hint style="warning" %}
-## Important
-
 This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
 {% endhint %}
 
 {% hint style="info" %}
-## Note
-
  - **Permissions**: No special permissions required.
  - **Product**: Logos Execution Zone wallet CLI.
 {% endhint %}
@@ -52,8 +48,6 @@ On LEZ, public and private accounts differ in where their state lives and how tr
     - Any public accounts involved are still updated visibly on-chain.
 
 {% hint style="danger" %}
-## Caution
-
 Transfers are irreversible. Double-check all details before proceeding.
 {% endhint %}
 
@@ -88,8 +82,6 @@ Before you begin, ensure that you have the following:
    If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and viewing public key (`vpk`).
 
 {% hint style="info" %}
-## Note
-
 Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
 {% endhint %}
 
@@ -112,8 +104,6 @@ Your account keys and data are stored in the local file `$HOME/.nssa/wallet/stor
     ```
 
 {% hint style="info" %}
-## Note
-
 New accounts are created in an uninitialized state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialized account. After initialization, only the owning program can modify the account.
 
 The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
@@ -155,8 +145,6 @@ With the recipient account ID, you can transfer native tokens across the followi
 - Private → your private
 
 {% hint style="info" %}
-## Note
-
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof. 
 {% endhint %}
 
@@ -166,8 +154,6 @@ With the `npk` and `vpk` of the recipient account, you can transfer native token
 - Private → uninitialized private (someone else's)
 
 {% hint style="info" %}
-## Note
-
 Currently, only uninitialized private accounts can be modified without authorization. Sending funds to initialized private accounts is not possible because only the owner can modify them.
 {% endhint %}
 
@@ -196,8 +182,6 @@ For example, to transfer 17 tokens from the public account with ID `Ev1JprP9Bmhb
 When transferring someone else's private account, you need their account `npk` (nullifier public key)and `vpk` (viewing public key) instead of the account ID because LEZ uses the `npk`  to confirm the ownership of the private account, and `vpk` to verify transactions without revealing the account owner. These keys do not expose sensitive information and allow others to verify transaction validity.
 
 {% hint style="success" %}
-## Tip
-
 Check your account `npk` and `vpk` using the `wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID` command.
 {% endhint %}
 
@@ -239,14 +223,10 @@ The output looks like this:
     ```
 
 {% hint style="success" %}
-## Tip
-
 When checking the balance of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
 {% endhint %}
 
 {% hint style="success" %}
-## Tip
-
 You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
 {% endhint %}
 

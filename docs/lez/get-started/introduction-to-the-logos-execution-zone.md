@@ -31,8 +31,6 @@ Private accounts, by contrast, are stored locally on the account-holder’s node
 -  Viewing keys: The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
 
 {% hint style="info" %}
-## Note
-
 A program must obtain a private account’s nullifier public key, as well as its viewing public key, in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
 {% endhint %}
 
@@ -53,7 +51,5 @@ As an example, the LEZ could be used to host private DeFi applications. With sup
 - Confidential Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
 
 {% hint style="success" %}
-## Tip
-
 Check out the tutorial on how to create your own [Automated Market Maker (AMM) trading pool](../../build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) program on the LEZ.
 {% endhint %}

@@ -16,9 +16,11 @@ slug: send-1-1-messages-logos-chat
 
 This procedure shows how to use the Logos Chat app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat Module: ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
-> [!IMPORTANT]
->
-> Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+{% hint style="info" %}
+
+Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+
+{% endhint %}
 
 You need the following to complete this procedure:
 
@@ -36,9 +38,11 @@ You need the following to complete this procedure:
 
 You need two running instances to complete this procedure. Each instance can use either of the options below independently.
 
-> [!NOTE]
->
-> When using Nix, all build dependencies — including Qt6, `logos-chat-module`, and `liblogoschat` — are fetched automatically.
+{% hint style="info" %}
+
+When using Nix, all build dependencies — including Qt6, `logos-chat-module`, and `liblogoschat` — are fetched automatically.
+
+{% endhint %}
 
 ### Option A — Run in Logos Basecamp
 

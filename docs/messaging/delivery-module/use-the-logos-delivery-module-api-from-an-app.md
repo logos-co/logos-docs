@@ -38,9 +38,11 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
 Add `delivery_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module API evolves.
 
-> [!NOTE]
->
-> The flake input name (`delivery_module`) must exactly match the dependency name in `metadata.json`. `logos-module-builder` uses this name to generate the typed wrapper at build time.
+{% hint style="info" %}
+
+The flake input name (`delivery_module`) must exactly match the dependency name in `metadata.json`. `logos-module-builder` uses this name to generate the typed wrapper at build time.
+
+{% endhint %}
 
 1. In `metadata.json`, add `delivery_module` to the dependencies array:
 
@@ -67,9 +69,11 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
 
 The full API reference is in [`src/delivery_module_plugin.h`](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/src/delivery_module_plugin.h) and the module [README](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/README.md#module-interface).
 
-> [!TIP]
->
-> Register event handlers before calling `start()` so you don't miss the first `connectionStateChanged` event.
+{% hint style="info" %}
+
+Register event handlers before calling `start()` so you don't miss the first `connectionStateChanged` event.
+
+{% endhint %}
 
 1. Initialize `LogosModules` in `initLogos()`:
 
@@ -119,9 +123,11 @@ See [here](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab240
    }
    ```
 
-> [!NOTE]
->
-> `createNode` must be called exactly once per context. Calling it multiple times without first calling `stop()` and destroying the context is undefined behavior.
+{% hint style="info" %}
+
+`createNode` must be called exactly once per context. Calling it multiple times without first calling `stop()` and destroying the context is undefined behavior.
+
+{% endhint %}
 
 1. Connect to the network with `start()`. The `connectionStateChanged` event fires on the Qt event loop once the node connects to peers:
 

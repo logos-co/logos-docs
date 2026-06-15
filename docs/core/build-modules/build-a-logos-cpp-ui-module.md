@@ -60,9 +60,11 @@ Create a new directory and initialize it from the C++ backend UI template.
 
 Replace the template `metadata.json` with your plugin's details.
 
-> [!NOTE]
->
-> The `calc_module.url` input attribute name in `flake.nix` must match the dependency name declared here in `"dependencies"`.
+{% hint style="info" %}
+
+The `calc_module.url` input attribute name in `flake.nix` must match the dependency name declared here in `"dependencies"`.
+
+{% endhint %}
 
 1. Replace `metadata.json` with the following:
 
@@ -237,9 +239,11 @@ The backend plugin inherits three base classes:
    #endif // CALC_UI_CPP_PLUGIN_H
    ```
 
-   > [!NOTE]
-   >
-   > If the interface filename or IID symbol here doesn't match the names in `src/calc_ui_cpp_interface.h`, you will get build errors or plugin-load failures at runtime.
+   {% hint style="info" %}
+   
+   If the interface filename or IID symbol here doesn't match the names in `src/calc_ui_cpp_interface.h`, you will get build errors or plugin-load failures at runtime.
+   
+   {% endhint %}
 
 1. Create `src/calc_ui_cpp_plugin.cpp`:
 

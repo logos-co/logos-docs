@@ -1,7 +1,9 @@
 # Discover nodes and send messages via the AnonComms Mixnet demo app
 
 {% hint style="warning" %}
+
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
 {% endhint %}
 
 ## A. Outcome + value (required)

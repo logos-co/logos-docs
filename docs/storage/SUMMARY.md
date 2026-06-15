@@ -1,0 +1,7 @@
+# Table of contents
+
+## Get started
+
+- [Set up and use the Logos Storage UI](./get-started/set-up-and-use-logos-storage-ui.md)
+
+- [Readme](README.md)

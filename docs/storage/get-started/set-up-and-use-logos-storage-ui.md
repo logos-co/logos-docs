@@ -35,9 +35,11 @@ Before you start, have the following ready:
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries.
 
-> **Note**
->
-> If Nix flakes are not enabled globally, add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
+{% hint style="info" %}
+
+If Nix flakes are not enabled globally, add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
+
+{% endhint %} 
 
 1. Clone the repository and enter the project directory.
 

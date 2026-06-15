@@ -1,5 +1,5 @@
 ---
-title:  Run a Logos Blockchain node on the public testnet from the CLI
+title: Run a Logos Blockchain node on the public testnet from the CLI
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -20,7 +20,7 @@ There is currently no dynamic wallet key management. To add new keys you must ma
 
 Before you start, ensure you have:
 
-- Linux x86_64, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- Linux x86_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
 - At least 64 GB of storage
 
@@ -34,9 +34,11 @@ Before you start, ensure you have:
 
 The node requires zero-knowledge circuit files for cryptographic operations. Download the node binary and circuits archive from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest), then install both before running the node.
 
-> [!NOTE]
->
-> The wallet used here is the node's internal key store, not a general-purpose user wallet. It holds the staking keys that give your node the right to participate in the consensus lottery.
+{% hint style="info" %}
+
+The wallet used here is the node's internal key store, not a general-purpose user wallet. It holds the staking keys that give your node the right to participate in the consensus lottery.
+
+{% endhint %}
 
 1. Download the latest node binary and circuits archive for your device's architecture.
 
@@ -48,6 +50,13 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
     ```sh
     wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3-rc.1/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
     wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-x86_64-0.1.2.tar.gz
+    ```
+
+    On macOS (aarch64):
+
+    ```sh
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-macos-aarch64.tar.gz
+    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-macos-aarch64-0.1.2.tar.gz
     ```
 
     On a Raspberry Pi (aarch64):
@@ -76,9 +85,11 @@ The node requires zero-knowledge circuit files for cryptographic operations. Dow
 
 The `init` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
-> [!NOTE]
->
-> Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
+{% hint style="info" %}
+
+Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
+
+{% endhint %}
 
 1. Generate your `user_config.yaml` by running `init` with the bootstrap peer addresses. For example, for release 0.1.2:
 
@@ -169,7 +180,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
 1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
-    ![Image of the faucet UI after requesting funds with a public key](./run-a-logos-blockchain-node/image1.png)
+    ![Image of the faucet UI after requesting funds with a public key](../.gitbook/assets/run-a-logos-blockchain-node-faucet.png)
 
 1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
@@ -189,11 +200,13 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
-> [!NOTE]
->
-> Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
->
-> Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
+{% hint style="info" %}
+
+Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
+
+Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
+
+{% endhint %}
 
 ## Troubleshooting the Logos Blockchain node
 

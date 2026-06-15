@@ -14,16 +14,13 @@ slug: start-a-logos-blockchain-node-via-the-app-ui
 
 #### Run a node that participates in consensus via a graphical interface.
 
-> [!NOTE]
->
-> - **Permissions**: Node operator
-> - **Product**: Logos Blockchain testnet v0.1
-
 The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blockchain node [using the CLI](./run-a-logos-blockchain-node-on-public-testnet-from-cli.md) or the graphical interface.
 
-> [!NOTE]
->
-> For testnet v0.1, you must manually edit the config file and restart the node to add new keys.
+{% hint style="info" %}
+
+For testnet v0.1, you must manually edit the config file and restart the node to add new keys.
+
+{% endhint %}
 
 Before you start, make sure you have the following:
 

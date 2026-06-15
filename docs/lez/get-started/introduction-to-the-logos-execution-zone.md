@@ -25,15 +25,15 @@ The Logos Execution Zone (LEZ) is the primary execution layer for applications b
 
 To achieve separation between public and private state while allowing for full programmability, the LEE uses a stateless program model. Under this model, all persistent data is stored in accounts, which can be either public or private. Public accounts are stored on-chain as a map between the account ID and its associated state (such as a token balance). A public account owner’s private key signs transactions and authorises executions, while the derived account ID is publicly visible on-chain.
 
-Private accounts, by contrast, are stored locally on the account-holder’s node, which publishes [commitments ↗](https://en.wikipedia.org/wiki/Commitment_scheme) to the account state onto the chain whenever the state is updated. The latest commitment binds the current account state to the chain without revealing its data, while nullifiers for previous commitments ensure that old commitments are not used for program execution. Private accounts are created with two associated key pairs.
+Private accounts, by contrast, are stored locally on the account-holder’s node, which publishes [commitments](https://en.wikipedia.org/wiki/Commitment_scheme) to the account state onto the chain whenever the state is updated. The latest commitment binds the current account state to the chain without revealing its data, while nullifiers for previous commitments ensure that old commitments are not used for program execution. Private accounts are created with two associated key pairs.
 
 -  Nullifier keys: The private nullifier key is used by the account owner to sign transactions and authorise executions. The public nullifier key is used as the account ID for verifying ownership.
 -  Viewing keys: The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
 
 {% hint style="info" %}
-## Note
 
 A program must obtain a private account’s nullifier public key, as well as its viewing public key, in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
+
 {% endhint %}
 
 When an LEE program executes, it modifies the accounts provided to it. These accounts could be either public or private, as an LEE program can be executed over both types of accounts. In either case, the program is executed using the same bytecode, the main difference being whether the user who runs a program will generate a zero knowledge proof. Executions modifying public accounts are executed transparently by LEZ validators like any standard RISC-V VM call. On the other hand, private executions involve the generation of zero knowledge proofs via Risc0, which are then verified by LEZ validators. 
@@ -53,7 +53,7 @@ As an example, the LEZ could be used to host private DeFi applications. With sup
 - Confidential Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
 
 {% hint style="success" %}
-## Tip
 
 Check out the tutorial on how to create your own [Automated Market Maker (AMM) trading pool](../../build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) program on the LEZ.
+
 {% endhint %}

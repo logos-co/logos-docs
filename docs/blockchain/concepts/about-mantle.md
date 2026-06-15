@@ -45,8 +45,6 @@ Logos channels ensure that their transactions will eventually be included on-cha
 
 ![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/about-mantle-two-channels.png)
 
-_A diagram illustrating how two channels are included in the Logos Blockchain._
-
 It is important to note that Logos channels can only be relied on if the sequencer is trusted to act honestly. In the absence of this assumption, users must wait for the true blockchain finality.
 
 ### Decentralized sequencing

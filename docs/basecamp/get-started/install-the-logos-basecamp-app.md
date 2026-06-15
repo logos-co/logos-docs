@@ -15,10 +15,10 @@ slug: install-the-logos-basecamp-app
 #### Get Logos Basecamp running on your desktop.
 
 {% hint style="info" %}
-## Note
 
 - **Permissions**: No special permissions required.
 - **Product**: Logos Basecamp.
+
 {% endhint %}
 
 Logos Basecamp is the desktop shell for the Logos platform. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
@@ -31,22 +31,22 @@ You can install Logos Basecamp in two ways:
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
 {% hint style="info" %}
-## Note
 
 To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
+
 {% endhint %}
 
 Before you start, make sure you have the following:
 
 - Internet access.
-- A supported OS: Linux x86_64 or aarch64 (tested on Ubuntu 22.04+), or macOS x86_64 or aarch64 (recent versions).
+- A supported OS: Linux x86_64 or aarch64 (tested on Ubuntu 22.04+), or macOS aarch64 (recent versions).
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
 - For the source build only: [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
 
 {% hint style="info" %}
-## Note
 
 Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports. 
+
 {% endhint %}
 
 ## Install from a prebuilt release
@@ -87,6 +87,7 @@ Internet access is required to download the binary or clone the repository, but 
     ```
 
 ## Troubleshooting the Basecamp app
+
 ### I see an `libEGL.so.1 / libOpenGL.so.0 missing` error when trying to launch the AppImage on Linux?
 Try running the following command:
 

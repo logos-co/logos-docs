@@ -25,7 +25,7 @@ The Blend Network adds a layer of anonymity for block proposers on top of [Crypt
 
 The main objective of the Logos Blend Network is to reduce the probability of linking a block proposal with its proposer, which also translates to increasing the difficulty of learning the proposer’s relative stake. At the same time, the Blend Protocol was designed to minimize bandwidth usage on the network compared to general-use mixnets, and to maximize decentralization by involving all nodes in the obfuscation process. By doing so, the Blend Network increases the cost of attacking the network to deanonymize a block proposal without straining the network with high bandwidth usage.
 
-The Blend Network supports the privacy of the Logos Blockchain as a whole, by providing additional anonymity to block proposers, protecting against [adversaries ↗](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The anonymity provided by the Blend Network also substantially improves the privacy guarantees of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
+The Blend Network supports the privacy of the Logos Blockchain as a whole, by providing additional anonymity to block proposers, protecting against [adversaries](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The anonymity provided by the Blend Network also substantially improves the privacy guarantees of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
 
 ## How the Blend Protocol works
 
@@ -37,8 +37,6 @@ While dedicated participation in the Blend Network is reserved for declared Blen
 2.  The sender sends the layered message to every Blend node with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
 
     ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../.gitbook/assets/about-the-blend-network-dissemination.png)
-
-    _The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity._
 
 3. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
 4. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
@@ -76,7 +74,7 @@ The SDP consists of three basic steps, each of which represents a type of messag
 - Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
 - Withdraw: A node withdraws its declaration and stops providing a service.
 
-To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as locators) based on the [Multiaddr scheme ↗](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
+To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as locators) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
 
 ### Service Reward Distribution Protocol
 

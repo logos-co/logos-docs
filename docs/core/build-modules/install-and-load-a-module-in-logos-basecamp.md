@@ -25,9 +25,9 @@ Before you start, make sure you have:
 - [An `.lgx` file](./build-and-run-a-logos-core-module.md) for local install.
 
 {% hint style="info" %}
-## Note
 
 The `.lgx` file's archive must contain a variant matching your platform. For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
+
 {% endhint %}
 
 ## What to expect
@@ -42,14 +42,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalog
 
-1. In the sidebar, click **Package Manager** <img src="./install-and-load-a-module-in-logos-basecamp/package-manager-icon.png" width="15" style="vertical-align: middle;">.
+1. In the sidebar, click **Package Manager** <img src="../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-package-manager-icon.png">.
 1. Browse and locate the module you want. You can click the module to view more details in the content area below.
 1. Select the module to install and click **Install**.
-1. At the bottom of the sidebar, click the **Modules** <img src="./install-and-load-a-module-in-logos-basecamp/modules-icon.png" width="20" style="vertical-align: middle;">. The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
+1. At the bottom of the sidebar, click the **Modules** <img src="../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png">. The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
 
 ### Install from a local `.lgx` file
 
-1. At the bottom of the sidebar, click **Modules** <img src="./install-and-load-a-module-in-logos-basecamp/modules-icon.png" width="20" style="vertical-align: middle;">.
+1. At the bottom of the sidebar, click **Modules** <img src="../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png">.
 1. Click **Install LGX Package**.
 1. Select the `.lgx` file and confirm.
 1. The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
@@ -58,14 +58,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
-1. At the bottom of the sidebar, click **Modules** <img src="./install-and-load-a-module-in-logos-basecamp/modules-icon.png" width="20" style="vertical-align: middle;">.
+1. At the bottom of the sidebar, click **Modules** <img src="../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png">.
 1. Find the module to load under **UI Modules** or **Core Modules** depending on its type.
 1. Click **Load** next to the module.
 
 {% hint style="info" %}
-## Note
 
 You can click **Unload** in the Modules view or close the tab of a module to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.
+
 {% endhint %}
 
 ## Troubleshooting

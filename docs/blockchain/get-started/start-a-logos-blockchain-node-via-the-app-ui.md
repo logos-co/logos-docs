@@ -29,9 +29,11 @@ Before you start, make sure you have the following:
 
 ## What to expect
 
-- You have a Logos Blockchain node running and connected to peers.
-- Your wallet holds testnet funds requested from the faucet.
-- Your node is eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
+By the end of this tutorial:
+
+- You will have a Logos Blockchain node running and connected to peers.
+- Your wallet will hold testnet funds requested from the faucet.
+- Your node will be eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
 
 ## Step 1: Run the Logos Blockchain app
 

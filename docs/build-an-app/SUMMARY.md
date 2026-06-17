@@ -1,8 +1,6 @@
 # Table of contents
 
-- [Readme](README.md)
-
-## Build Logos modules
+## Build modules
 
 - [Build and run a Logos core module](../core/build-modules/build-run-a-logos-core-module.md)
 - [Wrap a C library as a Logos core module](../core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)
@@ -13,3 +11,6 @@
 ## Tutorials
 
 - [Create and use an AMM liquidity pool on the Logos Execution Zone](tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

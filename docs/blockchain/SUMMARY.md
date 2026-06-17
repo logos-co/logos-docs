@@ -1,7 +1,5 @@
 # Table of contents
 
-- [Readme](README.md)
-
 ## Get started
 
 - [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
@@ -18,3 +16,5 @@
 ## Node app
 
 - [Build and run the Logos Blockchain UI App](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

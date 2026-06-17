@@ -29,7 +29,7 @@ Unlike Ethereum Layer 2s, Zones do not rely on a smart contract on the Layer 1 t
 
 ## Additional features
 
-The Zone model described above is very similar to that of conventional [Sovereign Rollups ↗](https://dba.xyz/rollups-are-l1s-l2s-a-k-a-how-rollups-actually-actually-actually-work/?ref=blog.nomos.tech). In fact, Zones can be built as pure sovereign rollups, with Bedrock only used for ordering and data availability guarantees. However, Bedrock also provides some optional functionality that somewhat increases the decentralization and interoperability of Zones without significantly compromising the benefits of the sovereign rollup design. 
+The Zone model described above is very similar to that of conventional [Sovereign Rollups](https://dba.xyz/rollups-are-l1s-l2s-a-k-a-how-rollups-actually-actually-actually-work/?ref=blog.nomos.tech). In fact, Zones can be built as pure sovereign rollups, with Bedrock only used for ordering and data availability guarantees. However, Bedrock also provides some optional functionality that somewhat increases the decentralization and interoperability of Zones without significantly compromising the benefits of the sovereign rollup design. 
 
 ### Decentralized sequencing
 
@@ -55,7 +55,7 @@ The [Logos Execution Zone (LEZ)](../../lez/get-started/introduction-to-the-logos
 
 ### Other uses
 
-In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK ↗](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
+In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
 
 - Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
     - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.

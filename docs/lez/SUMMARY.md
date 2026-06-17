@@ -1,7 +1,5 @@
 # Table of contents
 
-- [Readme](README.md)
-
 ## Get started
 
 - [Quickstart for the Logos Execution Zone wallet](get-started/quickstart-for-the-logos-execution-zone-wallet.md)
@@ -11,3 +9,6 @@
 
 - [Transfer native tokens on the Logos Execution Zone](transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md)
 - [Create and transfer custom tokens on the Logos Execution Zone](transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

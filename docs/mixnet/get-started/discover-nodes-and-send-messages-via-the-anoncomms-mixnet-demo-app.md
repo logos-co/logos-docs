@@ -1,8 +1,10 @@
 # Discover nodes and send messages via the AnonComms Mixnet demo app
 
-> [!IMPORTANT]
->
-> This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+{% hint style="warning" %}
+
+This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
+{% endhint %}
 
 ## A. Outcome + value (required)
 
@@ -16,7 +18,7 @@
 - **Applies to:**
   - [Chat UI App](https://github.com/logos-co/logos-chat-ui), branch: logos-testnet-demo
   - [Chat module](https://github.com/logos-co/logos-chat-module), branch: logos-testnet-demo
-  - [Waku Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
+  - [Logos Messaging (Waku) Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
 
 - **Runtime target:** Logos testnet v0.1.
 

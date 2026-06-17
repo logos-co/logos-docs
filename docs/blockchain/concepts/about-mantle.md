@@ -13,7 +13,7 @@ slug: about-mantle
 
 #### Understand how Mantle lets nodes and Zones interact with Bedrock.
 
-Mantle is a Bedrock component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](about-the-blend-network.md), as well as to enable [Zones](about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
+Mantle is a Bedrock component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](./about-the-blend-network.md), as well as to enable [Zones](./about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
 
 ## The basics
 
@@ -23,7 +23,7 @@ Mantle is a Bedrock component that serves as the operating system of Logos. It p
 
 ## Operations and transactions
 
-Mantle operations are the way Logos nodes interact with Bedrock Services, and allow Zones to interact with Bedrock. Operations are submitted to Mantle via transactions, with each transaction potentially including several operations. The cost of executing operations is paid for by gas fees, denoted in [notes](about-mantle.md#mantle-ledger). All Logos nodes re-execute Mantle operations independently to ensure that the ledger state is updated correctly.
+Mantle operations are the way Logos nodes interact with Bedrock Services, and allow Zones to interact with Bedrock. Operations are submitted to Mantle via transactions, with each transaction potentially including several operations. The cost of executing operations is paid for by gas fees, denoted in [notes](./about-mantle.md#mantle-ledger). All Logos nodes re-execute Mantle operations independently to ensure that the ledger state is updated correctly.
 
 Logos nodes use Mantle operations to indicate their participation in the Blend Network, with Mantle providing a locking mechanism used to incentivize correct behavior by participants. The operations supported by Mantle include transferring notes, staking notes for participation in the Blend Network, paying rewards to compensate participants, and unstaking notes.
 
@@ -44,8 +44,6 @@ Logos channels, or channels for short, are lightweight virtual chains overlaid o
 Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganize. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
 
 ![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/about-mantle-two-channels.png)
-
-_A diagram illustrating how two channels are included in the Logos Blockchain._
 
 It is important to note that Logos channels can only be relied on if the sequencer is trusted to act honestly. In the absence of this assumption, users must wait for the true blockchain finality.
 

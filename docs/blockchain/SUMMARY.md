@@ -1,13 +1,17 @@
 # Table of contents
 
-* [Readme](README.md)
-
 ## Get started
 
-* [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
-* [Introduction to the Logos Blockchain](get-started/introduction-to-the-logos-blockchain.md)
-* [About Bedrock](get-started/about-bedrock.md)
-* [About Cryptarchia](get-started/about-cryptarchia.md)
-* [About Mantle](get-started/about-mantle.md)
-* [About the Blend Network](get-started/about-the-blend-network.md)
-* [About Zones](get-started/about-zones.md)
+- [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
+- [Introduction to the Logos Blockchain](get-started/introduction-to-the-logos-blockchain.md)
+
+## Concepts
+
+- [About Bedrock](concepts/about-bedrock.md)
+- [About Cryptarchia](concepts/about-cryptarchia.md)
+- [About Mantle](concepts/about-mantle.md)
+- [About the Blend Network](concepts/about-the-blend-network.md)
+- [About Zones](concepts/about-zones.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

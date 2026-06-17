@@ -1,5 +1,5 @@
 ---
-title: Start a Logos Blockchain node via the app UI
+title: Build and run the Logos Blockchain UI App
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -7,14 +7,14 @@ steps_layout: sectioned
 authors: davidrusu, cheny0
 owner: logos
 doc_version: 1
-slug: start-a-logos-blockchain-node-via-the-app-ui
+slug: build-and-run-logos-blockchain-node-app-ui
 ---
 
-# Start a Logos Blockchain node via the app UI
+# Build and run the Logos Blockchain UI App
 
-#### Run a node that participates in consensus via a graphical interface.
+#### Run a node that participates in consensus via a standalone application.
 
-The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blockchain node [using the CLI](./run-a-logos-blockchain-node-on-public-testnet-from-cli.md) or the graphical interface.
+The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blockchain node [using the CLI](./run-a-logos-blockchain-node-on-public-testnet-from-cli.md) or a standalone application.
 
 {% hint style="info" %}
 
@@ -47,7 +47,7 @@ By the end of this tutorial:
 1. Build the standalone app:
 
     ```sh
-    nix build '.#app'
+    nix build
     ```
 
     - If flakes are not enabled globally, run `nix build --extra-experimental-features 'nix-command flakes' '.#app'` instead.
@@ -76,9 +76,11 @@ By the end of this tutorial:
 
 1. Go to the [devnet faucet](https://devnet.blockchain.logos.co/node/0/faucet), paste your key, and click **Request Funds**.
 
-    > **Note:**
-    >
-    > The transaction can take up to a minute to confirm and appear in your wallet.
+    {% hint style="info" %}
+    
+    The transaction can take up to a minute to confirm and appear in your wallet.
+
+    {% endhint %}
 
 ## Step 4: Verify the node is healthy
 
@@ -117,3 +119,7 @@ Once the node is funded and the UTXO has aged for approximately two hours, the n
 ### The wallet balance does not update after a faucet request
 
 Only one faucet transaction can be included per block, so transactions may be dropped during periods of high demand. Retry the request from the faucet.
+
+### `nix build` is taking a long time to build
+
+This is expected behaviour. The build could take over an hour in some cases.

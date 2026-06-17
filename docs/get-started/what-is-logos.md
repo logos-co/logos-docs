@@ -48,14 +48,7 @@ The sections below link to the guides and references for what you can build and 
 ## Useful links
 
 - [Logos repositories](https://github.com/logos-co/logos-docs/tree/main/docs/get-started/logos-ecosystem-repositories.md) — A comprehensive list of important public repositories in the Logos ecosystem.
-- Logos stack documentation
-    - [Logos Basecamp documentation](https://github.com/logos-co/logos-docs/blob/main/docs/basecamp/SUMMARY.md)
-    - [Logos Core documentation](https://github.com/logos-co/logos-docs/blob/main/docs/core/SUMMARY.md)
-    - [Logos Blockchain documentation](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/SUMMARY.md)
-    - [LEZ documentation](https://github.com/logos-co/logos-docs/blob/main/docs/lez/SUMMARY.md)
-    - [Logos Storage documentation](https://github.com/logos-co/logos-docs/blob/main/docs/storage/SUMMARY.md)
-    - [Logos Messaging documentation](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/SUMMARY.md)
-    - [Mixnet documentation](https://github.com/logos-co/logos-docs/blob/main/docs/mixnet/SUMMARY.md)
+- [Logos documentation GitHub repository](https://github.com/logos-co/logos-docs)
 - [Logos modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 - [Building Logos modules](https://github.com/logos-co/logos-tutorial) - How-to's on building modules and UIs to interact with them.
 - [Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.

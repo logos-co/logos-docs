@@ -32,7 +32,7 @@ You can install Logos Basecamp in two ways:
 
 {% hint style="info" %}
 
-To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/config`.
+To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf`.
 
 {% endhint %}
 
@@ -61,8 +61,8 @@ Internet access is required to download the binary or clone the repository, but 
 - On Linux, grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
-    chmod +x logos-basecamp-*.AppImage
-    ./logos-basecamp-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
+    chmod +x LogosBasecamp-Desktop-*.AppImage
+    ./LogosBasecamp-Desktop-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
     ```
 
 ## Build and run Logos Basecamp from source

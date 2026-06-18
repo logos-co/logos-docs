@@ -17,7 +17,7 @@ slug: initiate-native-token-transfers-on-lez-with-wallet-ui
 The wallet UI is a simple entrypoint for getting started on the LEZ. This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralized LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
 {% hint style="info" %}
-Recovery from mnemonic is not yet supported, and withdrawals to the L1 are not yet supported.
+Recovery from mnemonic and withdrawals to the L1 are not yet supported.
 {% endhint %}
 
 Before you begin, ensure you have:

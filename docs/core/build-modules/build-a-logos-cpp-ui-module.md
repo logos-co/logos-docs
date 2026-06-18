@@ -403,7 +403,7 @@ The backend plugin inherits three base classes:
 
 ### Step 7.5: Use the Logos Design System in your QML (Optional)
 
-The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-co/logos-standalone-app) host app, which already has `logos-design-system` on its import path. Use its themed components directly to automatically give your module a polished, consistent look.
+The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-co/logos-standalone-app) host app, which already has [`logos-design-system`](https://github.com/logos-co/logos-design-system) on its import path. Use its themed components directly to automatically give your module a polished, consistent look.
 
 1. In `src/qml/Main.qml`, add the necessary imports and replace raw `Button` and `TextField` elements with design system equivalents:
 
@@ -439,10 +439,11 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
    }
    ```
 
-1. Explore available components by running the design system storybook:
+1. Explore available components by running the design system storybook in the logos-design-system repo:
 
    ```bash
-   cd repos/logos-design-system && nix run
+   git clone https://github.com/logos-co/logos-design-system.git
+   cd logos-design-system && nix run
    ```
 
    The sidebar splits components into:
@@ -535,15 +536,6 @@ To enable live updates to the UI, set `DEV_QML_PATH` to the directory that conta
    ```bash
    DEV_QML_PATH=$PWD/src/qml nix run .
    ```
-
-1. For the fastest iteration loop, build once and invoke the resulting binary directly, skipping Nix on every subsequent run:
-
-   ```bash
-   nix build .
-   DEV_QML_PATH=$PWD/src/qml ./result/bin/run-logos-standalone-ui
-   ```
-
-   Adjust the binary name to whatever `ls result/bin/` shows on your build.
 
 ## Step 11: Add UI integration tests (Optional)
 

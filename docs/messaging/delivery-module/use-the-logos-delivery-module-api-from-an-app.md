@@ -14,7 +14,7 @@ slug: use-logos-delivery-module-api-from-app
 
 #### Get started integrating Logos messaging into a C++ module on Testnet v0.1.
 
-This procedure covers building a Logos module that calls the Logos Delivery API to subscribe to content topics, send messages, and react to delivery events on the Logos messaging network. It gives application developers a working patter for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo).
+This procedure covers building a Logos module that calls the Logos Delivery API to subscribe to content topics, send messages, and react to delivery events on the Logos messaging network. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo).
 
 The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.1.1`](https://github.com/logos-co/logos-delivery-module/tree/0c346c0c2ab2404c11a62cd6c385e806e8465434)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 

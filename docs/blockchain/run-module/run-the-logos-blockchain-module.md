@@ -78,7 +78,7 @@ Start `logoscore` in daemon mode and load the blockchain module.
 
 Generate a user configuration, fetch deployment settings, and start the module.
 
-1. Generate a new user configuration file with your initial peer list.
+1. Generate a new user configuration file (`user_config.yaml`) with your initial peer list.
 
    ```bash
    ./logos/bin/logoscore call liblogos_blockchain_module generate_user_config '{

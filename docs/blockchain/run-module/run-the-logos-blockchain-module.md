@@ -14,7 +14,7 @@ slug: run-the-logos-blockchain-module
 
 #### Get started with the Logos Blockchain module using the `logoscore` CLI.
 
-This procedure explains how to download, install, and run the Logos Blockchain module using the Logos Core CLI runtime ([`logoscore`]((https://github.com/logos-co/logos-logoscore-cli))) and the Logos package manager ([`lgpm`](https://github.com/logos-co/logos-package-manager)). It applies to node operators who want to connect to a Logos blockchain environment, such as devnet, from the command line. By the end, your node will be loaded with the blockchain module, configured with peers and deployment settings, and running.
+This procedure explains how to download, install, and run the Logos Blockchain module using the Logos Core CLI runtime ([`logoscore`](https://github.com/logos-co/logos-logoscore-cli)) and the Logos package manager ([`lgpm`](https://github.com/logos-co/logos-package-manager)). It applies to node operators who want to connect to a Logos blockchain environment, such as devnet, from the command line. By the end, your node will be loaded with the blockchain module, configured with peers and deployment settings, and running.
 
 You need:
 
@@ -100,11 +100,11 @@ Generate a user configuration, fetch deployment settings, and start the module.
 1. Start the blockchain module using your user and deployment configuration files.
 
    ```bash
-   logoscore call liblogos_blockchain_module start user_config.yaml deployment.yaml
+   ./logos/bin/logoscore call liblogos_blockchain_module start user_config.yaml deployment.yaml
    ```
 
 1. Check whether the chain is still bootstrapping or already online.
 
    ```bash
-   logoscore call liblogos_blockchain_module get_cryptarchia_info
+   ./logos/bin/logoscore call liblogos_blockchain_module get_cryptarchia_info
    ```

@@ -188,7 +188,7 @@ Create the C library that your module will wrap. Place the header and implementa
    Each symbol should be marked with `T` (text/code section). Addresses will vary:
 
    ```
-   0000000000001139 T calc_add
+   0000000000001139 T calc_add (or _calc_add on macOS)
    0000000000001179 T calc_factorial
    00000000000011f5 T calc_fibonacci
    0000000000001159 T calc_multiply
@@ -316,7 +316,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
        # libfoo-src = {
        # url = "github:example/libfoo";
        # flake = false;
-    };
+       # };
      };
 
      outputs = inputs@{ logos-module-builder, ... }:
@@ -552,14 +552,6 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    ```
    Plugin Methods:
    ===============
-
-   void eventResponse(QString eventName, QVariantList args)
-     Signature: eventResponse(QString,QVariantList)
-     Invokable: no
-
-   void initLogos(LogosAPI* api)
-     Signature: initLogos(LogosAPI*)
-     Invokable: yes
 
    int add(int a, int b)
      Signature: add(int,int)

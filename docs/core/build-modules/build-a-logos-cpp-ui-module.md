@@ -455,7 +455,7 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
    - `Theme.typography.*` — `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
    - `Logos.Icons.LogosIcons.*` — `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
 
-## Step 9: Configure the Nix flake
+## Step 8: Configure the Nix flake
 
 The template already wires everything up. Update the description and point `calc_module` at your dependency.
 
@@ -483,7 +483,7 @@ The template already wires everything up. Update the description and point `calc
 
    To point at a published repo instead of a local path, change the `calc_module.url` input to a `github:` URL, for example `calc_module.url = "github:<your-org>/<your-calc-module>";`.
 
-## Step 10: Build and run the module
+## Step 9: Build and run the module
 
 Before building, confirm the `calc_module` shared library is present from [Part 1](wrap-a-c-library-as-a-logos-core-module.md).
 
@@ -526,7 +526,7 @@ Before building, confirm the `calc_module` shared library is present from [Part 
 
    ![Result of 3 + 5 shows 8](build-a-logos-cpp-ui-module/calc-cpp-result.png)
 
-## Step 11: Update view with live reloading (Optional)
+## Step 10: Update view with live reloading (Optional)
 
 To enable live updates to the UI, set `DEV_QML_PATH` to the directory that contains your view entry's basename. This tutorial sets `"view": "qml/Main.qml"` in `metadata.json`, so the directory must contain `Main.qml` (here: `src/qml/`).
 
@@ -545,7 +545,7 @@ To enable live updates to the UI, set `DEV_QML_PATH` to the directory that conta
 
    Adjust the binary name to whatever `ls result/bin/` shows on your build.
 
-## Step 12: Add UI integration tests (Optional)
+## Step 11: Add UI integration tests (Optional)
 
 Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logos-qt-mcp) test framework.
 

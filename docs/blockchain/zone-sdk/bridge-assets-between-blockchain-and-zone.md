@@ -46,9 +46,10 @@ A channel is created automatically the first time an operation references a prev
 
    ```rust
    // Generate Ed25519 key pair
-   let mut key_bytes = [0u8; ED25519_SECRET_KEY_SIZE];rand::RngCore::fill_bytes(&mut rand::thread_rng(), &mut key_bytes);
-   fs::write(your_file_path, key_bytes).expect("failed to write key file");
-   let signing_key = Ed25519Key::from_bytes(&key_bytes)
+   let mut key_bytes = [0u8; ED25519_SECRET_KEY_SIZE];
+   rand::RngCore::fill_bytes(&mut rand::thread_rng(), &mut key_bytes);
+   std::fs::write(&your_key_file_path, key_bytes).expect("failed to write key file");
+   let signing_key = Ed25519Key::from_bytes(&key_bytes);
 
    // Derive channel ID
    let channel_id = ChannelId::from(signing_key.public_key().to_bytes());
@@ -116,7 +117,7 @@ A deposit happens when a Bedrock user submits a transaction with a [`ChannelDepo
 
    `Event::BlocksProcessed` fires once per ingested block, whether live or backfilled, and only carries finalized items at or below LIB, so deposits surfaced here cannot be re-orged off the chain.
 
-1. Credit the user inside the Zone according to the Zone's interal state transition function rules.
+1. Credit the user inside the Zone according to the Zone's internal state transition function rules.
 
 ## Step 3: Submit a withdrawal
 
@@ -259,7 +260,7 @@ When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal al
 
 1. Match the finalized transaction by `tx_hash` once it appears in `Event::BlocksProcessed.finalized`, the same way as in the single-signature flow in Option 1.
 
-## Step 5: Recover from a reorg
+## Step 4: Recover from a reorg
 
 A reorg can orphan the parent inscription of a withdrawal submitted via `publish_atomic_withdraw`, which invalidates the original signed transaction.
 

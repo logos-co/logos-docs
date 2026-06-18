@@ -2,9 +2,9 @@
 title: Set up and use the Logos Storage UI
 doc_type: procedure
 product: storage
-topics: []
+topics: storage
 steps_layout: sectioned
-authors:
+authors: gmega, kashepavadan
 owner: logos
 doc_version: 1
 slug: set-up-and-use-logos-storage-ui
@@ -43,7 +43,10 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
 
 1. Clone the [`logos-storage-ui`](https://github.com/logos-co/logos-storage-ui) repository and enter the project directory:
 
-   
+   ```bash
+   git clone --recurse-submodules https://github.com/logos-co/logos-storage-ui.git
+   cd logos-storage-ui
+   ```
 
 1. Run the build command:
 
@@ -92,7 +95,6 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
      ```bash
      nix run --override-input storage_module/logos-storage git+file:///somewhere/logos-storage-nim?submodules=1
      ```
-   - To run from `result/` directly after `nix build`, use `./result/bin/logos-storage-ui-app`.
 
 ## Step 2: Configure network connectivity
 

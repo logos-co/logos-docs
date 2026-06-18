@@ -99,7 +99,7 @@ A deposit happens when a Bedrock user submits a transaction with a [`ChannelDepo
    use lb_zone_sdk::sequencer::{Event, FinalizedOp};
 
    if let Event::BlocksProcessed { finalized, .. } = event {
-       // Iterate every finalized transaction in this batch of blocks.
+       // Iterate over every finalized transaction in this batch of blocks.
        for tx in finalized {
            for op in tx.ops {
                if let FinalizedOp::Deposit(deposit) = op {
@@ -257,7 +257,7 @@ When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal al
 
    Keep the result and use the returned `tx_hash` to identify the bundle. Unlike the single-sig flow, the SDK treats the caller-built transaction as opaque, so `PublishResult.tx` is `PendingTx::Inscription(InscriptionInfo)` regardless of the underlying ops.
 
-1. Match the finalized transaction by `tx_hash` once it appears in `Event::BlocksProcessed.finalized`, and iterate both operations the same way as in the single-signature flow in Option 1.
+1. Match the finalized transaction by `tx_hash` once it appears in `Event::BlocksProcessed.finalized`, the same way as in the single-signature flow in Option 1.
 
 ## Step 5: Recover from a reorg
 

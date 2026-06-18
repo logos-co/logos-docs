@@ -41,7 +41,9 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
 
 {% endhint %} 
 
-1. Clone the repository and enter the project directory.
+1. Clone the [`logos-storage-ui`](https://github.com/logos-co/logos-storage-ui) repository and enter the project directory:
+
+   
 
 1. Run the build command:
 
@@ -68,17 +70,9 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
 
    ```
    result/
-   ├── bin/
-   │   ├── logos-storage-ui-app  # Standalone Qt application
-   │   ├── logos_host           # Logos host executable (for plugins)
-   │   └── logoscore            # Logos core executable
-   ├── lib/
-   │   ├── liblogos_core.dylib  # Logos core library
-   │   └── liblogos_sdk.dylib   # Logos SDK library
-   ├── modules/
-   │   ├── capability_module_plugin.dylib
-   │   └── storage_module_plugin.dylib
-   └── storage_ui.dylib            # Qt plugin (loaded by app)
+   └── lib/
+       ├── storage_ui_plugin.dylib           # Qt plugin (loaded by the app)
+       └── storage_ui_replica_factory.dylib
    ```
 
 1. Enter development shell (Optional)
@@ -86,6 +80,7 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
    ```bash
    # Enter development shell with all dependencies
    nix develop
+   
 
 1. Launch the application:
 

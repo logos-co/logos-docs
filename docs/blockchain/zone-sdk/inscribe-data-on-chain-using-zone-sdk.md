@@ -135,9 +135,9 @@ It is important for your sequencer to track the Zone state on the blockchain and
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
 - `Ready` — the sequencer is caught up and ready to accept updates.
-- `Published` — when an inscription is published, provides the updated channel checkpoint and a key to distinguish identical payloads published separately.
-- `TxsFinalized` — transaction hashes and inscriptions that have been finalised on-chain.
-- `ChannelUpdate` — provides inscriptions published by other sequencers for this Zone ("adopted") and inscriptions that are no longer on the canonical chain ("orphaned").
+- `BlocksProcessed` — a new block is seen by the sequencer. Includes the latest `checkpoint`, the list of `finalized` transactions, and a `channel_update` list of inscriptions published by other sequencers for this Zone ("adopted") and inscriptions that are no longer on the canonical chain ("orphaned").
+- `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
+- `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
 1. In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint and channel view:
 
@@ -333,6 +333,35 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
            }
        }
    }
+   ```
+
+1. Add a function to handle sequencer events and execute whichever of the above handlers is necessary for the current event:
+
+   ```rust
+   // Handle sequencer events
+   //
+   // event: current sequencer event
+   fn handle_event(
+    event: Event,
+    state: &mut InMemoryZoneState,
+    sequencer: &mut ZoneSequencer<NodeHttpClient>,
+    ready_tx: &mut Option<tokio::sync::oneshot::Sender<()>>,) {
+        match event {
+            Event::Ready => handle_ready(state, ready_tx),
+            Event::BlocksProcessed {
+                checkpoint,
+                channel_update,
+                finalized,
+            } => {
+                apply_channel_update(channel_update, state, sequencer);
+                if !finalized.is_empty() {
+                    apply_finalized(&finalized, state);
+                }
+                state.save_checkpoint(checkpoint);
+            }
+            Event::MempoolPending(_) | Event::TurnNotification { .. } => {}
+        }
+    }
    ```
 
 1. Add the processing loop to `run()` to watch for events:

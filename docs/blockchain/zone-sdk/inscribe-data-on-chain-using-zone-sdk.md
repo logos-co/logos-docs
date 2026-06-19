@@ -406,7 +406,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
 ## Step 4: Publish data
 
-Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handler's `publish` function. Once the transaction is posted to the network, this function returns a struct consisting of the inscription (message) ID and the current checkpoint.
+Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handler's `publish` function. Once the transaction is submitted to the Zone SDK, this function returns a struct consisting of the inscription (message) ID and the current checkpoint.
 
 1. Add the following code to process user input text in the `run` function in `src/lib.rs`:
 

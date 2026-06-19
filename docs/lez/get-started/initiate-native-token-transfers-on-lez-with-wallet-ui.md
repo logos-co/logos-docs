@@ -32,7 +32,7 @@ Before you begin, ensure you have:
 
 ## Set up and sync the wallet UI
 
-This task clones the wallet UI, starts it, and syncs it with the LEZ testnet.
+	git clone https://github.com/logos-blockchain/logos-execution-zone-wallet-ui.git
 
 1. Clone the repository and start the wallet UI.
 

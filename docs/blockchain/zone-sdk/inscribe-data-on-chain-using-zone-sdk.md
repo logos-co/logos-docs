@@ -382,13 +382,9 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
                // Watch for events
                event = sequencer.next_event() => {
-                   if let Some(event) = event {
-
-                       // Update channel info
-                       state.set_channel_view(view_rx.borrow().clone());
-                       handle_event(event, &mut state, &mut sequencer, &mut ready_tx);
-                   }
-               }
+                   state.set_channel_view(view_rx.borrow().clone());
+                   handle_event(event, &mut state, &mut sequencer, &mut ready_tx);
+                }
 
                ...
 

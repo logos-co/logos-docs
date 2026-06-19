@@ -22,7 +22,14 @@ Recovery from mnemonic and withdrawals to the L1 are not yet supported.
 
 Before you begin, ensure you have:
 
-- Nix
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+  ```bash
+  mkdir -p ~/.config/nix
+  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+  ```
+
+  Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
 
 ## What to expect
 
@@ -32,12 +39,12 @@ Before you begin, ensure you have:
 
 ## Set up and sync the wallet UI
 
-	git clone https://github.com/logos-blockchain/logos-execution-zone-wallet-ui.git
-	nix run
+This task clones the wallet UI, starts it, and syncs it with the LEZ testnet.
+
 1. Clone the repository and start the wallet UI.
 
 	```bash
-	git clone git@github.com:logos-blockchain/logos-execution-zone-wallet-ui.git
+	git clone https://github.com/logos-blockchain/logos-execution-zone-wallet-ui.git
 	cd logos-execution-zone-wallet-ui
 	nix run
 	```

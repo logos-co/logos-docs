@@ -46,7 +46,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 
 ### Option A — Run in Logos Basecamp
 
-1. Download and [install](../../basecamp/install-the-logos-basecamp-app.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
+1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 1. In the left bar, select **Package Manager**.
 
    ![Logos Basecamp screenshot](../.gitbook/assets/basecamp-package-manager.png)

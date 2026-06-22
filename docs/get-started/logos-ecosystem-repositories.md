@@ -28,11 +28,11 @@ These repositories explain what Logos is building and how to take part, with no 
  
 ## Logos Basecamp
 
-Logos Basecamp is the desktop shell for the Logos platform.
+Logos Basecamp is the desktop shell for Logos.
 
 | Repository | Description |
 |:---|:---|
-| [logos-basecamp](https://github.com/logos-co/logos-basecamp) | The Logos Basecamp app. |
+| [logos-basecamp](https://github.com/logos-co/logos-basecamp) | The Logos Basecamp repository. |
 
 ## Logos Core
  

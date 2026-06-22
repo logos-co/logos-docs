@@ -44,8 +44,7 @@ Download the module release for your platform, then install it with `lgpm`.
 1. Download the Logos Blockchain module release for your platform from the [releases page](https://github.com/logos-blockchain/logos-blockchain-module/releases) (use `darwin` for macOS).
 
    ```bash
-   # macOS
-   curl -L -O https://github.com/logos-blockchain/logos-blockchain-module/releases/download/v0.0.1/logos-module-aarch64-darwin.lgx
+   curl -L -O https://github.com/logos-blockchain/logos-blockchain-module/releases/download/v0.0.1/logos-module-<YOUR_OS_ARCHITECTURE>.lgx
    ```
 
 1. Install the downloaded module using `lgpm`, pointing it to your modules directory.
@@ -54,8 +53,7 @@ Download the module release for your platform, then install it with `lgpm`.
    # Create the modules folder if you don't have it already
    mkdir -p modules
 
-   # macOS
-   ./lgpm/bin/lgpm --modules-dir ./modules install --file logos-module-aarch64-darwin.lgx
+   ./lgpm/bin/lgpm --modules-dir ./modules install --file logos-module-<YOUR_OS_ARCHITECTURE>.lgx
    ```
 
 ## Step 3: Load the module into logoscore

@@ -16,5 +16,9 @@
 ## Node app
 
 - [Build and run the Logos Blockchain UI App](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+## Zone SDK
+
+- [Bridge assets between Logos Blockchain and a Zone](./zone-sdk/bridge-assets-between-blockchain-and-zone.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

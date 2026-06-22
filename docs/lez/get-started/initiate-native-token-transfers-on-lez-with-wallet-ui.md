@@ -49,6 +49,10 @@ This task clones the wallet UI, starts it, and syncs it with the LEZ testnet.
 	nix run
 	```
 
+	{% hint style="info" %}
+	On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.
+	{% endhint %}
+
 1. In the setup screen, enter paths for the config file and the storage file.
 
 	- The wallet UI creates these files at the paths you enter if they don't already exist.

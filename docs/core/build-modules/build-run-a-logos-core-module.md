@@ -12,7 +12,7 @@ slug: build-run-a-logos-core-module
 
 # Build and run a Logos core module
 
-#### Scaffold, build, package, and test a core module on the Logos platform.
+#### Scaffold, build, package, and test a core module on Logos.
 
 {% hint style="info" %}
 
@@ -21,7 +21,7 @@ slug: build-run-a-logos-core-module
 
 {% endhint %}
 
-The Logos platform is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
+Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
 
 Logos core modules are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
@@ -410,7 +410,7 @@ Check out [Logos CLI Reference](./logos-cli-reference.md) for more details on av
 
 ### Run with `logos-basecamp`
 
-Logos Basecamp is a desktop application that provides a graphical interface for managing and running modules. Core modules run as background services in `logos-basecamp`. Other UI modules can call them through `LogosAPI` or the `logos.callModule()` bridge once they are installed.
+Logos Basecamp is a desktop shell that provides a graphical interface for managing and running modules. Core modules run as background services in `logos-basecamp`. Other UI modules can call them through `LogosAPI` or the `logos.callModule()` bridge once they are installed.
 
 {% hint style="warning" %}
 

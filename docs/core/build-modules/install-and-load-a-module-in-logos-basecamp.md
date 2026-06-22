@@ -20,7 +20,7 @@ There are two types of modules in Logos Basecamp. Core modules are the headless 
 
 Before you start, make sure you have:
 
-- Logos Basecamp [installed and running](./install-the-logos-basecamp-app.md).
+- Logos Basecamp [installed and running](./install-logos-basecamp.md).
 - Internet access for online catalog install.
 - [An `.lgx` file](./build-and-run-a-logos-core-module.md) for local install.
 

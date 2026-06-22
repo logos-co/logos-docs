@@ -1,5 +1,5 @@
 ---
-title: Install the Logos Basecamp app
+title: Install Logos Basecamp
 doc_type: procedure
 product: core
 topics: core
@@ -7,10 +7,10 @@ steps_layout: flat
 authors: iurimatias, cheny0
 owner: logos
 doc_version: 1
-slug: install-the-logos-basecamp-app
+slug: install-logos-basecamp
 ---
 
-# Install the Logos Basecamp app
+# Install Logos Basecamp
 
 #### Get Logos Basecamp running on your desktop.
 
@@ -21,7 +21,7 @@ slug: install-the-logos-basecamp-app
 
 {% endhint %}
 
-Logos Basecamp is the desktop shell for the Logos platform. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
+Logos Basecamp is the desktop shell for Logos. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
 
@@ -55,9 +55,9 @@ Internet access is required to download the binary or clone the repository, but 
     - Linux: the `AppImage` files
     - macOS: the `.dmg` files
 
-1. Depending on your OS, install and launch the app as follows:
+1. Depending on your OS, install and launch Basecamp as follows:
 
-- On macOS, drag the `.dmg` file into `/Applications`. Then launch the app from `/Applications`.
+- On macOS, drag the `.dmg` file into `/Applications`. Then launch Basecamp from `/Applications`.
 - On Linux, grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
@@ -74,7 +74,7 @@ Internet access is required to download the binary or clone the repository, but 
     cd logos-basecamp
     ```
 
-1. Build the app with the Nix flake:
+1. Build Basecamp with Nix flake:
 
     ```bash
     nix build '.#app'
@@ -86,7 +86,7 @@ Internet access is required to download the binary or clone the repository, but 
     ./result/bin/LogosBasecamp
     ```
 
-## Troubleshooting the Basecamp app
+## Troubleshooting Basecamp
 
 ### I see an `libEGL.so.1 / libOpenGL.so.0 missing` error when trying to launch the AppImage on Linux?
 Try running the following command:

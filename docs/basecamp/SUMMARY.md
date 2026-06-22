@@ -2,7 +2,7 @@
 
 ## Get started
 
-- [Install the Logos Basecamp app](get-started/install-the-logos-basecamp-app.md)
+- [Install Logos Basecamp](get-started/install-logos-basecamp.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

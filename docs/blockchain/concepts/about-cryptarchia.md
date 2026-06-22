@@ -13,7 +13,7 @@ slug: about-cryptarchia
 
 #### Understand how Cryptarchia reaches consensus while keeping block proposers private.
 
-Cryptarchia, the Logos Blockchain's consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a Private Proof of Stake (PPoS) consensus mechanism, ensuring that nodes cannot be linked to blocks they propose. PPoS also ensures that the proposer's relative stake cannot be deduced based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralization.
+Cryptarchia, the Logos Blockchain's consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a Private Proof of Stake (PPoS) consensus mechanism, ensuring that nodes cannot be linked to blocks they propose. PPoS also ensures that the proposer's relative stake cannot be deduced based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralisation.
 
 ## The basics
 
@@ -25,9 +25,9 @@ Cryptarchia, the Logos Blockchain's consensus protocol, ensures that the entire 
 
 ### Resilience via liveness
 
-In designing a resilient consensus protocol to use for the Logos Blockchain, it was necessary to decide whether to prioritize [safety or liveness](https://eprint.iacr.org/2016/889.pdf) in the event of a catastrophic failure. If safety is deemed a priority, the chain can never fork in order to ensure that the blockchain state is always agreed-upon, even if activity has to halt while the network recovers. Protocols that provide such safety guarantees generally rely on quorum-based consensus, which requires a permissioned set of participants with extensive communication and a low fault tolerance. These requirements introduce high barriers to entry that are antithetical to the Logos vision.
+In designing a resilient consensus protocol to use for the Logos Blockchain, it was necessary to decide whether to prioritise [safety or liveness](https://eprint.iacr.org/2016/889.pdf) in the event of a catastrophic failure. If safety is deemed a priority, the chain can never fork in order to ensure that the blockchain state is always agreed-upon, even if activity has to halt while the network recovers. Protocols that provide such safety guarantees generally rely on quorum-based consensus, which requires a permissioned set of participants with extensive communication and a low fault tolerance. These requirements introduce high barriers to entry that are antithetical to the Logos vision.
 
-Prioritizing liveness means that block production will continue during a failure, but competing forks will be created before the network settles on one honest chain. These protocols involve participants systematically making local choices about which fork to follow, with no need for a permissioned network or for extensive communication. Accordingly, Cryptarchia was designed to prioritize liveness during a failure.
+Prioritising liveness means that block production will continue during a failure, but competing forks will be created before the network settles on one honest chain. These protocols involve participants systematically making local choices about which fork to follow, with no need for a permissioned network or for extensive communication. Accordingly, Cryptarchia was designed to prioritise liveness during a failure.
 
 ### Proposer privacy
 
@@ -37,7 +37,7 @@ For full proposer privacy, a secret leadership election is not enough: once a le
 
 ### Low barrier to entry
 
-In order to achieve maximum decentralization, Cryptarchia was designed to have low barriers to entry to encourage a greater circle of contributors. Participating as a Cryptarchia validator node is as simple as having the Logos node application run in the background on a laptop, with a “set it and forget it” approach to maintenance. This design makes it easy to contribute to the security and continued operation of the Logos Blockchain.
+In order to achieve maximum decentralisation, Cryptarchia was designed to have low barriers to entry to encourage a greater circle of contributors. Participating as a Cryptarchia validator node is as simple as having the Logos node application run in the background on a laptop, with a “set it and forget it” approach to maintenance. This design makes it easy to contribute to the security and continued operation of the Logos Blockchain.
 
 ## How Cryptarchia works
 
@@ -49,7 +49,7 @@ Following the [Ouroboros](https://www.drwx.org/papers/crypsinous.pdf) model, Cry
 
 ### Fork choice rule
 
-As mentioned earlier, Cryptarchia’s preference for liveness produces competing forks fairly often - even under honest behavior. The way Logos nodes decide on which fork represents the correct, or canonical, blockchain depends on how long that node has been offline. The node will compare parallel chains it sees on the network to its own preferred chain, switching to the observed chain if it is selected by the fork choice rule.
+As mentioned earlier, Cryptarchia’s preference for liveness produces competing forks fairly often - even under honest behaviour. The way Logos nodes decide on which fork represents the correct, or canonical, blockchain depends on how long that node has been offline. The node will compare parallel chains it sees on the network to its own preferred chain, switching to the observed chain if it is selected by the fork choice rule.
 
 When a Logos node is connected to the broader network and sees new honest blocks relatively quickly, it will use the online fork choice rule to select the honest chain. Under this rule, the node will select the chain with the most blocks - the “longest chain” - as long as it diverges from the node’s chain less than $k$ blocks ago. This $k$ parameter, known as the security parameter, describes how many blocks deep a transaction needs to be before it is considered immutable.
 
@@ -65,4 +65,4 @@ Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each n
 
 Each slot presents an opportunity for a block proposer to add a block to the chain, so long as they win the leadership election for that slot. The leadership election is run locally by each individual eligible note, without any public leadership schedule. Whether a particular note wins the leadership election for a given slot is determined by comparing a random “ticket” value to a threshold derived from the note’s relative stake. Due to the privacy properties of Cryptarchia, this relative stake relies on an estimate of the total participating stake derived from the block production rate.
 
-If the ticket, generated by hashing the lottery randomness together with the note data, is less than the threshold value, that note is eligible to serve as a leader for that slot. The owner of a note that won an election can submit a block proposal, which will contain a zero-knowledge Proof of Leadership (PoL). Most slots will have no leader in order to allow parties to synchronize, while some will have one or even several leaders. A [key deletion protocol](https://www.drwx.org/papers/crypsinous.pdf) used in the maintenance of the note’s secret key ensures that an adaptive adversary who corrupts an honest participant will not be able to generate proofs of leadership for past slots.
+If the ticket, generated by hashing the lottery randomness together with the note data, is less than the threshold value, that note is eligible to serve as a leader for that slot. The owner of a note that won an election can submit a block proposal, which will contain a zero-knowledge Proof of Leadership (PoL). Most slots will have no leader in order to allow parties to synchronise, while some will have one or even several leaders. A [key deletion protocol](https://www.drwx.org/papers/crypsinous.pdf) used in the maintenance of the note’s secret key ensures that an adaptive adversary who corrupts an honest participant will not be able to generate proofs of leadership for past slots.

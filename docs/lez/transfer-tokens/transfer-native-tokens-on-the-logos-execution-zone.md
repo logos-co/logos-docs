@@ -34,7 +34,7 @@ On LEZ, public and private accounts differ in where their state lives and how tr
 - Public accounts
     - Live on-chain.
     - Identified by a 32-byte account ID derived from the public key
-    - The private key signs transactions and authorizes program executions. 
+    - The private key signs transactions and authorises program executions. 
 
 - Transfers between public accounts
     - Validators execute the authenticated-transfers program transparently.
@@ -44,7 +44,7 @@ On LEZ, public and private accounts differ in where their state lives and how tr
     - Structurally identical to public accounts, but their values are stored off-chain. 
     - Use two keypairs: nullifier keys for privacy-preserving executions and viewing keys for encrypting and decrypting values. 
     - The private account ID is derived from the nullifier public key. 
-    - Anyone can initialize private accounts, but once initialized they can only be modified by the owner's keys.
+    - Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
 
 - Transfers involving any private account
     - The execution is privacy-preserving. 
@@ -65,7 +65,7 @@ Before you begin, ensure that you have the following:
 ## What to expect
 
 - The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
-- You can initialize accounts by sending tokens to them. The authenticated-transfers program claims any uninitialized account used in a transfer.
+- You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
 - You can transfer native tokens to public accounts and verify balances on-chain.
 - Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.
 
@@ -99,13 +99,13 @@ Your account keys and data are stored in the local file `$HOME/.nssa/wallet/stor
     wallet account ls
     ```
 
-3. Initialize the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialize.
+3. Initialise the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialise.
 
     ```sh
     wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-    For example, to initialize the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS`, you run:
+    For example, to initialise the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS`, you run:
         
     ```sh
     wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
@@ -113,7 +113,7 @@ Your account keys and data are stored in the local file `$HOME/.nssa/wallet/stor
 
 {% hint style="info" %}
 
-New accounts are created in an uninitialized state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialized account. After initialization, only the owning program can modify the account.
+New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
 
 The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
 
@@ -162,12 +162,12 @@ Transfers involving private accounts may take a few minutes because the wallet n
 
 With the `npk` and `vpk` of the recipient account, you can transfer native tokens across the following account types:
 
-- Public → uninitialized private (someone else's)
-- Private → uninitialized private (someone else's)
+- Public → uninitialised private (someone else's)
+- Private → uninitialised private (someone else's)
 
 {% hint style="info" %}
 
-Currently, only uninitialized private accounts can be modified without authorization. Sending funds to initialized private accounts is not possible because only the owner can modify them.
+Currently, only uninitialised private accounts can be modified without authorisation. Sending funds to initialised private accounts is not possible because only the owner can modify them.
 
 {% endhint %}
 
@@ -254,7 +254,7 @@ You can also use the `wallet account ls -l` command to check the balances of all
 
 ### Symptom 
 
-The wallet command panics and fails during proof generation with an assertion error when you try to send native tokens to an initialized private account.
+The wallet command panics and fails during proof generation with an assertion error when you try to send native tokens to an initialised private account.
 
 The error message looks like this:
 
@@ -269,4 +269,4 @@ called `Result::unwrap()` on an `Err` value: CircuitProvingError("Guest panicked
 
 ### Explanation
 
-The transfer fails because the privacy-preserving circuit expects the recipient private account to be uninitialized (default state), but an initialized private account already contains non-default values and can only be modified by its owner.
+The transfer fails because the privacy-preserving circuit expects the recipient private account to be uninitialised (default state), but an initialised private account already contains non-default values and can only be modified by its owner.

@@ -25,7 +25,12 @@ For testnet v0.1, you must manually edit the config file and restart the node to
 Before you start, make sure you have the following:
 
 - A supported OS: Linux x86_64 or macOS
-- [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+  ```bash
+  mkdir -p ~/.config/nix
+  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+  ```
 
 ## What to expect
 
@@ -51,6 +56,10 @@ By the end of this tutorial:
     ```
 
     - If flakes are not enabled globally, run `nix run --extra-experimental-features 'nix-command flakes' .` instead.
+
+    {% hint style="info" %}
+    On a cold Nix cache, the first run compiles the blockchain UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.
+    {% endhint %}
 
 ## Step 2: Generate and load a node config
 

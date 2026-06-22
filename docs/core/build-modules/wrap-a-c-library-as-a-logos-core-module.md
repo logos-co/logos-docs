@@ -37,7 +37,7 @@ You need:
 
 ## What to expect
 
-- You will write a `calc_module` that exposes arithmetic functions to the Logos platform using the pure C++ (`interface: universal`) pattern.
+- You will write a `calc_module` that exposes arithmetic functions to Logos using the pure C++ (`interface: universal`) pattern.
 - You will build, inspect, and call the module with `lm` and `logoscore`, seeing your `int64_t` methods appear as Qt-typed signals.
 - You will unit-test the module directly against a link-time mock of the C library.
 
@@ -57,7 +57,7 @@ Before writing any C code, scaffold the Logos module project using the official 
    # nix flake init -t github:logos-co/logos-module-builder/tutorial-v3
    ```
 
-   This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customize them for your specific library.
+   This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customise them for your specific library.
 
     {% hint style="info" %}
     
@@ -203,7 +203,7 @@ Create the C library that your module will wrap. Place the header and implementa
 
 ## Step 3: Configure the Logos module
 
-Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class — `metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesizes the Qt plugin wrapper.
+Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class — `metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesises the Qt plugin wrapper.
 
 After this step, your project will look like this:
 
@@ -436,7 +436,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
 
 ## Step 4: Build the module
 
-1. Initialize the Git repository. Nix flakes require a git repository. First create a `.gitignore` to exclude build artifacts:
+1. Initialise the Git repository. Nix flakes require a git repository. First create a `.gitignore` to exclude build artifacts:
 
    ```text
    # Nix build output
@@ -788,7 +788,7 @@ Because your module is a plain C++ class, you can unit-test it directly. The [Lo
 
 ### A method doesn't appear in `lm` or can't be called
 
-The generator only exposes `public` methods whose parameter and return types it recognizes. Check that the method is in the `public:` section, that all types are supported (notably `int64_t` not `int`, `std::string` not `char*` or `QString`), and that each signature is on one line.
+The generator only exposes `public` methods whose parameter and return types it recognises. Check that the method is in the `public:` section, that all types are supported (notably `int64_t` not `int`, `std::string` not `char*` or `QString`), and that each signature is on one line.
 
 ### Build error: unknown type or generator can't parse a method
 

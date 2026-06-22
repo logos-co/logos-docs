@@ -348,10 +348,11 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
    //
    // event: current sequencer event
    fn handle_event(
-    event: Event,
-    state: &mut InMemoryZoneState,
-    sequencer: &mut ZoneSequencer<NodeHttpClient>,
-    ready_tx: &mut Option<tokio::sync::oneshot::Sender<()>>,) {
+       event: Event,
+       state: &mut InMemoryZoneState,
+       sequencer: &mut ZoneSequencer<NodeHttpClient>,
+       ready_tx: &mut Option<tokio::sync::oneshot::Sender<()>>,
+   ) {
         match event {
             Event::Ready => handle_ready(state, ready_tx),
             Event::BlocksProcessed {

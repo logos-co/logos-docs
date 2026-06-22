@@ -14,14 +14,14 @@ slug: install-and-load-a-module-in-logos-basecamp
 
 #### Access features and functionalities through modules in Logos Basecamp.
 
-In Logos Basecamp, you can install and load modules that provide features like chat, storage, or wallets from the online catalog or local `.lgx` files.
+In Logos Basecamp, you can install and load modules that provide features like chat, storage, or wallets from the online catalogue or local `.lgx` files.
 
 There are two types of modules in Logos Basecamp. Core modules are the headless background services that provide capabilities like messaging or storage, while UI modules are the visual front-ends users interact with.
 
 Before you start, make sure you have:
 
-- Logos Basecamp [installed and running](./install-the-logos-basecamp-app.md).
-- Internet access for online catalog install.
+- Logos Basecamp [installed and running](./install-logos-basecamp.md).
+- Internet access for online catalogue install.
 - [An `.lgx` file](./build-and-run-a-logos-core-module.md) for local install.
 
 {% hint style="info" %}
@@ -32,7 +32,7 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 ## What to expect
 
-- You can install a module from the online catalog or from a local `.lgx` file.
+- You can install a module from the online catalogue or from a local `.lgx` file.
 - You can load or unload a module from the **Modules** view.
 - You can read a loading module's status, CPU, and memory in the **Modules** view.
 
@@ -40,7 +40,7 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 When installing a module, Logos Basecamp extracts the variant for your platform into your user modules directory (core modules) or user plugins directory (UI modules).
 
-### Install from the online catalog
+### Install from the online catalogue
 
 1. In the sidebar, click **Package Manager** <img src="../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-package-manager-icon.png">.
 1. Browse and locate the module you want. You can click the module to view more details in the content area below.

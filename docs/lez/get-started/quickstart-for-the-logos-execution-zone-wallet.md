@@ -216,7 +216,7 @@ You should see the sequencer starting up at `localhost:3040` and logging informa
 
 The wallet reads its configuration from a "wallet home" directory. If the `NSSA_WALLET_HOME_DIR` environment variable is not set, it falls back to `~/.nssa/wallet`.
 
-If you want the wallet to initialize in a different location, set the variable before continuing. For example, to set the wallet home to a `.wallet-home` folder in the current directory, run:
+If you want the wallet to initialise in a different location, set the variable before continuing. For example, to set the wallet home to a `.wallet-home` folder in the current directory, run:
 
 ```bash
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
@@ -228,23 +228,23 @@ The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be
 
 {% endhint %}
 
-## Step 4: Initialize the wallet local storage and verify connectivity
+## Step 4: Initialise the wallet local storage and verify connectivity
 
-The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialize the wallet storage.
+The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialise the wallet storage.
 
 {% hint style="success" %}
 
-Leave the sequencer running in the other terminal window while you initialize the wallet storage.
+Leave the sequencer running in the other terminal window while you initialise the wallet storage.
 
 {% endhint %}
 
-Run a `wallet` command to initialize the storage. Use the built-in health check:
+Run a `wallet` command to initialise the storage. Use the built-in health check:
 
 ```bash
 wallet check-health
 ```
 
-If the wallet storage was not previously initialized, this command prints `Persistent storage not found, need to execute setup`, and prompts you to create a password. You can choose any password you like, but make sure to remember it, as you will need it to access the wallet in the future.
+If the wallet storage was not previously initialised, this command prints `Persistent storage not found, need to execute setup`, and prompts you to create a password. You can choose any password you like, but make sure to remember it, as you will need it to access the wallet in the future.
 
 {% hint style="warning" %}
 
@@ -254,11 +254,11 @@ The wallet uses this password as a seed to deterministically generate your publi
 
 ## Step 5: Complete a minimal wallet flow
 
-In this flow, you create and initialize an account, claim testnet funds, send a transfer, and confirm resulting balances.
+In this flow, you create and initialise an account, claim testnet funds, send a transfer, and confirm resulting balances.
 
 In this task, wallet account and transfer commands interact with the authenticated-transfer program, and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
 
-### Create and initialize the sender public account
+### Create and initialise the sender public account
 
 1. Create a sender public account and record the `account_id` value:
 
@@ -279,13 +279,13 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
    ```
 
-   You should see `Account is Uninitialized` in the output. New accounts start uninitialized, so no program owns them yet. A program can claim an uninitialized account (for example, the authenticated-transfer program or the token program). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
+   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the token program). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
 
-1. Initialize the sender account, then check the updated state:
+1. Initialise the sender account, then check the updated state:
 
    {% hint style="info" %}
 
-   Running `wallet auth-transfer init` initializes the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
+   Running `wallet auth-transfer init` initialises the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
    
    {% endhint %}
 

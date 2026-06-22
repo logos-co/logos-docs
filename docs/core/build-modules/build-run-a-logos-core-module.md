@@ -49,7 +49,7 @@ Before you start, make sure you have the following:
 
 The `logos-module-builder` provides four scaffolding templates for different module types. To create a Logos core module, choose the `default` template that produces a minimal core module with a C++ backend and no UI.
 
-1. Create a new directory using your module's name and initialize it from the module builder template. Replace `<module-name>` with your module's name, for example, `my_module`.
+1. Create a new directory using your module's name and initialise it from the module builder template. Replace `<module-name>` with your module's name, for example, `my_module`.
 
    ```bash
    mkdir <module-name> && cd <module-name>
@@ -122,7 +122,7 @@ Run `grep -ri "minimal" .` after editing to catch any remaining placeholder refe
 
 ## Step 3: Build the module
 
-1. Initialize a Git repository.
+1. Initialise a Git repository.
 
    ```bash
    git init && git add -A
@@ -320,7 +320,7 @@ There are two ways to install `.lgx` packages:
 
 ### Download and install a `.lgx` file from a registry
 
-The Logos module catalog is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
+The Logos module catalogue is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
 
 {% hint style="warning" %}
 
@@ -340,7 +340,7 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    nix build 'github:logos-co/logos-package-downloader/tutorial-v1#cli' --out-link ./downloader
    ```
 
-1. Search the catalog for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
+1. Search the catalogue for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
 
    ```bash
    ./downloader/bin/lgpd search <registry-name>

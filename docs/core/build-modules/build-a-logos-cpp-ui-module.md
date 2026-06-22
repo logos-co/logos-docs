@@ -30,7 +30,7 @@ This guide covers building a module that pairs a QML user interface with a C++ b
 
 ## Step 1: Scaffold the project
 
-Create a new directory and initialize it from the C++ backend UI template.
+Create a new directory and initialise it from the C++ backend UI template.
 
 1. Create and enter the project directory:
 
@@ -38,13 +38,13 @@ Create a new directory and initialize it from the C++ backend UI template.
    mkdir logos-calc-ui-cpp && cd logos-calc-ui-cpp
    ```
 
-1. Initialize from the template:
+1. Initialise from the template:
 
    ```bash
    nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#ui-qml-backend
    ```
 
-1. Initialize a Git repository and stage all generated files:
+1. Initialise a Git repository and stage all generated files:
 
    ```bash
    git init && git add -A

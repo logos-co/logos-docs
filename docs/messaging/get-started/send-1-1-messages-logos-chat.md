@@ -77,7 +77,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 
 ## Step 2: Exchange intro bundles
 
-The app auto-initializes on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances — referred to here as **A** and **B**.
+The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances — referred to here as **A** and **B**.
 
 ![Logos Chat App UI screenshot](../.gitbook/assets/chat_app_screenshot.png)
 
@@ -93,7 +93,7 @@ The app auto-initializes on launch and displays your identity ID in the bottom s
 **On instance B:**
 
 1. Click **+ new**.
-1. Paste A's intro bundle into the dialog, then type an intro message (default: `Hello!`).
+1. Paste A's intro bundle into the dialogue, then type an intro message (default: `Hello!`).
 1. Confirm. A new conversation appears in B's conversation list.
 
 **Back on instance A:**

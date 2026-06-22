@@ -44,19 +44,13 @@ By the end of this tutorial:
     cd logos-blockchain-ui
     ```
 
-1. Build the standalone app:
+1. Build and run the standalone app:
 
     ```sh
-    nix build
+    nix run
     ```
 
-    - If flakes are not enabled globally, run `nix build --extra-experimental-features 'nix-command flakes' '.#app'` instead.
-
-1. Run the app:
-
-    ```sh
-    ./result/bin/logos-blockchain-ui-app
-    ```
+    - If flakes are not enabled globally, run `nix run --extra-experimental-features 'nix-command flakes' .` instead.
 
 ## Step 2: Generate and load a node config
 

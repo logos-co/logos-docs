@@ -1,14 +1,23 @@
-# Build with Logos
+---
+title: What is Logos
+doc_type: concept
+product: logos
+topics: architecture
+authors: jorge-campo
+owner: logos
+doc_version: 1
+slug: what-is-logos
+---
 
-## What is Logos
+# What is Logos
 
 Logos is a modular technology stack for building local-first, decentralised applications. Logos consolidates previously separate efforts (Nomos, Codex, Nescience and Waku) under one public identity to reduce cognitive load for developers and users.
 
 If you've ever used Linux, you already understand how Logos works. A Linux distribution isn't solely a single binary it's a runtime foundation, a networking stack, a set of system services, and the applications that together create a complete operating system. Logos follows the same pattern: a core runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and decentralised applications on top that compose those modules. Logos ships with an opinionated default configuration with storage, messaging, and blockchain modules that work out of the box, but you can assemble entirely different distributions with your own selection of modules and configurations.
 
-![Layered diagram of the Logos technical stack](/docs/_shared/images/logos-tech-diagram.png)
+![Layered diagram of the Logos technical stack](./.gitbook/assets/what-is-logos-logos-tech-diagram.png)
 
-### Architecture
+## Architecture
 
 The stack is organised into distinct layers, each with a clear responsibility. From the bottom up:
 
@@ -28,16 +37,18 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 **Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos Basecamp** is a desktop shell on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables access to third party published applications, running local modules (for example, the node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
 
-> [!NOTE]
->
-> To learn more about Logos, visit the [Logos main site](https://logos.co).
+{% hint style="info" %}
+
+To learn more about Logos, visit the [Logos main site](https://logos.co).
+
+{% endhint %}
 
 The sections below link to the guides and references for what you can build and run on Logos today.
 
 ## Useful links
 
 - [Logos repositories](https://github.com/logos-co/logos-docs/tree/main/docs/get-started/logos-ecosystem-repositories.md) — A comprehensive list of important public repositories in the Logos ecosystem.
-- [Logos documentation website](https://docs.logos.co)
+- [Logos documentation GitHub repository](https://github.com/logos-co/logos-docs)
 - [Logos modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 - [Building Logos modules](https://github.com/logos-co/logos-tutorial) - How-to's on building modules and UIs to interact with them.
 - [Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.
@@ -45,25 +56,3 @@ The sections below link to the guides and references for what you can build and 
 - Community resources:
     - [Zero to Logos App](https://github.com/jzaki/logos-playground/blob/main/Zero-to-Logos-App.md) - A short tutorial to understand pieces and have a quick motivating win.
     - [Find and use an existing module](https://github.com/jzaki/logos-playground/blob/main/Find-and-use-a-module.md)
-    
-## If you get stuck
-
-Please open an issue in this repository describing what you are trying to complete and where you got blocked.
-
-## Documentation status and timeline
-
-We are consolidating and updating previously fragmented materials into a single, coherent developer experience and source of truth, featuring consistent navigation and terminology. This process is ongoing, and we appreciate your patience as we work to provide comprehensive and up-to-date documentation.
-
-We are also unifying public naming in our documentation to reflect Logos as a single technical stack: Nomos → [Logos Blockchain](https://github.com/logos-blockchain), Codex → [Logos Storage](https://github.com/logos-storage), Nescience → [Logos Execution Zone (LEZ)](https://github.com/logos-blockchain/logos-execution-zone) and Waku → [Logos Messaging](https://github.com/logos-messaging). This consolidation makes the architecture easier to navigate by aligning documentation, examples, and terminology under one scheme. Legacy names may still appear in repositories and specifications, but going forward the Logos-first names will be used across our docs.
-
-Our aim is to provide a predictable onboarding path for operators and developers, where they can find what they need and trust what they read.
-
-### What to expect next
-
-In 2026 we will release documentation in phases aligned with the project milestones.
-
-We will provide operator guides for those who want to run and support the Logos Blockchain, and developer guides for contributors building decentralized applications on the Logos stack (blockchain, storage, messaging).
-
-### How to follow progress and contribute
-
-We will update this page as sections go live and contribution paths open. Timelines may adjust as the system evolves.

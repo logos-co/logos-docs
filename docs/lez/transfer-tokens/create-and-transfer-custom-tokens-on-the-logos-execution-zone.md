@@ -46,7 +46,7 @@ Token program accounts fall into two types:
   - Any account that holds a balance of a token is a token holding account for that token.
   - It stores the token definition ID and the balance the account currently controls.
   - The token program owns it.
-  - Only the token program can modify it. Modifications happen through token program executions authorized by the account’s keys.
+  - Only the token program can modify it. Modifications happen through token program executions authorised by the account’s keys.
   - It can be public or private.
 
 {% hint style="danger" %}
@@ -63,8 +63,8 @@ Before you begin, ensure that you have the following:
 ## What to expect
 
 - The token program can move balances between token holding accounts. 
-- If the recipient account is uninitialized, the token program will automatically claim it. After initialization, only the token program can modify the account.
-- You can transfer custom tokens to any uninitialized public or private account. Once the account is initialized, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
+- If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
+- You can transfer custom tokens to any uninitialised public or private account. Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 {% hint style="info" %}
 
@@ -74,7 +74,7 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 ## Step 1: Create a token
 
-1. Create two new, uninitialized accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
+1. Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
     - Public account:
 

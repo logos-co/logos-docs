@@ -32,7 +32,7 @@ wallet account new public
 Generated new account with account_id Public/FHgLW9jW4HXMV6egLWbwpTqVAGiCHw2vkg71KYSuimVf
 ```
 
-### b. Initialize the pool
+### b. Initialise the pool
 
 Deposit tokens A and B and specify the account that will receive LP tokens:
 
@@ -103,7 +103,7 @@ wallet amm remove-liquidity \
 {% hint style="warning" %}
 
 This burns `balance-lp` LP tokens from the user’s LP holding account. In return, the AMM transfers tokens A and B from the pool vaults to the user’s holding accounts, based on current reserves.
-The `min-amount-a` and `min-amount-b` parameters set the minimum acceptable outputs. If the computed amounts fall below either threshold, the instruction fails to protect against unfavorable pool changes.
+The `min-amount-a` and `min-amount-b` parameters set the minimum acceptable outputs. If the computed amounts fall below either threshold, the instruction fails to protect against unfavourable pool changes.
 
 {% endhint %}
 

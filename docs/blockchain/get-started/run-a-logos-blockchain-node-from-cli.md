@@ -14,7 +14,7 @@ slug: run-a-logos-blockchain-node-from-cli
 
 #### Start a node and verify runtime and consensus signals.
 
-With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized applications. This procedure is for node operators setting up a node for the first time.
+With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
@@ -157,7 +157,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm `slot` and `height` have increased.
 
-1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping may take 12 to 24 hours.
+1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
 ## Step 4: Request tokens from the faucet
 

@@ -13,7 +13,7 @@ slug: about-zones
 
 #### Understand how Zones run custom, high-performance applications on the Logos Blockchain.
 
-Zones are customizable, high-performance blockchains for applications built on Logos. A Zone defines its own state and execution environment, while relying on the Logos Blockchain for consensus and data availability. Zones can also use optional [Bedrock](./about-bedrock.md) features such as token bridging and cross-Zone messaging. A sequencer updates a Zone's state by submitting state updates to the blockchain. Zones suit applications that need speed and customization more than they need interoperability.
+Zones are customisable, high-performance blockchains for applications built on Logos. A Zone defines its own state and execution environment, while relying on the Logos Blockchain for consensus and data availability. Zones can also use optional [Bedrock](./about-bedrock.md) features such as token bridging and cross-Zone messaging. A sequencer updates a Zone's state by submitting state updates to the blockchain. Zones suit applications that need speed and customisation more than they need interoperability.
 
 ## The basics
 
@@ -29,11 +29,11 @@ Unlike Ethereum Layer 2s, Zones do not rely on a smart contract on the Layer 1 t
 
 ## Additional features
 
-The Zone model described above is very similar to that of conventional [Sovereign Rollups](https://dba.xyz/rollups-are-l1s-l2s-a-k-a-how-rollups-actually-actually-actually-work/?ref=blog.nomos.tech). In fact, Zones can be built as pure sovereign rollups, with Bedrock only used for ordering and data availability guarantees. However, Bedrock also provides some optional functionality that somewhat increases the decentralization and interoperability of Zones without significantly compromising the benefits of the sovereign rollup design. 
+The Zone model described above is very similar to that of conventional [Sovereign Rollups](https://dba.xyz/rollups-are-l1s-l2s-a-k-a-how-rollups-actually-actually-actually-work/?ref=blog.nomos.tech). In fact, Zones can be built as pure sovereign rollups, with Bedrock only used for ordering and data availability guarantees. However, Bedrock also provides some optional functionality that somewhat increases the decentralisation and interoperability of Zones without significantly compromising the benefits of the sovereign rollup design. 
 
-### Decentralized sequencing
+### Decentralised sequencing
 
-While a Zone can be implemented with just one sequencer updating the Zone state, this design allows the sequencer to take full advantage of any MEV and represents a centralized point of failure. On Logos, it is also possible to distribute sequencing rights to a permissioned set of parties. These sequencers can compete to be the first to publish the next state update, or take turns sequencing the Zone according to a round-robin schedule. This latter model provides more Bedrock-level protections for Zone users, including an automated timeout for unresponsive sequencers. Decentralized sequencing also allows a given threshold of sequencers to update the sequencer list to remove a malicious sequencer. All these operations are handled by Logos channels.
+While a Zone can be implemented with just one sequencer updating the Zone state, this design allows the sequencer to take full advantage of any MEV and represents a centralised point of failure. On Logos, it is also possible to distribute sequencing rights to a permissioned set of parties. These sequencers can compete to be the first to publish the next state update, or take turns sequencing the Zone according to a round-robin schedule. This latter model provides more Bedrock-level protections for Zone users, including an automated timeout for unresponsive sequencers. Decentralised sequencing also allows a given threshold of sequencers to update the sequencer list to remove a malicious sequencer. All these operations are handled by Logos channels.
 
 ### Token bridging
 
@@ -60,6 +60,6 @@ In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has alr
 - Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
     - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.
     - Secure Communication Channels: The Logos ecosystem provides encrypted and censorship-resistant collaboration tools for citizens of network states.
-    - Decentralized Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
+    - Decentralised Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
 - Gaming Applications: Games often rely on rapid state changes to function correctly, making them ideal for implementation as Zone applications on Logos.
 - Small-scale Networked Applications: Networked applications can use the Logos Blockchain to store their state updates on-chain, with users recreating the state locally based on these updates. This makes the Logos Blockchain a low cost, easy alternative for self-hosting - especially for small-scale applications.

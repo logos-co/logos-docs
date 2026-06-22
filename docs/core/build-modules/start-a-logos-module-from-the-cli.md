@@ -102,7 +102,7 @@ Both `logoscore` and the Logos package manager are built from their respective N
 
 With the module installed, start the [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) daemon, load the module, and call its methods.
 
-1. Start the daemon in the background, pointing it at the modules directory, and wait to initialize:
+1. Start the daemon in the background, pointing it at the modules directory, and wait to initialise:
 
    ```bash
    ./logos/bin/logoscore -D -m ./modules &
@@ -162,4 +162,4 @@ Confirm the module subdirectory exists and contains a `manifest.json` file. Inst
 
 ### The daemon does not respond after `sleep 3`
 
-Increase the sleep duration if your machine is slow to initialize, or check for port conflicts by inspecting the daemon's stderr output.
+Increase the sleep duration if your machine is slow to initialise, or check for port conflicts by inspecting the daemon's stderr output.

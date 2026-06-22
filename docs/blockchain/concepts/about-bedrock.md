@@ -13,17 +13,17 @@ slug: about-bedrock
 
 #### Understand how Bedrock provides the consensus and shared context that Zones build on.
 
-The Bedrock layer is the basis on top of which the broader Logos Blockchain is built, operating as a large and decentralized peer-to-peer blockchain network. Bedrock functions as a solid foundation for [Zones](./about-zones.md) built on Logos, allowing Zone applications to leverage the Logos Blockchain's consensus guarantees. Bedrock also facilitates interoperability between Zones and Bedrock itself with support for asynchronous messaging and token bridging. By handling the logic allowing several parties to participate in sequencing a Zone, Bedrock contributes to the decentralization of the Logos stack.
+The Bedrock layer is the basis on top of which the broader Logos Blockchain is built, operating as a large and decentralised peer-to-peer blockchain network. Bedrock functions as a solid foundation for [Zones](./about-zones.md) built on Logos, allowing Zone applications to leverage the Logos Blockchain's consensus guarantees. Bedrock also facilitates interoperability between Zones and Bedrock itself with support for asynchronous messaging and token bridging. By handling the logic allowing several parties to participate in sequencing a Zone, Bedrock contributes to the decentralisation of the Logos stack.
 
 ## The basics
 
-- Bedrock is the foundational layer of the Logos Blockchain, operating as a decentralized peer-to-peer network.
+- Bedrock is the foundational layer of the Logos Blockchain, operating as a decentralised peer-to-peer network.
 - Bedrock provides consensus on transaction ordering to Zones, as well as a common context for Zone interaction.
 - Participation in Bedrock is credibly neutral and private, ensuring open access for all participants.
 
 ## Bedrock components
 
-Bedrock is organized into three key components. The most basic of these is the peer-to-peer network that allows Logos nodes to communicate with each other in a decentralized way.
+Bedrock is organised into three key components. The most basic of these is the peer-to-peer network that allows Logos nodes to communicate with each other in a decentralised way.
 
 ### Cryptarchia
 

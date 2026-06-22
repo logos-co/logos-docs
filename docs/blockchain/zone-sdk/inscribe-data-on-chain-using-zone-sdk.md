@@ -50,7 +50,7 @@ Before you begin, clone the [logos-blockchain](https://github.com/logos-blockcha
 
 ## Step 2: Initialise the `ZoneSequencer` struct
 
-Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/sequencer.rs`. When initialising this struct, provide the following arguments:
+Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/sequencer/zone_sequencer.rs`. When initialising this struct, provide the following arguments:
 
 - `channel_id: ChannelId` — the ID of the channel associated with the Zone.
 - `signing_key: Ed25519Key` — a key authorised to post updates to the channel.

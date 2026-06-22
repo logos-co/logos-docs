@@ -21,9 +21,6 @@ Before you start, have the following ready:
 - [Nix](https://nixos.org/download/) with flakes enabled (see [enabling flakes](#step-1-build-the-application))
 - Git with submodules support
 - A router where you can configure port forwarding or that supports UPnP/NAT-PMP
-- CMake (3.16 or later)
-- Ninja build system
-- pkg-config
 
 ## What to expect
 
@@ -55,6 +52,7 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
    ```
 
    - To build individual components:
+
    ```bash
    # Combined plugin + QML view (default package)
    nix build
@@ -83,7 +81,7 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
    ```bash
    # Enter development shell with all dependencies
    nix develop
-   
+   ```
 
 1. Launch the application:
 

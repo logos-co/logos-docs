@@ -4,7 +4,7 @@ slug: readme
 hidden: true
 ---
 
-# Logos Storage documentation
+# Run a node
 
 <!--
 This README is required by GitBook Git Sync but is not surfaced in the

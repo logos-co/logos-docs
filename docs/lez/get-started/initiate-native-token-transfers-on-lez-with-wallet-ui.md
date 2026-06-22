@@ -14,7 +14,7 @@ slug: initiate-native-token-transfers-on-lez-with-wallet-ui
 
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 
-The wallet UI is a simple entrypoint for getting started on the LEZ. This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralized LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
+The wallet UI is a simple entrypoint for getting started on the LEZ. This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
 {% hint style="info" %}
 Recovery from mnemonic and withdrawals to the L1 are not yet supported.
@@ -35,7 +35,7 @@ Before you begin, ensure you have:
 
 - You can run the wallet UI locally and sync it with the live LEZ testnet.
 - You have created and funded accounts that you can use to test transfers.
-- You can complete public, private, shielded, and deshielded token transfers and verify finalization on the L1.
+- You can complete public, private, shielded, and deshielded token transfers and verify finalisation on the L1.
 
 ## Set up and sync the wallet UI
 
@@ -96,11 +96,11 @@ This task moves tokens from a funded predefined account to the public account yo
 
 	A transaction hash displays below the **Send** button. Use its copy button to copy the hash for the next task.
 
-## Verify L1 finalization
+## Verify L1 finalisation
 
 1. In your browser, navigate to `https://explorer.testnet.lez.logos.co/transaction/<TX_HASH>`, replacing `<TX_HASH>` with the transaction hash from the previous task.
 
-	The transaction details display once the transaction is finalized on the L1. Finalization isn't immediate; it can take around 10 minutes to display.
+	The transaction details display once the transaction is finalised on the L1. Finalisation isn't immediate; it can take around 10 minutes to display.
 
 	![Transaction details on the explorer](./initiate-native-token-transfers-on-lez-with-wallet-ui/tx-finalized.png)
 

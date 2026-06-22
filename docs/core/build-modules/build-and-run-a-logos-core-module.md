@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors: iurimatias, Khushboo-dev-cpp, cheny0
 owner: logos
 doc_version: 1
-slug: build-run-a-logos-core-module
+slug: build-and-run-a-logos-core-module
 ---
 
 # Build and run a Logos core module

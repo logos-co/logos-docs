@@ -30,7 +30,7 @@ Before you start, make sure you have:
 
 - A running Logos Blockchain node reachable over HTTP
 - The Zone SDK (`lb_zone_sdk`) and `lb_core` crates added to your project
-- Completed the [Zone SDK inscription tutorial](./inscribe-data-using-the-zone-sdk.md)
+- Completed the [Zone SDK inscription tutorial](./inscribe-data-on-chain-using-zone-sdk.md)
 
 ## What to expect
 

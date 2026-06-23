@@ -18,7 +18,14 @@ The Logos Storage UI is a file-sharing application built on top of the [Logos St
 
 Before you start, have the following ready:
 
-- [Nix](https://nixos.org/download/) with flakes enabled (see [enabling flakes](#step-1-build-the-application))
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+  ```bash
+  mkdir -p ~/.config/nix
+  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+  ```
+
+  Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
 - Git with submodules support
 - A router where you can configure port forwarding or that supports UPnP/NAT-PMP
 
@@ -50,22 +57,6 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
    ```bash
    nix build
    ```
-
-   - To build individual components:
-
-   ```bash
-   # Combined plugin + QML view (default package)
-   nix build
-   
-   # Build only the C++ plugin library
-   nix build '.#lib'
-   
-   # Optional: packaged outputs (see flake)
-   nix build '.#lgx'
-   nix build '.#install'
-   ```
-
-   There is no separate `.#app package`; the standalone runner is exposed as `nix run` or `apps.default` by `mkLogosQmlModule`.
 
 1. Confirm the build succeeded by checking the `result/` directory for the following outputs on macOS (`.dylib` files are replaced with `.so` files on Linux):
 

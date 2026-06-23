@@ -14,7 +14,7 @@ slug: build-and-run-logos-blockchain-node-app-ui
 
 #### Run a node that participates in consensus via a standalone application.
 
-The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralized network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
+The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
 
 {% hint style="info" %}
 

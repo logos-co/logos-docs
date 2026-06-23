@@ -131,7 +131,7 @@ if (!r.success) {
 
 #### 4. Subscribe to a content topic
 
-Use a [LIP-23](https://lip.logos.co/messaging/draft/23/topics.html) content-topic string:
+Use a [LIP-23](https://lip.logos.co/messaging/informational/draft/23/topics.html) content-topic string:
 
 ```cpp
 LogosResult r = m_logos->delivery_module.subscribe(contentTopic);
@@ -245,4 +245,4 @@ Because unspecified ports default to `0`, you can run several instances of the s
 - `logos-module-builder` (build system + scaffolding): https://github.com/logos-co/logos-module-builder
 - `logos-tutorial` (module development walkthrough): https://github.com/logos-co/logos-tutorial
 - `logos-delivery` (underlying implementation): https://github.com/logos-messaging/logos-delivery
-- LIP-23 content topics: https://lip.logos.co/messaging/draft/23/topics.html
+- LIP-23 content topics: https://lip.logos.co/messaging/informational/draft/23/topics.html

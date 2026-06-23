@@ -16,6 +16,9 @@
 ## Node app
 
 - [Build and run the Logos Blockchain UI App](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+## Blend
+
+- [Join the Blend Network as a core node](./blend/join-the-blend-network-as-a-core-node.md)
 ## Zone SDK
 
 - [Bridge assets between Logos Blockchain and a Zone](./zone-sdk/bridge-assets-between-blockchain-and-zone.md)

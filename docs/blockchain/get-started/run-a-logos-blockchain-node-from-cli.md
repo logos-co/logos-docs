@@ -157,7 +157,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm `slot` and `height` have increased.
 
-1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping may take 12 to 24 hours.
+1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
 ## Step 4: Request tokens from the faucet
 

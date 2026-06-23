@@ -39,7 +39,7 @@ Complete these steps to fund the required keys, retrieve a locked note, and subm
 1. Send a `POST` request to `<YOUR_NODE_IP>/blend/join` with the following payload:
 
    ```bash
-   {"locator": <multiaddr>, "locked_note_id": <node_id>}
+   {"locator": "<multiaddr>", "locked_note_id": "<locked_note_id>"}
    ```
 
    - `<multiaddr>`: a publicly reachable multiaddress for the node (IP or DNS)

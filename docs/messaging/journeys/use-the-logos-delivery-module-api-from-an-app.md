@@ -14,7 +14,7 @@ labels: type:journey
 - **Key components:**
   - `logos-delivery-module` — the Logos module exposing the Logos Delivery API. This doc targets **tag `v0.1.3`**.
   - `logos-delivery` — underlying implementation, a transitive dependency resolved automatically by Nix and linked statically into `logos-delivery-module`.
-  - `logos-delivery-demo` — a complete, runnable example module that follows this doc end-to-end (referenced in §7).
+  - `logos-delivery-demo` — a complete, runnable example module that follows this doc end-to-end, pinned at tag `v0.1.0` (referenced in §7).
 
 ## 2. Scope
 
@@ -31,7 +31,7 @@ labels: type:journey
 
 ### Step 1: Create a Logos module
 
-Scaffold a new module using [logos-module-builder](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Logos module developer guide](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md). For a complete worked example following this doc, see [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo).
+Scaffold a new module using [logos-module-builder](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Logos module developer guide](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md). For a complete worked example following this doc, see [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0) (tag `v0.1.0`).
 
 ### Step 2: Declare `delivery_module` as a dependency
 
@@ -230,7 +230,7 @@ Because unspecified ports default to `0`, you can run several instances of the s
 
 ## 7. Additional context
 
-- **Complete example:** [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo) — a small `ui_qml` module that subscribes to user-managed content topics, sends/receives messages, and surfaces every `delivery_module` call with an `Info` button. Follows this doc end-to-end and is built against `logos-delivery-module/v0.1.3`.
+- **Complete example:** [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0) — a small `ui_qml` module that subscribes to user-managed content topics, sends/receives messages, and surfaces every `delivery_module` call with an `Info` button. Pinned at tag [`v0.1.0`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0), which follows this doc end-to-end and is built against `logos-delivery-module/v0.1.3`.
 - **Full API reference:** `src/delivery_module_plugin.h` at `v0.1.3` contains Doxygen documentation for every method and event contract.
 - **Module development guide:** [`logos-developer-guide.md`](https://github.com/logos-co/logos-tutorial/blob/master/logos-developer-guide.md) in `logos-tutorial` covers scaffolding, inter-module communication, `LogosResult` handling, and the generated wrappers.
 - **Node metrics:** `collectOpenMetricsText()` (added in `v0.1.3`) returns the node's Prometheus/OpenMetrics exposition text so the [`openmetrics`](https://github.com/logos-co/openmetrics-module) module can scrape it via the text-source convention. It returns an empty document before the node is created, so a scrape never errors.
@@ -241,7 +241,7 @@ Because unspecified ports default to `0`, you can run several instances of the s
 ## References
 
 - `logos-delivery-module` (this doc targets [`v0.1.3`](https://github.com/logos-co/logos-delivery-module/tree/794c21cbe177bdea16d4907468eaf52d4282dda7)): https://github.com/logos-co/logos-delivery-module
-- `logos-delivery-demo` (complete worked example): https://github.com/logos-co/logos-delivery-demo
+- `logos-delivery-demo` (complete worked example, pinned at [`v0.1.0`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0)): https://github.com/logos-co/logos-delivery-demo
 - `logos-module-builder` (build system + scaffolding): https://github.com/logos-co/logos-module-builder
 - `logos-tutorial` (module development walkthrough): https://github.com/logos-co/logos-tutorial
 - `logos-delivery` (underlying implementation): https://github.com/logos-messaging/logos-delivery

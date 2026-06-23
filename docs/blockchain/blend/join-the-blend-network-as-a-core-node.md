@@ -16,6 +16,12 @@ slug: join-the-blend-network-as-a-core-node
 
 Joining the Blend Network lets your blockchain node contribute to the privacy of Logos Blockchain proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend core node. Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
 
+{% hint style="info" %}
+
+The Blend API used below (`POST /blend/join`, `GET /mantle/sdp/declarations`) is not in the current public-testnet `0.1.2` release. It will become available in a future release.
+
+{% endhint %}
+
 You need:
 
 - [A running blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).

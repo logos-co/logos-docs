@@ -75,7 +75,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
 
 {% endhint %}
 
-1. Initialize `LogosModules` in `initLogos()`:
+1. Initialise `LogosModules` in `initLogos()`:
 
    ```cpp
    #include "logos_sdk.h"   // generated umbrella — exposes LogosModules
@@ -109,7 +109,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
    m_logos->delivery_module.on("messageError",      [](const QVariantList& data) { /* requestId, hash, error, ts */ });
    ```
 
-1. Initialize the node with `createNode`, which returns a `LogosResult`. Always check `success` before continuing and surface `getError()` on failure.
+1. Initialise the node with `createNode`, which returns a `LogosResult`. Always check `success` before continuing and surface `getError()` on failure.
 
 See [here](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab2404c11a62cd6c385e806e8465434/README.md#node-configuration-createnode) for a complete list of node configuration keys. The default TCP listen port is `60000`.
 
@@ -125,7 +125,7 @@ See [here](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab240
 
 {% hint style="info" %}
 
-`createNode` must be called exactly once per context. Calling it multiple times without first calling `stop()` and destroying the context is undefined behavior.
+`createNode` must be called exactly once per context. Calling it multiple times without first calling `stop()` and destroying the context is undefined behaviour.
 
 {% endhint %}
 
@@ -190,7 +190,7 @@ See [here](https://github.com/logos-co/logos-delivery-module/blob/0c346c0c2ab240
 
 ### `createNode` returns an unsuccessful `LogosResult`?
 
-The JSON may be malformed, or an internal initialization error occurred. Validate that the JSON is well-formed and that key names are camelCase matching `WakuNodeConf` fields. Set `"logLevel": "DEBUG"` for verbose output and inspect `result.getError()` for details.
+The JSON may be malformed, or an internal initialisation error occurred. Validate that the JSON is well-formed and that key names are camelCase matching `WakuNodeConf` fields. Set `"logLevel": "DEBUG"` for verbose output and inspect `result.getError()` for details.
 
 ### `send()` returns an unsuccessful `LogosResult`?
 

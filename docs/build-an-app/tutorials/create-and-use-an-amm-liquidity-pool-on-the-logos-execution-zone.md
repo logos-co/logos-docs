@@ -1,9 +1,9 @@
 # Create and use an AMM liquidity pool on the Logos Execution Zone
 
 {% hint style="warning" %}
-## Important
 
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
 {% endhint %}
 
 This tutorial covers the AMM program in LEZ. The AMM manages liquidity pools and enables swaps between custom tokens. By the end, you will have practiced:
@@ -18,9 +18,9 @@ This tutorial covers the AMM program in LEZ. The AMM manages liquidity pools and
 We start by creating a pool for the tokens created earlier. In return for providing liquidity, you receive liquidity provider (LP) tokens. LP tokens represent your share of the pool and are required to withdraw liquidity later.
 
 {% hint style="info" %}
-## Note
 
 The AMM does not currently charge swap fees or distribute rewards to liquidity providers. LP tokens therefore represent only a proportional share of the pool reserves. Fee support will be added in future versions.
+
 {% endhint %}
 
 ### a. Create an LP holding account
@@ -32,7 +32,7 @@ wallet account new public
 Generated new account with account_id Public/FHgLW9jW4HXMV6egLWbwpTqVAGiCHw2vkg71KYSuimVf
 ```
 
-### b. Initialize the pool
+### b. Initialise the pool
 
 Deposit tokens A and B and specify the account that will receive LP tokens:
 
@@ -46,9 +46,9 @@ wallet amm new \
 ```
 
 {% hint style="warning" %}
-## Important
 
 The LP holding account is owned by the token program, so LP tokens are managed using the same token infrastructure as regular tokens.
+
 {% endhint %}
 
 ```bash
@@ -60,9 +60,9 @@ Holding account owned by token program
 ```
 
 {% hint style="success" %}
-## Tip
 
 If you inspect the `user-holding-a` and `user-holding-b` accounts, you will see that 100 and 200 tokens were deducted. Those tokens now reside in the pool and are available for swaps by any user.
+
 {% endhint %}
 
 ## 2. Swapping
@@ -101,10 +101,10 @@ wallet amm remove-liquidity \
 ```
 
 {% hint style="warning" %}
-## Important
 
 This burns `balance-lp` LP tokens from the user’s LP holding account. In return, the AMM transfers tokens A and B from the pool vaults to the user’s holding accounts, based on current reserves.
-The `min-amount-a` and `min-amount-b` parameters set the minimum acceptable outputs. If the computed amounts fall below either threshold, the instruction fails to protect against unfavorable pool changes.
+The `min-amount-a` and `min-amount-b` parameters set the minimum acceptable outputs. If the computed amounts fall below either threshold, the instruction fails to protect against unfavourable pool changes.
+
 {% endhint %}
 
 ## 4. Adding liquidity to the pool
@@ -124,8 +124,8 @@ wallet amm add-liquidity \
 ```
 
 {% hint style="warning" %}
-## Important
 
 `max-amount-a` and `max-amount-b` cap how many tokens A and B can be taken from the user’s accounts. The AMM computes the required amounts based on the pool’s reserve ratio.
 `min-amount-lp` sets the minimum LP tokens to mint. If the computed LP amount falls below this threshold, the instruction fails.
+
 {% endhint %}

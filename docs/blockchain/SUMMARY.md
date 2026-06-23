@@ -16,6 +16,9 @@
 ## Blend
 
 - [Join the Blend Network as a core node](./blend/join-the-blend-network-as-a-core-node.md)
+## Zone SDK
+
+- [Bridge assets between Logos Blockchain and a Zone](./zone-sdk/bridge-assets-between-blockchain-and-zone.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

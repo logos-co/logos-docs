@@ -1,9 +1,9 @@
 # Discover nodes and send messages via the AnonComms Mixnet demo app
 
 {% hint style="warning" %}
-## Important
 
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
 {% endhint %}
 
 ## A. Outcome + value (required)
@@ -60,8 +60,8 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 - **Expected outputs:**
   1.  Once the app is up and running, the user should see the UI with the following:
       - Status shown as Ready
-      - LP Peer count increasing over time before stabilizing
-      - Mix peer count increasing over time before stabilizing
+      - LP Peer count increasing over time before stabilising
+      - Mix peer count increasing over time before stabilising
       - Warning message `Waiting for network peers...` disappears once 3 mix nodes are discovered.
   2.  After sending a message from the app (which is possible once the warning message disappears), the app should display the same message in the `Messages` section.
       Note that it takes some time for this to happen due to latency introduced by mix nodes.

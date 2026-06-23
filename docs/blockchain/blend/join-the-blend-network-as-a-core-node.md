@@ -35,7 +35,7 @@ Complete these steps to fund the required keys, retrieve a locked note, and subm
 1. Use the [faucet](https://testnet.blockchain.logos.co/web/faucet/) to send funds to the public key specified in the `user_config.yaml` file, in `sdp.wallet.funding_pk`.
 1. Use the faucet to send funds to the public key specified in the `user_config.yaml` file, in `blend.core.zk.secret_key_kms_id`.
 1. Call the `http://<YOUR_NODE_IP>:8080/wallet/<pk>/balance` endpoint, using the value from `blend.core.zk.secret_key_kms_id` as `<pk>`, to view the balances of your notes.
-1. From the response, select either one of the returned notes.
+1. From the response, select any of the returned notes.
 1. Send a `POST` request to `<YOUR_NODE_IP>/blend/join` with the following payload:
 
    ```bash

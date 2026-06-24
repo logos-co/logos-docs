@@ -304,7 +304,7 @@ Whenever the password manager's database is updated, the SQL transactions are al
            tokio::spawn(async move {
                // Wait until the sequencer completes cold-start backfill before publishing.
                let mut ready_rx = batch_client.subscribe_ready();
-               let _ = ready_rx.wait_for(|r| *r).await;
+               drop(ready_rx.wait_for(|r| *r).await);
    
                let mut interval = tokio::time::interval(Duration::from_millis(100));
                loop {
@@ -323,10 +323,10 @@ Whenever the password manager's database is updated, the SQL transactions are al
 
 ### Step 3: Handle channel events
 
-The sequencer must track the Zone state on the blockchain so it can detect reorgs or updates from other sequencers. The Zone SDK communicates these via `Event`:
+The sequencer must track the Zone state on the blockchain so it can detect reorgs, finalized blocks, and updates from other sequencers. In our example, there is only one sequencer, and therefore the state only has to track which inscriptions have finalized. The Zone SDK communicates these via `Event`:
 
 - `Ready` — the sequencer is caught up and ready to accept updates.
-- `BlocksProcessed` — a new block is seen by the sequencer. Includes the latest `checkpoint`, the list of `finalized` transactions, and a `channel_update` list of inscriptions published by other sequencers for this Zone ("adopted") and inscriptions that are no longer on the canonical chain ("orphaned").
+- `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
 - `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
 - `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
@@ -336,68 +336,44 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
    // Keep track of Zone state in memory
    //
    // published: Inscriptions published by your sequencer but not yet finalised or orphaned
-   // adopted: Inscriptions published by other sequencers. Not applicable in our example.
    // finalized: All finalised inscriptions
-   #[derive(Default)]
-   pub struct InMemoryZoneState {
-       published: Vec<Msg>,
-       adopted: Vec<Msg>,
-       finalized: Vec<Msg>,
-   }
-   
-   impl ZoneState for InMemoryZoneState {
-       fn on_published(&mut self, info: &InscriptionInfo) {
-           self.published
-               .push(Msg::from_payload(info.this_msg, &info.payload));
-       }
-   
-       fn on_adopted(&mut self, adopted: &[InscriptionInfo]) {
-           for info in adopted {
-               if !self.adopted.iter().any(|m| m.msg_id == info.this_msg) {
-                   self.adopted
-                       .push(Msg::from_payload(info.this_msg, &info.payload));
-               }
-           }
-       }
-   
-       // Remove from our list of published inscriptions
-       fn on_orphaned(&mut self, msg_id: &MsgId) {
-           if let Some(i) = self.published.iter().position(|m| &m.msg_id == msg_id) {
-               self.published.remove(i);
-           }
-       }
-   
-       // Remove finalised inscriptions from published and adopted lists
-       fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
-           for info in inscriptions {
-               if let Some(i) = self
-                   .published
-                   .iter()
-                   .position(|m| m.msg_id == info.this_msg)
-               {
-                   self.published.remove(i);
-               } else if let Some(i) = self.adopted.iter().position(|m| m.msg_id == info.this_msg) {
-                   self.adopted.remove(i);
-               }
-               if !self.finalized.iter().any(|m| m.msg_id == info.this_msg) {
-                   self.finalized
-                       .push(Msg::from_payload(info.this_msg, &info.payload));
-               }
-           }
-       }
-   
-       fn published(&self) -> &[Msg] {
-           &self.published
-       }
-   
-       fn adopted(&self) -> &[Msg] {
-           &self.adopted
-       }
-   
-       fn finalized(&self) -> &[Msg] {
-           &self.finalized
-       }
-   }
+    #[derive(Default)]
+    pub struct InMemoryZoneState {
+        published: Vec<Msg>,
+        finalized: Vec<Msg>,
+    }
+
+    impl ZoneState for InMemoryZoneState {
+        fn on_published(&mut self, info: &InscriptionInfo) {
+            self.published
+                .push(Msg::from_payload(info.this_msg, &info.payload));
+        }
+        
+        // Move our finalised publishes out of `published` and into `finalized`.
+        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+            for info in inscriptions {
+                if let Some(i) = self
+                    .published
+                    .iter()
+                    .position(|m| m.msg_id == info.this_msg)
+                {
+                    self.published.remove(i);
+                }
+                if !self.finalized.iter().any(|m| m.msg_id == info.this_msg) {
+                    self.finalized
+                        .push(Msg::from_payload(info.this_msg, &info.payload));
+                }
+            }
+        }
+
+        fn published(&self) -> &[Msg] {
+            &self.published
+        }
+
+        fn finalized(&self) -> &[Msg] {
+            &self.finalized
+        }
+    }
    ```
 
 1. In `sequencer/src/sequencer.rs`, add a function to handle events:
@@ -410,7 +386,6 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
    // checkpoint_path: Path to checkpoint file
    fn handle_event(
        event: Event,
-       sequencer: &mut ZoneSequencer<NodeHttpClient>,
        state: &mut InMemoryZoneState,
        checkpoint_path: &str,
    ) {
@@ -419,17 +394,6 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
                info!("Sequencer ready");
            }
            Event::BlocksProcessed { checkpoint, channel_update, finalized } => {
-               state.on_adopted(&channel_update.adopted);
-               for orphan in &channel_update.orphaned {
-                   let OrphanedTx::Inscription(info) = orphan else { continue };
-                   state.on_orphaned(&info.this_msg);
-   
-                   // Republish orphaned messages
-                   debug!(msg_id = %hex::encode(info.this_msg.as_ref()), "Auto-republishing orphan");
-                   if let Err(e) = sequencer.handle().publish(info.payload.clone()) {
-                       error!("failed to auto-republish: {e}");
-                   }
-               }
    
                // Add newly-finalized inscriptions to the finalized list
                let inscriptions: Vec<_> = finalized
@@ -462,7 +426,7 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
    
            loop {
                let event = sequencer.next_event().await;
-               handle_event(event, &mut sequencer, &mut state, &checkpoint_path);
+               handle_event(event, &mut state, &checkpoint_path);
            }
        }
    }
@@ -470,7 +434,7 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
 
 ## Indexer
 
-The indexer is the node that follows a Zone's channel on the Logos Blockchain and re-executes updates locally to maintain a current copy of the Zone state. The steps in this section implement the indexer using the Zone SDK, continuing the password manager example. The indexer must obtain the sequencer's channel ID via an out-of-band mechanism before it can start.
+The indexer is the node that follows a Zone's channel on the Logos Blockchain and re-executes updates locally to maintain a current copy of the Zone state. The steps in this section implement the indexer using the Zone SDK, continuing the password manager example. The indexer must obtain the sequencer's channel ID via an out-of-band mechanism (in our case, the `channel_path` file) before it can start.
 
 ### Step 1: Initialise the `ZoneIndexer` struct
 

@@ -121,9 +121,6 @@ After the first channel message, further messages include a hash reference to th
        // Initialise ZoneSequencer
        let mut sequencer = ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
 
-       // Monitor changes to channel
-       let view_rx = sequencer.subscribe_channel_view();
-
        // Wait to start reading from stdin until ready
        let (ready_tx, ready_rx) = tokio::sync::oneshot::channel();
        let mut stdin_rx = spawn_stdin_reader(ready_rx);
@@ -145,7 +142,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 - `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
 - `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
-1. In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint and channel view:
+1. In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint:
 
    ```rust
    // Keep track of Zone state in memory
@@ -153,13 +150,11 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
    // published: Inscriptions published by your sequencer, not yet finalised
    // finalized: All finalised inscriptions
    // checkpoint: Last message in Zone state — lets the sequencer resume after a restart
-   // channel_view: Channel info (turn-to-write, current slot, ...)
    #[derive(Default)]
    pub struct InMemoryZoneState {
        published: Vec<Msg>,
        finalized: Vec<Msg>,
        checkpoint: Option<SequencerCheckpoint>,
-       channel_view: Option<SequencerChannelView>,
    }
 
    impl InMemoryZoneState {
@@ -201,14 +196,6 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
        pub fn load_checkpoint(&self) -> Option<&SequencerCheckpoint> {
            self.checkpoint.as_ref()
-       }
-
-       pub fn set_channel_view(&mut self, channel_view: SequencerChannelView) {
-           self.channel_view = Some(channel_view);
-       }
-
-       pub const fn channel_view(&self) -> Option<&SequencerChannelView> {
-           self.channel_view.as_ref()
        }
    }
    ```
@@ -305,7 +292,6 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
                // Watch for events
                event = sequencer.next_event() => {
-                   state.set_channel_view(view_rx.borrow().clone());
                    handle_event(event, &mut state, &mut ready_tx);
                 }
 

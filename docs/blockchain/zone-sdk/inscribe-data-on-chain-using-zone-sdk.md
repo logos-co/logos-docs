@@ -36,7 +36,7 @@ Before you begin, you will need:
 
 ## Step 1: Clone the Logos Blockchain repository
 
-Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. The full implementation can be found in the `master` branch.
+Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. A more comprehensive implementation, which also supports decentralised sequencing, can be found in the `master` branch.
 
 1. Run the following in your desired path to clone the repository and switch to the tutorial branch:
 
@@ -398,10 +398,12 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
 ## Step 5: Build and run the sequencer
 
-With the code filled in, build and run the sequencer from the `tui-zone` directory. The binary is named `tui-sequencer`:
+1. With the code filled in, build and run the sequencer from the `deployment/tui-zone` directory. The binary is named `tui-sequencer`:
 
-    cargo run --bin tui-sequencer -- --node-url http://localhost:8080
+    ```bash
+    cargo run --bin tui-sequencer -- --node-url <Your Node URL>
+    ```
 
-The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
+    The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
 
-Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalized** — confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.
+    Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalized** — confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.

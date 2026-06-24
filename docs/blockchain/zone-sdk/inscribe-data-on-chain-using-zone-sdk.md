@@ -395,3 +395,13 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
    }
    ```
+
+## Step 5: Build and run the sequencer
+
+With the code filled in, build and run the sequencer from the `tui-zone` directory. The binary is named `tui-sequencer`:
+
+    cargo run --bin tui-sequencer -- --node-url http://localhost:8080
+
+The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
+
+Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalized** — confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.

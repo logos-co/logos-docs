@@ -13,6 +13,12 @@
 - [About the Blend Network](concepts/about-the-blend-network.md)
 - [About Zones](concepts/about-zones.md)
 
+## Node app
+
+- [Build and run the Logos Blockchain UI App](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+## Blend
+
+- [Join the Blend Network as a core node](./blend/join-the-blend-network-as-a-core-node.md)
 ## Zone SDK
 
 - [Inscribe data on-chain using the Zone SDK](./zone-sdk/inscribe-data-on-chain-using-zone-sdk.md)

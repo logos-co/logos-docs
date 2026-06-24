@@ -1,5 +1,5 @@
 ---
-title: Set up LEZ Indexer for local testing
+title: Run an LEZ Indexer
 doc_type: procedure
 product: lez
 topics: lez
@@ -10,7 +10,7 @@ doc_version: 1
 slug: run-lez-indexer
 ---
 
-# Run the LEZ Indexer
+# Run an LEZ Indexer
 
 #### Get started with the LEZ Indexer and query finalized LEZ state over HTTP RPC.
 

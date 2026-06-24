@@ -12,7 +12,7 @@
 
 ## Follow chain
 
-- [Run the LEZ Indexer](./follow-chain/run-lez-indexer.md)
+- [Run an LEZ Indexer](./follow-chain/run-lez-indexer.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

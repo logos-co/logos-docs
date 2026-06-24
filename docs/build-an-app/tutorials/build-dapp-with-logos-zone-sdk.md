@@ -520,7 +520,7 @@ Your indexer wraps the `ZoneIndexer` struct from the Zone SDK, found in `logos-b
            let node = NodeHttpClient::new(CommonHttpClient::new(basic_auth), node_url);
            let zone_indexer = ZoneIndexer::new(channel_id, node);
    
-           Ok(Self { zone_indexer, db_path.to_owned() })
+           Ok(Self { zone_indexer, db_path: db_path.to_owned() })
        }
    
        ...

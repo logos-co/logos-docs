@@ -31,7 +31,7 @@ Before you begin, you will need:
 ## What to expect
 
 - You will initialise a `ZoneSequencer` that connects to your Logos node and creates a new channel for posting inscriptions.
-- You will implement event handling so the sequencer tracks blockchain state, reorgs, and updates from other sequencers.
+- You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
 - You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 
 ## Step 1: Clone the Logos Blockchain repository
@@ -136,12 +136,12 @@ After the first channel message, further messages include a hash reference to th
 
 ## Step 3: Handle channel events
 
-It is important for your sequencer to track the Zone state on the blockchain and how it differs from the state maintained locally. A reorg could remove Zone update inscriptions from the canonical chain, or another sequencer could update the Zone state in a Zone with multiple sequencers. For this reason, the sequencer must be able to query the status of Zone updates it has published and to what extent it is caught up with the latest blockchain state.
+For a centralized Zone — a single sequencer that owns its channel — event handling is minimal. There are no competing sequencers, and a single sequencer never loses a slot, so the sequencer only needs to track which of its inscriptions have finalised and keep a checkpoint so it can resume after a restart. It learns about both through the Zone SDK's `Event` stream.
 
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
 - `Ready` — the sequencer is caught up and ready to accept updates.
-- `BlocksProcessed` — a new block is seen by the sequencer. Includes the latest `checkpoint`, the list of `finalized` transactions, and a `channel_update` list of inscriptions published by other sequencers for this Zone ("adopted") and inscriptions that are no longer on the canonical chain ("orphaned").
+- `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
 - `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
 - `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
@@ -150,38 +150,27 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
    ```rust
    // Keep track of Zone state in memory
    //
-   // published: Inscriptions published by your sequencer but not yet finalised or orphaned
-   // adopted: Inscriptions published by other sequencers. Not applicable in our example.
+   // published: Inscriptions published by your sequencer, not yet finalised
    // finalized: All finalised inscriptions
-   // checkpoint: Last message in Zone state
-   // channel_view: Channel info
+   // checkpoint: Last message in Zone state — lets the sequencer resume after a restart
+   // channel_view: Channel info (turn-to-write, current slot, ...)
    #[derive(Default)]
    pub struct InMemoryZoneState {
        published: Vec<Msg>,
-       adopted: Vec<Msg>,
        finalized: Vec<Msg>,
        checkpoint: Option<SequencerCheckpoint>,
        channel_view: Option<SequencerChannelView>,
    }
 
-   impl ZoneState for InMemoryZoneState {
-       fn on_adopted(&mut self, adopted: &[InscriptionInfo]) {
-           for info in adopted {
-               if !self.adopted.iter().any(|m| m.msg_id == info.this_msg) {
-                   self.adopted
-                       .push(Msg::from_payload(info.this_msg, &info.payload));
-               }
-           }
+   impl InMemoryZoneState {
+       // Record a tx we just published locally, so the local view stays in
+       // sync with what the SDK accepted. Called at the publish-call site.
+       pub fn on_published(&mut self, info: &InscriptionInfo) {
+           self.published
+               .push(Msg::from_payload(info.this_msg, &info.payload));
        }
 
-       // Remove from our list of published inscriptions
-       fn on_orphaned(&mut self, msg_id: &MsgId) {
-           if let Some(i) = self.published.iter().position(|m| &m.msg_id == msg_id) {
-               self.published.remove(i);
-           }
-       }
-
-       // Remove finalised inscriptions from published and adopted lists
+       // Move our finalised publishes out of `published` and into `finalized`.
        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
            for info in inscriptions {
                if let Some(i) = self
@@ -190,8 +179,6 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
                    .position(|m| m.msg_id == info.this_msg)
                {
                    self.published.remove(i);
-               } else if let Some(i) = self.adopted.iter().position(|m| m.msg_id == info.this_msg) {
-                   self.adopted.remove(i);
                }
                if !self.finalized.iter().any(|m| m.msg_id == info.this_msg) {
                    self.finalized
@@ -200,41 +187,28 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
            }
        }
 
-       fn published(&self) -> &[Msg] {
+       pub fn published(&self) -> &[Msg] {
            &self.published
        }
 
-       fn adopted(&self) -> &[Msg] {
-           &self.adopted
-       }
-
-       fn finalized(&self) -> &[Msg] {
+       pub fn finalized(&self) -> &[Msg] {
            &self.finalized
        }
 
-       fn save_checkpoint(&mut self, checkpoint: SequencerCheckpoint) {
+       pub fn save_checkpoint(&mut self, checkpoint: SequencerCheckpoint) {
            self.checkpoint = Some(checkpoint);
        }
 
-       fn load_checkpoint(&self) -> Option<&SequencerCheckpoint> {
+       pub fn load_checkpoint(&self) -> Option<&SequencerCheckpoint> {
            self.checkpoint.as_ref()
        }
-   }
 
-   impl InMemoryZoneState {
        pub fn set_channel_view(&mut self, channel_view: SequencerChannelView) {
            self.channel_view = Some(channel_view);
        }
 
        pub const fn channel_view(&self) -> Option<&SequencerChannelView> {
            self.channel_view.as_ref()
-       }
-
-       /// Record a tx we just published locally. Called at the publish-call
-       /// site so the local outbox stays in sync with what the SDK accepted.
-       pub fn on_published(&mut self, info: &InscriptionInfo) {
-           self.published
-               .push(Msg::from_payload(info.this_msg, &info.payload));
        }
    }
    ```
@@ -264,7 +238,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
    }
    ```
 
-1. Add functions for channel updates, finalised messages, and orphaned messages:
+1. Add a function to apply finalised messages to the Zone state:
 
    ```rust
    // Apply finalised messages from chain to Zone state
@@ -287,58 +261,6 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
        ui::render_state(state);
        ui::prompt();
    }
-
-   // Apply channel updates
-   //
-   // update: Update to the channel messages
-   fn apply_channel_update(
-       update: ChannelUpdate,
-       state: &mut InMemoryZoneState,
-       sequencer: &mut ZoneSequencer<NodeHttpClient>,
-   ) {
-       let ChannelUpdate { orphaned, adopted } = update;
-       if orphaned.is_empty() && adopted.is_empty() {
-           return;
-       }
-       state.on_adopted(&adopted);
-       for entry in &orphaned {
-           handle_orphan(state, sequencer, entry);
-       }
-       ui::render_state(state);
-       ui::prompt();
-   }
-
-   // Handle Zone messages reorged away in 'orphaned' blocks
-   //
-   // entry: Orphaned transaction
-   fn handle_orphan(
-       state: &mut InMemoryZoneState,
-       sequencer: &mut ZoneSequencer<NodeHttpClient>,
-       entry: &OrphanedTx,
-   ) {
-       match entry {
-           OrphanedTx::Inscription(info) => {
-               
-               // Add to orphaned list
-               state.on_orphaned(&info.this_msg);
-
-               // Republish inscription
-               debug!(msg_id = %hex::encode(info.this_msg.as_ref()), "Auto-republishing orphan");
-               match sequencer.handle().publish(info.payload.clone()) {
-                   Ok((result, checkpoint)) => {
-
-                       // If successful, add to published
-                       state.on_published(result.tx.inscription());
-                       state.save_checkpoint(checkpoint);
-                   }
-                   Err(e) => error!("failed to auto-republish: {e}"),
-               }
-           }
-           OrphanedTx::AtomicWithdraw(_) => {
-               error!("unexpected atomic-withdraw orphan - TUI does not publish bundles");
-           }
-       }
-   }
    ```
 
 1. Add a function to handle sequencer events and execute whichever of the above handlers is necessary for the current event:
@@ -350,25 +272,25 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
    fn handle_event(
        event: Event,
        state: &mut InMemoryZoneState,
-       sequencer: &mut ZoneSequencer<NodeHttpClient>,
        ready_tx: &mut Option<tokio::sync::oneshot::Sender<()>>,
    ) {
-        match event {
-            Event::Ready => handle_ready(state, ready_tx),
-            Event::BlocksProcessed {
-                checkpoint,
-                channel_update,
-                finalized,
-            } => {
-                apply_channel_update(channel_update, state, sequencer);
-                if !finalized.is_empty() {
-                    apply_finalized(&finalized, state);
-                }
-                state.save_checkpoint(checkpoint);
-            }
-            Event::MempoolPending(_) | Event::TurnNotification { .. } => {}
-        }
-    }
+       match event {
+           Event::Ready => handle_ready(state, ready_tx),
+
+           // Centralized Zone: ignore `channel_update` — a single sequencer
+           // never loses a slot, so there is nothing to adopt or roll back.
+           // Just apply finalised inscriptions and persist the checkpoint.
+           Event::BlocksProcessed {
+               checkpoint, finalized, ..
+           } => {
+               if !finalized.is_empty() {
+                   apply_finalized(&finalized, state);
+               }
+               state.save_checkpoint(checkpoint);
+           }
+           Event::MempoolPending(_) | Event::TurnNotification { .. } => {}
+       }
+   }
    ```
 
 1. Add the processing loop to `run()` to watch for events:
@@ -384,7 +306,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
                // Watch for events
                event = sequencer.next_event() => {
                    state.set_channel_view(view_rx.borrow().clone());
-                   handle_event(event, &mut state, &mut sequencer, &mut ready_tx);
+                   handle_event(event, &mut state, &mut ready_tx);
                 }
 
                ...

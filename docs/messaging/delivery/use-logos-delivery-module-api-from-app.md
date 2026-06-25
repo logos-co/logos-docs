@@ -141,6 +141,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
 1. Send a message. On success, `getString()` returns the request ID; track it through `messageSent` → `messagePropagated` events (or `messageError`):
 
    ```cpp
+   // payload is a QByteArray of raw bytes (same type messageReceived delivers in data[2]).
    LogosResult r = m_logos->delivery_module.send(contentTopic, payload);
    if (!r.success) {
        qWarning() << "send failed:" << r.getError();

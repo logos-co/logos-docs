@@ -451,7 +451,7 @@ Your indexer wraps the `ZoneIndexer` struct from the Zone SDK, found in `logos-b
    // zone_indexer: SDK indexer
    // db_path: Path to password database file
    pub struct Indexer {
-       zone_indexer: ZoneIndexer,
+       zone_indexer: ZoneIndexer<NodeHttpClient>,
        db_path: String,
    }
    ```

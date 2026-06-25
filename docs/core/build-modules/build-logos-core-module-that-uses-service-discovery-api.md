@@ -74,21 +74,25 @@ Build and run the self-contained two-node demo to confirm the module and its C b
 
    ```
    Starting nodes...
-   Node A: starting advertising demo-service
-   Node B: registering interest in demo-service
-   Node B: looking up demo-service
-   Node B found 0 peer(s) advertising demo-service
-   Node A: random lookup
-   Random lookup returned 0 peer(s)
-   Node B: unregistering interest in demo-service
-   Node A: stopping advertising demo-service
+   Advertiser: advertising demo-service
+   Discoverer: registering interest in demo-service
+   Discoverer: looking up demo-service
+   Discoverer found 1 peer(s) advertising demo-service
+     peer: 16Uiu2HAk... seq: 1359 addrs: 1
+   Discoverer matched the advertiser: 16Uiu2HAk...
+   Advertiser: random lookup
+   Random lookup returned 2 peer(s)
+   Advertiser: building a signed Extended Peer Record
+   Signed XPR is 288 bytes
+   Discoverer: unregistering interest in demo-service
+   Advertiser: stopping advertising demo-service
    Done
    ```
 
    - Peer IDs are non-deterministic across runs.
 
    {% hint style="info" %}
-   "found 0 peer(s)" is expected for a two-node local run with no DHT bootstrap peers configured.
+   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT — a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
    {% endhint %}
 
 ## Step 2: Scaffold the new Logos Core module

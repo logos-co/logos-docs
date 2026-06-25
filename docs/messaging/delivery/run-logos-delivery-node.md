@@ -172,7 +172,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
    ```bash
    # Path A
-   logoscore exec logos-node logoscore call delivery_module getNodeInfo MyENR --json | jq
+   docker exec logos-node logoscore call delivery_module getNodeInfo MyENR --json | jq
 
    # Paths B and C
    logoscore call delivery_module getNodeInfo MyENR --json | jq

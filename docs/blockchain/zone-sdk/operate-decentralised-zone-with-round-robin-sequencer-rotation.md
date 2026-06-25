@@ -42,7 +42,7 @@ The [Mantle specification](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa0
    - A turn shorter than one block lets multiple sequencers become authorized within the same block, defeating the purpose of rotation.
    - As a rule of thumb, use a multiple: with a ~20 slots/block average, `posting_timeframe = 60` gives each sequencer roughly three blocks of ownership per turn.
 
-1. Set `posting_timeout` to a value greater than or equal to `posting_timeframe`. `posting_timeout` is the  time we wait for an inactive sequencer to publish before continuing to the next sequencer - all subsequent inactive sequencers have a turn of `post_timeout` slots until one of them publishes. At that point, turns go back to being `posting_timeframe` slots long.
+1. Set `posting_timeout` to a value greater than or equal to `posting_timeframe`. `posting_timeout` is the time we wait for an inactive sequencer to publish before continuing to the next sequencer - all subsequent inactive sequencers have a turn of `posting_timeout` slots until one of them publishes. At that point, turns go back to being `posting_timeframe` slots long.
 
    - Values smaller than `posting_timeframe` make the timeout branch dominate cadence as soon as the authorized sequencer goes silent.
 
@@ -153,7 +153,8 @@ Submit a `ChannelConfigOp` to add or remove sequencers from `accredited_keys`. B
 1. Use `channel_config` directly when `configuration_threshold == 1` - that is, when you only need one sequencer's signature to change the configuration.
 
    ```rust
-   use lb_core::mantle::channel::{Keys, SlotTimeframe, SlotTimeout};
+   use lb_core::mantle::channel::{SlotTimeframe, SlotTimeout};
+   use lb_core::mantle::ops::channel::config::Keys;
 
    let new_keys = Keys::from(vec![
        admin_pk,

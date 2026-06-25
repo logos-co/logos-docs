@@ -1,7 +1,10 @@
 # Table of contents
 
-## Delivery module
+- [Welcome](welcome.md)
 
-- [Use the Logos Delivery module API from an app](./delivery-module/use-the-logos-delivery-module-api-from-an-app.md)
+## Get started
 
+- [Send 1:1 messages with the Logos Chat app](./get-started/send-1-1-messages-logos-chat.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

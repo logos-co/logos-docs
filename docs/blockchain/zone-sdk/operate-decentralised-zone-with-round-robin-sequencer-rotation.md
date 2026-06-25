@@ -4,7 +4,7 @@ doc_type: procedure
 product: blockchain
 topics: zone-sdk
 steps_layout: sectioned
-authors:
+authors: pradovic, hansieodendaal, kashepavadan
 owner: logos
 doc_version: 1
 slug: operate-decentralised-zone-with-round-robin-sequencer-rotation

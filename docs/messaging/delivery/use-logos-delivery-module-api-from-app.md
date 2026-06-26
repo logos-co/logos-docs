@@ -32,7 +32,31 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
 
 ## Step 1: Create a Logos module
 
-Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Build a Logos C++ UI module](../../core/build-modules/build-a-logos-cpp-ui-module.md) tutorial. For a complete worked example following this procedure, see [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0) (tag `v0.1.0`).
+Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Build a Logos C++ UI module](../../core/build-modules/build-a-logos-cpp-ui-module.md) tutorial.
+
+1. Create and enter the project directory:
+
+   ```bash
+   mkdir your-module-name && cd your-module-name
+   ```
+
+1. Initialise from the template:
+
+   ```bash
+   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#ui-qml-backend
+   ```
+
+1. Initialise a Git repository and stage all generated files:
+
+   ```bash
+   git init && git add -A
+   ```
+
+1. Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
+
+   ```bash
+   rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
+   ```
 
 ## Step 2: Declare `delivery_module` as a dependency
 

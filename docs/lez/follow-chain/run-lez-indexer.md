@@ -38,7 +38,18 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
 1. In the LEZ repository, run `just clean` to remove any leftover artifacts from previous runs.
 
-1. Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's channel ID (ADD HERE IMPORTANT).
+1. Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's channel ID. Get the channel ID from the public LEZ sequencer by running:
+
+   ```bash
+   curl https://testnet.lez.logos.co/ \
+    -H "Content-Type: application/json" \
+    -d "{ \
+        \"jsonrpc\": \"2.0\", \
+        \"method\": \"getChannelId\", \
+        \"params\": {}, \
+        \"id\": 1 \
+    }"
+   ```
 
    For a local deployment, run the following commands in two separate terminal windows:
 

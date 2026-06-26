@@ -2,8 +2,10 @@
 
 ## Get started
 
-- [Quickstart for the Logos Execution Zone wallet](get-started/quickstart-for-the-logos-execution-zone-wallet.md)
 - [Introduction to the Logos Execution Zone](get-started/introduction-to-the-logos-execution-zone.md)
+- [Quickstart for the Logos Execution Zone wallet](get-started/quickstart-for-the-logos-execution-zone-wallet.md)
+- [Connect the wallet CLI to the LEZ testnet](./get-started/connect-wallet-cli-to-lez-testnet.md)
+- [Initiate native token transfers on the LEZ with the wallet UI](./get-started/initiate-native-token-transfers-on-lez-with-wallet-ui.md)
 
 ## Transfer tokens
 

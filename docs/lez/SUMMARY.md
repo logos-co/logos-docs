@@ -15,6 +15,7 @@
 ## Follow chain
 
 - [Run an LEZ Indexer](./follow-chain/run-lez-indexer.md)
+- [Start and use an instance of the LEZ Explorer](./follow-chain/start-and-use-instance-of-lez-explorer.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

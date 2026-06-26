@@ -19,8 +19,8 @@ This procedure covers how to credit a private account — regular or a Program D
 Before you start, make sure you have the following:
 
 - Linux or macOS — macOS requires full Xcode with the Metal toolchain for the Risc0 guest build, not just command-line tools
-- Rust toolchain, `cargo`, recipes in the `justfile`
-- A funded sender account (public or private). For instructions on setting up an LEZ wallet, see [here](../get-started/connect-wallet-cli-to-lez-testnet.md)
+- Rust toolchain, `cargo`
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/connect-wallet-cli-to-lez-testnet.md) set up and funded
 
 ## What to expect
 

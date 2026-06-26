@@ -16,5 +16,9 @@
 
 - [Start and use an instance of the LEZ Explorer](./follow-chain/start-and-use-instance-of-lez-explorer.md)
 
+## Accounts
+
+- [Set up a shared private LEZ account](./accounts/set-up-shared-private-lez-account.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

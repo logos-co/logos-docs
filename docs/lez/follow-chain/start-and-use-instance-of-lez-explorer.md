@@ -17,7 +17,7 @@ slug: start-and-use-instance-of-lez-explorer
 The LEZ Explorer lets you inspect the state of the Logos Execution Zone in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up account balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
 
 {% hint style="info" %}
-Live block updates are not implemented. Refresh the page manually to see new blocks after they are produced.
+If you don't want to run your own LEZ explorer instance, navigate to the [public LEZ explorer](https://explorer.testnet.lez.logos.co/).
 {% endhint %}
 
 Before you start, make sure you have the following:

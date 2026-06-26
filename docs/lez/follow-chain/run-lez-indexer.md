@@ -142,7 +142,7 @@ The delay is caused by Logos Blockchain's block finality time. The indexer only 
 
 ### How do I change the indexer configuration?
 
-The indexer config is located at [lez/indexer/service/configs/indexer_config.json](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/indexer/service/configs/indexer_config.json). Two fields control connectivity:
+The indexer config used by `just run-indexer` is located at [lez/indexer/service/configs/debug/indexer_config.json](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/indexer/service/configs/debug/indexer_config.json) (a `configs/docker/indexer_config.json` variant is used for the Docker setup). Two fields control connectivity:
 
 - `bedrock_config` — the HTTP address of the Logos Blockchain node.
 - `channel_id` — the channel that LEZ Sequencer writes into. This must match the sequencer you are using.

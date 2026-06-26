@@ -10,5 +10,9 @@
 
 - [Run Logos deliver node](./delivery/run-logos-delivery-node.md)
 
+## Chat module
+
+- [Build a Logos module that uses the Chat module API](./chat-module/build-logos-module-that-uses-chat-module-api.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

@@ -11,6 +11,7 @@
 
 - [Transfer native tokens on the Logos Execution Zone](transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md)
 - [Create and transfer custom tokens on the Logos Execution Zone](transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)
+- [Transfer native LEZ tokens between public and private states](./transfer-tokens/transfer-native-lez-tokens-between-public-private-states.md)
 
 ## Follow chain
 

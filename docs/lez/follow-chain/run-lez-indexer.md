@@ -71,7 +71,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
    just run-indexer
    ```
 
-   The indexer binds to `ws://localhost:8779` by default. At startup, you will see:
+   The indexer serves JSON-RPC over HTTP (and WebSocket) on `http://localhost:8779` by default. At startup, you will see:
 
    ```
    [2026-06-18T14:21:59Z INFO  indexer_service] Starting Indexer Service RPC server on 0.0.0.0:8779

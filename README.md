@@ -26,7 +26,7 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 - **User Modules** are the wild card. Because Logos follows a modular architecture, anyone can build modules that plug into the same infrastructure. The runtime loads them, manages their lifecycle, and enables them to communicate with other modules, whether they are Logos defaults or third-party additions. Use cases include wallet and key management, identity, access control, and anything else your application needs.
 
-**Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos Basecamp** is an app built on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables access to third party published applications, running local modules (for example, the node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
+**Dapps: the applications.** At the top of the stack sit the decentralised applications that people actually use. These compose the modules below them: a chat app uses messaging and storage; a DeFi app uses blockchain and the Execution Zone; a filesharing app uses storage. The **Logos Basecamp** is a desktop shell on the Logos Core framework that enables users to interact with the Logos ecosystem. It enables access to third party published applications, running local modules (for example, the node for the blockchain) in the Logos ecosystem and more, while avoiding the dependencies on web-browser interactions. The headless **Logos Node** starts the same runtime without a UI, ideal for validators, infrastructure operators, or backend services.
 
 > [!NOTE]
 >
@@ -37,14 +37,7 @@ The sections below link to the guides and references for what you can build and 
 ## Useful links
 
 - [Logos repositories](https://github.com/logos-co/logos-docs/tree/main/docs/get-started/logos-ecosystem-repositories.md) — A comprehensive list of important public repositories in the Logos ecosystem.
-- Logos stack documentation
-    - [Logos Basecamp documentation](https://github.com/logos-co/logos-docs/blob/main/docs/basecamp/SUMMARY.md)
-    - [Logos Core documentation](https://github.com/logos-co/logos-docs/blob/main/docs/core/SUMMARY.md)
-    - [Logos Blockchain documentation](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/SUMMARY.md)
-    - [LEZ documentation](https://github.com/logos-co/logos-docs/blob/main/docs/lez/SUMMARY.md)
-    - [Logos Storage documentation](https://github.com/logos-co/logos-docs/blob/main/docs/storage/SUMMARY.md)
-    - [Logos Messaging documentation](https://github.com/logos-co/logos-docs/blob/main/docs/messaging/SUMMARY.md)
-    - [Mixnet documentation](https://github.com/logos-co/logos-docs/blob/main/docs/mixnet/SUMMARY.md)
+- [Logos documentation website](https://docs.logos.co)
 - [Logos modules](https://github.com/logos-co/logos-app?tab=readme-ov-file#modules)
 - [Building Logos modules](https://github.com/logos-co/logos-tutorial) - How-to's on building modules and UIs to interact with them.
 - [Use the Logos Storage module API from an app](https://logos-storage-docs.netlify.app/tutorials/storage-module/) — Interact with the Logos Storage module API to store and retrieve data from your application.

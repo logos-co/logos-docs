@@ -13,7 +13,7 @@ slug: about-the-blend-network
 
 #### Understand how the Blend Network hides the link between a block proposer and their proposal.
 
-The Blend Network adds a layer of anonymity for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos Private Proof of Stake consensus protocol. Cryptarchia uses a private leadership election as a first line of defense against deanonymization, but preventing adversaries from learning about proposers through network monitoring needs stronger obfuscation. The Blend Protocol provides it: an anonymous broadcasting protocol that makes it hard to link a proposal to its proposer through network analysis. The Blend Network is the service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
+The Blend Network adds a layer of anonymity for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos Private Proof of Stake consensus protocol. Cryptarchia uses a private leadership election as a first line of defence against deanonymisation, but preventing adversaries from learning about proposers through network monitoring needs stronger obfuscation. The Blend Protocol provides it: an anonymous broadcasting protocol that makes it hard to link a proposal to its proposer through network analysis. The Blend Network is the service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
 
 ## The basics
 
@@ -23,9 +23,9 @@ The Blend Network adds a layer of anonymity for block proposers on top of [Crypt
 
 ## Objectives
 
-The main objective of the Logos Blend Network is to reduce the probability of linking a block proposal with its proposer, which also translates to increasing the difficulty of learning the proposer’s relative stake. At the same time, the Blend Protocol was designed to minimize bandwidth usage on the network compared to general-use mixnets, and to maximize decentralization by involving all nodes in the obfuscation process. By doing so, the Blend Network increases the cost of attacking the network to deanonymize a block proposal without straining the network with high bandwidth usage.
+The main objective of the Logos Blend Network is to reduce the probability of linking a block proposal with its proposer, which also translates to increasing the difficulty of learning the proposer’s relative stake. At the same time, the Blend Protocol was designed to minimise bandwidth usage on the network compared to general-use mixnets, and to maximise decentralisation by involving all nodes in the obfuscation process. By doing so, the Blend Network increases the cost of attacking the network to deanonymise a block proposal without straining the network with high bandwidth usage.
 
-The Blend Network supports the privacy of the Logos Blockchain as a whole, by providing additional anonymity to block proposers, protecting against [adversaries ↗](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The anonymity provided by the Blend Network also substantially improves the privacy guarantees of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
+The Blend Network supports the privacy of the Logos Blockchain as a whole, by providing additional anonymity to block proposers, protecting against [adversaries](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The anonymity provided by the Blend Network also substantially improves the privacy guarantees of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
 
 ## How the Blend Protocol works
 
@@ -37,8 +37,6 @@ While dedicated participation in the Blend Network is reserved for declared Blen
 2.  The sender sends the layered message to every Blend node with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
 
     ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../.gitbook/assets/about-the-blend-network-dissemination.png)
-
-    _The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity._
 
 3. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
 4. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
@@ -52,7 +50,7 @@ Random delays are the other component of message blending. If messages are rare 
 
 An important way that the Blend Network obscures network patterns is by producing indistinguishable messages within a "crowded" network. To increase this effect in an environment where proposals are relatively rare, the Blend Network also produces artificial cover messages. Cover messages do not contain any meaningful payload and are generated by Blend nodes to increase network noise and to blend in with data messages that contain real proposals.
 
-Cover messages mimic the behavior of data messages, in that they are disseminated and processed by Blend nodes in the same manner. Blend nodes repeatedly encrypt random payload data to generate a cover message, which is then relayed to the next node in its selected path via dissemination. At each step in the transmission process, intended nodes decrypt, randomly delay, and disseminate cover messages without any indication that they may not be genuine. In fact, encrypted data and cover messages are completely indistinguishable even to adversary-controlled Blend nodes (a type of local observer). The hiding effect provided by cover traffic is illustrated in the diagram below.
+Cover messages mimic the behaviour of data messages, in that they are disseminated and processed by Blend nodes in the same manner. Blend nodes repeatedly encrypt random payload data to generate a cover message, which is then relayed to the next node in its selected path via dissemination. At each step in the transmission process, intended nodes decrypt, randomly delay, and disseminate cover messages without any indication that they may not be genuine. In fact, encrypted data and cover messages are completely indistinguishable even to adversary-controlled Blend nodes (a type of local observer). The hiding effect provided by cover traffic is illustrated in the diagram below.
 
 ![Disseminated Blend Network cover traffic (dotted lines) obscuring a data message (solid lines).](../.gitbook/assets/about-the-blend-network-cover-traffic-hiding-effect.png)
 
@@ -76,7 +74,7 @@ The SDP consists of three basic steps, each of which represents a type of messag
 - Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
 - Withdraw: A node withdraws its declaration and stops providing a service.
 
-To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as locators) based on the [Multiaddr scheme ↗](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
+To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as locators) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
 
 ### Service Reward Distribution Protocol
 

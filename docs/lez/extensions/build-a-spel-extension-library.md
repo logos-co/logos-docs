@@ -225,6 +225,58 @@ default = 0
 
 When two extensions embed into the same consumer account at distinct offsets, the framework merges the duplicated account into one transaction account (listed once in the IDL with unioned constraints, cloned into each position of the call) and your instruction must emit exactly one post-state per unique account id. Same account at the same offset is a compile error.
 
+### Attribute-order convention in library source
+
+When a per-instruction gate attribute does shape validation on params (the way `#[require_admin]` checks for an `#[account(pda = literal("admin_config"))]` param and an `#[account(signer)]` param), the order of attributes on the library's own `#[instruction]` fns matters:
+
+```rust
+#[require_my_gate]   // runs first — sees params with #[account(...)] intact
+#[instruction]       // shim runs second — strips #[account(...)] for rustc
+pub fn gated_op(/* ... */) -> SpelResult { /* ... */ }
+```
+
+Rust expands attribute macros top-down. The library's `#[instruction]` shim strips `#[account(...)]` from params. If `#[require_my_gate]` is placed below `#[instruction]`, it runs after the strip and its shape check sees no PDA / no signer params, emitting a confusing error.
+
+The rule only applies inside libraries that re-export the shim (like the one shown in this guide). Consumer code uses SPEL's no-op `#[instruction]` from the prelude, which doesn't strip anything; order doesn't matter there.
+
+## Auto-wrapping every consumer instruction (optional)
+
+If your extension is a circuit-breaker primitive (an emergency stop, a re-entrancy guard, a global rate limit), you may want EVERY consumer instruction gated, not just the ones the consumer remembered to annotate. The framework supports this via a `wrap_instructions` metadata field that activates a module-level wrap hook.
+
+Add this section to your `my-extension/Cargo.toml`:
+
+```toml
+[package.metadata.spel.wrap_instructions]
+wrapper = "my_extension::require_my_gate"
+skip = "manual"
+self_exempt_marker = "my_extension_exempt"
+exempt = [
+  "admin_authority::admin_initialize",
+  "admin_authority::admin_transfer",
+  "admin_authority::admin_renounce",
+]
+```
+
+- `wrapper`: a qualified path to the per-instruction attribute the framework prepends onto each non-exempt dispatched fn. Reuses the same `#[require_my_gate]` attribute consumers apply by hand in manual mode — one proc-macro, two callers.
+- `skip`: the arg literal on your `#[my_extension]` marker that DISABLES auto-wrap. With `skip = "manual"`, `#[my_extension(manual)]` opts out of the wrap and `#[my_extension]` (bare) opts in.
+- `self_exempt_marker`: an attribute name the framework recognizes as "skip this fn from wrap". Add another pass-through proc-macro of that name to your macros crate; consumers carry it on any instruction they want to remain callable while gated.
+- `exempt`: a list of cross-crate dispatched instructions to skip unconditionally. Use this when composing with another extension whose ops must stay operable even when your wrap is active. (Self-exemptions for your own instructions go on the fn via `self_exempt_marker` instead.)
+
+When the consumer puts `#[my_extension]` on their `#[lez_program]` mod, the framework hook walks the dispatcher table and prepends `#[require_my_gate]` to every fn that isn't in `exempt` and doesn't carry `#[my_extension_exempt]`. The wrap is invisible to consumers — they write normal code; the gate appears as if by magic.
+
+The hook is opt-in: omit `wrap_instructions` from your metadata and the framework leaves all instructions alone. This is the right choice for most extensions (pure data primitives, single-instruction gates, etc.).
+
+## Composing with another extension (hard dep)
+
+Some extensions naturally build on others. `freeze-authority` depends on `admin-authority` — its freeze-authority slot is governed by admin signatures. When your extension does this:
+
+1. **Declare a normal Cargo path dep** on the other extension in your `Cargo.toml`. Consumers get both extensions in their dep graph automatically.
+2. **Add both markers to the consumer's mod.** Consumers write `#[admin_authority] #[my_extension]` on their `#[lez_program]` mod. Each marker triggers its own discovery.
+3. **Import the gate attributes you compose with.** E.g. `use admin_authority::require_admin;` in your library source, then `#[require_admin]` on instructions that should require admin sig (like an initialization that creates your config PDA).
+4. **List the other extension's exempt-while-wrapped instructions** in your `wrap_instructions.exempt` if applicable. freeze-authority lists admin-authority's three management instructions so they stay callable while the program is frozen.
+
+The framework deduplicates path-dep dirs, so admin-authority is scanned once even if both your extension and the consumer name it as a path dep.
+
 ## Consumer integration
 
 A consumer adds your extension to their `Cargo.toml`:

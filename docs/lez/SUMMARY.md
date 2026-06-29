@@ -25,6 +25,7 @@
 ## Extensions
 
 - [Gate program instructions with admin-authority](extensions/admin-authority.md)
+- [Freeze program execution with freeze-authority](extensions/freeze-authority.md)
 - [Build a SPEL extension library](extensions/build-a-spel-extension-library.md)
 
 <!-- Keep this README at the end of the SUMMARY -->

@@ -15,7 +15,7 @@
 
 ## Blockchain module
 
-- [Run the Logos Blockchain module](./run-module/run-the-logos-blockchain-module.md)
+- [Run the Logos Blockchain module](./blockchain-module/run-the-logos-blockchain-module.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

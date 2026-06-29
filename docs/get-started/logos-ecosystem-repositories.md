@@ -11,9 +11,9 @@ slug: logos-ecosystem-repositories
 
 # Logos ecosystem repositories
 
-#### Review the key repositories across the logos organizations.
+#### Review the key repositories across the logos organisations.
  
-The Logos project is organized into several GitHub organizations, each focused on one part of the system. This page highlights the most important repositories for understanding the project and getting started with development. The selection is curated rather than exhaustive.
+The Logos project is organised into several GitHub organisations, each focused on one part of the system. This page highlights the most important repositories for understanding the project and getting started with development. The selection is curated rather than exhaustive.
  
 ## Orientation and contribution resources
  
@@ -28,11 +28,11 @@ These repositories explain what Logos is building and how to take part, with no 
  
 ## Logos Basecamp
 
-Logos Basecamp is the desktop shell for the Logos platform.
+Logos Basecamp is the desktop shell for Logos.
 
 | Repository | Description |
 |:---|:---|
-| [logos-basecamp](https://github.com/logos-co/logos-basecamp) | The Logos Basecamp app. |
+| [logos-basecamp](https://github.com/logos-co/logos-basecamp) | The Logos Basecamp repository. |
 
 ## Logos Core
  
@@ -52,7 +52,7 @@ Logos Core is the modular runtime that ties applications together.
  
 ## Core modules and applications
  
-Modules plug into Logos Core to provide specific capabilities, and user-interface repositories are the front-end applications built on those modules. Modules and applications live in both organizations.
+Modules plug into Logos Core to provide specific capabilities, and user-interface repositories are the front-end applications built on those modules. Modules and applications live in both organisations.
  
 | Repository | Description |
 |:---|:---|
@@ -90,7 +90,7 @@ The Logos Execution Zone (LEZ) is the primary execution layer for applications b
  
 ## Logos messaging
 
-Logos Messaging is the project's decentralized communication system.
+Logos Messaging is the project's decentralised communication system.
 
 | Repository | Description |
 |:---|:---|
@@ -110,7 +110,7 @@ Logos Messaging is the project's decentralized communication system.
 
 ## Logos Storage
 
-Logos Storage is the project's privacy-preserving, decentralized storage system.
+Logos Storage is the project's privacy-preserving, decentralised storage system.
 
 | Repository | Description |
 |:---|:---|

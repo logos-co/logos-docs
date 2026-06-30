@@ -14,13 +14,6 @@ slug: install-logos-basecamp
 
 #### Get Logos Basecamp running on your desktop.
 
-{% hint style="info" %}
-
-- **Permissions**: No special permissions required.
-- **Product**: Logos Basecamp.
-
-{% endhint %}
-
 Logos Basecamp is the desktop shell for Logos. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
@@ -77,7 +70,7 @@ Internet access is required to download the binary or clone the repository, but 
 1. Build Basecamp with Nix flake:
 
     ```bash
-    nix build '.#app'
+    nix build '.#bin-appimage'
     ```
 
 1. Run the resulting binary:

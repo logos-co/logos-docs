@@ -19,15 +19,15 @@ Mantle is a Bedrock component that serves as the operating system of Logos. It p
 
 - Mantle serves as Bedrock's execution layer, enabling nodes to participate in Bedrock Services and facilitating interactions between Zones and Bedrock.
 - Mantle maintains a limited ledger for fee payment, tracking fungible assets called notes with UTXO-based transactions.
-- Mantle supports channels, which enforce immediate transaction ordering for Zones and facilitate decentralized sequencing and token bridging.
+- Mantle supports channels, which enforce immediate transaction ordering for Zones and facilitate decentralised sequencing and token bridging.
 
 ## Operations and transactions
 
 Mantle operations are the way Logos nodes interact with Bedrock Services, and allow Zones to interact with Bedrock. Operations are submitted to Mantle via transactions, with each transaction potentially including several operations. The cost of executing operations is paid for by gas fees, denoted in [notes](./about-mantle.md#mantle-ledger). All Logos nodes re-execute Mantle operations independently to ensure that the ledger state is updated correctly.
 
-Logos nodes use Mantle operations to indicate their participation in the Blend Network, with Mantle providing a locking mechanism used to incentivize correct behavior by participants. The operations supported by Mantle include transferring notes, staking notes for participation in the Blend Network, paying rewards to compensate participants, and unstaking notes.
+Logos nodes use Mantle operations to indicate their participation in the Blend Network, with Mantle providing a locking mechanism used to incentivise correct behaviour by participants. The operations supported by Mantle include transferring notes, staking notes for participation in the Blend Network, paying rewards to compensate participants, and unstaking notes.
 
-Inscription operations can be used to write arbitrary data to the Logos Blockchain, enabling a variety of ways to leverage the blockchain as a permanent, decentralized record. Crucially, Mantle can be used as a censorship resistant message delivery mechanism for Zones, allowing Zone sequencers to send information to each other and engage in coordinated action. This form of message passing facilitates cross-Zone interaction including arranging atomic transactions and state updates.
+Inscription operations can be used to write arbitrary data to the Logos Blockchain, enabling a variety of ways to leverage the blockchain as a permanent, decentralised record. Crucially, Mantle can be used as a censorship resistant message delivery mechanism for Zones, allowing Zone sequencers to send information to each other and engage in coordinated action. This form of message passing facilitates cross-Zone interaction including arranging atomic transactions and state updates.
 
 ## Mantle ledger
 
@@ -41,17 +41,17 @@ Logos channels, or channels for short, are lightweight virtual chains overlaid o
 
 ### Immediate ordering
 
-Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganize. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
+Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganise. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
 
 ![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/about-mantle-two-channels.png)
 
 It is important to note that Logos channels can only be relied on if the sequencer is trusted to act honestly. In the absence of this assumption, users must wait for the true blockchain finality.
 
-### Decentralized sequencing
+### Decentralised sequencing
 
-A channel may have one or several sequencers; in the latter case, authorized sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
+A channel may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
 
-A given threshold of sequencers may also modify the sequencer list or change other channel properties by signing a message together, allowing an honest majority to remove a malicious sequencer. This form of decentralized Zone sequencing distributes the potential for MEV extraction across a set of parties rather than concentrating it as in the single-sequencer rollup design.
+A given threshold of sequencers may also modify the sequencer list or change other channel properties by signing a message together, allowing an honest majority to remove a malicious sequencer. This form of decentralised Zone sequencing distributes the potential for MEV extraction across a set of parties rather than concentrating it as in the single-sequencer rollup design.
 
 ### Token bridging
 

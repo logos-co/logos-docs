@@ -31,16 +31,16 @@ Private accounts, by contrast, are stored locally on the account-holder’s node
 -  Viewing keys: The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
 
 {% hint style="info" %}
-## Note
 
 A program must obtain a private account’s nullifier public key, as well as its viewing public key, in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
+
 {% endhint %}
 
 When an LEE program executes, it modifies the accounts provided to it. These accounts could be either public or private, as an LEE program can be executed over both types of accounts. In either case, the program is executed using the same bytecode, the main difference being whether the user who runs a program will generate a zero knowledge proof. Executions modifying public accounts are executed transparently by LEZ validators like any standard RISC-V VM call. On the other hand, private executions involve the generation of zero knowledge proofs via Risc0, which are then verified by LEZ validators. 
 
 ## LEZ Node Architecture
 
-The LEZ operates as a Zone, with updates to its state (both public and private) inscribed on the Logos Blockchain. The LEZ is sequenced in a decentralized manner by a permissioned set of sequencer nodes, who take turns posting the latest updates to the LEZ channel on [Mantle](../../blockchain/concepts/#about-mantle.md). In addition to the sequencers, the LEZ maintains an open network of validators, which update the Zone state by transparently executing programs (for public executions) or by verifying zero knowledge proofs of correct state transitions (for private executions). Anybody can join the validator network and contribute to the correctness of the LEZ state, submitting the latest state to an LEZ sequencer to post on the blockchain. The LEZ also supports read-only indexer nodes that follow the LEZ channel for purposes such as block exploration and development.
+The LEZ operates as a Zone, with updates to its state (both public and private) inscribed on the Logos Blockchain. The LEZ is sequenced in a decentralised manner by a permissioned set of sequencer nodes, who take turns posting the latest updates to the LEZ channel on [Mantle](../../blockchain/concepts/#about-mantle.md). In addition to the sequencers, the LEZ maintains an open network of validators, which update the Zone state by transparently executing programs (for public executions) or by verifying zero knowledge proofs of correct state transitions (for private executions). Anybody can join the validator network and contribute to the correctness of the LEZ state, submitting the latest state to an LEZ sequencer to post on the blockchain. The LEZ also supports read-only indexer nodes that follow the LEZ channel for purposes such as block exploration and development.
 
 ## Use Cases
 
@@ -53,7 +53,7 @@ As an example, the LEZ could be used to host private DeFi applications. With sup
 - Confidential Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
 
 {% hint style="success" %}
-## Tip
 
 Check out the tutorial on how to create your own [Automated Market Maker (AMM) trading pool](../../build/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) program on the LEZ.
+
 {% endhint %}

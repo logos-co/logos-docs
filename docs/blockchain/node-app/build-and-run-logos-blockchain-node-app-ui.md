@@ -1,5 +1,5 @@
 ---
-title: Build and run the Logos Blockchain UI App
+title: Build and run the Logos Blockchain UI app
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -10,7 +10,7 @@ doc_version: 1
 slug: build-and-run-logos-blockchain-node-app-ui
 ---
 
-# Build and run the Logos Blockchain UI App
+# Build and run the Logos Blockchain UI app
 
 #### Run a node that participates in consensus via a standalone application.
 

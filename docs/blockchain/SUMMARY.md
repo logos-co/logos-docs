@@ -15,7 +15,8 @@
 
 ## Node app
 
-- [Build and run the Logos Blockchain UI App](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+- [Build and run the Logos Blockchain UI app](./node-app/build-and-run-logos-blockchain-node-app-ui.md)
+- [Bridge assets from Logos Blockchain to a Zone using the Logos Blockchain app](./node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md)
 
 ## Blend
 

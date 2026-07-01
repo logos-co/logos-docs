@@ -31,7 +31,7 @@ This guide covers how to build and install a Logos module, start the `logoscore`
 - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 

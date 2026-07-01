@@ -35,7 +35,7 @@ Before you start, ensure you have:
 1. Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 

@@ -40,7 +40,7 @@ Before you start, make sure you have the following:
 - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 - Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts

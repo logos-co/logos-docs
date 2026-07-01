@@ -60,7 +60,7 @@ Follow the instructions for your chosen path.
 1. Install `logoscore`, `lgpd`, and `lgpm` into `./bin`:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 

@@ -44,7 +44,7 @@ Before you start, make sure you have the following:
 Install the system dependencies and download the three Logos CLI tools.
 
 {% hint style="info" %}
-You can also install runtime tools by running:
+You can also install these tools by running:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh

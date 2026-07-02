@@ -14,7 +14,7 @@ slug: build-logos-module-that-uses-chat-module-api
 
 #### Get started with private 1:1 end-to-end encrypted messaging in your own Logos module.
 
-This procedure covers how to build a Logos module that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.1`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos module that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.2`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
 {% hint style="info" %}
 Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations.
@@ -90,18 +90,30 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    }
    ```
 
-2. In `flake.nix`, add a matching pinned input:
+2. In `flake.nix`, pin `chat_module` and its transport dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
 
    ```nix
    inputs = {
      logos-module-builder.url = "github:logos-co/logos-module-builder";
-     chat_module.url = "github:logos-co/logos-chat-module/v0.1.1";
-     delivery_module.url = 
+     # Pin chat_module to the released tag so its API can't shift under `nix flake update`.
+     chat_module.url = "github:logos-co/logos-chat-module/v0.1.2";
+     # chat_module reaches delivery over IPC, but the builder still needs delivery's
+     # runtime build from a matching flake input. Pin the v0.1.3 tag: it carries the
+     # zerokit/RLN nix-build fix that earlier delivery tags (≤ v0.1.2) lack.
+     logos-delivery-module.url = "github:logos-co/logos-delivery-module/v0.1.3";
    };
+
+   outputs = inputs@{ logos-module-builder, logos-delivery-module, ... }:
+     logos-module-builder.lib.mkLogosQmlModule {
+       src = ./.;
+       configFile = ./metadata.json;
+       # Map the delivery input to the `delivery_module` dependency name.
+       flakeInputs = { delivery_module = logos-delivery-module; } // inputs;
+     };
    ```
 
 {% hint style="info" %}
-`delivery_module` is `chat_module`'s transport dependency, reached over IPC. The override above resolves the `delivery_module` contract from the `chat_module` input, so your generated client matches the version `chat_module` was built against.
+The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation — it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/flake.nix) wires the two modules together.
 {% endhint %}
 
 ## Step 3: Initialise `LogosModules` and subscribe to events
@@ -148,7 +160,7 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    });
    ```
 
-   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.1/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
+   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.2/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
 
 ## Step 4: Drive the chat lifecycle
 
@@ -232,7 +244,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    ```
 
    {% hint style="warning" %}
-   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/master/src/ChatBackend.cpp)).
+   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
    {% endhint %}
 
 7. Shut down cleanly:
@@ -283,4 +295,4 @@ You issued a synchronous module read (`list_conversations`, `get_messages`, `sta
 
 ### Why is a previously created conversation still there after a restart?
 
-Chat state is **persistent** from `v0.1.1`. Identity and history live in the instance directory passed to `init()` (`identity.db`, `history.json`), so restarting against the same directory restores conversations and your identity. Point `init()` at a fresh directory to start from a clean state.
+Chat state is **persistent**. Identity and history live in the instance directory passed to `init()` (`identity.db`, `history.json`), so restarting against the same directory restores conversations and your identity. Point `init()` at a fresh directory to start from a clean state.

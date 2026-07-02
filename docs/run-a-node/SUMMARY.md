@@ -12,5 +12,9 @@
 
 - [Run a Logos delivery node](../messaging/delivery/run-logos-delivery-node.md)
 
+## Storage node
+
+- [Run a Logos storage node](../storage/get-started/run-logos-storage-node.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

@@ -77,7 +77,7 @@ By the end of this tutorial:
 
 1. From the wallet section of the UI, copy one of your keys.
 
-1. Go to the [devnet faucet](https://devnet.blockchain.logos.co/node/0/faucet), paste your key, and click **Request Funds**.
+1. Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste your key, and click **Request Funds**.
 
     {% hint style="info" %}
     

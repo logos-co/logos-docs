@@ -14,7 +14,7 @@ slug: run-a-logos-blockchain-node-from-cli
 
 #### Start a node and verify runtime and consensus signals.
 
-With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
+With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
@@ -26,64 +26,46 @@ Before you start, ensure you have:
 
 ## What to expect
 
-- You can install the node binary and ZK circuits, generate a configuration, and join the public testnet.
+- You can install the node binary, generate a configuration, and join the public testnet.
 - You can verify that your node is syncing and connected to peers using the local API.
 - You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
-## Step 1: Install the node binary and ZK circuits
+## Step 1: Install Logos core tools
 
-The node requires zero-knowledge circuit files for cryptographic operations. Download the node binary and circuits archive from the [Logos Blockchain Node releases page](https://github.com/logos-blockchain/logos-blockchain/releases/latest), then install both before running the node.
+1. Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
 
-{% hint style="info" %}
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+   export PATH="$PWD/bin:$PATH"
+   ```
 
-The wallet used here is the node's internal key store, not a general-purpose user wallet. It holds the staking keys that give your node the right to participate in the consensus lottery.
+## Step 2: Load the Logos Blockchain module
 
-{% endhint %}
+Download the Logos Blockchain module with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
-1. Download the latest node binary and circuits archive for your device's architecture.
+1. Download the module:
 
-    - The node filename begins with `logos-blockchain-node-`.
-    - The circuits filename begins with `logos-blockchain-circuits-`.
-
-    For example, to download release 0.1.2 on Linux x86_64 with `wget`:
-
-    ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.3-rc.1/logos-blockchain-circuits-v0.4.2-linux-x86_64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-x86_64-0.1.2.tar.gz
+    ```bash
+    lgpd download blockchain_module --version 0.2.0 --output ./
+    # writes ./blockchain_module-0.2.0.lgx
     ```
 
-    On macOS (aarch64):
+1. Install the module:
 
-    ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-macos-aarch64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-macos-aarch64-0.1.2.tar.gz
+    ```bash
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.0.lgx
     ```
 
-    On a Raspberry Pi (aarch64):
+1. Launch `logoscore` in daemon mode and load the Logos Blockchain module:
 
-    ```sh
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-circuits-v0.4.2-linux-aarch64.tar.gz
-    wget https://github.com/logos-blockchain/logos-blockchain/releases/download/0.1.2/logos-blockchain-node-linux-aarch64-0.1.2.tar.gz
+    ```bash
+    logoscore -m ./modules -D &
+    logoscore load-module blockchain_module
     ```
-
-1. Extract the downloaded archives:
-
-    ```sh
-    tar -xf logos-blockchain-circuits-*.tar.gz
-    tar -xf logos-blockchain-node-*.tar.gz
-    ```
-
-1. Move the extracted circuits folder to `~/.logos-blockchain-circuits`, the default location the node searches:
-
-    ```sh
-    mv logos-blockchain-circuits-*/ ~/.logos-blockchain-circuits
-    ```
-
-    - To store circuits elsewhere, move them to your preferred path and set `export LOGOS_BLOCKCHAIN_CIRCUITS=/path/to/your/circuits`.
 
 ## Step 2: Configure and start the node
 
-The `init` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
+The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
 {% hint style="info" %}
 
@@ -91,14 +73,17 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
 {% endhint %}
 
-1. Generate your `user_config.yaml` by running `init` with the bootstrap peer addresses. For example, for release 0.1.2:
+1. Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
 
     ```sh
-    ./logos-blockchain-node init \
-        -p /ip4/65.109.51.37/udp/3000/quic-v1 \
-        -p /ip4/65.109.51.37/udp/3001/quic-v1 \
-        -p /ip4/65.109.51.37/udp/3002/quic-v1 \
-        -p /ip4/65.109.51.37/udp/3003/quic-v1
+    logoscore call blockchain_module generate_user_config '{
+        "initial_peers": [
+            "/ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar",
+            "/ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz",
+            "/ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb",
+            "/ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1"
+        ]
+    }'
     ```
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
@@ -106,16 +91,19 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 1. Start the node:
 
     ```sh
-    ./logos-blockchain-node user_config.yaml
+    logoscore call blockchain_module start user_config.yaml ""
     ```
 
 ## Step 3: Verify that your node is running and connected to peers
 
-Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe any `curl` command through `jq .` to format JSON output.
+Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
 1. Check the consensus state:
 
     ```sh
+    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
+
+    # Alternatively, send a request directly to your node port
     curl -s http://localhost:8080/cryptarchia/info | jq .
     ```
 
@@ -155,7 +143,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
     - Confirm `n_peers` is greater than `0`.
 
-1. After 30–60 seconds, run the `cryptarchia/info` command again and confirm `slot` and `height` have increased.
+1. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
 
 1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 

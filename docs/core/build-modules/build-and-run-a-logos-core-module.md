@@ -37,6 +37,12 @@ Before you start, make sure you have the following:
 - At least 10 GB of disk space
 - [Nix](https://nixos.org/download.html) with flakes enabled
 - Git
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+   export PATH="$PWD/bin:$PATH"
+   ```
 - Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
 
 ## What to expect
@@ -301,16 +307,10 @@ There are two ways to install `.lgx` packages:
 
 ### Install a locally built `.lgx` package
 
-1. Build the Logos Package Manager (`lgpm`) CLI.
-
-   ```bash
-   nix build 'github:logos-co/logos-package-manager/tutorial-v1#cli' --out-link ./package-manager
-   ```
-
 1. Create the `modules/` directory and install the `.lgx` package.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir ./modules install --file result/logos-<module-name>-module-lib.lgx
+   lgpm --modules-dir ./modules install --file result/logos-<module-name>-module-lib.lgx
    ```
 
    - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `./package-manager/bin/lgpm --modules-dir ./modules install --dir ./packages/`
@@ -328,34 +328,23 @@ Registry packages currently ship portable variants only (for example, `linux-amd
 
 {% endhint %}
 
-1. Build the Logos Package Manager (`lgpm`) CLI.
-
-   ```bash
-   nix build 'github:logos-co/logos-package-manager/tutorial-v1#cli' --out-link ./package-manager
-   ```
-
-1. Build the Logos Package Downloader (`lgpd`) CLI.
-
-   ```bash
-   nix build 'github:logos-co/logos-package-downloader/tutorial-v1#cli' --out-link ./downloader
-   ```
 
 1. Search the catalogue for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
 
    ```bash
-   ./downloader/bin/lgpd search <registry-name>
+   lgpd search <registry-name>
    ```
 
    {% hint style="success" %}
 
-   Use `./downloader/bin/lgpd list` to browse all available packages.
+   Use `lgpd list` to browse all available packages.
 
    {% endhint %}
 
 1. Download the LGX package to a local directory.
 
    ```bash
-   ./downloader/bin/lgpd download <registry-name> -o ./packages/
+   lgpd download <registry-name> -o ./packages/
    ```
 
    - Use `--release <tag>` to download from a specific release version. For example: `./downloader/bin/lgpd --release v2.0.0 download <registry-name> -o ./packages/`
@@ -364,7 +353,7 @@ Registry packages currently ship portable variants only (for example, `linux-amd
 1. Create the `modules/` directory and install the downloaded package. Replace `<downloaded-name>` with the actual filename written by `lgpd` (for example, `chat_module.lgx`).
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
+   lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
    - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
@@ -377,29 +366,23 @@ There are two Logos runtimes, `logoscore` and `logos-basecamp`, that can load an
 
 The `logoscore` CLI (from `logos-liblogos`) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
 
-1. Build `logoscore` from the `logos-logoscore-cli` repository.
-
-   ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/tutorial-v1' --out-link ./logos
-   ```
-
 1. Start the `logoscore` daemon with the `modules/` directory. 
 
    ```bash
-   ./logos/bin/logoscore -D -m ./modules
+   logoscore -D -m ./modules
    ```
 
 1. From another terminal, load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
 
    ```bash
-   ./logos/bin/logoscore load-module <module-name>
-   ./logos/bin/logoscore call <module-name> <method> <args>
+   logoscore load-module <module-name>
+   logoscore call <module-name> <method> <args>
    ```
 
 1. Stop the daemon when finished.
 
    ```bash
-   ./logos/bin/logoscore stop
+   logoscore stop
    ```
 
 {% hint style="success" %}
@@ -445,7 +428,7 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
 1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib` as described in Step 5.
 
    ```bash
-   ./package-manager/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
+   lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
    ```
 
 ## Troubleshooting

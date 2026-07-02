@@ -60,7 +60,7 @@ Follow the instructions for your chosen path.
 1. Install `logoscore`, `lgpd`, and `lgpm` into `./bin`:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 
@@ -75,9 +75,17 @@ Follow the instructions for your chosen path.
 1. Write the testnet config and start the daemon:
 
    ```bash
-   cat > logos-test.json <<'JSON'
-   { "preset": "logos.test", "logLevel": "DEBUG" }
-   JSON
+   cat > logos-test.json <<EOF
+   {
+      "preset": "logos.test",
+      "mode": "Core",
+      "logLevel": "INFO",
+      "tcpPort": 30303,
+      "discv5UdpPort": 9000,
+      "discv5Discovery": true,
+      "nat": "extip:<public-ip>"
+   }
+   EOF
 
    logoscore -D -m ./modules > logs.txt
    ```

@@ -12,7 +12,7 @@ slug: set-up-and-use-logos-storage-ui
 
 # Set up and use the Logos Storage UI
 
-#### Get started sharing and downloading files on the Logos Storage network.
+#### Get started sharing and downloading files on the Logos Storage network
 
 The Logos Storage UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers building the application with Nix, configuring your node's network connectivity, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
 
@@ -43,7 +43,7 @@ The application is built using Nix flakes. The output includes the storage UI pl
 
 If Nix flakes are not enabled globally, add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
 
-{% endhint %} 
+{% endhint %}
 
 1. Clone the [`logos-storage-ui`](https://github.com/logos-co/logos-storage-ui) repository and enter the project directory:
 
@@ -81,6 +81,7 @@ If Nix flakes are not enabled globally, add `experimental-features = nix-command
    ```
 
    - To override a dependency with a local version, use `--override-input`. For example:
+
      ```bash
      nix run --override-input storage_module/logos-storage git+file:///somewhere/logos-storage-nim?submodules=1
      ```
@@ -93,7 +94,7 @@ Your node must be reachable from the internet. Choose the setup option that matc
 |:---------|:-------------|:--------|
 | Behind NAT with UPnP or NAT-PMP | `Guided` followed by `UPnP` | Logos Storage configures the network automatically. |
 | Behind NAT, manual port forwarding available | `Guided` followed by `Port Forwarding` | Requires forwarding one TCP port (chosen during onboarding) and UDP `8090`. |
-| Custom or complex network | `Advanced` | Displays a prepopulated configuration JSON you can edit manually. See the [API reference](https://logos-co.github.io/logos-storage-module/api_reference.html). |
+| Custom or complex network | `Advanced` | Displays a prepopulated configuration JSON you can edit manually. See the [API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html). |
 
 The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the Storage Module to apply the changes.
 

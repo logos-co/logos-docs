@@ -26,7 +26,7 @@ Before you start, make sure you have the following:
 
 - You can select any funded wallet address as the sender and see its live balance in the **From address** dropdown.
 - You can submit a transfer and receive a transaction ID in the result row directly below the **Send** button.
-- Your sender balance updates on the next balance refresh after the transfer is confirmed.
+- Your sender balance updates after a refresh once the transfer is confirmed.
 
 ## Start the node and open the transfer panel
 
@@ -62,7 +62,7 @@ The **Operations** tab is disabled until the node is running and synced. Start t
    - On success, the row displays the transaction ID or hash returned by the module. Click the copy button to copy it to the clipboard.
    - On failure, the row displays `Error: <message>` with the rejection reason from the module.
 
-1. Confirm the sender's balance decreased by refreshing the **From address** dropdown on the next balance refresh cycle.
+1. Confirm the sender's balance decreased by refreshing the **From address** dropdown.
 
 ## Troubleshooting dashboard transfers
 

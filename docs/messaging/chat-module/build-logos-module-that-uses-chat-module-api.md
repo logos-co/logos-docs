@@ -16,10 +16,8 @@ slug: build-logos-module-that-uses-chat-module-api
 
 This procedure covers how to build a Logos module that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.1`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
-From `v0.1.1`, `chat_module` is a Rust SDK module that reaches the delivery node over Logos Core IPC, and its public surface is the typed [`chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.1/rust-lib/chat_module.lidl) contract — `logos-module-builder` generates a typed client from it at build time. For a complete worked example following this exact pattern, see [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui).
-
 {% hint style="info" %}
-Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations; point `init()` at a fresh directory to start clean.
+Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations.
 {% endhint %}
 
 Before you start, make sure you have the following:
@@ -70,13 +68,13 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
 ## Step 2: Declare `chat_module` as a dependency
 
-Add `chat_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module's API evolves. Because `chat_module` now reaches the delivery node over IPC, also declare its runtime transport dependency, `delivery_module`, and reuse the `delivery_module` contract that `chat_module` bundles.
+Add `chat_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module's API evolves.
 
 {% hint style="info" %}
 The flake input name (`chat_module`) must match the dependency name in `metadata.json`. `logos-module-builder` automatically generates the typed `chat_module` wrapper at build time.
 {% endhint %}
 
-1. In `metadata.json`, declare the dependencies and reuse `chat_module`'s bundled `delivery_module` contract:
+1. In `metadata.json`, add `chat_module` and `delivery_module` to the dependencies array and reuse `chat_module`'s bundled `delivery_module` contract:
 
    ```json
    {
@@ -92,17 +90,18 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    }
    ```
 
-1. In `flake.nix`, add a matching pinned input:
+2. In `flake.nix`, add a matching pinned input:
 
    ```nix
    inputs = {
      logos-module-builder.url = "github:logos-co/logos-module-builder";
      chat_module.url = "github:logos-co/logos-chat-module/v0.1.1";
+     delivery_module.url = 
    };
    ```
 
 {% hint style="info" %}
-`delivery_module` is `chat_module`'s transport dependency, reached over IPC. The override above resolves the `delivery_module` contract from the `chat_module` input, so your generated client matches the version `chat_module` was built against. The reference app, `logos-chat-ui`, additionally pins the `delivery_module` runtime build in its [`flake.nix`](https://github.com/logos-co/logos-chat-ui/blob/master/flake.nix) — mirror that pin for a runnable app.
+`delivery_module` is `chat_module`'s transport dependency, reached over IPC. The override above resolves the `delivery_module` contract from the `chat_module` input, so your generated client matches the version `chat_module` was built against.
 {% endhint %}
 
 ## Step 3: Initialise `LogosModules` and subscribe to events
@@ -149,28 +148,33 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    });
    ```
 
-   - Events push over the IPC event channel automatically — there is no separate subscribe/enable call. See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.1/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
+   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.1/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
 
 ## Step 4: Drive the chat lifecycle
 
-Status-bearing methods return their result **synchronously** as a `LogosResult`: `res.success` tells you whether the call succeeded, `res.getError<QString>()` carries the failure reason, and `res.getValue<QString>()` carries the returned value (for example, the intro bundle). Ongoing activity — incoming messages, new conversations, delivery-state changes — arrives asynchronously through the push events you subscribed to in Step 3.
+Status-bearing methods return their result **synchronously** as a `LogosResult`.
+   - `res.success` tells you whether the call succeeded;
+   - `res.getError<QString>()` carries the failure reason;
+   - `res.getValue<QString>()` carries the returned value (for example, the intro bundle).
+
+Ongoing activity — incoming messages, new conversations, delivery-state changes — arrives **asynchronously** through the push events you subscribed to in Step 3.
 
 {% hint style="info" %}
-`init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` (or poll `status()`) for the `online` state before creating conversations or sending messages.
+`init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
 {% endhint %}
 
 `init()` takes the instance directory, a delivery preset, and a TCP port:
 
 | Parameter | Type | Notes |
 |---|---|---|
-| `instance_path` | string | Directory for this instance's persistent state (`identity.db`, `history.json`). Use a distinct directory per instance to run several side by side. |
+| `instance_path` | string | Directory for this instance's persistent state. Use a distinct directory per instance to run several side by side. |
 | `delivery_preset` | string | Network preset for the delivery node. Use `logos.test` to reach the Logos test network. Must match across all participants. |
-| `tcp_port` | int | Logos Delivery (Waku) TCP port. `0` picks a random port. |
+| `tcp_port` | int | Logos Delivery TCP port. `0` picks a random port. |
 
 1. Initialise the chat client:
 
    ```cpp
-   const LogosResult res = m_logos->chat_module.init("/path/to/instance", "logos.test", 60000);
+   const LogosResult res = m_logos->chat_module.init("/path/to/instance", "logos.test", 0);
    if (!res.success) {
        qWarning() << "init failed:" << res.getError<QString>();
        return;
@@ -179,22 +183,27 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`:
    // Wait for delivery_state_changed with state == "online" before creating conversations.
    ```
 
-1. Read (or set) your identity:
+2. Read (or set) your identity:
 
    ```cpp
    const QString myId = m_logos->chat_module.get_installation_name();
    // Optionally choose a name: m_logos->chat_module.set_installation_name("alice");
    ```
 
-1. Create and share your introduction bundle:
+3. Create and share your introduction bundle:
 
    ```cpp
    const LogosResult bundle = m_logos->chat_module.create_intro_bundle();
    if (bundle.success)
-       shareOutOfBand(bundle.getValue<QString>());   // the intro bundle string
+      // share `bundleString` elsewhere
+      const auto myBundle = bundle.getValue<QString>()
    ```
 
-1. Open a private conversation as the initiator, or receive one as the recipient:
+   {% hint style="warning" %}
+   Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
+   {% endhint %}
+
+4. Open a private conversation as the initiator, or receive one as the recipient:
 
    ```cpp
    // content is plain text — no encoding required.
@@ -203,9 +212,9 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`:
    ```
 
    - The initiator calls `create_conversation` with the peer's intro bundle and a plain-text opening message.
-   - The recipient does not call anything; a `conversation_created` push event (`is_outgoing == false`) arrives automatically, followed by a `message_received` event.
+   - The recipient does not call anything; a `conversation_created` push event arrives automatically, followed by a `message_received` event.
 
-1. Send and receive messages:
+5. Send and receive messages:
 
    ```cpp
    m_logos->chat_module.send_message(convoId, "How are you?");
@@ -214,7 +223,7 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`:
 
    - Message content is plain text in both directions — the module handles encoding and end-to-end encryption on the wire.
 
-1. Read history and conversation state at any time (synchronous reads):
+6. Read history and conversation state at any time (synchronous reads):
 
    ```cpp
    const QVariantList convos = m_logos->chat_module.list_conversations();  // [Conversation]
@@ -226,7 +235,7 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`:
    Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/master/src/ChatBackend.cpp)).
    {% endhint %}
 
-1. Shut down cleanly:
+7. Shut down cleanly:
 
    ```cpp
    m_logos->chat_module.shutdown();   // disconnects and tears the client down
@@ -246,6 +255,17 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`:
    nix run                # preview via logos-standalone-app (for ui_qml modules)
    nix build .#lgx        # package as .lgx for installation into logos-basecamp
    ```
+
+## Step 6: Verify a two-instance exchange
+
+A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own `instance_path` and `tcp_port` — and confirm a message lands as a `message_received` event.
+
+1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
+1. In instance A, call `create_intro_bundle()` and share the returned bundle out of band (copy it into instance B).
+1. In instance B, call `create_conversation(bundleFromA, "Hello from B")`. Instance A receives a `conversation_created` event (`is_outgoing == false`) followed by a `message_received` event carrying `"Hello from B"`.
+1. In instance A, reply with `send_message(convoId, "Hi B")`. Instance B receives the matching `message_received` event.
+
+Seeing the `message_received` events on both sides confirms the full round trip: identity, intro-bundle exchange, conversation setup, and end-to-end encrypted delivery.
 
 ## Troubleshooting the Logos Chat module
 

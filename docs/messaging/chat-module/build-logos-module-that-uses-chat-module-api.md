@@ -2,9 +2,9 @@
 title: Build a Logos module that uses the Chat module API
 doc_type: procedure
 product: messaging
-topics: []
+topics: chat
 steps_layout: sectioned
-authors:
+authors: kashepavadan, igor-sirotin
 owner: logos
 doc_version: 1
 slug: build-logos-module-that-uses-chat-module-api
@@ -206,9 +206,10 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 
    ```cpp
    const LogosResult bundle = m_logos->chat_module.create_intro_bundle();
-   if (bundle.success)
-      // share `bundleString` elsewhere
-      const auto myBundle = bundle.getValue<QString>()
+   if (bundle.success) {
+       const QString myBundle = bundle.getValue<QString>();
+       // share `myBundle` out of band (the recipient pastes it — see Step 6)
+   }
    ```
 
    {% hint style="warning" %}

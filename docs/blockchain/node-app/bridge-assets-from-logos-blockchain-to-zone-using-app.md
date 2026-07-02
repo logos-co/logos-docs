@@ -83,8 +83,7 @@ The UI collects the deposit payload across three input steps, then submits it on
    - **Funding public keys** — one per line, prefilled; for paying the gas fee.
    - **Max tx fee** — Maximum fee allowed to spend
    - **Metadata (base58)** (Optional) — Usually specific to the Zone
-   - **tip hex** or **Use query tip** (Optional) — 
-
+   - **tip hex** or **Use query tip** (Optional) — The chain tip the deposit is built against. Leave empty to use the node's current tip.
 
    - The **Next** button is enabled once the channel ID, change key, at least one funding key, and max fee are present, and any metadata entered is valid base58.
 

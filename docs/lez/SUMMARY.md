@@ -22,5 +22,10 @@
 
 - [Set up a shared private LEZ account](./accounts/set-up-shared-private-lez-account.md)
 
+## Extensions
+
+- [Gate program instructions with admin-authority](extensions/admin-authority.md)
+- [Build a SPEL extension library](extensions/build-a-spel-extension-library.md)
+
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

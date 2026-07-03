@@ -41,7 +41,7 @@ Create a new directory and initialise it from the C++ backend UI template.
 1. Initialise from the template:
 
    ```bash
-   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#ui-qml-backend
+   nix flake init -t github:logos-co/logos-module-builder/0.2.0#ui-qml-backend
    ```
 
 1. Initialise a Git repository and stage all generated files:
@@ -467,7 +467,7 @@ The template already wires everything up. Update the description and point `calc
      description = "Calculator C++ UI plugin for Logos - QML view with process-isolated backend for calc_module";
 
      inputs = {
-       logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v3";
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
 
        # Keep this placeholder as is - it gets locked to your real path in the next step.
        calc_module.url = "path:/path/to/your/calc_module";

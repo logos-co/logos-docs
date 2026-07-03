@@ -43,7 +43,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 1. Initialise from the template:
 
    ```bash
-   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#ui-qml-backend
+   nix flake init -t github:logos-co/logos-module-builder/0.2.0#ui-qml-backend
    ```
 
 1. Initialise a Git repository and stage all generated files:

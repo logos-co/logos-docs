@@ -14,7 +14,7 @@ slug: transfer-native-lez-tokens-between-public-private-states
 
 #### Get started with private transfers to accounts you don't control, using a recipient-published keypair.
 
-This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account) — regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
+This procedure covers how to credit a [private account](/get-started/glossary#private-account) — regular or a [Program Derived Address](/get-started/glossary#program-derived-address) ([PDA](/get-started/glossary#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](/get-started/glossary#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
 
 Before you start, make sure you have the following:
 
@@ -24,7 +24,7 @@ Before you start, make sure you have the following:
 
 ## What to expect
 
-- You can credit a recipient's private account using only their published [NPK](../../get-started/glossary.md#npk) and [VPK](../../get-started/glossary.md#vpk), with no interactive setup required.
+- You can credit a recipient's private account using only their published [NPK](/get-started/glossary#npk) and [VPK](/get-started/glossary#vpk), with no interactive setup required.
 - You can receive tokens into up to 2^128 distinct accounts from the same keypair by varying the identifier, so one published key serves many independent senders.
 - You can discover and spend incoming funds with `wallet account sync-private` after the sender's transaction is confirmed.
 

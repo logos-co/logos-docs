@@ -14,7 +14,7 @@ slug: send-1-1-messages-logos-chat
 
 #### Try out end-to-end encrypted private messaging over the Logos network.
 
-This procedure shows how to use the Logos Chat app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+This procedure shows how to use the Logos Chat app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](/get-started/glossary#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 {% hint style="info" %}
 
@@ -30,7 +30,7 @@ You need the following to complete this procedure:
 
 ## What to expect
 
-- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](../../get-started/glossary.md#basecamp).
+- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](/get-started/glossary#basecamp).
 - You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
 - You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
 
@@ -87,7 +87,7 @@ The app auto-initialises on launch and displays your identity ID in the bottom s
 
    The bundle is a string starting with `logos_chatintro…`.
 
-1. Send the copied bundle to instance B through any out-of-band [channel](../../get-started/glossary.md#channel).
+1. Send the copied bundle to instance B through any out-of-band [channel](/get-started/glossary#channel).
 1. Close the **My Bundle** popup.
 
 **On instance B:**

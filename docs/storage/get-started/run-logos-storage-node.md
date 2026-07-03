@@ -31,17 +31,17 @@ Before you start, make sure you have the following:
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
-- `jq` on your `PATH` — used to pull the uploaded [CID](../../get-started/glossary.md#cid) out of the manifests JSON. Verify: `jq --version`
+- `jq` on your `PATH` — used to pull the uploaded [CID](/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
 
 ## What to expect
 
-- You can connect a [Logos Storage](../../get-started/glossary.md#logos-storage) node to the testnet and have it listed among the bootstrap peers.
+- You can connect a [Logos Storage](/get-started/glossary#logos-storage) node to the testnet and have it listed among the bootstrap peers.
 - You can publish a file to the network and retrieve a content address to share with other nodes.
 - You can download the file back from the network and confirm it lands on disk.
 
 ## Build and install the storage module
 
-1. Build the [module](../../get-started/glossary.md#module) package with Nix:
+1. Build the [module](/get-started/glossary#module) package with Nix:
 
    ```sh
    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx' -o storage-lgx
@@ -61,7 +61,7 @@ Before you start, make sure you have the following:
 
 ## Start the daemon and load the storage module
 
-Run `logoscore` with the modules directory, then load and initialise the [storage module](../../get-started/glossary.md#storage-module) against the testnet config.
+Run `logoscore` with the modules directory, then load and initialise the [storage module](/get-started/glossary#storage-module) against the testnet config.
 
 1. Start the `logoscore` daemon in background mode:
 
@@ -109,7 +109,7 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
    - Fields
 
    {% hint style="info" %}
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data:
+   To run storage with [mix](/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
 
      ```sh
      cat > make-mix-storage-config.sh <<'EOF'

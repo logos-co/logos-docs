@@ -14,7 +14,7 @@ slug: build-a-logos-cpp-ui-module
 
 #### Get started building a ui_qml module with a C++ backend that runs in a separate process.
 
-This guide covers building a [module](../../get-started/glossary.md#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
+This guide covers building a [module](/get-started/glossary#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
 
 **Before you start**, make sure you have the following:
 

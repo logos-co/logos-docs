@@ -17,7 +17,7 @@ slug: build-and-run-a-logos-core-module
 {% hint style="info" %}
 
 - **Permissions**: No special permissions required.
-- **Product**: Logos [Basecamp](../../get-started/glossary.md#basecamp)
+- **Product**: Logos [Basecamp](/get-started/glossary#basecamp)
 
 {% endhint %}
 
@@ -27,7 +27,7 @@ Logos core modules are non-UI modules that provide backend functionality. Core m
 
 {% hint style="info" %}
 
-For other [module](../../get-started/glossary.md#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](./logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+For other [module](/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](./logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
 
 {% endhint %}
 

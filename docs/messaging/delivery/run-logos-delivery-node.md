@@ -64,7 +64,7 @@ Follow the instructions for your chosen path.
    export PATH="$PWD/bin:$PATH"
    ```
 
-1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
+1. Download and install the [delivery module](/get-started/glossary#delivery-module):
 
    ```bash
    mkdir -p packages modules
@@ -92,7 +92,7 @@ Follow the instructions for your chosen path.
 
 **Path C — Nix**
 
-1. Clone the repository and build the runtime, package manager, and [module](../../get-started/glossary.md#module):
+1. Clone the repository and build the runtime, package manager, and [module](/get-started/glossary#module):
 
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git

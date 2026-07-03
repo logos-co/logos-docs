@@ -30,13 +30,13 @@ This page should be accurate for the specific version referenced in this doc, bu
 {% hint style="info" %}
 
 - **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
+- **Product**: [Logos Execution Zone](/get-started/glossary#logos-execution-zone) wallet CLI.
 
 {% endhint %}
 
 {% hint style="success" %}
 
-A public [LEZ](../../get-started/glossary.md#lez) testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
+A public [LEZ](/get-started/glossary#lez) testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
 
 - Explorer: https://explorer.testnet.lez.logos.co/
 - Sequencer RPC: https://testnet.lez.logos.co/
@@ -45,7 +45,7 @@ A public [LEZ](../../get-started/glossary.md#lez) testnet is available. This qui
 
 The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 
-LEZ separates [account](../../get-started/glossary.md#account) state into public (visible, on-chain) and private (hidden, off-chain). You choose which one you are using by creating a public or [private account](../../get-started/glossary.md#private-account) and using it in transactions. This ability to maintain a public and private state is provided by the [Logos Execution Environment](../../get-started/glossary.md#logos-execution-environment) ([LEE](../../get-started/glossary.md#lee)), that defines what an account is, how transactions are structured, and how executions are validated when some data must remain private. You can think of LEZ as the blockchain you connect to and where transactions are recorded, and LEE as the execution model that powers it.
+LEZ separates [account](/get-started/glossary#account) state into public (visible, on-chain) and private (hidden, off-chain). You choose which one you are using by creating a public or [private account](/get-started/glossary#private-account) and using it in transactions. This ability to maintain a public and private state is provided by the [Logos Execution Environment](/get-started/glossary#logos-execution-environment) ([LEE](/get-started/glossary#lee)), that defines what an account is, how transactions are structured, and how executions are validated when some data must remain private. You can think of LEZ as the blockchain you connect to and where transactions are recorded, and LEE as the execution model that powers it.
 
 {% hint style="info" %}
 
@@ -72,7 +72,7 @@ In this quickstart, you install the wallet tooling, connect to a local sequencer
 
 ## Step 1: Install the prerequisites
 
-To run the LEZ wallet CLI, you first need to install system dependencies, the Rust toolchain, and the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) circuits files.
+To run the LEZ wallet CLI, you first need to install system dependencies, the Rust toolchain, and the [Logos Blockchain](/get-started/glossary#logos-blockchain) circuits files.
 
 ### Install system build dependencies
 
@@ -256,11 +256,11 @@ The wallet uses this password as a seed to deterministically generate your publi
 
 In this flow, you create and initialise an account, claim testnet funds, send a transfer, and confirm resulting balances.
 
-In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
+In this task, wallet account and transfer commands interact with the authenticated-transfer [program](/get-started/glossary#program), and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
 
 ### Create and initialise the sender public account
 
-1. Create a sender [public account](../../get-started/glossary.md#public-account) and record the `account_id` value:
+1. Create a sender [public account](/get-started/glossary#public-account) and record the `account_id` value:
 
    ```bash
    cd ~/logos/src/logos-execution-zone
@@ -279,7 +279,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
    ```
 
-   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the [token program](../../get-started/glossary.md#token-program)). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
+   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the [token program](/get-started/glossary#token-program)). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
 
 1. Initialise the sender account, then check the updated state:
 

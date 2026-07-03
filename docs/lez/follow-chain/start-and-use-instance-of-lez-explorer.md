@@ -14,7 +14,7 @@ slug: start-and-use-instance-of-lez-explorer
 
 #### Get a clear view of on-chain activity including blocks, transactions, and accounts.
 
-The [LEZ](../../get-started/glossary.md#lez) Explorer lets you inspect the state of the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up [account](../../get-started/glossary.md#account) balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
+The [LEZ](/get-started/glossary#lez) Explorer lets you inspect the state of the [Logos Execution Zone](/get-started/glossary#logos-execution-zone) in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up [account](/get-started/glossary#account) balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
 
 {% hint style="info" %}
 If you don't want to run your own LEZ explorer instance, navigate to the [public LEZ explorer](https://explorer.testnet.lez.logos.co/).

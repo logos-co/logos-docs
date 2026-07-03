@@ -23,27 +23,27 @@ This page should be accurate for the specific version referenced in this doc, bu
 {% hint style="info" %}
 
  - **Permissions**: No special permissions required.
- - **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
+ - **Product**: [Logos Execution Zone](/get-started/glossary#logos-execution-zone) wallet CLI.
 
 {% endhint %}
 
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
+The Logos Execution Zone ([LEZ](/get-started/glossary#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](/get-started/glossary#program) to transfer native tokens between public and private accounts.
 
 On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 
 - Public accounts
     - Live on-chain.
-    - Identified by a 32-byte [account](../../get-started/glossary.md#account) ID derived from the public key
+    - Identified by a 32-byte [account](/get-started/glossary#account) ID derived from the public key
     - The private key signs transactions and authorises program executions. 
 
 - Transfers between public accounts
     - Validators execute the authenticated-transfers program transparently.
-    - The public state (the on-chain map from [public account](../../get-started/glossary.md#public-account) IDs to their account states) is updated in place by debiting the sender's public account and crediting the recipient's public account.
+    - The public state (the on-chain map from [public account](/get-started/glossary#public-account) IDs to their account states) is updated in place by debiting the sender's public account and crediting the recipient's public account.
 
 - Private accounts
     - Structurally identical to public accounts, but their values are stored off-chain. 
-    - Use two keypairs: [nullifier keys](../../get-started/glossary.md#nullifier-keys) for privacy-preserving executions and [viewing keys](../../get-started/glossary.md#viewing-keys) for encrypting and decrypting values. 
-    - The [private account](../../get-started/glossary.md#private-account) ID is derived from the [nullifier public key](../../get-started/glossary.md#nullifier-public-key). 
+    - Use two keypairs: [nullifier keys](/get-started/glossary#nullifier-keys) for privacy-preserving executions and [viewing keys](/get-started/glossary#viewing-keys) for encrypting and decrypting values. 
+    - The [private account](/get-started/glossary#private-account) ID is derived from the [nullifier public key](/get-started/glossary#nullifier-public-key). 
     - Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
 
 - Transfers involving any private account
@@ -85,7 +85,7 @@ Before you begin, ensure that you have the following:
     wallet account new private
     ```
 
-   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
+   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](/get-started/glossary#viewing-public-key) (`vpk`).
 
 {% hint style="info" %}
 

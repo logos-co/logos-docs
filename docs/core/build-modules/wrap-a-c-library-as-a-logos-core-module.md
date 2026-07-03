@@ -14,7 +14,7 @@ slug: wrap-a-c-library-as-a-logos-core-module
 
 #### Expose functions from a C shared library through a Logos core module.
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](/get-started/glossary#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -580,7 +580,7 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 
 ## Step 6: Test with logoscore
 
-1. Build [logoscore](../../get-started/glossary.md#logoscore):
+1. Build [logoscore](/get-started/glossary#logoscore):
 
    ```bash
    nix build 'github:logos-co/logos-logoscore-cli/tutorial-v3' --out-link ./logos

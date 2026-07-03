@@ -14,13 +14,13 @@ slug: inscribe-data-on-chain-using-zone-sdk
 
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
-Applications built on Logos are implemented in execution environments known as [*Zones*](../concepts/about-zones.md), which post data *inscriptions* on-chain via Logos channels. A [Zone](../../get-started/glossary.md#zone) could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md), or it could be a simple, standalone Zone tracking the state of just one application.
+Applications built on Logos are implemented in execution environments known as [*Zones*](../concepts/about-zones.md), which post data *inscriptions* on-chain via Logos channels. A [Zone](/get-started/glossary#zone) could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
-The **[Zone SDK](../../get-started/glossary.md#zone-sdk)** is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
+The **[Zone SDK](/get-started/glossary#zone-sdk)** is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
 
 {% hint style="info" %}
 
-You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
+You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](/get-started/glossary#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
 
 {% endhint %} 
 
@@ -30,7 +30,7 @@ Before you begin, you will need:
 
 ## What to expect
 
-- You will initialise a `ZoneSequencer` that connects to your [Logos node](../../get-started/glossary.md#logos-node) and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
+- You will initialise a `ZoneSequencer` that connects to your [Logos node](/get-started/glossary#logos-node) and creates a new [channel](/get-started/glossary#channel) for posting inscriptions.
 - You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
 - You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 
@@ -57,7 +57,7 @@ Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone
 - `node: Node` — a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
 - `checkpoint: Option<SequencerCheckpoint>` — [Optional] the checkpoint representing the most recently-pushed channel update.
 
-Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](../../get-started/glossary.md#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](../../get-started/glossary.md#mantle) Operation.
+Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](/get-started/glossary#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](/get-started/glossary#mantle) Operation.
 
 After the first channel message, further messages include a hash reference to the previous message in the channel. If a message is posted with an incorrect parent hash, it is rejected. **Providing a checkpoint lets the sequencer track the last message posted to its channel, allowing it to resume posting new updates after restarting.** A checkpoint is not necessary for the session during which a sequencer creates a new channel.
 
@@ -133,7 +133,7 @@ After the first channel message, further messages include a hash reference to th
 
 ## Step 3: Handle channel events
 
-For a centralized Zone — a single sequencer that owns its channel — event handling is minimal. There are no competing sequencers, and a single sequencer never loses a [slot](../../get-started/glossary.md#slot), so the sequencer only needs to track which of its inscriptions have finalised and keep a checkpoint so it can resume after a restart. It learns about both through the Zone SDK's `Event` stream.
+For a centralized Zone — a single sequencer that owns its channel — event handling is minimal. There are no competing sequencers, and a single sequencer never loses a [slot](/get-started/glossary#slot), so the sequencer only needs to track which of its inscriptions have finalised and keep a checkpoint so it can resume after a restart. It learns about both through the Zone SDK's `Event` stream.
 
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
@@ -311,7 +311,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
 ## Step 4: Publish data
 
-Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handler's `publish` function. Once the transaction is submitted to the Zone SDK, this function returns a struct consisting of the [inscription](../../get-started/glossary.md#inscription) (message) ID and the current checkpoint.
+Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handler's `publish` function. Once the transaction is submitted to the Zone SDK, this function returns a struct consisting of the [inscription](/get-started/glossary#inscription) (message) ID and the current checkpoint.
 
 1. Add the following code to process user input text in the `run` function in `src/lib.rs`:
 

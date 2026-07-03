@@ -14,7 +14,7 @@ slug: start-a-logos-module-from-the-cli
 
 #### Explore how to load and call a Logos module from the command line using `logoscore`.
 
-This guide covers how to build and install a Logos [module](../../get-started/glossary.md#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
+This guide covers how to build and install a Logos [module](/get-started/glossary#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
 
 **Before you start**, make sure you have the following:
 

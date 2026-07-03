@@ -14,7 +14,7 @@ slug: set-up-and-use-logos-storage-ui
 
 #### Get started sharing and downloading files on the Logos Storage network
 
-The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers building the application with Nix, configuring your node's network connectivity, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
+The [Logos Storage](/get-started/glossary#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers building the application with Nix, configuring your node's network connectivity, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
 
 Before you start, have the following ready:
 
@@ -33,7 +33,7 @@ Before you start, have the following ready:
 
 - You can build and run a standalone Logos Storage UI application using a single `nix build` command.
 - You can configure your node's network connectivity to make it reachable from the internet.
-- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
+- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](/get-started/glossary#cid)).
 
 ## Step 1: Build the application
 
@@ -96,7 +96,7 @@ Your node must be reachable from the internet. Choose the setup option that matc
 | Behind NAT, manual port forwarding available | `Guided` followed by `Port Forwarding` | Requires forwarding one TCP port (chosen during onboarding) and UDP `8090`. |
 | Custom or complex network | `Advanced` | Displays a prepopulated configuration JSON you can edit manually. See the [API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html). |
 
-The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the [Storage Module](../../get-started/glossary.md#storage-module) to apply the changes.
+The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the [Storage Module](/get-started/glossary#storage-module) to apply the changes.
 
 The default settings are saved to `~/.config/Logos/LogosStorage.conf` on Linux, `~/Library/Preferences/Logos.LogosStorage.plist` on macOS, and `HKCU\Software\Logos\LogosStorage` (Registry) on Windows.
 

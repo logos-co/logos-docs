@@ -8,7 +8,7 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 
 ## A. Outcome + value (required)
 
-- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering [mix](../../get-started/glossary.md#mix) nodes through Logos capability discovery.
+- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering [mix](/get-started/glossary#mix) nodes through Logos capability discovery.
 - **Why it matters:** Proves two core testnet v0.1 primitives work end-to-end: capability-based node discovery and anonymous message routing via the mixnet.
 
 ## B. Scope + ownership

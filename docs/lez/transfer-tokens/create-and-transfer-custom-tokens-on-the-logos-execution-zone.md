@@ -23,17 +23,17 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 {% hint style="info" %}
 
 - **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
+- **Product**: [Logos Execution Zone](/get-started/glossary#logos-execution-zone) wallet CLI.
 
 {% endhint %}
 
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](./transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
+The Logos Execution Zone ([LEZ](/get-started/glossary#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](/get-started/glossary#token-program) to create and transfer custom tokens between [public and private accounts](./transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
 
-The token program is a built-in LEZ [program](../../get-started/glossary.md#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.
+The token program is a built-in LEZ [program](/get-started/glossary#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.
 
 Token program accounts fall into two types:
 
-- [Token definition account](../../get-started/glossary.md#token-definition-account)
+- [Token definition account](/get-started/glossary#token-definition-account)
   - Each token has exactly one token definition account.
   - It defines the token globally (the “token type”).
   - Its address is the token identifier (similar to a mint address). 
@@ -41,9 +41,9 @@ Token program accounts fall into two types:
   - It stores metadata including the token name and total supply.
   - It can be public or private.
 
-- [Token holding account](../../get-started/glossary.md#token-holding-account)
+- [Token holding account](/get-started/glossary#token-holding-account)
   - Each token can have multiple token holding accounts.
-  - Any [account](../../get-started/glossary.md#account) that holds a balance of a token is a token holding account for that token.
+  - Any [account](/get-started/glossary#account) that holds a balance of a token is a token holding account for that token.
   - It stores the token definition ID and the balance the account currently controls.
   - The token program owns it.
   - Only the token program can modify it. Modifications happen through token program executions authorised by the account’s keys.
@@ -64,7 +64,7 @@ Before you begin, ensure that you have the following:
 
 - The token program can move balances between token holding accounts. 
 - If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
-- You can transfer custom tokens to any uninitialised public or [private account](../../get-started/glossary.md#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
+- You can transfer custom tokens to any uninitialised public or [private account](/get-started/glossary#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 {% hint style="info" %}
 
@@ -76,7 +76,7 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 1. Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
-    - [Public account](../../get-started/glossary.md#public-account):
+    - [Public account](/get-started/glossary#public-account):
 
     ```sh
     wallet account new public
@@ -88,7 +88,7 @@ Currently, it's impossible to change the token name or total supply after you cr
     wallet account new private
     ```
 
-   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, [nullifier public key](../../get-started/glossary.md#nullifier-public-key) (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
+   If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, [nullifier public key](/get-started/glossary#nullifier-public-key) (`npk`), and [viewing public key](/get-started/glossary#viewing-public-key) (`vpk`).
 
 {% hint style="info" %}
 

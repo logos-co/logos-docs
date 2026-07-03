@@ -14,7 +14,7 @@ slug: use-logos-delivery-module-api-from-app
 
 #### Get started integrating Logos messaging into a C++ module.
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the Logos Delivery API to subscribe to content topics, send messages, and react to delivery events on the Logos messaging network. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0) (tag `v0.1.0`).
+This procedure covers building a Logos [module](/get-started/glossary#module) that calls the Logos Delivery API to subscribe to content topics, send messages, and react to delivery events on the Logos messaging network. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.1.0) (tag `v0.1.0`).
 
 The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.1.3`](https://github.com/logos-co/logos-delivery-module/tree/794c21cbe177bdea16d4907468eaf52d4282dda7)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 
@@ -26,7 +26,7 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
 
 ## What to expect
 
-- You can subscribe to a [content topic](../../get-started/glossary.md#content-topic) and receive messages on the Logos messaging network.
+- You can subscribe to a [content topic](/get-started/glossary#content-topic) and receive messages on the Logos messaging network.
 - You can send a message and confirm delivery by tracking `messageSent` and `messagePropagated` events.
 - You can integrate the full Logos Delivery lifecycle — create, start, subscribe, send, stop — into your C++ module.
 
@@ -209,7 +209,7 @@ The JSON may be malformed, or an internal initialisation error occurred. Validat
 
 ### `send()` returns an unsuccessful `LogosResult`?
 
-The node was not started, or `contentTopic` is empty or invalid. Call `start()` first and verify it returned success. Confirm the content topic follows the [LIP](../../get-started/glossary.md#lip)-23 format.
+The node was not started, or `contentTopic` is empty or invalid. Call `start()` first and verify it returned success. Confirm the content topic follows the [LIP](/get-started/glossary#lip)-23 format.
 
 ### `messageSent` never fires after a successful `send()`?
 

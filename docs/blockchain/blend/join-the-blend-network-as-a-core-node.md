@@ -14,7 +14,7 @@ slug: join-the-blend-network-as-a-core-node
 
 #### Connect your blockchain node to Blend to contribute to proposer privacy.
 
-Joining the [Blend Network](../../get-started/glossary.md#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](../../get-started/glossary.md#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
+Joining the [Blend Network](/get-started/glossary#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](/get-started/glossary#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](/get-started/glossary#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
 
 You need:
 
@@ -29,7 +29,7 @@ You need:
 
 ## Register your node as a Blend core node
 
-Complete these steps to fund the required keys, retrieve a locked [note](../../get-started/glossary.md#note), and submit your Blend join declaration.
+Complete these steps to fund the required keys, retrieve a locked [note](/get-started/glossary#note), and submit your Blend join declaration.
 
 1. Start the node and poll until the mode switches to `"Online"`. This takes approximately one hour:
 
@@ -104,7 +104,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
    # > ]
    ```
 
-   - `service_type: "BN"` identifies this as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
+   - `service_type: "BN"` identifies this as a [Blend node](/get-started/glossary#blend-node) declaration.
    - `zk_id` is your `BlendZk` public key; `provider_id` is your `BlendSigning` key.
    - `active == created + 2`: your node becomes active two epochs after the declaration is included in a block.
    - If your declaration is not yet listed, retry after your transaction is included in a block.

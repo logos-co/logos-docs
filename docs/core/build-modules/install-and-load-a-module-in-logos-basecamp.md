@@ -14,7 +14,7 @@ slug: install-and-load-a-module-in-logos-basecamp
 
 #### Access features and functionalities through modules in Logos Basecamp.
 
-In Logos [Basecamp](../../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online catalogue or local `.lgx` files.
+In Logos [Basecamp](/get-started/glossary#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online catalogue or local `.lgx` files.
 
 There are two types of modules in Logos Basecamp. Core modules are the headless background services that provide capabilities like messaging or storage, while UI modules are the visual front-ends users interact with.
 
@@ -32,7 +32,7 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 ## What to expect
 
-- You can install a [module](../../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
+- You can install a [module](/get-started/glossary#module) from the online catalogue or from a local `.lgx` file.
 - You can load or unload a module from the **Modules** view.
 - You can read a loading module's status, CPU, and memory in the **Modules** view.
 

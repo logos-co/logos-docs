@@ -38,6 +38,10 @@ The protocol underlying the Blend Network, which provides anonymity for Logos Bl
 
 ## C
 
+### Catalogue
+
+A repository that includes a list of Logos modules. Installing a module repo on Basecamp allows you to install the latest version of all these modules together. Also known as a **module repo**.
+
 ### Channel
 
 A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle)
@@ -53,6 +57,10 @@ The old name for the Logos Storage component of the Logos technology stack.
 ### Content topic
 
 A content filter for messages sent via Logos Messaging. See the [Topics specification](https://lip.logos.co/messaging/informational/draft/23/topics.html#content-topics).
+
+### Core module
+
+A Logos module that does not include a user interface view and provides backend functionality.
 
 ### Core node
 
@@ -199,6 +207,10 @@ Traffic obfuscation used to improve privacy guarantees.
 
 A self-contained, resuable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application.
 
+### Module repo
+
+A repository that includes a list of Logos modules. Installing a module repo on Basecamp allows you to install the latest version of all these modules together. Also known as a **catalogue**.
+
 ---
 
 ## N
@@ -330,6 +342,14 @@ An LEZ program that facilitates the creation of custom LEZ tokens. See [Create a
 
 ---
 
+## U
+
+### UI Module
+
+A Logos module that includes a user interface view.
+
+---
+
 ## V
 
 ### Viewing keys
@@ -358,7 +378,7 @@ A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. S
 
 ### Waku
 
-An old name for the Logos Messaging component of the Logos technology stack.
+An old name for the Logos Delivery component of the Logos technology stack.
 
 ---
 
@@ -370,4 +390,4 @@ An SDK provided by Logos to facilitate the creation of custom Logos Zones. See [
 
 ### Zone
 
-An L2 blockchain that defines its own state but uses the Logos Blockchain for consensus. See [About Zones](https://docs.logos.co/blockchain/concepts/about-zones).s
+An L2 blockchain that defines its own state but uses the Logos Blockchain for consensus. See [About Zones](https://docs.logos.co/blockchain/concepts/about-zones).

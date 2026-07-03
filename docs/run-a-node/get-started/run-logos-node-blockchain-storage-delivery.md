@@ -120,10 +120,10 @@ Create the runtime user and the directory layout the node uses at runtime.
 
 ## Step 3: Install modules
 
-Download and install the three module packages from the configured module catalog.
+Download and install the three module packages from the configured module [catalogue](https://docs.logos.co/get-started/glossary#catalogue).
 
 {% hint style="info" %}
-`lgpd download` fetches the version published in the catalog. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalog before running these commands.
+`lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
 {% endhint %}
 
 1. Download the module packages:

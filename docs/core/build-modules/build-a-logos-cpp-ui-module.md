@@ -98,7 +98,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
    - `"type": "ui_qml"` — tells the builder this is a QML view module.
    - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
    - `"view": "qml/Main.qml"` — the QML entry point.
-   - `"dependencies": ["calc_module"]` — core modules the backend calls.
+   - `"dependencies": ["calc_module"]` — [core modules](https://docs.logos.co/get-started/glossary#core-module) the backend calls.
 
 1. Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 

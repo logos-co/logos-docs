@@ -14,16 +14,9 @@ slug: build-and-run-a-logos-core-module
 
 #### Scaffold, build, package, and test a core module on Logos.
 
-{% hint style="info" %}
-
-- **Permissions**: No special permissions required.
-- **Product**: Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp)
-
-{% endhint %}
-
 Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
 
-Logos core modules are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
+Logos [core modules](https://docs.logos.co/get-started/glossary#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
 {% hint style="info" %}
 
@@ -320,7 +313,7 @@ There are two ways to install `.lgx` packages:
 
 ### Download and install a `.lgx` file from a registry
 
-The Logos module catalogue is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
+The Logos module [catalogue](https://docs.logos.co/get-started/glossary#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
 
 {% hint style="warning" %}
 
@@ -356,7 +349,7 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
-   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
+   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing [UI modules](https://docs.logos.co/get-started/glossary#ui-module).
 
 ## Step 7: Run the module 
 

@@ -171,12 +171,13 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
    cd ~/logos/src
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
+   git checkout v0.2.0
    ```
 
 1. From the repository root, install the wallet CLI:
 
    ```bash
-   cargo install --path wallet --force
+   cargo install --path lez/wallet --force
    ```
 
 1. Confirm that the `wallet` command is available:
@@ -191,7 +192,7 @@ Open a new terminal window and start the LEZ sequencer from the root of the Logo
 
 ```bash
 cd ~/logos/src/logos-execution-zone
-RUST_LOG=info cargo run --features standalone -p sequencer_service sequencer/service/configs/debug/sequencer_config.json
+RUST_LOG=info cargo run --features standalone -p sequencer_service lez/sequencer/service/configs/debug/sequencer_config.json
 ```
 
 {% hint style="info" %}

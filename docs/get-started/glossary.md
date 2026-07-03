@@ -84,10 +84,6 @@ A time unit used by the Logos Blockchain, about 7.5 days long. See [About Crypta
 
 ---
 
-## F
-
----
-
 ## G
 
 ### GMS
@@ -106,10 +102,6 @@ A 32-byte secret used on the LEZ that, when sealed with another party's public s
 ### Inscription
 
 A type of Mantle operation that writes data to the Logos Blockchain. Inscriptions are often used to represent Zone state updates. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle).
-
----
-
-## K
 
 ---
 
@@ -248,11 +240,6 @@ A public key used to verify token ownership on the LEZ, also known as an **NPK**
 
 A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez/get-started/introduction-to-the-logos-execution-zone#accounts-model).
 
-
----
-
-## O
-
 ---
 
 ## P
@@ -292,14 +279,6 @@ The ZK proof that a note's owner is eligible to propose a block. Also known as *
 ### Public account
 
 A type of LEZ account whose state is publicly available. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez/get-started/introduction-to-the-logos-execution-zone#accounts-model).
-
----
-
-## Q
-
----
-
-## R
 
 ---
 
@@ -351,10 +330,6 @@ An LEZ program that facilitates the creation of custom LEZ tokens. See [Create a
 
 ---
 
-## U
-
----
-
 ## V
 
 ### Viewing keys
@@ -384,10 +359,6 @@ A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. S
 ### Waku
 
 An old name for the Logos Messaging component of the Logos technology stack.
-
----
-
-## X
 
 ---
 

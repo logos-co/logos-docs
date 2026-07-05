@@ -60,11 +60,20 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
    git init && git add -A
    ```
 
-1. Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
+1. Keep the generated files — you build on them, you don't delete them. The template is a working `ui_example` module. Its main files are:
 
-   ```bash
-   rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
-   ```
+   | File | What it is | You edit it? |
+   |---|---|---|
+   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes — your chat code goes here (Steps 3–4) |
+   | `src/ui_example.rep`, `src/ui_example_interface.h` | The module's interface | No |
+   | `src/qml/Main.qml` | The example view | Later — replace with your own UI |
+   | `metadata.json`, `CMakeLists.txt` | Build config | Step 2 only |
+
+   You add your chat code in `UiExamplePlugin::initLogos()`. Leave the example `status` / `add` UI as is for now.
+
+{% hint style="info" %}
+Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`) — they must all match, or `nix build` fails. To use a different name, change it in every one of these.
+{% endhint %}
 
 ## Step 2: Declare `chat_module` as a dependency
 
@@ -78,7 +87,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
 
    ```json
    {
-     "name": "my_app",
+     "name": "ui_example",
      "dependencies": ["chat_module", "delivery_module"],
      "dependency_overrides": {
        "delivery_module": {
@@ -125,12 +134,14 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    ```cpp
    #include "logos_sdk.h"   // generated umbrella — exposes LogosModules
 
-   // In your plugin class:
+   // Add a member to your plugin class (src/ui_example_plugin.h):
    //   LogosModules* m_logos = nullptr;
 
-   void MyPlugin::initLogos(LogosAPI* api) {
+   void UiExamplePlugin::initLogos(LogosAPI* api) {
+       logosAPI = api;      // keep the scaffold's two existing lines
+       setBackend(this);
        m_logos = new LogosModules(api);
-       // m_logos->chat_module is now the typed wrapper for the Logos Chat module.
+       // Use m_logos->chat_module to call the Logos Chat module.
    }
    ```
 

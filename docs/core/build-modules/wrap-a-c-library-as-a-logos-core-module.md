@@ -14,7 +14,7 @@ slug: wrap-a-c-library-as-a-logos-core-module
 
 #### Expose functions from a C shared library through a Logos core module.
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos module. By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](https://docs.logos.co/get-started/glossary#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -51,10 +51,10 @@ Before writing any C code, scaffold the Logos module project using the official 
    mkdir logos-calc-module && cd logos-calc-module
 
     # To wrap an external C library
-   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#with-external-lib
+   nix flake init -t github:logos-co/logos-module-builder/0.2.0#with-external-lib
 
    # Or for a plain module (no external library):
-   # nix flake init -t github:logos-co/logos-module-builder/tutorial-v3
+   # nix flake init -t github:logos-co/logos-module-builder/0.2.0
    ```
 
    This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customise them for your specific library.
@@ -310,7 +310,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
      description = "Calculator module - wraps libcalc C library for Logos";
 
      inputs = {
-       logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v3";
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
 
        # Fetch the library source (non-flake)
        # libfoo-src = {
@@ -503,7 +503,7 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 1. Build the `lm` tool:
 
    ```bash
-   nix build 'github:logos-co/logos-module/tutorial-v3#lm' --out-link ./lm
+   nix build 'github:logos-co/logos-module/0.2.0#lm' --out-link ./lm
    ```
 
 1. View metadata:
@@ -580,17 +580,17 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 
 ## Step 6: Test with logoscore
 
-1. Build logoscore:
+1. Build [logoscore](https://docs.logos.co/get-started/glossary#logoscore):
 
    ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/tutorial-v3' --out-link ./logos
+   nix build 'github:logos-co/logos-logoscore-cli/0.2.0' --out-link ./logos
    ```
 
 1. Set up the modules directory. `logoscore` expects modules in subdirectories, each with a `manifest.json`. Use the Nix derivation to create an LGX package and install it with the package manager:
 
    ```bash
    nix build '.#lgx'
-   nix build 'github:logos-co/logos-package-manager/tutorial-v3#cli' --out-link ./pm
+   nix build 'github:logos-co/logos-package-manager/0.2.0#cli' --out-link ./pm
    
    mkdir -p modules
    
@@ -634,7 +634,7 @@ Because your module is a plain C++ class, you can unit-test it directly. The [Lo
      description = "Calculator module - wraps libcalc C library for Logos";
 
      inputs = {
-       logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v3";
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
      };
 
      outputs = inputs@{ logos-module-builder, ... }:

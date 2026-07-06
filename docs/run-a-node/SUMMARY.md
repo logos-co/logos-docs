@@ -1,8 +1,18 @@
 # Table of contents
 
+## Complete node (Blockchain, Storage, Delivery modules)
+
+* [Run a Logos node with blockchain, storage, and delivery](README.md)
+
 ## Blockchain node
 
-- [Run a Logos Blockchain node on the public testnet from the CLI](../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md)
+* [Run a Logos Blockchain node on the public testnet from the CLI](../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md)
 
-<!-- Keep this README at the end of the SUMMARY -->
-- [Readme](README.md)
+## Delivery node
+
+* [Run a Logos delivery node](../messaging/delivery/run-logos-delivery-node.md)
+
+## Storage node
+
+* [Run a Logos storage node](../storage/get-started/run-logos-storage-node.md)
+* [Readme](<README (1).md>)

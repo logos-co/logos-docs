@@ -14,7 +14,7 @@ slug: build-logos-core-module-that-uses-service-discovery-api
 
 #### Get started with typed, service-keyed peer lookups in a live Logos network.
 
-Applications on the Logos network need a protocol-agnostic way to find peers offering specific services — mix nodes, relay nodes, storage providers — at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core module to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
+Applications on the Logos network need a protocol-agnostic way to find peers offering specific services — [mix](https://docs.logos.co/get-started/glossary#mix) nodes, relay nodes, storage providers — at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](https://docs.logos.co/get-started/glossary#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
 
 Before you start, make sure you have the following:
 
@@ -26,6 +26,12 @@ Before you start, make sure you have the following:
   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
   ```
 - 2 GB RAM (sufficient for a local two-module test)
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0) installed. To install it, use the `install-node-tools.sh` helper script:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+   export PATH="$PWD/bin:$PATH"
+   ```
 
 ## What to expect
 

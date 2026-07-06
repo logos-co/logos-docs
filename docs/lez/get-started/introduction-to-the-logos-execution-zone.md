@@ -13,26 +13,26 @@ slug: introduction-to-the-logos-execution-zone
 
 #### Understand how the Logos Execution Zone runs general-purpose applications with selective privacy.
 
-The Logos Execution Zone (LEZ) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../../blockchain/concepts/#about-zones.md) on the Logos Blockchain and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the Logos Execution Environment (LEE), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE guarantees privacy and correctness.
+The [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) ([LEZ](https://docs.logos.co/get-started/glossary#lez)) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../../blockchain/concepts/#about-zones.md) on the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the [Logos Execution Environment](https://docs.logos.co/get-started/glossary#logos-execution-environment) ([LEE](https://docs.logos.co/get-started/glossary#lee)), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE guarantees privacy and correctness.
 
 ## The basics
 
-- The LEZ is the flagship Zone for general-purpose applications on Logos, with built-in support for private execution.
+- The LEZ is the flagship [Zone](https://docs.logos.co/get-started/glossary#zone) for general-purpose applications on Logos, with built-in support for private execution.
 - The LEZ separates state into public and private accounts. Public executions are validated by re-execution, and private executions are proven with zero knowledge proofs.
-- The LEZ supports applications with high transaction throughput, and inscribes its state updates on the Logos Blockchain through the LEZ channel.
+- The LEZ supports applications with high transaction throughput, and inscribes its state updates on the Logos Blockchain through the LEZ [channel](https://docs.logos.co/get-started/glossary#channel).
 
 ## Accounts Model
 
-To achieve separation between public and private state while allowing for full programmability, the LEE uses a stateless program model. Under this model, all persistent data is stored in accounts, which can be either public or private. Public accounts are stored on-chain as a map between the account ID and its associated state (such as a token balance). A public account owner’s private key signs transactions and authorises executions, while the derived account ID is publicly visible on-chain.
+To achieve separation between public and private state while allowing for full programmability, the LEE uses a stateless [program](https://docs.logos.co/get-started/glossary#program) model. Under this model, all persistent data is stored in accounts, which can be either public or private. Public accounts are stored on-chain as a map between the [account](https://docs.logos.co/get-started/glossary#account) ID and its associated state (such as a token balance). A [public account](https://docs.logos.co/get-started/glossary#public-account) owner’s private key signs transactions and authorises executions, while the derived account ID is publicly visible on-chain.
 
 Private accounts, by contrast, are stored locally on the account-holder’s node, which publishes [commitments](https://en.wikipedia.org/wiki/Commitment_scheme) to the account state onto the chain whenever the state is updated. The latest commitment binds the current account state to the chain without revealing its data, while nullifiers for previous commitments ensure that old commitments are not used for program execution. Private accounts are created with two associated key pairs.
 
--  Nullifier keys: The private nullifier key is used by the account owner to sign transactions and authorise executions. The public nullifier key is used as the account ID for verifying ownership.
--  Viewing keys: The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
+-  [Nullifier keys](https://docs.logos.co/get-started/glossary#nullifier-keys): The private nullifier key is used by the account owner to sign transactions and authorise executions. The public nullifier key is used as the account ID for verifying ownership.
+-  [Viewing keys](https://docs.logos.co/get-started/glossary#viewing-keys): The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
 
 {% hint style="info" %}
 
-A program must obtain a private account’s nullifier public key, as well as its viewing public key, in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
+A program must obtain a [private account](https://docs.logos.co/get-started/glossary#private-account)’s [nullifier public key](https://docs.logos.co/get-started/glossary#nullifier-public-key), as well as its [viewing public key](https://docs.logos.co/get-started/glossary#viewing-public-key), in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
 
 {% endhint %}
 

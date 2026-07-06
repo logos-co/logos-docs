@@ -14,9 +14,9 @@ slug: set-up-shared-private-lez-account
 
 #### Get started with group-owned private accounts where every member independently derives the same keys.
 
-This procedure covers how to create a shared private account (regular or PDA) on the LEZ that is jointly controlled by multiple members. From one 32-byte Group Master Secret (GMS), every member independently derives the same account keys (NSK, VSK, NPK, VPK), so any member can view and spend the shared balance without an interactive key exchange at spend time. It is intended for developers on testnet v0.2 who need multi-party custody of a private balance or a private PDA.
+This procedure covers how to create a shared [private account](https://docs.logos.co/get-started/glossary#private-account) (regular or [PDA](https://docs.logos.co/get-started/glossary#pda)) on the [LEZ](https://docs.logos.co/get-started/glossary#lez) that is jointly controlled by multiple members. From one 32-byte [Group Master Secret](https://docs.logos.co/get-started/glossary#group-master-secret) ([GMS](https://docs.logos.co/get-started/glossary#gms)), every member independently derives the same [account](https://docs.logos.co/get-started/glossary#account) keys ([NSK](https://docs.logos.co/get-started/glossary#nsk), [VSK](https://docs.logos.co/get-started/glossary#vsk), [NPK](https://docs.logos.co/get-started/glossary#npk), [VPK](https://docs.logos.co/get-started/glossary#vpk)), so any member can view and spend the shared balance without an interactive key exchange at spend time. It is intended for developers on testnet v0.2 who need multi-party custody of a private balance or a private PDA.
 
-This feature is 1-of-n at the key layer: any GMS holder can derive every key and spend the account. Threshold gating must be implemented at the program layer. View-only membership is not supported — any GMS holder gets both viewing and spending capability.
+This feature is 1-of-n at the key layer: any GMS holder can derive every key and spend the account. Threshold gating must be implemented at the [program](https://docs.logos.co/get-started/glossary#program) layer. View-only membership is not supported — any GMS holder gets both viewing and spending capability.
 
 Before you start, make sure you have the following:
 
@@ -33,7 +33,7 @@ Before you start, make sure you have the following:
 
 ## Step 1: Generate a sealing key pair for each member
 
-Each member who will join a group needs a one-time sealing key pair before the owner can invite them. The sealing key uses ML-KEM-768 and is kept separate from account viewing keys.
+Each member who will join a group needs a one-time sealing key pair before the owner can invite them. The sealing key uses ML-KEM-768 and is kept separate from account [viewing keys](https://docs.logos.co/get-started/glossary#viewing-keys).
 
 1. Each joining member generates their sealing key pair:
 

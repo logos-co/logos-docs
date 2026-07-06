@@ -13,7 +13,7 @@ slug: about-cryptarchia
 
 #### Understand how Cryptarchia reaches consensus while keeping block proposers private.
 
-Cryptarchia, the Logos Blockchain's consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a Private Proof of Stake (PPoS) consensus mechanism, ensuring that nodes cannot be linked to blocks they propose. PPoS also ensures that the proposer's relative stake cannot be deduced based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralisation.
+[Cryptarchia](https://docs.logos.co/get-started/glossary#cryptarchia), the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain)'s consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a [Private Proof of Stake](https://docs.logos.co/get-started/glossary#private-proof-of-stake) ([PPoS](https://docs.logos.co/get-started/glossary#ppos)) consensus mechanism, ensuring that nodes cannot be linked to blocks they propose. PPoS also ensures that the proposer's relative stake cannot be deduced based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralisation.
 
 ## The basics
 
@@ -37,13 +37,13 @@ For full proposer privacy, a secret leadership election is not enough: once a le
 
 ### Low barrier to entry
 
-In order to achieve maximum decentralisation, Cryptarchia was designed to have low barriers to entry to encourage a greater circle of contributors. Participating as a Cryptarchia validator node is as simple as having the Logos node application run in the background on a laptop, with a “set it and forget it” approach to maintenance. This design makes it easy to contribute to the security and continued operation of the Logos Blockchain.
+In order to achieve maximum decentralisation, Cryptarchia was designed to have low barriers to entry to encourage a greater circle of contributors. Participating as a Cryptarchia validator node is as simple as having the [Logos node](https://docs.logos.co/get-started/glossary#logos-node) application run in the background on a laptop, with a “set it and forget it” approach to maintenance. This design makes it easy to contribute to the security and continued operation of the Logos Blockchain.
 
 ## How Cryptarchia works
 
 ### Time units
 
-Following the [Ouroboros](https://www.drwx.org/papers/crypsinous.pdf) model, Cryptarchia divides time into basic units called slots that are grouped into larger units called epochs. Each slot allows for the addition of at most one block to a given chain, while each new epoch refreshes the randomness and eligibility set used for the leadership election. Every Cryptarchia slot is 1 second long, and an epoch is about 7.5 days long. These time units are illustrated in the diagram below.
+Following the [Ouroboros](https://www.drwx.org/papers/crypsinous.pdf) model, Cryptarchia divides time into basic units called slots that are grouped into larger units called epochs. Each [slot](https://docs.logos.co/get-started/glossary#slot) allows for the addition of at most one block to a given chain, while each new [epoch](https://docs.logos.co/get-started/glossary#epoch) refreshes the randomness and eligibility set used for the leadership election. Every Cryptarchia slot is 1 second long, and an epoch is about 7.5 days long. These time units are illustrated in the diagram below.
 
 ![The time units used by the Logos Blockchain.](../.gitbook/assets/about-cryptarchia-time-units.png)
 
@@ -61,8 +61,8 @@ The bootstrapping rule ensures that honest parties can join or rejoin the protoc
 
 ### Leadership election
 
-Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each note that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
+Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each [note](https://docs.logos.co/get-started/glossary#note) that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
 
 Each slot presents an opportunity for a block proposer to add a block to the chain, so long as they win the leadership election for that slot. The leadership election is run locally by each individual eligible note, without any public leadership schedule. Whether a particular note wins the leadership election for a given slot is determined by comparing a random “ticket” value to a threshold derived from the note’s relative stake. Due to the privacy properties of Cryptarchia, this relative stake relies on an estimate of the total participating stake derived from the block production rate.
 
-If the ticket, generated by hashing the lottery randomness together with the note data, is less than the threshold value, that note is eligible to serve as a leader for that slot. The owner of a note that won an election can submit a block proposal, which will contain a zero-knowledge Proof of Leadership (PoL). Most slots will have no leader in order to allow parties to synchronise, while some will have one or even several leaders. A [key deletion protocol](https://www.drwx.org/papers/crypsinous.pdf) used in the maintenance of the note’s secret key ensures that an adaptive adversary who corrupts an honest participant will not be able to generate proofs of leadership for past slots.
+If the ticket, generated by hashing the lottery randomness together with the note data, is less than the threshold value, that note is eligible to serve as a leader for that slot. The owner of a note that won an election can submit a block proposal, which will contain a zero-knowledge [Proof of Leadership](https://docs.logos.co/get-started/glossary#proof-of-leadership) ([PoL](https://docs.logos.co/get-started/glossary#pol)). Most slots will have no leader in order to allow parties to synchronise, while some will have one or even several leaders. A [key deletion protocol](https://www.drwx.org/papers/crypsinous.pdf) used in the maintenance of the note’s secret key ensures that an adaptive adversary who corrupts an honest participant will not be able to generate proofs of leadership for past slots.

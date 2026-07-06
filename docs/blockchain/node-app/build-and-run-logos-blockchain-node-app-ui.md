@@ -14,7 +14,7 @@ slug: build-and-run-logos-blockchain-node-app-ui
 
 #### Run a node that participates in consensus via a standalone application.
 
-The Logos Blockchain is the blockchain module of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
+The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the blockchain [module](https://docs.logos.co/get-started/glossary#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
 
 {% hint style="info" %}
 
@@ -77,7 +77,7 @@ By the end of this tutorial:
 
 1. From the wallet section of the UI, copy one of your keys.
 
-1. Go to the [devnet faucet](https://devnet.blockchain.logos.co/node/0/faucet), paste your key, and click **Request Funds**.
+1. Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste your key, and click **Request Funds**.
 
     {% hint style="info" %}
     

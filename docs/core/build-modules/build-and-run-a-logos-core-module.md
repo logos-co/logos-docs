@@ -275,11 +275,11 @@ The `nix bundle` command is useful if your module does not use `logos-module-bui
 1. Bundle the module into an LGX package using the `nix bundle` command.
 
    ```bash
-   nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1 .#lib
+   nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3 .#lib
    ```
 
-   - Use `#portable` for a self-contained package with no `/nix/store` references: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#portable .#lib`.
-   - Use `#dual` to produce both `-dev` and portable variants in a single `.lgx` file: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib`. Use this mode when you need to install the module into a dev build of `logos-basecamp`.
+   - Use `#portable` for a self-contained package with no `/nix/store` references: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#portable .#lib`.
+   - Use `#dual` to produce both `-dev` and portable variants in a single `.lgx` file: `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib`. Use this mode when you need to install the module into a dev build of `logos-basecamp`.
 
 1. Check the current directory for the bundle output. `nix bundle` creates a symlink directory in the current directory named `./logos-<module-name>-module-lib-lgx-<version>/`, and the `.lgx` file is inside it at `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx`.
 
@@ -418,7 +418,7 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
    BASECAMP_DIR="$HOME/.config/Logos/LogosBasecamp"
    ```
 
-1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib` as described in Step 5.
+1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` as described in Step 5.
 
    ```bash
    lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
@@ -462,7 +462,7 @@ If `lgpm install` fails with `Package does not contain variant for platform: <pl
 
 - `nix build .#lgx` produces a single variant (for example, `linux-amd64`) suitable for `logoscore` but not for a dev build of `logos-basecamp`.
 - `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
-- `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v1#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
+- `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
 
 Registry packages downloaded with `lgpd` currently ship portable variants only.
 

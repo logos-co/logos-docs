@@ -134,7 +134,7 @@ With the module installed, start the [`logoscore`](https://github.com/logos-co/l
    sleep 2
    ```
 
-   For inline (legacy) mode and other `logoscore` options, see the [Developer Guide — Running with logoscore](https://github.com/logos-co/logos-tutorial/blob/tutorial-v3/logos-developer-guide.md#61-running-with-logoscore).
+   For inline (legacy) mode and other `logoscore` options, see the [Developer Guide — Running with logoscore](https://github.com/logos-co/logos-tutorial/blob/tutorial-v4/logos-developer-guide.md#61-running-with-logoscore).
 
 ## Troubleshooting `logoscore` module startup
 

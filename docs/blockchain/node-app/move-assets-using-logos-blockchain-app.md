@@ -62,7 +62,7 @@ The **Operations** tab is disabled until the node is running and synced. Start t
    - On success, the row displays the transaction ID or hash returned by the module. Click the copy button to copy it to the clipboard.
    - On failure, the row displays `Error: <message>` with the rejection reason from the module.
 
-1. Confirm the sender's balance decreased by refreshing the **From address** dropdown.
+1. Confirm the sender's balance decreased by pressing **Refresh** in the **Accounts** panel.
 
 ## Troubleshooting dashboard transfers
 

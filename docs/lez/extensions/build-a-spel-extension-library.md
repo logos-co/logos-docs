@@ -52,7 +52,7 @@ extension_attr = "my_extension"
 
 - `extension_attr` is the attribute name consumers put on their `#[lez_program]` module to opt in. By convention, match it to your crate name (with `_` not `-`).
 
-Per-instruction gate attributes your library defines (e.g. `#[require_admin]` from `admin-authority`) need no metadata: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone.
+Per-instruction gate attributes your library defines (e.g. `#[require_admin]` from `admin-authority`) need no metadata for the check itself: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone. If your gate needs specific account params on every gated instruction, you can declare those in an optional inject block so consumers do not have to write them out (see the gate attribute section below).
 
 ## Define the runtime library
 
@@ -138,28 +138,48 @@ The framework treats `#[my_extension]` as a marker by attribute name only, it do
 
 ## Per-instruction gate attributes (optional)
 
-If your extension provides a check that consumers apply to specific instructions (analogous to `#[require_admin]` in `admin-authority`), add another `#[proc_macro_attribute]` to the macros crate:
+If your extension provides a check that consumers apply to specific instructions (analogous to `#[require_admin]` in `admin-authority`), add another `#[proc_macro_attribute]` to the macros crate. The pattern is body injection by re-expansion: `#[lez_program]` leaves your attribute on the handler it emits, so your macro runs after the framework, prepends its check to the handler body, and removes itself by returning the function without the attribute.
 
 ```rust
-use quote::ToTokens;
+use syn::{parse_quote, ItemFn};
 
 #[proc_macro_attribute]
 pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let func: syn::ItemFn = match syn::parse(item.clone()) {
+    let mut func: ItemFn = match syn::parse(item) {
         Ok(f) => f,
         Err(e) => return e.to_compile_error().into(),
     };
 
-    // Validate the consumer's instruction shape (e.g. required accounts present).
-    // Emit compile_error! via syn::Error::new_spanned(...).to_compile_error() on
-    // failure. Return the unchanged item on success, body injection (the
-    // actual runtime check) is your library's responsibility.
+    // Prepend the runtime check. It references params by their conventional
+    // names; accept attribute args to let consumers override the names.
+    let prologue: syn::Stmt = parse_quote! {{
+        let __state = ::my_extension::MyState::from_account(&my_state)?;
+        __state.assert_allowed(&caller)?;
+    }};
+    func.block.stmts.insert(0, prologue);
 
-    item
+    quote::quote!(#func).into()
 }
 ```
 
-Add the attribute name to `instruction_attrs` in your `Cargo.toml`. The framework will strip it from emitted handler fns so it doesn't re-expand after `#[lez_program]` runs.
+Never read or strip `#[account(...)]` attrs in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults (`#[require_my_gate(state = my_cfg, signer = owner)]`).
+
+To spare consumers declaring your gate's account params on every gated instruction, declare them in your `Cargo.toml`:
+
+```toml
+[[package.metadata.spel.inject]]
+wrapper = "require_my_gate"
+
+  [[package.metadata.spel.inject.account]]
+  name = "my_state"
+  seed = { const = "my_state" }
+
+  [[package.metadata.spel.inject.account]]
+  name = "caller"
+  signer = true
+```
+
+Any consumer instruction carrying `#[require_my_gate]` gets the listed params synthesized at expansion time unless it already declares them (skip-if-declared). The injected params are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account.
 
 ## Consumer integration
 
@@ -198,7 +218,7 @@ Consumers can stack extensions without coordination between library authors:
 mod my_program { ... }
 ```
 
-Each extension is discovered independently by its own `extension_attr`. Each contributes its own instructions to the dispatcher. Each library's `instruction_attrs` are collected into a single strip list for handler emit.
+Each extension is discovered independently by its own `extension_attr`. Each contributes its own instructions to the dispatcher, and each gate attribute re-expands on its own gated handlers without touching the others.
 
 ## Verifying your extension
 

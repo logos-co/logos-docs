@@ -55,14 +55,14 @@ That single annotation exposes three new instructions in your program's IDL:
 
 | Instruction | Purpose |
 |---|---|
-| `admin_initialize` | Creates the admin Config PDA and sets the first admin. Must be called once after deployment. |
+| `admin_initialize` | Creates the admin Config PDA and installs the caller as the first admin. Must be called once after deployment. |
 | `admin_transfer` | Replaces the current admin with a new signer or PDA. |
 | `admin_renounce` | Zeros the admin permanently. Terminal, no recovery path. |
 
 {% hint style="warning" %}
 ## Initialization window
 
-Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Bundle the call with deployment, or send it as the very next transaction, to prevent a third party from claiming the role.
+Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Send it as the very next transaction after deployment to prevent a third party from claiming the role. Bundling with the deployment itself is not possible today because a LEZ deployment transaction carries no instructions.
 {% endhint %}
 
 ## Gate an instruction
@@ -73,9 +73,7 @@ Add `#[require_admin]` to any instruction that should only succeed when the call
 #[instruction]
 #[require_admin]
 pub fn set_fee_bps(
-    #[account(pda = literal("admin_config"))] admin_config: AccountWithMetadata,
     #[account(mut, pda = literal("pool_config"))] mut config: AccountWithMetadata,
-    #[account(signer)] caller: AccountWithMetadata,
     new_fee_bps: u16,
 ) -> SpelResult {
     // Admin check has already run. Just mutate.
@@ -83,16 +81,37 @@ pub fn set_fee_bps(
 }
 ```
 
-The gated instruction must declare:
+The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared params. Declaring them explicitly produces the same program:
 
-- An `#[account(pda = literal("admin_config"))]` parameter that lets the framework load the current admin state.
-- An `#[account(signer)]` parameter representing the caller.
+```rust
+#[instruction]
+#[require_admin]
+pub fn set_fee_bps(
+    #[account(pda = literal("admin_config"))] admin_config: AccountWithMetadata,
+    #[account(signer)] caller: AccountWithMetadata,
+    #[account(mut, pda = literal("pool_config"))] mut config: AccountWithMetadata,
+    new_fee_bps: u16,
+) -> SpelResult {
+    todo!()
+}
+```
 
-If either is missing, the macro emits a compile error pointing at the instruction. This is intentional, silent admin-gating would be a security trap.
+If your instruction already has params by different names, point the gate at them: `#[require_admin(config = my_cfg, signer = owner)]`.
 
-## Choose an initial admin
+## Become the first admin
 
-`admin_initialize` takes an `AdminCandidate` argument paired with a matching `AccountWithMetadata` that proves the candidate exists on chain.
+`admin_initialize` takes no arguments. The signing caller becomes the admin (self-election). There is no candidate argument at initialize because the LEZ duplicate-account rule rejects a transaction listing the same account twice, so a caller could never also pass itself as candidate evidence.
+
+```bash
+spel --idl program-idl.json --program <program-id> -- \
+    admin-initialize --caller <your-account-id>
+```
+
+To hand the role to a different keyholder or a PDA, initialize first and then call `admin_transfer`.
+
+## Transfer admin to another party
+
+`admin_transfer` requires the current admin to sign. It takes an `AdminCandidate` describing the new admin, paired with a matching `AccountWithMetadata` that proves the candidate on chain.
 
 Two candidate shapes:
 
@@ -107,44 +126,37 @@ pub enum AdminCandidate {
 }
 ```
 
-From the SPEL CLI:
-
 ```bash
-spel tx send admin_initialize \
-    --new-admin Signer \
-    --new-admin-account <new-admin-account-id>
+spel --idl program-idl.json --program <program-id> -- \
+    admin-transfer \
+    --caller <current-admin-account-id> \
+    --new-admin-account <new-admin-account-id> \
+    --new-admin Signer
 ```
 
-To self-elect the deployer as the first admin, pass the deployer's own account as `--new-admin-account` with `--new-admin Signer`.
+A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message, an off-chain co-signing exchange handled by the CLI's witness exchange flow.
 
-## Transfer admin to another party
-
-`admin_transfer` requires the current admin to sign and takes the same `AdminCandidate` + `AccountWithMetadata` pair describing the new admin:
-
-```bash
-spel tx send admin_transfer \
-    --new-admin Signer \
-    --new-admin-account <new-admin-account-id>
-```
-
-After this transaction lands, the previous admin can no longer call gated instructions.
+After the transaction lands, the previous admin can no longer call gated instructions.
 
 ## Use a program (PDA) as the admin
 
-To delegate admin authority to another program, for example, a multisig, use `AdminCandidate::Pda` with the delegating program's ID and PDA seed:
+To delegate admin authority to another program, for example a multisig, use `AdminCandidate::Pda` with the delegating program's ID and PDA seed. Payload variants are passed to the CLI as a one-key JSON object:
 
 ```bash
-spel tx send admin_transfer \
-    --new-admin 'Pda { program_id: <multisig-program-id>, seed: <32-byte-seed> }' \
-    --new-admin-account <pda-account-id>
+spel --idl program-idl.json --program <program-id> -- \
+    admin-transfer \
+    --caller <current-admin-account-id> \
+    --new-admin-account <pda-account-id> \
+    --new-admin '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
-When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then sees the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
+The PDA must already be deployed, an undeployed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then sees the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
 
 ## Renounce admin permanently
 
 ```bash
-spel tx send admin_renounce
+spel --idl program-idl.json --program <program-id> -- \
+    admin-renounce --caller <current-admin-account-id>
 ```
 
 This writes `AccountId::default()` to the Config PDA. All future admin-gated instructions reject with an authorization error. There is no recovery path, design your program so renounce is only callable when permanent loss of mutability is the intended outcome (handoff to "immutable" governance, end of life, etc.).
@@ -173,7 +185,7 @@ Plus your own instructions. If the admin trio is missing, the most common causes
 
 ## Security notes
 
-- **Initialization window**, front-running is possible until the first `admin_initialize` lands. Bundle it with deployment.
+- **Initialization window**, front-running is possible until the first `admin_initialize` lands. Send it immediately after deployment. Deploy-time bundling is not possible on LEZ today, a deployment transaction carries no instructions.
 - **Renounce is terminal**, there is no recovery. Treat it as a one-way switch.
 - **PDA admins via CPI**, the delegating program must declare its admin PDA in `caller-pda-seeds` for the gated call. LEZ verifies the seed; the admin check then trusts the propagated `is_authorized`.
 - **Transfer history**, not recorded on chain in this release. The current admin is always readable from the Config PDA; historical transfers require an off-chain indexer.

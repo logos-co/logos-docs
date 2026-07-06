@@ -52,17 +52,20 @@ By the end of this tutorial:
     nix run
     ```
 
-    * If flakes are not enabled globally, run `nix run --extra-experimental-features 'nix-command flakes' .` instead.
-
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>On a cold Nix cache, the first run compiles the blockchain UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.</p></div>
 
 ## Step 2: Generate and load a node config
 
 1. In the app, click **Generate Config**.
+
+    ![Initial screen](./build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
+
 2. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
 3. In the app, paste the peer set information in the **Initial peers** and click **Generate Config** on the bottom.
 4. Click **Load Config** and select the generated config file.
 5. Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
+
+    ![Running node](./build-and-run-logos-blockchain-node-app-ui/03-node-running.png)
 
 ## Step 3: Request testnet funds from the faucet
 

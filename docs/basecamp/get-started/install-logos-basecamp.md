@@ -14,7 +14,7 @@ slug: install-logos-basecamp
 
 #### Get Logos Basecamp running on your desktop.
 
-Logos Basecamp is the desktop shell for Logos. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
+Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos modules and apps using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
 

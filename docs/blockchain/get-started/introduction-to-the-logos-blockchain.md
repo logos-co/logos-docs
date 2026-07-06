@@ -13,7 +13,7 @@ slug: introduction-to-the-logos-blockchain
 
 #### Learn how Logos provides a private, resilient foundation for decentralised applications.
 
-The Logos Blockchain is the foundational infrastructure of the Logos technology stack. It hosts decentralised applications and social institutions that require high privacy and resilience, gives those applications a common context for interaction, and guarantees they operate correctly and without corruption. Nodes can participate with consumer hardware and any amount of stake.
+The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the foundational infrastructure of the Logos technology stack. It hosts decentralised applications and social institutions that require high privacy and resilience, gives those applications a common context for interaction, and guarantees they operate correctly and without corruption. Nodes can participate with consumer hardware and any amount of stake.
 
 ## The basics
 
@@ -33,17 +33,17 @@ Resilience means the network stays operational and protects privacy under diffic
 
 ## Architecture
 
-The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](../concepts/about-zones.md), which are built on a Layer 1 foundation called [Bedrock](../concepts/about-bedrock.md). The [Blend Network](../concepts/about-the-blend-network.md) service extends Bedrock's privacy properties.
+The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](../concepts/about-zones.md), which are built on a Layer 1 foundation called [Bedrock](../concepts/about-bedrock.md). The [Blend Network](../concepts/about-the-blend-network.md) service extends [Bedrock](https://docs.logos.co/get-started/glossary#bedrock)'s privacy properties.
 
 ### Bedrock
 
-Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its Private Proof of Stake (PPoS) consensus protocol, [Cryptarchia](../concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, token bridging, and inter-Zone messaging.
+Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its [Private Proof of Stake](https://docs.logos.co/get-started/glossary#private-proof-of-stake) ([PPoS](https://docs.logos.co/get-started/glossary#ppos)) consensus protocol, [Cryptarchia](../concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, token bridging, and inter-[Zone](https://docs.logos.co/get-started/glossary#zone) messaging.
 
-Running a Bedrock validator node means leaving the Logos node application running in the background, with a low-maintenance approach. This makes it straightforward to contribute to the security, consensus, and interoperability of the network.
+Running a Bedrock validator node means leaving the [Logos node](https://docs.logos.co/get-started/glossary#logos-node) application running in the background, with a low-maintenance approach. This makes it straightforward to contribute to the security, consensus, and interoperability of the network.
 
 ### Blend Network
 
-The Blend Network is an opt-in service that provides network-level privacy for consensus. It virtually eliminates the chance of linking a block proposer to the block they propose, so proposers cannot be targeted. Operators who join the Blend Network need more hardware than Bedrock validation alone requires.
+The [Blend Network](https://docs.logos.co/get-started/glossary#blend-network) is an opt-in service that provides network-level privacy for consensus. It virtually eliminates the chance of linking a block proposer to the block they propose, so proposers cannot be targeted. Operators who join the Blend Network need more hardware than Bedrock validation alone requires.
 
 ### Zones
 
@@ -51,4 +51,4 @@ Applications do not run directly on Bedrock. They run on Layer 2 blockchains cal
 
 Zones can run as fully independent sovereign rollups, but Bedrock also enables token bridging and decentralised sequencing. Zones can exchange asynchronous messages through Bedrock, which allows limited interoperability without giving up the advantages of the sovereign rollup model.
 
-The primary example is the [Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and program execution.
+The primary example is the [Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and [program](https://docs.logos.co/get-started/glossary#program) execution.

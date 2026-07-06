@@ -14,9 +14,9 @@ slug: bridge-assets-between-blockchain-and-zone
 
 #### Move tokens between Logos Blockchain and a Zone using channels and the Zone SDK.
 
-[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. Logos Blockchain notes can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones, with the Zone's associated channel maintaining a token balance that keeps track of the total token value stored in the Zone. 
+[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) notes can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones, with the [Zone](https://docs.logos.co/get-started/glossary#zone)'s associated [channel](https://docs.logos.co/get-started/glossary#channel) maintaining a token balance that keeps track of the total token value stored in the Zone. 
 
-This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the Zone SDK's `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel balance maps to its internal accounts, while the SDK only surfaces the on-chain events.
+This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the [Zone SDK](https://docs.logos.co/get-started/glossary#zone-sdk)'s `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel balance maps to its internal accounts, while the SDK only surfaces the on-chain events.
 
 Bridging has two directions: deposit (Blockchain to Zone), where a user funds a channel and the Zone sequencer credits the user internally (`ChannelDeposit`), and withdraw (Zone to Blockchain), where the sequencer submits a signed `ChannelWithdraw` to debit the channel and mint fresh notes on-chain.
 
@@ -55,7 +55,7 @@ A channel is created automatically the first time an operation references a prev
    let channel_id = ChannelId::from(signing_key.public_key().to_bytes());
    ```
 
-   The bridging-relevant fields on [`ChannelState`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#22b261aa09df8289a3f281de4aa8fdca) in the Mantle specification:
+   The bridging-relevant fields on [`ChannelState`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#22b261aa09df8289a3f281de4aa8fdca) in the [Mantle](https://docs.logos.co/get-started/glossary#mantle) specification:
 
     | Field                | Purpose                                                              |
     | -------------------- | -------------------------------------------------------------------- |
@@ -65,7 +65,7 @@ A channel is created automatically the first time an operation references a prev
     | `accredited_keys`    | The committee that may sign withdrawals. |
 
    
-1. Initialize a `ZoneSequencer` and publish the first inscription inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
+1. Initialize a `ZoneSequencer` and publish the first [inscription](https://docs.logos.co/get-started/glossary#inscription) inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
 
    ```rust
    use lb_zone_sdk::{
@@ -92,7 +92,7 @@ A channel is created automatically the first time an operation references a prev
 
 ## Step 2: Observe deposits from Bedrock
 
-A deposit happens when a Bedrock user submits a transaction with a [`ChannelDeposit`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#80b261aa09df8353814a81efe0fbd8ed) operation naming the target `channel`, the consumed `inputs`, and opaque `metadata` that the Zone interprets, such as a recipient address.
+A deposit happens when a [Bedrock](https://docs.logos.co/get-started/glossary#bedrock) user submits a transaction with a [`ChannelDeposit`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#80b261aa09df8353814a81efe0fbd8ed) operation naming the target `channel`, the consumed `inputs`, and opaque `metadata` that the Zone interprets, such as a recipient address.
 
 1. Watch for finalized deposits inside your events loop. The Zone SDK surfaces every finalized deposit on your channel as a `FinalizedOp::Deposit(DepositInfo)` inside the `finalized` field of `Event::BlocksProcessed`.
 

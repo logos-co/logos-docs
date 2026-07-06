@@ -14,9 +14,9 @@ slug: operate-decentralised-zone-with-round-robin-sequencer-rotation
 
 #### Get started with multi-sequencer channels using the Zone SDK and round-robin slot windows.
 
-This tutorial covers how to configure and operate a Logos Blockchain channel with a committee of accredited sequencers that take turns publishing inscriptions to a Logos Zone. It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) who need to move from a single-sequencer setup to a decentralized one.
+This tutorial covers how to configure and operate a [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) [channel](https://docs.logos.co/get-started/glossary#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](https://docs.logos.co/get-started/glossary#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) who need to move from a single-sequencer setup to a decentralized one.
 
-The Zone SDK currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.
+The [Zone SDK](https://docs.logos.co/get-started/glossary#zone-sdk) currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.
 
 Before you start, make sure you have the following:
 
@@ -61,7 +61,7 @@ The [Mantle specification](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa0
     {% hint style="info" %}
    The Zone SDK exposes the current rotation state to your sequencer in two forms:
    
-   - The full `SequencerChannelView` (`subscribe_channel_view`) — a `tokio::sync::watch` receiver carrying `authorized_key_index`, `own_key_index`, `our_turn_to_write`, the current slot, and the turn window's `turn_to_write_slots`.
+   - The full `SequencerChannelView` (`subscribe_channel_view`) — a `tokio::sync::watch` receiver carrying `authorized_key_index`, `own_key_index`, `our_turn_to_write`, the current [slot](https://docs.logos.co/get-started/glossary#slot), and the turn window's `turn_to_write_slots`.
    - A focused `TurnNotification` (`subscribe_turn_to_write`) plus `Event::TurnNotification` — emitted only when the turn boundary actually changes.
    
    `our_turn_to_write` is the boolean a sequencer reads to decide whether it is currently authorised.
@@ -127,7 +127,7 @@ The Zone SDK queues inscriptions locally when it is not your sequencer's turn an
 1. Handle competing writes by listening for `Event::BlocksProcessed` events and checking `channel_update.orphaned` for orphaned transactions. Republish these transactions with the latest parent.
 
 {% hint style="info" %}
-Two sequencers can race on the same parent slot during rotation transitions or after a resync. The on-chain rule is: the first valid inscription wins; the loser's transaction is surfaced in `channel_update.orphaned`.
+Two sequencers can race on the same parent slot during rotation transitions or after a resync. The on-chain rule is: the first valid [inscription](https://docs.logos.co/get-started/glossary#inscription) wins; the loser's transaction is surfaced in `channel_update.orphaned`.
 {% endhint %} 
 
    ```rust

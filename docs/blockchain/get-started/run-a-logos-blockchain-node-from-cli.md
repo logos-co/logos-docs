@@ -14,7 +14,7 @@ slug: run-a-logos-blockchain-node-from-cli
 
 #### Start a node and verify runtime and consensus signals.
 
-With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
+With this tutorial, you will install the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
@@ -41,7 +41,7 @@ Before you start, ensure you have:
 
 ## Step 2: Load the Logos Blockchain module
 
-Download the Logos Blockchain module with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
+Download the Logos Blockchain [module](https://docs.logos.co/get-started/glossary#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
 1. Download the module:
 
@@ -192,7 +192,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
 
-Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
+Block proposal is probabilistic. Your node will not propose on every [slot](https://docs.logos.co/get-started/glossary#slot); participation depends on your stake relative to total active stake in the network.
 
 {% endhint %}
 

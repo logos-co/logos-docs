@@ -14,7 +14,7 @@ slug: run-logos-node-blockchain-storage-delivery
 
 #### Get started running a full Logos node with all three core modules on testnet v0.2.
 
-This procedure covers installing and running a single Logos node with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
+This procedure covers installing and running a single [Logos node](https://docs.logos.co/get-started/glossary#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 The default paths used throughout this procedure are:
 
@@ -36,7 +36,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can run a full Logos node with all three modules active and publicly reachable on the testnet.
-- You can verify each module is healthy by querying the daemon and checking live port bindings.
+- You can verify each [module](https://docs.logos.co/get-started/glossary#module) is healthy by querying the daemon and checking live port bindings.
 - You can configure the node for unattended operation using the systemd service pattern described in [Troubleshooting](#troubleshooting-the-logos-node).
 
 ## Step 1: Install runtime tools
@@ -120,10 +120,10 @@ Create the runtime user and the directory layout the node uses at runtime.
 
 ## Step 3: Install modules
 
-Download and install the three module packages from the configured module catalog.
+Download and install the three module packages from the configured module [catalogue](https://docs.logos.co/get-started/glossary#catalogue).
 
 {% hint style="info" %}
-`lgpd download` fetches the version published in the catalog. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalog before running these commands.
+`lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
 {% endhint %}
 
 1. Download the module packages:
@@ -265,7 +265,7 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
    - Fields
 
    {% hint style="info" %}
-   To run storage with mix support, generate the config from the published mix bootstrap data:
+   To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
 
      ```sh
      cd /var/lib/logos-node/storage-module
@@ -300,7 +300,7 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
      ```
    {% endhint %}
 
-1. Load and start the storage module:
+1. Load and start the [storage module](https://docs.logos.co/get-started/glossary#storage-module):
 
    ```sh
    cd /var/lib/logos-node/storage-module
@@ -352,7 +352,7 @@ Create the delivery config and start the module. Replace `<public-ip>` with the 
    - Use fixed `tcpPort` and `discv5UdpPort`; do not leave public nodes on random ports.
    - The `logos.test` preset provides the delivery network bootstrap settings.
 
-1. Load and start the delivery module:
+1. Load and start the [delivery module](https://docs.logos.co/get-started/glossary#delivery-module):
 
    ```sh
    cd /var/lib/logos-node/delivery-module

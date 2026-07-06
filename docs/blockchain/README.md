@@ -159,7 +159,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
     ```
 2.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
-    ![Image of the faucet UI after requesting funds with a public key](<.gitbook/assets/run-a-logos-blockchain-node-faucet (1).png>)
+    ![Image of the faucet UI after requesting funds with a public key](.gitbook/assets/run-a-logos-blockchain-node-faucet.png)
 3.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh

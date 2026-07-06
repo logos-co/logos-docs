@@ -22,53 +22,48 @@ If you don't want to run your own LEZ explorer instance, navigate to the [public
 
 Before you start, make sure you have the following:
 
-- Linux or macOS operating system
-- [Docker](https://docs.docker.com/get-docker/), [Rust toolchain](https://www.rust-lang.org/tools/install), and `cargo` installed
-- [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed
-- [`just`](https://github.com/casey/just) installed
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/)
-- A running instance of an [LEZ Indexer](./run-lez-indexer.md)
+* Linux or macOS operating system
+* [Docker](https://docs.docker.com/get-docker/), [Rust toolchain](https://www.rust-lang.org/tools/install), and `cargo` installed
+* [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed
+* [`just`](https://github.com/casey/just) installed
+* A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/)
+* A running instance of an [LEZ Indexer](run-lez-indexer.md)
 
 ## What to expect
 
-- You can browse all committed blocks and click through to inspect individual block details.
-- You can search for transactions and accounts and view their current state and balances.
+* You can browse all committed blocks and click through to inspect individual block details.
+* You can search for transactions and accounts and view their current state and balances.
 
 ## Start the LEZ Explorer
 
 1. Navigate to your local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/).
+2.  In a new terminal window, start the LEZ Explorer:
 
-1. In a new terminal window, start the LEZ Explorer:
+    ```bash
+    just run-explorer
+    ```
 
-   ```bash
-   just run-explorer
-   ```
+    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>By default, the LEZ Explorer connects to the LEZ Indexer at <code>http://localhost:8779</code>. Set the <code>INDEXER_RPC_URL</code> environment variable or pass <code>--indexer-rpc-url</code> to use a different address.</p></div>
+3.  Open `http://localhost:3000/` in your browser.
 
-   {% hint style="info" %}
-   By default, the LEZ Explorer connects to the LEZ Indexer at `http://localhost:8779`. Set the `INDEXER_RPC_URL` environment variable or pass `--indexer-rpc-url` to use a different address.
-   {% endhint %}
+    You will see a **No blocks found** message initially:
 
-1. Open `http://localhost:3000/` in your browser.
+    ![No blocks found screen](../.gitbook/assets/no_blocks_found.png)
 
-   You will see a **No blocks found** message initially:
+    After approximately one minute, refresh the page. Blocks will appear:
 
-   ![No blocks found screen](./start-and-use-instance-of-lez-explorer/no_blocks_found.png)
-
-   After approximately one minute, refresh the page. Blocks will appear:
-
-   ![Blocks visible after refresh](./start-and-use-instance-of-lez-explorer/updated_page.png)
+    ![Blocks visible after refresh](../.gitbook/assets/updated_page.png)
 
 ## Browse blocks, transactions, and accounts
 
-1. Click any block in the list to view its details.
+1.  Click any block in the list to view its details.
 
-   ![Block detail view](./start-and-use-instance-of-lez-explorer/block_details.png)
+    ![Block detail view](../.gitbook/assets/block_details.png)
+2.  Use the search bar to look up a block, transaction, or account by ID.
 
-1. Use the search bar to look up a block, transaction, or account by ID.
+    ![Transaction search result](../.gitbook/assets/transaction_details.png)
 
-   ![Transaction search result](./start-and-use-instance-of-lez-explorer/transaction_details.png)
-
-   ![Account detail view](./start-and-use-instance-of-lez-explorer/account_details.png)
+    ![Account detail view](../.gitbook/assets/account_details.png)
 
 ## Troubleshooting LEZ Explorer
 

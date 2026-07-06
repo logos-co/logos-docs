@@ -51,4 +51,4 @@ Applications do not run directly on Bedrock. They run on Layer 2 blockchains cal
 
 Zones can run as fully independent sovereign rollups, but Bedrock also enables token bridging and decentralised sequencing. Zones can exchange asynchronous messages through Bedrock, which allows limited interoperability without giving up the advantages of the sovereign rollup model.
 
-The primary example is the [Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and [program](https://docs.logos.co/get-started/glossary#program) execution.
+The primary example is the [Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/lez/get-started/introduction-to-the-logos-execution-zone.md), the initial host for the messaging and storage applications of the Logos stack, with support for private token transfers and [program](https://docs.logos.co/get-started/glossary#program) execution.

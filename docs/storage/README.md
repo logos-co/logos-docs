@@ -1,15 +1,3 @@
----
-title: README
-slug: readme
-hidden: true
----
+# Welcome 
 
-# Logos Storage documentation
-
-<!--
-This README is required by GitBook Git Sync but is not surfaced in the
-published site navigation. The space's landing page is configured via
-SUMMARY.md ordering.
-
-Do not put substantive content here — it will not reach readers.
--->
+Welcome to the [Logos storage](https://docs.logos.co/get-started/glossary#logos-storage) documentation! We're working on the content. 

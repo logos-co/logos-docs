@@ -129,7 +129,7 @@ Download and install the three module packages from the configured module [catal
 1. Download the module packages:
 
    ```sh
-   lgpd download blockchain_module --output /opt/logos-node/packages
+   lgpd download blockchain_module --version 0.2.0 --output /opt/logos-node/packages
    lgpd download storage_module --output /opt/logos-node/packages
    lgpd download delivery_module --output /opt/logos-node/packages
    ```

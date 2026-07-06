@@ -129,14 +129,20 @@ The `dependency_overrides` entry above only points the builder at delivery's `.l
 
 In your module's `initLogos()` function, construct `LogosModules` with the provided `LogosAPI*` and subscribe to all push events before calling `init()`. Subscribing first ensures you do not miss early events or the first incoming messages.
 
-1. Initialise `LogosModules` in `initLogos()`:
+1. Add the `LogosModules` member, then construct it in `initLogos()`.
+
+   In the header `src/ui_example_plugin.h` — add the include and the member:
 
    ```cpp
    #include "logos_sdk.h"   // generated umbrella — exposes LogosModules
 
-   // Add a member to your plugin class (src/ui_example_plugin.h):
-   //   LogosModules* m_logos = nullptr;
+   // inside the UiExamplePlugin class:
+   LogosModules* m_logos = nullptr;
+   ```
 
+   In `src/ui_example_plugin.cpp` — construct it:
+
+   ```cpp
    void UiExamplePlugin::initLogos(LogosAPI* api) {
        logosAPI = api;      // keep the scaffold's two existing lines
        setBackend(this);

@@ -203,7 +203,8 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 1. Initialise the chat client:
 
    ```cpp
-   const LogosResult res = m_logos->chat_module.init("/path/to/instance", "logos.test", 0);
+   const QString dir = qEnvironmentVariable("CHAT_INSTANCE_DIR", "/tmp/chat-instance");
+   const LogosResult res = m_logos->chat_module.init(dir, "logos.test", 0);
    if (!res.success) {
        qWarning() << "init failed:" << res.getError<QString>();
        return;

@@ -14,14 +14,14 @@ slug: build-dapp-with-logos-zone-sdk
 
 #### Learn how to use the Zone SDK to implement a decentralised password manager application.
 
-This tutorial covers building a Logos Zone from scratch using the Zone SDK. [Zones](../../blockchain/concepts/about-zones.md) are execution environments built on the Logos Blockchain that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or a simple standalone Zone tracking the state of a single application.
+This tutorial covers building a Logos [Zone](https://docs.logos.co/get-started/glossary#zone) from scratch using the [Zone SDK](https://docs.logos.co/get-started/glossary#zone-sdk). Zones are execution environments built on the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or a simple standalone Zone tracking the state of a single application.
 
 The Zone SDK provides a ready-to-use toolbox for basic interactions with a Logos Zone. Every Zone is operated by one or more **sequencers**, which collect transactions, batch them, and publish them as inscriptions on the Logos Blockchain. **Indexers** are nodes that follow a Zone's updates on-chain, re-executing them locally to maintain an up-to-date copy of the Zone state. The Zone SDK supports building both.
 
 The tutorial uses a [password manager](https://github.com/H2CO3/steelsafe) Zone as the running example: a single sequencer posts SQL transactions on-chain, and one or more indexers replay those transactions to sync their local state. The password manager maintains state in a SQLite database, with updates taking the form of SQL transactions applied to that database. The Zone design maps onto those concepts as follows:
 
 - The user interacts with the password manager on the main device (in the `sequencer` folder) to add or update passwords.
-- The main device operates as a **sequencer**, posting SQL transactions as inscriptions to its channel.
+- The main device operates as a **sequencer**, posting SQL transactions as inscriptions to its [channel](https://docs.logos.co/get-started/glossary#channel).
 - Secondary devices operate as **indexers**, following the channel and obtaining SQL transactions from the chain.
 - Secondary devices run a read-only version of the password manager (in the `indexer` folder), applying SQL transactions from the channel to update their local state.
 
@@ -77,7 +77,7 @@ Your sequencer wraps the `ZoneSequencer` struct from the Zone SDK, found in `log
 - `node: Node` — a `Node` struct referring to your Logos Blockchain node, created by `NodeHttpClient::new()`.
 - `checkpoint: Option<SequencerCheckpoint>` — (optional) the checkpoint representing the most recently pushed channel update.
 
-Before posting to a new channel, the sequencer must generate an Ed25519 public/private key pair. **The initial public key defines the channel ID; the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a message with this channel ID, unless the channel already exists. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) Mantle Operation.
+Before posting to a new channel, the sequencer must generate an Ed25519 public/private key pair. **The initial public key defines the channel ID; the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](https://docs.logos.co/get-started/glossary#message) with this channel ID, unless the channel already exists. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](https://docs.logos.co/get-started/glossary#mantle) Operation.
 
 After the first channel message, each subsequent message includes a hash reference to the previous one. A message with an incorrect parent hash is rejected. **Providing a checkpoint lets the sequencer resume posting after a restart.** A checkpoint is not required during the session that creates a new channel.
 
@@ -210,7 +210,7 @@ After the first channel message, each subsequent message includes a hash referen
 
 ### Step 2: Publish data to the channel
 
-Once the `ZoneSequencer` is set up, posting data to the channel is as simple as passing a byte vector to the sequencer's `publish` function, which returns an inscription ID and the current checkpoint.
+Once the `ZoneSequencer` is set up, posting data to the channel is as simple as passing a byte vector to the sequencer's `publish` function, which returns an [inscription](https://docs.logos.co/get-started/glossary#inscription) ID and the current checkpoint.
 
 Whenever the password manager's database is updated, the SQL transactions are also written to a queue file. This functionality is already implemented in the `sequencer/src/db.rs` file. A processing loop continuously checks for new SQL transactions from the password database and submits them as plain text to the Zone.
 

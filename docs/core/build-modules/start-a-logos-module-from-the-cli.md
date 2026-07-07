@@ -14,7 +14,7 @@ slug: start-a-logos-module-from-the-cli
 
 #### Explore how to load and call a Logos module from the command line using `logoscore`.
 
-This guide covers how to build and install a Logos module, start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
+This guide covers how to build and install a Logos [module](https://docs.logos.co/get-started/glossary#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
 
 **Before you start**, make sure you have the following:
 
@@ -28,32 +28,18 @@ This guide covers how to build and install a Logos module, start the `logoscore`
   Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
 - Git
 - Linux or macOS
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+   export PATH="$PWD/bin:$PATH"
+   ```
 
 ## What to expect
 
 - You can load `accounts_module` into a running `logoscore` daemon and call its methods.
 - You can generate a BIP-39 mnemonic phrase and measure its entropy strength with no prior setup.
 - You have a working local `modules` directory that `logoscore` can scan for future modules.
-
-## Build the required tools
-
-Both `logoscore` and the Logos package manager are built from their respective Nix flakes before running the module.
-
-1. Build `logoscore`:
-
-   ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/tutorial-v3' --out-link ./logos
-   ```
-
-   The build produces `logos/bin/logoscore` plus bundled runtime libraries and a `logos/modules/` directory containing the built-in `capability_module` (required for the auth handshake when loading modules).
-
-1. Build the Logos package manager CLI:
-
-   ```bash
-   nix build 'github:logos-co/logos-package-manager/tutorial-v3#cli' --out-link ./pm
-   ```
-
-   The executable is at `./pm/bin/lgpm`.
 
 ## Install the module
 
@@ -80,7 +66,7 @@ Both `logoscore` and the Logos package manager are built from their respective N
 1. Install the LGX package into the `modules` directory:
 
    ```bash
-   ./pm/bin/lgpm --modules-dir ./modules install --file ./logos-accounts-module/result/*.lgx
+   lgpm --modules-dir ./modules install --file ./logos-accounts-module/result/*.lgx
    ```
 
    After installation, the directory structure looks like this:
@@ -95,7 +81,7 @@ Both `logoscore` and the Logos package manager are built from their respective N
 1. Confirm the module was installed correctly:
 
    ```bash
-   ./pm/bin/lgpm --modules-dir ./modules list
+   lgpm --modules-dir ./modules list
    ```
 
 ## Call module methods
@@ -105,50 +91,50 @@ With the module installed, start the [`logoscore`](https://github.com/logos-co/l
 1. Start the daemon in the background, pointing it at the modules directory, and wait to initialise:
 
    ```bash
-   ./logos/bin/logoscore -D -m ./modules &
+   logoscore -D -m ./modules &
    sleep 3
    ```
 
 1. Check the status of `logoscore`:
 
    ```bash
-   ./logos/bin/logoscore status
+   logoscore status
    ```
 
 1. Load the module and confirm that it was loaded:
 
    ```bash
-   ./logos/bin/logoscore load-module accounts_module
+   logoscore load-module accounts_module
 
-   ./logos/bin/logoscore list-modules
+   logoscore list-modules
    ```
 
 1. Generate a random BIP-39 mnemonic phrase with 12 words:
 
    ```bash
-   ./logos/bin/logoscore call accounts_module createRandomMnemonic 12
+   logoscore call accounts_module createRandomMnemonic 12
    ```
 
 1. Map a mnemonic word count to its entropy strength in bits — for example, 12 words is 128 bits.
 
    ```bash
-   ./logos/bin/logoscore call accounts_module lengthToEntropyStrength 12
+   logoscore call accounts_module lengthToEntropyStrength 12
    ```
 
 1. Inspect all available methods in `accounts_module` with `module_info`:
 
    ```bash
-   ./logos/bin/logoscore module-info accounts_module
+   logoscore module-info accounts_module
    ```
 
 1. Stop the daemon:
 
    ```bash
-   ./logos/bin/logoscore stop
+   logoscore stop
    sleep 2
    ```
 
-   For inline (legacy) mode and other `logoscore` options, see the [Developer Guide — Running with logoscore](https://github.com/logos-co/logos-tutorial/blob/tutorial-v3/logos-developer-guide.md#61-running-with-logoscore).
+   For inline (legacy) mode and other `logoscore` options, see the [Developer Guide — Running with logoscore](https://github.com/logos-co/logos-tutorial/blob/tutorial-v4/logos-developer-guide.md#61-running-with-logoscore).
 
 ## Troubleshooting `logoscore` module startup
 

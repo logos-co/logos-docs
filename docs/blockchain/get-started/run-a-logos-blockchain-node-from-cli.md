@@ -14,13 +14,13 @@ slug: run-a-logos-blockchain-node-from-cli
 
 #### Start a node and verify runtime and consensus signals.
 
-With this tutorial, you will install the Logos Blockchain node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
+With this tutorial, you will install the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
 
 Before you start, ensure you have:
 
-- Linux x86_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
 - At least 64 GB of storage
 
@@ -32,31 +32,29 @@ Before you start, ensure you have:
 
 ## Step 1: Install Logos core tools
 
-1. Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
+1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
 
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+    export PATH="$PWD/bin:$PATH"
+    ```
 
 ## Step 2: Load the Logos Blockchain module
 
-Download the Logos Blockchain module with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
+Download the Logos Blockchain [module](https://docs.logos.co/get-started/glossary#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
-1. Download the module:
+1.  Download the module:
 
     ```bash
     lgpd download blockchain_module --version 0.2.0 --output ./
     # writes ./blockchain_module-0.2.0.lgx
     ```
-
-1. Install the module:
+2.  Install the module:
 
     ```bash
     lgpm --modules-dir ./modules install --file blockchain_module-0.2.0.lgx
     ```
-
-1. Launch `logoscore` in daemon mode and load the Logos Blockchain module:
+3.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
 
     ```bash
     logoscore -m ./modules -D &
@@ -68,12 +66,10 @@ Download the Logos Blockchain module with `lgpd`, then install it with `lgpm` be
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
 {% hint style="info" %}
-
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
-
 {% endhint %}
 
-1. Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
+1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
 
     ```sh
     logoscore call blockchain_module generate_user_config '{
@@ -87,8 +83,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     ```
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
-
-1. Start the node:
+2.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
@@ -98,7 +93,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
-1. Check the consensus state:
+1.  Check the consensus state:
 
     ```sh
     logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
@@ -122,8 +117,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
     - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
-
-1. Check peer connectivity:
+2.  Check peer connectivity:
 
     ```sh
     curl -s http://localhost:8080/network/info | jq .
@@ -142,16 +136,14 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     ```
 
     - Confirm `n_peers` is greater than `0`.
-
-1. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
-
-1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
+3. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
+4. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
 ## Step 4: Request tokens from the faucet
 
 A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
 
-1. Find the keys associated with your node:
+1.  Find the keys associated with your node:
 
     ```sh
     grep -A3 known_keys user_config.yaml
@@ -165,12 +157,10 @@ A faucet distributes free tokens on test networks so you can experiment without 
         de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
     voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
     ```
+2.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
-1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
-
-    ![Image of the faucet UI after requesting funds with a public key](../.gitbook/assets/run-a-logos-blockchain-node-faucet.png)
-
-1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+    ![Image of the faucet UI after requesting funds with a public key](../../run-a-node/.gitbook/assets/run-a-logos-blockchain-node-faucet.png)
+3.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh
     curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
@@ -189,11 +179,9 @@ A faucet distributes free tokens on test networks so you can experiment without 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
 {% hint style="info" %}
-
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
 
-Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
-
+Block proposal is probabilistic. Your node will not propose on every [slot](https://docs.logos.co/get-started/glossary#slot); participation depends on your stake relative to total active stake in the network.
 {% endhint %}
 
 ## Troubleshooting the Logos Blockchain node

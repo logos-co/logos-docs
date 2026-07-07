@@ -17,9 +17,9 @@ The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockcha
 
 ## The basics
 
-* The Logos Blockchain is designed to decentralised applications and institutions that require high levels of privacy and resilience.
-* Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low.
-* Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](../concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](../concepts/about-bedrock.md). The [Blend Network](../concepts/about-the-blend-network.md) service is used to improve the privacy of the network.
+- The Logos Blockchain is designed to decentralised applications and institutions that require high levels of privacy and resilience.
+- Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low.
+- Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](../concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](../concepts/about-bedrock.md). The [Blend Network](../concepts/about-the-blend-network.md) service is used to improve the privacy of the network.
 
 ## Design principles
 

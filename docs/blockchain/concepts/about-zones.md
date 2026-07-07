@@ -17,9 +17,9 @@ Zones are customisable, high-performance blockchains for applications built on L
 
 ## The basics
 
-* A Zone defines its own state and execution environment, while the Logos Blockchain provides consensus and data availability.
-* A sequencer, or a committee of sequencers, handles a Zone's transactions and submits state updates to the blockchain.
-* Zones can use tokens bridged from [Bedrock](https://docs.logos.co/get-started/glossary#bedrock) and support cross-Zone transactions.
+- A Zone defines its own state and execution environment, while the Logos Blockchain provides consensus and data availability.
+- A sequencer, or a committee of sequencers, handles a Zone's transactions and submits state updates to the blockchain.
+- Zones can use tokens bridged from [Bedrock](https://docs.logos.co/get-started/glossary#bedrock) and support cross-Zone transactions.
 
 ## How Zones work
 
@@ -57,9 +57,9 @@ The [Logos Execution Zone (LEZ)](https://github.com/logos-co/logos-docs/blob/mai
 
 In addition to the [LEZ](https://docs.logos.co/get-started/glossary#lez), anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
 
-* Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
-  * Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.
-  * Secure Communication Channels: The Logos ecosystem provides encrypted and censorship-resistant collaboration tools for citizens of network states.
-  * Decentralised Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
-* Gaming Applications: Games often rely on rapid state changes to function correctly, making them ideal for implementation as Zone applications on Logos.
-* Small-scale Networked Applications: Networked applications can use the Logos Blockchain to store their state updates on-chain, with users recreating the state locally based on these updates. This makes the Logos Blockchain a low cost, easy alternative for self-hosting - especially for small-scale applications.
+- Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
+  - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.
+  - Secure Communication Channels: The Logos ecosystem provides encrypted and censorship-resistant collaboration tools for citizens of network states.
+  - Decentralised Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
+- Gaming Applications: Games often rely on rapid state changes to function correctly, making them ideal for implementation as Zone applications on Logos.
+- Small-scale Networked Applications: Networked applications can use the Logos Blockchain to store their state updates on-chain, with users recreating the state locally based on these updates. This makes the Logos Blockchain a low cost, easy alternative for self-hosting - especially for small-scale applications.

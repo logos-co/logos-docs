@@ -20,9 +20,9 @@ There are two types of modules in Logos Basecamp. Core modules are the headless 
 
 Before you start, make sure you have:
 
-* Logos Basecamp [installed and running](https://github.com/logos-co/logos-docs/blob/main/docs/core/build-modules/install-logos-basecamp.md).
-* Internet access for online catalogue install.
-* [An `.lgx` file](build-and-run-a-logos-core-module.md) for local install.
+- Logos Basecamp [installed and running](https://github.com/logos-co/logos-docs/blob/main/docs/core/build-modules/install-logos-basecamp.md).
+- Internet access for online catalogue install.
+- [An `.lgx` file](build-and-run-a-logos-core-module.md) for local install.
 
 {% hint style="info" %}
 The `.lgx` file's archive must contain a variant matching your platform. For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
@@ -30,9 +30,9 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 ## What to expect
 
-* You can install a [module](https://docs.logos.co/get-started/glossary#module) from the online catalogue or from a local `.lgx` file.
-* You can load or unload a module from the **Modules** view.
-* You can read a loading module's status, CPU, and memory in the **Modules** view.
+- You can install a [module](https://docs.logos.co/get-started/glossary#module) from the online catalogue or from a local `.lgx` file.
+- You can load or unload a module from the **Modules** view.
+- You can read a loading module's status, CPU, and memory in the **Modules** view.
 
 ## Step 1: Install the module package
 

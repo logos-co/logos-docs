@@ -19,8 +19,8 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 {% endhint %}
 
 {% hint style="info" %}
-* **Permissions**: No special permissions required.
-* **Product**: [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) wallet CLI.
+- **Permissions**: No special permissions required.
+- **Product**: [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) wallet CLI.
 {% endhint %}
 
 The Logos Execution Zone ([LEZ](https://docs.logos.co/get-started/glossary#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](https://docs.logos.co/get-started/glossary#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
@@ -29,20 +29,20 @@ The token program is a built-in LEZ [program](https://docs.logos.co/get-started/
 
 Token program accounts fall into two types:
 
-* [Token definition account](https://docs.logos.co/get-started/glossary#token-definition-account)
-  * Each token has exactly one token definition account.
-  * It defines the token globally (the “token type”).
-  * Its address is the token identifier (similar to a mint address).
-  * The token program owns it.
-  * It stores metadata including the token name and total supply.
-  * It can be public or private.
-* [Token holding account](https://docs.logos.co/get-started/glossary#token-holding-account)
-  * Each token can have multiple token holding accounts.
-  * Any [account](https://docs.logos.co/get-started/glossary#account) that holds a balance of a token is a token holding account for that token.
-  * It stores the token definition ID and the balance the account currently controls.
-  * The token program owns it.
-  * Only the token program can modify it. Modifications happen through token program executions authorised by the account’s keys.
-  * It can be public or private.
+- [Token definition account](https://docs.logos.co/get-started/glossary#token-definition-account)
+  - Each token has exactly one token definition account.
+  - It defines the token globally (the “token type”).
+  - Its address is the token identifier (similar to a mint address).
+  - The token program owns it.
+  - It stores metadata including the token name and total supply.
+  - It can be public or private.
+- [Token holding account](https://docs.logos.co/get-started/glossary#token-holding-account)
+  - Each token can have multiple token holding accounts.
+  - Any [account](https://docs.logos.co/get-started/glossary#account) that holds a balance of a token is a token holding account for that token.
+  - It stores the token definition ID and the balance the account currently controls.
+  - The token program owns it.
+  - Only the token program can modify it. Modifications happen through token program executions authorised by the account’s keys.
+  - It can be public or private.
 
 {% hint style="danger" %}
 Transfers are irreversible. Double-check all details before proceeding.
@@ -50,14 +50,14 @@ Transfers are irreversible. Double-check all details before proceeding.
 
 Before you begin, ensure that you have the following:
 
-* The [LEZ sequencer running in standalone mode](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-* The [Wallet CLI installed](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- The [LEZ sequencer running in standalone mode](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
+- The [Wallet CLI installed](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
 
 ## What to expect
 
-* The token program can move balances between token holding accounts.
-* If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
-* You can transfer custom tokens to any uninitialised public or [private account](https://docs.logos.co/get-started/glossary#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
+- The token program can move balances between token holding accounts.
+- If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
+- You can transfer custom tokens to any uninitialised public or [private account](https://docs.logos.co/get-started/glossary#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 {% hint style="info" %}
 Currently, it's impossible to change the token name or total supply after you create the token.
@@ -67,13 +67,13 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 1.  Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
-    * [Public account](https://docs.logos.co/get-started/glossary#public-account):
+    - [Public account](https://docs.logos.co/get-started/glossary#public-account):
 
     ```sh
     wallet account new public
     ```
 
-    * Private account:
+    - Private account:
 
     ```sh
     wallet account new private

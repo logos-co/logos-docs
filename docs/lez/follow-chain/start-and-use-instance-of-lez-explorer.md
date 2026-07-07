@@ -22,17 +22,17 @@ If you don't want to run your own LEZ explorer instance, navigate to the [public
 
 Before you start, make sure you have the following:
 
-* Linux or macOS operating system
-* [Docker](https://docs.docker.com/get-docker/), [Rust toolchain](https://www.rust-lang.org/tools/install), and `cargo` installed
-* [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed
-* [`just`](https://github.com/casey/just) installed
-* A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/)
-* A running instance of an [LEZ Indexer](run-lez-indexer.md)
+- Linux or macOS operating system
+- [Docker](https://docs.docker.com/get-docker/), [Rust toolchain](https://www.rust-lang.org/tools/install), and `cargo` installed
+- [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed
+- [`just`](https://github.com/casey/just) installed
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/)
+- A running instance of an [LEZ Indexer](run-lez-indexer.md)
 
 ## What to expect
 
-* You can browse all committed blocks and click through to inspect individual block details.
-* You can search for transactions and accounts and view their current state and balances.
+- You can browse all committed blocks and click through to inspect individual block details.
+- You can search for transactions and accounts and view their current state and balances.
 
 ## Start the LEZ Explorer
 

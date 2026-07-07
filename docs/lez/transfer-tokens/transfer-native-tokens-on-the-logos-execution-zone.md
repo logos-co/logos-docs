@@ -19,30 +19,30 @@ This page should be accurate for the specific version referenced in this doc, bu
 {% endhint %}
 
 {% hint style="info" %}
-* **Permissions**: No special permissions required.
-* **Product**: [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) wallet CLI.
+- **Permissions**: No special permissions required.
+- **Product**: [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) wallet CLI.
 {% endhint %}
 
 The Logos Execution Zone ([LEZ](https://docs.logos.co/get-started/glossary#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](https://docs.logos.co/get-started/glossary#program) to transfer native tokens between public and private accounts.
 
 On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 
-* Public accounts
-  * Live on-chain.
-  * Identified by a 32-byte [account](https://docs.logos.co/get-started/glossary#account) ID derived from the public key
-  * The private key signs transactions and authorises program executions.
-* Transfers between public accounts
-  * Validators execute the authenticated-transfers program transparently.
-  * The public state (the on-chain map from [public account](https://docs.logos.co/get-started/glossary#public-account) IDs to their account states) is updated in place by debiting the sender's public account and crediting the recipient's public account.
-* Private accounts
-  * Structurally identical to public accounts, but their values are stored off-chain.
-  * Use two keypairs: [nullifier keys](https://docs.logos.co/get-started/glossary#nullifier-keys) for privacy-preserving executions and [viewing keys](https://docs.logos.co/get-started/glossary#viewing-keys) for encrypting and decrypting values.
-  * The [private account](https://docs.logos.co/get-started/glossary#private-account) ID is derived from the [nullifier public key](https://docs.logos.co/get-started/glossary#nullifier-public-key).
-  * Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
-* Transfers involving any private account
-  * The execution is privacy-preserving.
-  * The transfer generates a zero-knowledge proof of correct execution locally, and submits the proof for validators to verify. Each update to the private state produces a new commitment (a 32-byte, hash-like binding to the actual values), and the previous commitment is marked as spent via a nullifier set so only the latest version can be used, while the actual private values remain local to the account owner.
-  * Any public accounts involved are still updated visibly on-chain.
+- Public accounts
+  - Live on-chain.
+  - Identified by a 32-byte [account](https://docs.logos.co/get-started/glossary#account) ID derived from the public key
+  - The private key signs transactions and authorises program executions.
+- Transfers between public accounts
+  - Validators execute the authenticated-transfers program transparently.
+  - The public state (the on-chain map from [public account](https://docs.logos.co/get-started/glossary#public-account) IDs to their account states) is updated in place by debiting the sender's public account and crediting the recipient's public account.
+- Private accounts
+  - Structurally identical to public accounts, but their values are stored off-chain.
+  - Use two keypairs: [nullifier keys](https://docs.logos.co/get-started/glossary#nullifier-keys) for privacy-preserving executions and [viewing keys](https://docs.logos.co/get-started/glossary#viewing-keys) for encrypting and decrypting values.
+  - The [private account](https://docs.logos.co/get-started/glossary#private-account) ID is derived from the [nullifier public key](https://docs.logos.co/get-started/glossary#nullifier-public-key).
+  - Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
+- Transfers involving any private account
+  - The execution is privacy-preserving.
+  - The transfer generates a zero-knowledge proof of correct execution locally, and submits the proof for validators to verify. Each update to the private state produces a new commitment (a 32-byte, hash-like binding to the actual values), and the previous commitment is marked as spent via a nullifier set so only the latest version can be used, while the actual private values remain local to the account owner.
+  - Any public accounts involved are still updated visibly on-chain.
 
 {% hint style="danger" %}
 Transfers are irreversible. Double-check all details before proceeding.
@@ -50,27 +50,27 @@ Transfers are irreversible. Double-check all details before proceeding.
 
 Before you begin, ensure that you have the following:
 
-* The [LEZ sequencer running in standalone mode](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-* The [Wallet CLI installed](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- The [LEZ sequencer running in standalone mode](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
+- The [Wallet CLI installed](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
 
 ## What to expect
 
-* The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
-* You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
-* You can transfer native tokens to public accounts and verify balances on-chain.
-* Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.
+- The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
+- You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
+- You can transfer native tokens to public accounts and verify balances on-chain.
+- Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.
 
 ## Step 1: Create and fund a sender account
 
 1.  Create a public account or private account according to your needs.
 
-    * Public account:
+    - Public account:
 
     ```sh
     wallet account new public
     ```
 
-    * Private account:
+    - Private account:
 
     ```sh
     wallet account new private
@@ -129,15 +129,15 @@ When transferring native tokens using the `wallet auth-transfer send` command, y
 
 There are two ways to specify the recipient account depending on the account type:
 
-* [Method 1: Use the recipient account ID](transfer-native-tokens-on-the-logos-execution-zone.md#method-1-transfer-tokens-using-the-recipient-account-id)
-* [Method 2: Use the recipient account `npk` and `vpk`](transfer-native-tokens-on-the-logos-execution-zone.md#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk)
+- [Method 1: Use the recipient account ID](transfer-native-tokens-on-the-logos-execution-zone.md#method-1-transfer-tokens-using-the-recipient-account-id)
+- [Method 2: Use the recipient account `npk` and `vpk`](transfer-native-tokens-on-the-logos-execution-zone.md#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk)
 
 With the recipient account ID, you can transfer native tokens across the following account types:
 
-* Public → public (yours or someone else's)
-* Private → public (yours or someone else's)
-* Public → your private
-* Private → your private
+- Public → public (yours or someone else's)
+- Private → public (yours or someone else's)
+- Public → your private
+- Private → your private
 
 {% hint style="info" %}
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof.
@@ -145,8 +145,8 @@ Transfers involving private accounts may take a few minutes because the wallet n
 
 With the `npk` and `vpk` of the recipient account, you can transfer native tokens across the following account types:
 
-* Public → uninitialised private (someone else's)
-* Private → uninitialised private (someone else's)
+- Public → uninitialised private (someone else's)
+- Private → uninitialised private (someone else's)
 
 {% hint style="info" %}
 Currently, only uninitialised private accounts can be modified without authorisation. Sending funds to initialised private accounts is not possible because only the owner can modify them.

@@ -45,7 +45,7 @@ Before you start, make sure you have the following:
 
 The **Operations** tab is disabled until the node is running. Notes and balances are unavailable until the node is also synced.
 
-1. Launch the app and, on the config screen, select or generate a user config and deployment config:
+1. Launch the app and, on the config screen, select or generate a user config and deployment config. The default deployment will connect to the testnet:
 
    ```sh
    nix run

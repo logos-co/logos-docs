@@ -48,6 +48,8 @@ Check the account balance before claiming, submit a claim, then confirm the tran
 
 1. Click **Claim**.
 
+   ![Claim submitted](./claim-leader-rewards-in-logos-blockchain-ui-app/06-claim-submitted.png)
+
    - The UI displays a transaction hash. Note this hash to confirm inclusion in the next step.
 
 1. Return to the **Node** tab and inspect the block list. Find a block that includes the claim transaction, expand it, and confirm the transaction hash matches the one shown after clicking **Claim**.

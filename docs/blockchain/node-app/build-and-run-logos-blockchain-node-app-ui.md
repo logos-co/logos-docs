@@ -14,7 +14,7 @@ slug: build-and-run-logos-blockchain-node-app-ui
 
 #### Run a node that participates in consensus via a standalone application.
 
-The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the blockchain [module](https://docs.logos.co/get-started/glossary#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../) or a standalone application.
+The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the blockchain [module](https://docs.logos.co/get-started/glossary#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](<../README (1).md>) or a standalone application.
 
 {% hint style="info" %}
 For testnet v0.1, you must manually edit the config file and restart the node to add new keys.
@@ -22,8 +22,8 @@ For testnet v0.1, you must manually edit the config file and restart the node to
 
 Before you start, make sure you have the following:
 
-- A supported OS: Linux x86\_64 or macOS
--   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+* A supported OS: Linux x86\_64 or macOS
+*   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -34,9 +34,9 @@ Before you start, make sure you have the following:
 
 By the end of this tutorial:
 
-- You will have a Logos Blockchain node running and connected to peers.
-- Your wallet will hold testnet funds requested from the faucet.
-- Your node will be eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
+* You will have a Logos Blockchain node running and connected to peers.
+* Your wallet will hold testnet funds requested from the faucet.
+* Your node will be eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
 
 ## Step 1: Run the Logos Blockchain app
 
@@ -56,7 +56,7 @@ By the end of this tutorial:
 
 ## Step 2: Generate and load a node config
 
-1. In the app, click **Generate Config**.
+1.  In the app, click **Generate Config**.
 
     ![Initial screen](../.gitbook/assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
 2. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.

@@ -1,3 +1,3 @@
 # Table of contents
 
-* [Logos documentation](README.md)
+- [Logos documentation](README.md)

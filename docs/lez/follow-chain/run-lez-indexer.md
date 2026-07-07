@@ -18,19 +18,19 @@ The [LEZ](https://docs.logos.co/get-started/glossary#lez) Indexer is a service t
 
 Before you start, make sure you have the following:
 
-* Linux or macOS operating system
-* [Docker](https://docs.docker.com/get-docker/) installed
-* Rust 1.94.0 and `cargo` installed
-* [`just`](https://github.com/casey/just) installed
-* A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/connect-wallet-cli-to-lez-testnet.md) set up
-* A running [Logos Blockchain node](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally)
-* Port `8779` free on your machine
+- Linux or macOS operating system
+- [Docker](https://docs.docker.com/get-docker/) installed
+- Rust 1.94.0 and `cargo` installed
+- [`just`](https://github.com/casey/just) installed
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/connect-wallet-cli-to-lez-testnet.md) set up
+- A running [Logos Blockchain node](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally)
+- Port `8779` free on your machine
 
 ## What to expect
 
-* You can query finalized LEZ blockchain state including blocks, transactions, and accounts via HTTP RPC on `http://localhost:8779`.
-* You have a running local stack with the Logos Blockchain node, LEZ Sequencer, and LEZ Indexer coordinated through `just` commands.
-* You can verify indexer health and confirm it is progressing by calling the `getLastFinalizedBlockId` and `checkHealth` RPC methods.
+- You can query finalized LEZ blockchain state including blocks, transactions, and accounts via HTTP RPC on `http://localhost:8779`.
+- You have a running local stack with the Logos Blockchain node, LEZ Sequencer, and LEZ Indexer coordinated through `just` commands.
+- You can verify indexer health and confirm it is progressing by calling the `getLastFinalizedBlockId` and `checkHealth` RPC methods.
 
 ## Start the LEZ stack and run the indexer
 
@@ -62,7 +62,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     just run-sequencer
     ```
 
-    * Test configs are located [here for the node](https://github.com/logos-blockchain/logos-execution-zone/tree/main/bedrock) and [here for the sequencer](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/sequencer/service/configs/debug/sequencer_config.json).
+    - Test configs are located [here for the node](https://github.com/logos-blockchain/logos-execution-zone/tree/main/bedrock) and [here for the sequencer](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/sequencer/service/configs/debug/sequencer_config.json).
 3.  In a third terminal window, start the LEZ Indexer:
 
     ```sh
@@ -138,5 +138,5 @@ The delay is caused by Logos Blockchain's block finality time. The indexer only 
 
 The indexer config used by `just run-indexer` is located at [lez/indexer/service/configs/debug/indexer\_config.json](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/indexer/service/configs/debug/indexer_config.json) (a `configs/docker/indexer_config.json` variant is used for the Docker setup). Two fields control connectivity:
 
-* `bedrock_config` — the HTTP address of the Logos Blockchain node.
-* `channel_id` — the channel that LEZ Sequencer writes into. This must match the sequencer you are using.
+- `bedrock_config` — the HTTP address of the Logos Blockchain node.
+- `channel_id` — the channel that LEZ Sequencer writes into. This must match the sequencer you are using.

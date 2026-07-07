@@ -20,15 +20,15 @@ There is currently no dynamic wallet key management. To add new keys you must ma
 
 Before you start, ensure you have:
 
-* Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
-* glibc version 2.39 or later (Linux only)
-* At least 64 GB of storage
+- Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- glibc version 2.39 or later (Linux only)
+- At least 64 GB of storage
 
 ## What to expect
 
-* You can install the node binary, generate a configuration, and join the public testnet.
-* You can verify that your node is syncing and connected to peers using the local API.
-* You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
+- You can install the node binary, generate a configuration, and join the public testnet.
+- You can verify that your node is syncing and connected to peers using the local API.
+- You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
 ## Step 1: Install Logos core tools
 
@@ -82,7 +82,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     }'
     ```
 
-    * To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
+    - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 2.  Start the node:
 
     ```sh
@@ -115,8 +115,8 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     }
     ```
 
-    * `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
-    * Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
+    - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
+    - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
 2.  Check peer connectivity:
 
     ```sh
@@ -135,7 +135,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     }
     ```
 
-    * Confirm `n_peers` is greater than `0`.
+    - Confirm `n_peers` is greater than `0`.
 3. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
 4. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
@@ -176,7 +176,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
     }
     ```
 
-    * Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
+    - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
 {% hint style="info" %}
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.

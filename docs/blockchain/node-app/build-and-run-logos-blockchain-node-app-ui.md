@@ -22,8 +22,8 @@ For testnet v0.1, you must manually edit the config file and restart the node to
 
 Before you start, make sure you have the following:
 
-* A supported OS: Linux x86\_64 or macOS
-*   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- A supported OS: Linux x86\_64 or macOS
+-   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -34,9 +34,9 @@ Before you start, make sure you have the following:
 
 By the end of this tutorial:
 
-* You will have a Logos Blockchain node running and connected to peers.
-* Your wallet will hold testnet funds requested from the faucet.
-* Your node will be eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
+- You will have a Logos Blockchain node running and connected to peers.
+- Your wallet will hold testnet funds requested from the faucet.
+- Your node will be eligible to participate in the consensus lottery after the UTXO ages for approximately two hours.
 
 ## Step 1: Run the Logos Blockchain app
 
@@ -56,15 +56,15 @@ By the end of this tutorial:
 
 ## Step 2: Generate and load a node config
 
-1.  In the app, click **Generate Config**.
+1. In the app, click **Generate Config**.
 
-    ![Initial screen](../.gitbook/assets/01-config-setup.png)
+    ![Initial screen](../.gitbook/assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
 2. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
 3. In the app, paste the peer set information in the **Initial peers** and click **Generate Config** on the bottom.
 4. Click **Load Config** and select the generated config file.
 5.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
 
-    ![Running node](../.gitbook/assets/03-node-running.png)
+    ![Running node](../.gitbook/assets/build-and-run-logos-blockchain-node-app-ui/03-node-running.png)
 
 ## Step 3: Request testnet funds from the faucet
 

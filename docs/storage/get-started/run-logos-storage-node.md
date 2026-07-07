@@ -20,26 +20,26 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 
 Before you start, make sure you have the following:
 
-* Linux (tested on Ubuntu 22.04)
-*   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- Linux (tested on Ubuntu 22.04)
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
-*   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+-   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
     export PATH="$PWD/bin:$PATH"
     ```
-* `jq` on your `PATH` — used to pull the uploaded [CID](https://docs.logos.co/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
+- `jq` on your `PATH` — used to pull the uploaded [CID](https://docs.logos.co/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
 
 ## What to expect
 
-* You can connect a [Logos Storage](https://docs.logos.co/get-started/glossary#logos-storage) node to the testnet and have it listed among the bootstrap peers.
-* You can publish a file to the network and retrieve a content address to share with other nodes.
-* You can download the file back from the network and confirm it lands on disk.
+- You can connect a [Logos Storage](https://docs.logos.co/get-started/glossary#logos-storage) node to the testnet and have it listed among the bootstrap peers.
+- You can publish a file to the network and retrieve a content address to share with other nodes.
+- You can download the file back from the network and confirm it lands on disk.
 
 ## Build and install the storage module
 
@@ -49,7 +49,7 @@ Before you start, make sure you have the following:
     nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx' -o storage-lgx
     ```
 
-    * This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
+    - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
 
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.</p></div>
 2.  Install the package into a local modules directory using `lgpm`:
@@ -89,7 +89,7 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
     EOF
     ```
 
-    * `config.json` includes the following fields:
+    - `config.json` includes the following fields:
 
     | Field         | Purpose                      |
     | ------------- | ---------------------------- |
@@ -101,9 +101,9 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
     | `nat`         | Public IP advertisement mode |
     | `network`     | Storage network preset       |
 
-    * Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
-    * The `logos.test` preset provides the storage bootstrap settings.
-    * Fields
+    - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
+    - The `logos.test` preset provides the storage bootstrap settings.
+    - Fields
 
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>To run storage with <a href="https://docs.logos.co/get-started/glossary#mix">mix</a> support, generate the config from the published mix bootstrap data:</p><pre class="language-sh"><code class="lang-sh">cat > make-mix-storage-config.sh &#x3C;&#x3C;'EOF'
     #!/usr/bin/env bash
@@ -142,7 +142,7 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
     logoscore call storage_module start
     ```
 
-    *   If using the mix config, also enable private queries and verify with a test download:
+    -   If using the mix config, also enable private queries and verify with a test download:
 
         ```sh
         logoscore call storage_module togglePrivateQueries true
@@ -174,7 +174,7 @@ Once the node is running and connected to the testnet, publish a file and verify
     logoscore call storage_module downloadToUrl "$(cat cid.txt)" <destination-path> false <chunk-size-in-bytes>
     ```
 
-    * `downloadToUrl` takes a `local` flag which reads only from locally cached data if set to `true`.
+    - `downloadToUrl` takes a `local` flag which reads only from locally cached data if set to `true`.
 4. Confirm the downloaded file is present at `<output-path>` and matches the original.
 
 ## Remove content and destroy the storage node

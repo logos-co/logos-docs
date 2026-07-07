@@ -18,15 +18,15 @@ This guide covers building a [module](https://docs.logos.co/get-started/glossary
 
 **Before you start**, make sure you have the following:
 
-* Completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) — a working `calc_module` with the shared library built in `logos-calc-module/lib/`.
-* Nix with flakes enabled.
-* Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html)
+- Completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) — a working `calc_module` with the shared library built in `logos-calc-module/lib/`.
+- Nix with flakes enabled.
+- Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html)
 
 ## What to expect
 
-* You can scaffold, configure, and build a `calc_ui_cpp` module with a process-isolated C++ backend.
-* You can call `calc_module` methods from QML using a typed replica and `logos.watch()`.
-* You will be able to build, run, and live-reload the module using `nix run`.
+- You can scaffold, configure, and build a `calc_ui_cpp` module with a process-isolated C++ backend.
+- You can call `calc_module` methods from QML using a typed replica and `logos.watch()`.
+- You will be able to build, run, and live-reload the module using `nix run`.
 
 ## Step 1: Scaffold the project
 
@@ -90,10 +90,10 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
 
     Key fields:
 
-    * `"type": "ui_qml"` — tells the builder this is a QML view module.
-    * `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
-    * `"view": "qml/Main.qml"` — the QML entry point.
-    * `"dependencies": ["calc_module"]` — [core modules](https://docs.logos.co/get-started/glossary#core-module) the backend calls.
+    - `"type": "ui_qml"` — tells the builder this is a QML view module.
+    - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
+    - `"view": "qml/Main.qml"` — the QML entry point.
+    - `"dependencies": ["calc_module"]` — [core modules](https://docs.logos.co/get-started/glossary#core-module) the backend calls.
 2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash
@@ -121,8 +121,8 @@ The `.rep` file is the single source of truth for the interface between the QML 
 
     `repc` generates two headers from this file:
 
-    * `rep_calc_ui_cpp_source.h` — `CalcUiCppSimpleSource` with virtual slots the backend overrides.
-    * `rep_calc_ui_cpp_replica.h` — `CalcUiCppReplica` with typed methods the QML view calls.
+    - `rep_calc_ui_cpp_source.h` — `CalcUiCppSimpleSource` with virtual slots the backend overrides.
+    - `rep_calc_ui_cpp_replica.h` — `CalcUiCppReplica` with typed methods the QML view calls.
 
 ## Step 4: Write the interface header
 
@@ -178,9 +178,9 @@ logos_module(
 
 The backend plugin inherits three base classes:
 
-* `CalcUiCppSimpleSource` — generated from `.rep`, provides the typed source for Qt Remote Objects.
-* `CalcUiCppInterface` — standard Logos plugin interface (`name()`, `version()`).
-* `CalcUiCppViewPluginBase` — generated, provides `setBackend()` and `enableRemoting()`.
+- `CalcUiCppSimpleSource` — generated from `.rep`, provides the typed source for Qt Remote Objects.
+- `CalcUiCppInterface` — standard Logos plugin interface (`name()`, `version()`).
+- `CalcUiCppViewPluginBase` — generated, provides `setBackend()` and `enableRemoting()`.
 
 1.  Create `src/calc_ui_cpp_plugin.h`:
 
@@ -386,9 +386,9 @@ The backend plugin inherits three base classes:
 
     Key patterns:
 
-    * `logos.module("calc_ui_cpp")` — gets the typed replica, with auto-synced properties.
-    * `logos.watch(backend.add(1, 2), ...)` — delivers a `SLOT` return value as a JS Promise.
-    * The `logos` object is injected by the host at runtime — no `QtRemoteObjects` import is needed.
+    - `logos.module("calc_ui_cpp")` — gets the typed replica, with auto-synced properties.
+    - `logos.watch(backend.add(1, 2), ...)` — delivers a `SLOT` return value as a JS Promise.
+    - The `logos` object is injected by the host at runtime — no `QtRemoteObjects` import is needed.
 
 ### Step 7.5: Use the Logos Design System in your QML (Optional)
 
@@ -436,15 +436,15 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
 
     The sidebar splits components into:
 
-    * **Controls** — designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
-    * **Controls (not designed)** — placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
+    - **Controls** — designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
+    - **Controls (not designed)** — placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
 
     **Theme tokens** (use these instead of hex literals or manual font sizes):
 
-    * `Theme.palette.*` — `background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
-    * `Theme.spacing.*` — `tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
-    * `Theme.typography.*` — `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
-    * `Logos.Icons.LogosIcons.*` — `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
+    - `Theme.palette.-` — `background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
+    - `Theme.spacing.*` — `tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
+    - `Theme.typography.*` — `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
+    - `Logos.Icons.LogosIcons.*` — `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
 
 ## Step 8: Configure the Nix flake
 
@@ -510,9 +510,9 @@ Before building, confirm the `calc_module` shared library is present from [Part 
     ```
 4.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
 
-    ![Operation buttons visible](../.gitbook/assets/calc-cpp-buttons.png)
+    ![Operation buttons visible](./build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
 
-    ![Result of 3 + 5 shows 8](../.gitbook/assets/calc-cpp-result.png)
+    ![Result of 3 + 5 shows 8](./build-a-logos-cpp-ui-module/calc-cpp-result.png)
 
 ## Step 10: Update view with live reloading (Optional)
 

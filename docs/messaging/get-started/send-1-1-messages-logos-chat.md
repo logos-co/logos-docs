@@ -22,15 +22,15 @@ Identity, conversations, and message history exist only while the app is running
 
 You need the following to complete this procedure:
 
-* Linux or macOS
-* Network access so both instances can reach each other
-* Two running instances of the app — on two separate machines, or in two terminals on the same machine
+- Linux or macOS
+- Network access so both instances can reach each other
+- Two running instances of the app — on two separate machines, or in two terminals on the same machine
 
 ## What to expect
 
-* You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp).
-* You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
-* You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
+- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp).
+- You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
+- You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
 
 ## Step 1: Run the Logos Chat app
 

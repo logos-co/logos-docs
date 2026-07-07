@@ -22,7 +22,7 @@ Recovery from mnemonic and withdrawals to the L1 are not yet supported.
 
 Before you begin, ensure you have:
 
-*   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+-   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -33,9 +33,9 @@ Before you begin, ensure you have:
 
 ## What to expect
 
-* You can run the wallet UI locally and sync it with the live LEZ testnet.
-* You have created and funded accounts that you can use to test transfers.
-* You can complete public, private, shielded, and deshielded token transfers and verify finalisation on the L1.
+- You can run the wallet UI locally and sync it with the live LEZ testnet.
+- You have created and funded accounts that you can use to test transfers.
+- You can complete public, private, shielded, and deshielded token transfers and verify finalisation on the L1.
 
 ## Set up and sync the wallet UI
 
@@ -55,8 +55,8 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
 
 1.  In the setup screen, enter paths for the config file and the storage file.
 
-    * The wallet UI creates these files at the paths you enter if they don't already exist.
-    * After the first run, the wallet UI remembers these paths and skips the setup screen on subsequent runs.
+    - The wallet UI creates these files at the paths you enter if they don't already exist.
+    - After the first run, the wallet UI remembers these paths and skips the setup screen on subsequent runs.
 
     ![Wallet setup screen](../.gitbook/assets/create-wallet.png)
 2. Choose a password.

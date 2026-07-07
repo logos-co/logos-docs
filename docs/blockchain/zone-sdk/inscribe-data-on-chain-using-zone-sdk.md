@@ -26,13 +26,13 @@ You can try out a working version of the TUI Zone used in this tutorial directly
 
 Before you begin, you will need:
 
-* A running [Logos node](<../README (1).md>)
+- A running [Logos node](../)
 
 ## What to expect
 
-* You will initialise a `ZoneSequencer` that connects to your [Logos node](https://docs.logos.co/get-started/glossary#logos-node) and creates a new [channel](https://docs.logos.co/get-started/glossary#channel) for posting inscriptions.
-* You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
-* You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
+- You will initialise a `ZoneSequencer` that connects to your [Logos node](https://docs.logos.co/get-started/glossary#logos-node) and creates a new [channel](https://docs.logos.co/get-started/glossary#channel) for posting inscriptions.
+- You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
+- You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 
 ## Step 1: Clone the Logos Blockchain repository
 
@@ -52,10 +52,10 @@ Before you begin, clone the [logos-blockchain](https://github.com/logos-blockcha
 
 Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/sequencer/zone_sequencer.rs`. When initialising this struct, provide the following arguments:
 
-* `channel_id: ChannelId` — the ID of the channel associated with the Zone.
-* `signing_key: Ed25519Key` — a key authorised to post updates to the channel.
-* `node: Node` — a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
-* `checkpoint: Option<SequencerCheckpoint>` — \[Optional] the checkpoint representing the most recently-pushed channel update.
+- `channel_id: ChannelId` — the ID of the channel associated with the Zone.
+- `signing_key: Ed25519Key` — a key authorised to post updates to the channel.
+- `node: Node` — a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
+- `checkpoint: Option<SequencerCheckpoint>` — \[Optional] the checkpoint representing the most recently-pushed channel update.
 
 Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](https://docs.logos.co/get-started/glossary#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL\_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](https://docs.logos.co/get-started/glossary#mantle) Operation.
 
@@ -136,10 +136,10 @@ For a centralized Zone — a single sequencer that owns its channel — event ha
 
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
-* `Ready` — the sequencer is caught up and ready to accept updates.
-* `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
-* `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
-* `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
+- `Ready` — the sequencer is caught up and ready to accept updates.
+- `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
+- `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
+- `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
 1.  In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint:
 

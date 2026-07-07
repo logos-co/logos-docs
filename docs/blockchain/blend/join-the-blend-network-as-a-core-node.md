@@ -18,14 +18,14 @@ Joining the [Blend Network](https://docs.logos.co/get-started/glossary#blend-net
 
 You need:
 
-* [A running blockchain node](<../README (1).md>).
-* A publicly reachable IP and port (or DNS) combination for the node.
+- [A running blockchain node](../).
+- A publicly reachable IP and port (or DNS) combination for the node.
 
 ## What to expect
 
-* Your blockchain node is registered as a Blend core node.
-* Your node contributes to proposer privacy and becomes eligible for rewards.
-* Your declaration is confirmed on-chain and becomes active after two epochs.
+- Your blockchain node is registered as a Blend core node.
+- Your node contributes to proposer privacy and becomes eligible for rewards.
+- Your declaration is confirmed on-chain and becomes active after two epochs.
 
 ## Register your node as a Blend core node
 
@@ -64,7 +64,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](https:/
     # > ]
     ```
 
-    * Note the `id` of a note held by the `BlendZk` key — you need it in the next step.
+    - Note the `id` of a note held by the `BlendZk` key — you need it in the next step.
 4.  Join the Blend network by locking one of the notes held by your `BlendZk` key:
 
     ```bash
@@ -76,9 +76,9 @@ Complete these steps to fund the required keys, retrieve a locked [note](https:/
     # > 2691821bd61394cc18939626de4e9231c699e8ddefd1ebf9e6c35b32229bdc65
     ```
 
-    * `<YOUR_IP>`: your external IP address.
-    * `<YOUR_BLEND_PORT>`: the Blend port from `blend.core.backend.listening_address` in `user_config.yaml`. If you use port mapping, use the externally mapped port.
-    * `<BLEND_ZK_NOTE_ID>`: the note `id` from the `BlendZk` balance check above.
+    - `<YOUR_IP>`: your external IP address.
+    - `<YOUR_BLEND_PORT>`: the Blend port from `blend.core.backend.listening_address` in `user_config.yaml`. If you use port mapping, use the externally mapped port.
+    - `<BLEND_ZK_NOTE_ID>`: the note `id` from the `BlendZk` balance check above.
 5.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:
 
     ```bash
@@ -100,7 +100,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](https:/
     # > ]
     ```
 
-    * `service_type: "BN"` identifies this as a [Blend node](https://docs.logos.co/get-started/glossary#blend-node) declaration.
-    * `zk_id` is your `BlendZk` public key; `provider_id` is your `BlendSigning` key.
-    * `active == created + 2`: your node becomes active two epochs after the declaration is included in a block.
-    * If your declaration is not yet listed, retry after your transaction is included in a block.
+    - `service_type: "BN"` identifies this as a [Blend node](https://docs.logos.co/get-started/glossary#blend-node) declaration.
+    - `zk_id` is your `BlendZk` public key; `provider_id` is your `BlendSigning` key.
+    - `active == created + 2`: your node becomes active two epochs after the declaration is included in a block.
+    - If your declaration is not yet listed, retry after your transaction is included in a block.

@@ -1,5 +1,5 @@
 ---
-title: FAQ: Logos Messaging
+title: "FAQ: Logos Messaging"
 doc_type: concept
 product: messaging
 topics: faq

@@ -18,51 +18,45 @@ This procedure covers how to claim rewards for participating in the consensus pr
 
 Before you start, make sure you have the following:
 
-- A [Logos Blockchain node running via the UI app](./build-and-run-logos-blockchain-node-app-ui.md)
-- A wallet key that can receive leader reward claims
+* A [Logos Blockchain node running via the UI app](build-and-run-logos-blockchain-node-app-ui.md)
+* A wallet key that can receive leader reward claims
 
 ## What to expect
 
-- You can view available reward vouchers in **Leader Rewards** and claim one with a single button press.
-- You can verify the claim by matching the transaction hash in the block list and confirming the reward account balance has increased.
+* You can view available reward vouchers in **Leader Rewards** and claim one with a single button press.
+* You can verify the claim by matching the transaction hash in the block list and confirming the reward account balance has increased.
 
 ## Claim a reward voucher
 
 Check the account balance before claiming, submit a claim, then confirm the transaction and balance update.
 
-1. In **Operations**, open **Accounts** and click **Refresh** to load the current wallet state.
+1.  In **Operations**, open **Accounts** and click **Refresh** to load the current wallet state.
 
-   ![Check accounts](./claim-leader-rewards-in-logos-blockchain-ui-app/04-accounts-before-claim.png)
+    ![Check accounts](../.gitbook/assets/04-accounts-before-claim.png)
 
-   - Note the balance of the account that will receive the reward before claiming.
+    * Note the balance of the account that will receive the reward before claiming.
+2.  In **Operations**, open **Leader Rewards**.
 
-1. In **Operations**, open **Leader Rewards**.
+    ![Claimable vouchers](../.gitbook/assets/05-claimable-vouchers.png)
 
-   ![Claimable vouchers](./claim-leader-rewards-in-logos-blockchain-ui-app/05-claimable-vouchers.png)
+    * The panel shows the number of available claimable vouchers, the tip used for the query, and voucher details including `cm` and `nf` values.
 
-   - The panel shows the number of available claimable vouchers, the tip used for the query, and voucher details including `cm` and `nf` values.
+    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>If the voucher count shows <code>0</code>, wait for more blocks and refresh the <strong>Leader Rewards</strong> panel before proceeding.</p></div>
+3.  Click **Claim**.
 
-   {% hint style="info" %}
-   If the voucher count shows `0`, wait for more blocks and refresh the **Leader Rewards** panel before proceeding.
-   {% endhint %}
+    ![Claim submitted](../.gitbook/assets/06-claim-submitted.png)
 
-1. Click **Claim**.
+    * The UI displays a transaction hash. Note this hash to confirm inclusion in the next step.
+4.  Return to the **Node** tab and inspect the block list. Find a block that includes the claim transaction, expand it, and confirm the transaction hash matches the one shown after clicking **Claim**.
 
-   ![Claim submitted](./claim-leader-rewards-in-logos-blockchain-ui-app/06-claim-submitted.png)
+    ![Claim transaction as seen in a block](../.gitbook/assets/07-claim-tx-in-block.png)
 
-   - The UI displays a transaction hash. Note this hash to confirm inclusion in the next step.
+    * On shared networks the block may contain other transactions too.
+5.  Return to **Operations**, then **Accounts**, and click **Refresh**.
 
-1. Return to the **Node** tab and inspect the block list. Find a block that includes the claim transaction, expand it, and confirm the transaction hash matches the one shown after clicking **Claim**.
+    ![Accounts after the claim](../.gitbook/assets/08-accounts-after-claim.png)
 
-   ![Claim transaction as seen in a block](./claim-leader-rewards-in-logos-blockchain-ui-app/07-claim-tx-in-block.png)
-
-   - On shared networks the block may contain other transactions too.
-
-1. Return to **Operations**, then **Accounts**, and click **Refresh**.
-
-   ![Accounts after the claim](./claim-leader-rewards-in-logos-blockchain-ui-app/08-accounts-after-claim.png)
-
-   - Confirm the reward account balance has increased. The balance updates after the claim transaction is processed.
+    * Confirm the reward account balance has increased. The balance updates after the claim transaction is processed.
 
 ## Troubleshooting leader rewards
 

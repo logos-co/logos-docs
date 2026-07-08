@@ -13,7 +13,7 @@ slug: network-domains
  
 #### Understand the discovery, gossip, and request/response domains that structure how peers interact.
 
-Logos Messaging is a unified and cohesive entity that offers a rich ecosystem with three distinct network interaction domains. These domains serve specialised purposes and contribute to the robust functionality of Logos Messaging, forming its foundation.
+Logos Delivery is a unified and cohesive entity that offers a rich ecosystem with three distinct network interaction domains. These domains serve specialised purposes and contribute to the robust functionality of Logos Delivery, forming its foundation.
 
 ## The basics
  
@@ -23,17 +23,17 @@ Logos Messaging is a unified and cohesive entity that offers a rich ecosystem wi
 
 ## Discovery domain
  
-Peer discovery in Logos Messaging facilitates locating other nodes within the network. As a modular protocol, Logos Messaging incorporates various discovery mechanisms, such as [Discv5](./about-discv5.md) and [Peer Exchange](./about-peer-exchange.md). These mechanisms allow developers to choose the most suitable option(s) for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
+Peer discovery in Logos Delivery facilitates locating other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](./about-discv5.md) and [Peer Exchange](./about-peer-exchange.md). These mechanisms allow developers to choose the most suitable option(s) for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
  
 ## Gossip domain
  
 GossipSub derives its name from the practice within Pub/Sub networks where peers gossip about the messages they have encountered, thus establishing a message delivery network.
  
-Logos Messaging employs gossiping through [Relay](https://docs.waku.org/learn/concepts/protocols#relay) to distribute messages across the network. Additionally, Logos Messaging introduces [RLN Relay](https://docs.waku.org/learn/concepts/protocols#rln-relay), an experimental mechanism that combines privacy preservation and economic spam protection.
+Logos Delivery employs gossiping through [Relay](https://docs.waku.org/learn/concepts/protocols#relay) to distribute messages across the network. Additionally, Logos Delivery introduces [RLN Relay](https://docs.waku.org/learn/concepts/protocols#rln-relay), an experimental mechanism that combines privacy preservation and economic spam protection.
  
 ## Request/response domain
  
-Logos Messaging provides a set of protocols to optimise its performance in resource-limited environments like low bandwidth or mostly offline scenarios for multiple purposes.
+Logos Delivery provides a set of protocols to optimise its performance in resource-limited environments like low bandwidth or mostly offline scenarios for multiple purposes.
  
 - [Store](https://docs.waku.org/learn/concepts/protocols#store) enables the retrieval of historical messages.
 - [Filter](https://docs.waku.org/learn/concepts/protocols#filter) efficiently retrieves a subset of messages to conserve bandwidth.

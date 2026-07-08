@@ -13,7 +13,7 @@ slug: static-peers
 
 #### Understand how hard-coded bootstrap peers work and the trade-offs they carry.
 
-Logos Messaging applications have the flexibility to embed bootstrap node addresses directly into their codebase. Developers can either use static peers operated by [Status](https://status.im/) or [run a node](../delivery/run-logos-delivery-node.md).
+Logos Delivery applications have the flexibility to embed bootstrap node addresses directly into their codebase. Developers can either use static peers operated by [Status](https://status.im/) or [run a node](../delivery/run-logos-delivery-node.md).
 
 ## How static peers work
 

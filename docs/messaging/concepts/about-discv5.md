@@ -13,7 +13,7 @@ slug: discv5
 
 #### Understand how Discv5 uses a distributed hash table to find peers across the network.
 
-`Discv5` is a decentralised and efficient peer discovery mechanism for the Logos Messaging Network. It uses a [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) for storing `ENR` records, providing resistance to censorship. `Discv5` offers a global view of participating nodes, enabling random sampling for load distribution. It uses bootstrap nodes as an entry point to the network, providing randomised sets of nodes for mesh expansion. Have a look at the [Discv5](https://lip.logos.co/messaging/core/draft/33/discv5.html) specification to learn more.
+`Discv5` is a decentralised and efficient peer discovery mechanism for the Logos Delivery Network. It uses a [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) for storing `ENR` records, providing resistance to censorship. `Discv5` offers a global view of participating nodes, enabling random sampling for load distribution. It uses bootstrap nodes as an entry point to the network, providing randomised sets of nodes for mesh expansion. Have a look at the [Discv5](https://lip.logos.co/messaging/core/draft/33/discv5.html) specification to learn more.
 
 ## How Discv5 works
 

@@ -13,7 +13,7 @@ slug: content-topics
  
 #### Understand how content topics filter and route messages, and how naming choices affect privacy.
  
-`Content Topics` are metadata strings set by developers on outgoing messages to facilitate protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-messaging-protocols.md#relay) or [Filter](../concepts/understand-logos-messaging-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-messaging-protocols.md#store)) that meet specific filtering criteria.
+`Content Topics` are metadata strings set by developers on outgoing messages to facilitate protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-delivery-protocols.md#relay) or [Filter](../concepts/understand-logos-delivery-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-delivery-protocols.md#store)) that meet specific filtering criteria.
 
 {% hint style="info" %}
 
@@ -61,7 +61,7 @@ For example, instead of using Personally Identifiable Information (PII) in the c
 
 {% hint style="info" %}
 
-Logos Messaging is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
+Logos Delivery is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
 
 {% endhint %}
 

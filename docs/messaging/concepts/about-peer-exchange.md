@@ -43,7 +43,7 @@ sequenceDiagram
 1. Bob returns Carol's and David's ENR to Alice.
 1. Alice decodes ENRs and extracts Carol's and David's websocket multiaddrs.
 1. Alice dials Carol and David.
-1. Alice can now drop the connection with Bob (bootstrap node); Alice has 2 connections to the Logos Messaging Network.
+1. Alice can now drop the connection with Bob (bootstrap node); Alice has 2 connections to the Logos Delivery Network.
 
 ## Pros and cons
 

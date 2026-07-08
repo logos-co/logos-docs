@@ -1,5 +1,5 @@
 ---
-title: Understand Logos Messaging protocols
+title: Understand Logos Delivery protocols
 doc_type: concept
 product: messaging
 topics: protocols, architecture, privacy
@@ -9,15 +9,15 @@ doc_version: 1
 slug: protocols
 ---
  
-# Understand Logos Messaging protocols
+# Understand Logos Delivery protocols
 
 #### Understand the modular protocols that let applications balance anonymity, scalability, and latency.
 
-Logos Messaging takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
+Logos Delivery takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
 
 ## The basics
  
-- Logos Messaging is modular, so applications combine protocols to balance anonymity, scalability, and latency.
+- Logos Delivery is modular, so applications combine protocols to balance anonymity, scalability, and latency.
 - [Relay](#relay) provides the base publish/subscribe messaging, and [RLN relay](#rln-relay) extends it with economic spam prevention.
 - [Filter](#filter), [Store](#store), and [Light push](#light-push) adapt access for nodes with limited bandwidth or intermittent connections.
 

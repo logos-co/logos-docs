@@ -34,6 +34,10 @@ A Logos Blockchain node that chooses to participate in the Blend Network. Also k
 
 The protocol underlying the Blend Network, which provides anonymity for Logos Blockchain block proposers. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network).
 
+### Bootstrapping
+
+The process a Logos Blockchain or Delivery node undergoes when first connected to the network. For a Logos Blockchain node, this involves "catching up" on the history of the blockchain.
+
 ---
 
 ## C
@@ -56,7 +60,7 @@ The old name for the Logos Storage component of the Logos technology stack.
 
 ### Content topic
 
-A content filter for messages sent via Logos Messaging. See the [Topics specification](https://lip.logos.co/messaging/informational/draft/23/topics.html#content-topics).
+A string attached to messages sent via Logos Delivery to enable protocol-level features like selective message processing and retrieval based on specific criteria. See [About content topics](https://docs.logos.co/messaging/concepts/about-content-topics).
 
 ### Core module
 
@@ -80,15 +84,35 @@ The Private Proof of Stake consensus protocol used by the Logos Blockchain. See 
 
 ### Delivery module
 
-A module that uses the Logos Messaging network to send messages and subscript to content topics.
+A module that uses the Logos Delivery network to send messages and subscribe to content topics.
+
+### DNS discovery
+
+A peer discovery mechanism used in Logos Delivery that allows the retrieval of an Ethereum Node Record (ENR) tree from the TXT field of a domain name, enabling the storage of node connection details and promoting decentralisation. See [About DNS discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/about-dns-discovery).
 
 ---
 
 ## E
 
+### ENR
+
+**Ethereum Node Record** - a specification used in Logos Delivery to represent and identify nodes, facilitating discovery and communication within the network. Besides connection details, ENR also includes node configuration information like enabled protocol and shards.
+
 ### Epoch
 
 A time unit used by the Logos Blockchain, about 7.5 days long. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia#time-units).
+
+### Ethereum Node Record
+
+A specification used in Logos Delivery to represent and identify nodes, facilitating discovery and communication within the network. Also known as **ENR**. Besides connection details, ENR also includes node configuration information like enabled protocol and shards.
+
+---
+
+## F
+
+### Filter
+
+A protocol that enables Logos Delivery light nodes to selectively subscribe to specific messages transmitted by peers using content topics. It is designed to be a lightweight alternative for accessing the Relay network. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/understand-logos-delivery-protocols#filter).
 
 ---
 
@@ -98,6 +122,9 @@ A time unit used by the Logos Blockchain, about 7.5 days long. See [About Crypta
 
 A **Group Master Secret** - a 32-byte secret used on the LEZ that, when sealed with another party's public sealing key, allows them to create a local instance of a shared LEZ account. See [Set up a shared private LEZ account](https://docs.logos.co/lez/accounts/set-up-shared-private-lez-account).
 
+### GossipSub
+
+A protocol for efficient and scalable information dissemination in decentralised networks commonly used in blockchain systems. See [About network domains](https://docs.logos.co/messaging/concepts/about-network-domains#gossip-domain).
 
 ### Group Master Secret
 
@@ -135,6 +162,14 @@ The official package downloader for Logos modules.
 
 A module file type which allows it to be loaded with `logoscore` and Basecamp.
 
+### Light node
+
+A resource-limited device or client that leverages service nodes to access the Logos Delivery Relay network.
+
+### Light push
+
+A protocol enabling Logos Delivery light nodes to send messages to the Relay network and receive acknowledgements confirming that a peer has received them. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/understand-logos-delivery-protocols#light-push).
+
 ### LIP
 
 **Logos Improvement Proposal** - a proposed community update to the Logos design, which may or may not be incorporated into the project.
@@ -151,6 +186,14 @@ An address assigned to a Logos Blockchain node participating in the Blend Networ
 
 The foundational infrastructure layer of the Logos technology stack. See [Introduction to the Logos Blockchain](https://docs.logos.co/blockchain/get-started/introduction-to-the-logos-blockchain).
 
+### Logos Chat
+
+A library for private, encrypted peer-to-peer chat using Logos Delivery. A component of Logos Delivery.
+
+### Logos Delivery
+
+A peer-to-peer messaging network with DoS protection via Rate Limiting Nullifiers. A component of Logos Delivery.
+
 ### Logos Execution Environment
 
 The virtual machine that runs on the Logos Execution Zone. Also known as the **LEE**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez/get-started/introduction-to-the-logos-execution-zone).
@@ -159,7 +202,11 @@ The virtual machine that runs on the Logos Execution Zone. Also known as the **L
 
 The primary execution layer for general-purpose applications on Logos, with built-in support for private execution. Also known as the **LEZ**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez/get-started/introduction-to-the-logos-execution-zone).
 
-### Logos Node
+### Logos Messaging
+
+The private messaging layer of the Logos technology stack.
+
+### Logos node
 
 A node running one or several Logos modules that connect to a network of other such nodes. See [Run a Logos node with blockchain, storage, and delivery](https://docs.logos.co/run-a-node/get-started/run-logos-node-blockchain-storage-delivery).
 
@@ -211,6 +258,10 @@ A self-contained, resuable software component that provides a specific capabilit
 
 A repository that includes a list of Logos modules. Installing a module repo on Basecamp allows you to install the latest version of all these modules together. Also known as a **catalogue**.
 
+### Mostly offline
+
+Logos Delivery clients who spend most of their time offline or disconnected from the internet and only occasionally to the network. Examples include browsers and mobile phones.
+
 ---
 
 ## N
@@ -222,6 +273,10 @@ An old name for the Logos Execution Environment. See [Introduction to the Logos 
 ### Nomos
 
 An old name for the Logos Blockchain. See [Introduction to the Logos Blockchain](https://docs.logos.co/blockchain/get-started/introduction-to-the-logos-blockchain).
+
+### Node key
+
+A Secp256k1 (64-char hex string) private key for generating the PeerID, listening addresses, and discovery addresses of a Logos Delivery node.
 
 ### Note
 
@@ -254,11 +309,31 @@ A secret key used to sign LEZ transactions, also known as an **NSK**. See [Intro
 
 ---
 
+## O
+
+### Out-of-band
+
+Exchanging information through a separate, secure channel distinct from the main communication method to enhance security.
+
+---
+
 ## P
 
 ### PDA
 
 **Program Derived Address** - the address assigned to an LEE program. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez/get-started/introduction-to-the-logos-execution-zone).
+
+### Peer discovery
+
+When a Logos Delivery node locates and gets information about other peers in the network. See [Understand peer discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery).
+
+### Peer exchange
+
+A peer discovery mechanism used in Logos Delivery that enables light nodes to request and receive peers from other nodes in the network, allowing them to bootstrap and expand their connections without depending on Discv5. See [About peer exchange](https://docs.logos.co/messaging/concepts/understand-peer-discovery/about-peer-exchange).
+
+### Peer ID
+
+The unique identifier of a node in the Logos Delivery network generated from the cryptographic hash of the node's public key.
 
 ### PoL
 
@@ -294,6 +369,14 @@ A type of LEZ account whose state is publicly available. See [Introduction to th
 
 ---
 
+## R
+
+### Relay
+
+A protocol that extends the GossipSub protocol to enable secure and censorship resistant message sending and receiving among peers while preserving privacy. It also scales the Logos Delivery network to accommodate many nodes efficiently. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/understand-logos-delivery-protocols#relay).
+
+---
+
 ## S
 
 ### SDP
@@ -324,6 +407,10 @@ Enables reward distribution to Logos Blockchain nodes participating in the Blend
 
 The Logos module that provides filesharing capabilities via Logos Storage.
 
+### Store
+
+A protocol that enables the storage of relayed messages in the Logos Delivery network, allowing offline peers to retrieve missed messages upon reconnecting to the network. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/understand-logos-delivery-protocols#store).
+
 ---
 
 ## T
@@ -339,6 +426,10 @@ An LEZ account that is able to hold a custom token. See [Create and transfer cus
 ### Token program
 
 An LEZ program that facilitates the creation of custom LEZ tokens. See [Create and transfer custom tokens on the Logos Execution Zone](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone).
+
+### Transport
+
+A network mechanism that establishes connections between Logos Delivery peers and enables efficient transmission, routing, and delivery of data packets.
 
 ---
 

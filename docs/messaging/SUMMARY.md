@@ -12,7 +12,7 @@
 
 ## Concepts
 
-- [Understand Logos Messaging protocols](concepts/understand-logos-messaging-protocols.md)
+- [Understand Logos Delivery protocols](concepts/understand-logos-delivery-protocols.md)
 - [About content topics](concepts/about-content-topics.md)
 - [About network domains](concepts/about-network-domains.md)
 - [About transports](concepts/about-transports.md)
@@ -21,8 +21,8 @@
 - [About DNS discovery](concepts/about-dns-discovery.md)
 - [About Discv5](concepts/about-discv5.md)
 - [About peer exchange](concepts/about-peer-exchange.md)
-- [Understand Logos Messaging security features](concepts/understand-logos-messaging-security-features.md)
-- [Learn the differences between Logos Messaging and libp2p](concepts/learn-the-differences-between-logos-messaging-and-libp2p.md)
+- [Understand Logos Delivery security features](concepts/understand-logos-delivery-security-features.md)
+- [Learn the differences between Logos Delivery and libp2p](concepts/learn-the-differences-between-logos-delivery-and-libp2p.md)
 
 ## Chat module
 

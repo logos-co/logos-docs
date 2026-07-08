@@ -13,7 +13,7 @@ slug: peer-exchange
 
 #### Understand how light nodes request peers from other nodes without relying on Discv5.
 
-The primary objective of this protocol is to facilitate peer connectivity for resource-limited devices without relying on `Discv5`. The peer exchange protocol enables light nodes to request peers from other nodes within the network.
+The primary objective of this protocol is to facilitate peer connectivity for resource-limited devices without relying on `Discv5`. The [peer exchange](https://docs.logos.co/get-started/glossary#peer-exchange) protocol enables [light nodes](https://docs.logos.co/get-started/glossary#light-node) to request peers from other nodes within the network.
 
 {% hint style="info" %}
 
@@ -36,14 +36,14 @@ sequenceDiagram
     Alice-->>Bob: (8) Disconnect
 ```
 
-1. DNS Discovery protocol is executed.
+1. [DNS Discovery](https://docs.logos.co/get-started/glossary#dns-discovery) protocol is executed.
 1. Alice retrieves Bob's websocket multiaddr from DNS Server.
 1. Alice dials Bob using libp2p protocols.
 1. Alice executes a Peer Exchange query to Bob.
-1. Bob returns Carol's and David's ENR to Alice.
+1. Bob returns Carol's and David's [ENR](https://docs.logos.co/get-started/glossary#enr) to Alice.
 1. Alice decodes ENRs and extracts Carol's and David's websocket multiaddrs.
 1. Alice dials Carol and David.
-1. Alice can now drop the connection with Bob (bootstrap node); Alice has 2 connections to the Logos Delivery Network.
+1. Alice can now drop the connection with Bob (bootstrap node); Alice has 2 connections to the [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) Network.
 
 ## Pros and cons
 

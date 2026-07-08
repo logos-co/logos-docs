@@ -13,7 +13,7 @@ slug: security-features
 
 #### See the services that keep Logos Delivery communication private and abuse-resistant.
 
-Logos Delivery's protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
+[Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery)'s protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
 
 ## Pseudonymity
 
@@ -30,7 +30,7 @@ Logos Delivery ensures [pseudonymity](https://lip.logos.co/messaging/core/draft/
 
 The [spam protection](https://lip.logos.co/messaging/core/draft/10/waku2.html#spam-protection) feature in `Relay` ensures that no adversary can flood the system with many messages, intentionally or not, regardless of the content's validity or usefulness. This protection is achieved through the [scoring mechanism](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#spam-protection-measures) of `GossipSub v1.1`. Peers assign scores to their connections based on their behaviour and remove peers with low scores.
 
-Ongoing research is being conducted, including developing [Rate Limit Nullifiers (RLN)](./understand-logos-messaging-protocols.md#rln-relay), which can be explored further at: [https://github.com/vacp2p/research/issues/148](https://github.com/vacp2p/research/issues/148).
+Ongoing research is being conducted, including developing [Rate Limit Nullifiers (RLN)](./understand-logos-delivery-protocols.md#rln-relay), which can be explored further at: [https://github.com/vacp2p/research/issues/148](https://github.com/vacp2p/research/issues/148).
 
 ## Data confidentiality, integrity, and authenticity
 
@@ -38,4 +38,4 @@ Ongoing research is being conducted, including developing [Rate Limit Nullifiers
 
 ## Security considerations
 
-In protocols like `Store` and `Filter`, where direct connections are required for the designated service, anonymity or unlinkability is not guaranteed. This is because nodes use their `PeerID` to identify each other during direct connections, making the service obtained in these protocols linkable to the beneficiary's `PeerID`, considered Personally Identifiable Information (PII). In `Store`, the queried node can link the querying node's `PeerID` to the topics being queried. Similarly, in `Filter`, a node can link the `PeerID` of a light node to its content filter. Check out the [Security considerations](https://lip.logos.co/messaging/core/draft/10/waku2.html#security-considerations) section in the Waku2 RFC for more details.
+In protocols like `Store` and `Filter`, where direct connections are required for the designated service, anonymity or unlinkability is not guaranteed. This is because nodes use their `PeerID` to identify each other during direct connections, making the service obtained in these protocols linkable to the beneficiary's `PeerID`, considered Personally Identifiable Information (PII). In `Store`, the queried node can link the querying node's `PeerID` to the topics being queried. Similarly, in `Filter`, a node can link the `PeerID` of a [light node](https://docs.logos.co/get-started/glossary#light-node) to its content filter. Check out the [Security considerations](https://lip.logos.co/messaging/core/draft/10/waku2.html#security-considerations) section in the Waku2 RFC for more details.

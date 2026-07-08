@@ -29,7 +29,7 @@ The stack is organised into distinct layers, each with a clear responsibility. F
 
 - **[Logos Execution Zone](glossary.md#logos-execution-zone) ([LEZ](glossary.md#lez)):** Execution [zone](glossary.md#zone) (Rollup) running on the Base layer for wallet, token operations, and [program](glossary.md#program) deployment with support for public and private contexts (previously referred to as Logos State Separation Architecture or [LSSA](glossary.md#lssa)).
 
-- **Messaging (coordination)** handles private, censorship-resistant communication between parties. **Logos Delivery** provides publish-subscribe messaging for reliable transport. **Logos Chat** uses Delivery as its transport layer, providing encrypted one-to-one conversations and evolving toward group conversations.
+- **Messaging (coordination)** handles private, censorship-resistant communication between parties. **[Logos Delivery](glossary.md#logos-delivery)** provides publish-subscribe messaging for reliable transport. **[Logos Chat](glossary.md#logos-chat)** uses Delivery as its transport layer, providing encrypted one-to-one conversations and evolving toward group conversations.
 
 - **Storage (serve frontends and files)** provides decentralised, content-addressed file storage and retrieval. Need to host a frontend, serve assets, or store user data without relying on corporate cloud providers? You interact with a straightforward API: store a file, get back a content identifier; provide a content identifier, get back the file.
 

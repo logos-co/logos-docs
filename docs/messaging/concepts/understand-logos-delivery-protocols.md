@@ -13,7 +13,7 @@ slug: protocols
 
 #### Understand the modular protocols that let applications balance anonymity, scalability, and latency.
 
-Logos Delivery takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
+[Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
 
 ## The basics
  
@@ -31,11 +31,11 @@ Logos Delivery takes a modular approach, providing a range of protocols that ena
  
 ## Filter
  
-[`Filter` protocol](https://lip.logos.co/messaging/core/draft/12/filter.html) allows light nodes to selectively subscribe to specific messages relayed by other peers using [content topics](./about-content-topics.md). It is designed to be a lightweight alternative for accessing the `Relay` network, particularly tailored for devices with limited bandwidth.
+[`Filter` protocol](https://lip.logos.co/messaging/core/draft/12/filter.html) allows [light nodes](https://docs.logos.co/get-started/glossary#light-node) to selectively subscribe to specific messages relayed by other peers using [content topics](./about-content-topics.md). It is designed to be a lightweight alternative for accessing the `Relay` network, particularly tailored for devices with limited bandwidth.
 
 {% hint style="info" %}
 
-`Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the content topic to its peers to retrieve messages.
+`Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the [content topic](https://docs.logos.co/get-started/glossary#content-topic) to its peers to retrieve messages.
 
 {% endhint %}
  

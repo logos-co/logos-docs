@@ -13,7 +13,7 @@ slug: peer-discovery
 
 #### Learn how a node bootstraps and finds the peers it needs to operate.
 
-When initialising a Logos Delivery node, it must connect with other peers to enable message sending, receiving, and retrieval. To achieve this, a discovery mechanism is employed to locate other peers in the network. This process is known as bootstrapping.
+When initialising a [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) node, it must connect with other peers to enable message sending, receiving, and retrieval. To achieve this, a discovery mechanism is employed to locate other peers in the network. This process is known as [bootstrapping](https://docs.logos.co/get-started/glossary#bootstrapping).
 
 ## Why a node seeks more peers
 
@@ -25,7 +25,7 @@ Once a connection is established, the node must actively seek out additional pee
 
 ## Discovery mechanisms
 
-Logos Delivery supports multiple peer discovery mechanisms, such as:
+Logos Delivery supports multiple [peer discovery](https://docs.logos.co/get-started/glossary#peer-discovery) mechanisms, such as:
 
 - [Configuring Static Peers](./about-static-peers.md)
 - [Peer Discovery via DNS](./about-dns-discovery.md)

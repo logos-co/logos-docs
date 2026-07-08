@@ -46,7 +46,7 @@ Logos Core is the modular runtime that ties applications together.
 | [logos-logoscore-py](https://github.com/logos-co/logos-logoscore-py) | Python wrapper for the [logoscore](glossary.md#logoscore) CLI. |
 | [logos-package-manager](https://github.com/logos-co/logos-package-manager) | C++ library and CLI for local Logos package management. |
 | [logos-package-downloader](https://github.com/logos-co/logos-package-downloader) | [Module](glossary.md#module) download tooling. No official description; purpose inferred. |
-| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | C++ library and CLI ([lgpd](glossary.md#lgpd)) for fetching Logos module catalogs and downloading `.lgx` packages. |
+| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | C++ library and CLI ([lgpd](glossary.md#lgpd)) for fetching Logos module [catalogs](glossary.md#catalogue) and downloading `.lgx` packages. |
 | [logos-app-builder](https://github.com/logos-co/logos-app-builder) | Shared Nix library for building Logos UI applications. |
 | [Overwatch](https://github.com/logos-co/Overwatch) | Self-contained services application framework. |
  
@@ -56,7 +56,7 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
  
 | Repository | Description |
 |:---|:---|
-| [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos Core module that exposes Logos Chat. |
+| [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos Core module that exposes [Logos Chat](glossary.md#logos-chat). |
 | [logos-chat-ui](https://github.com/logos-co/logos-chat-ui) | UI application for the Logos Chat SDK proof of concept. |
 | [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early-stage wallet module built on go-wallet-sdk. |
 | [logos-accounts-module](https://github.com/logos-co/logos-accounts-module) | Early-stage [account](glossary.md#account)-management module built on go-wallet-sdk. |
@@ -90,7 +90,7 @@ The Logos Execution Zone ([LEZ](glossary.md#lez)) is the primary execution layer
  
 ## Logos messaging
 
-Logos Messaging is the project's decentralised communication system.
+[Logos Messaging](glossary.md#logos-messaging) is the project's decentralised communication system.
 
 | Repository | Description |
 |:---|:---|

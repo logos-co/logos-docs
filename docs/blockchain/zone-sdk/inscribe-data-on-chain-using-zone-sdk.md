@@ -198,7 +198,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
     }
     ```
-2.  Back in `src/lib.rs`, add a function to handle when the sequencer has finished bootstrapping:
+2.  Back in `src/lib.rs`, add a function to handle when the sequencer has finished [bootstrapping](https://docs.logos.co/get-started/glossary#bootstrapping):
 
     ```rust
     // Defines initial post-bootstrapping behaviour

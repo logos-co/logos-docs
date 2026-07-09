@@ -19,7 +19,7 @@ This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co
 Before you start, make sure you have the following:
 
 - macOS or Linux
-- [Nix with flakes enabled](https://nixos.org/download)
+- [Nix](https://nixos.org/download) with flakes enabled — add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf` (create it if needed)
 - Outbound TCP access to the fleet on port `30304`
 
 ## What to expect

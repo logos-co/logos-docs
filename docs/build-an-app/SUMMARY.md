@@ -2,13 +2,15 @@
 
 ## Build modules
 
-* [Build and run a Logos core module](README.md)
-* [Wrap a C library as a Logos core module](../core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)
-* [Build a Logos C++ UI module](../core/build-modules/build-a-logos-cpp-ui-module.md)
-* [Install and load a module in Logos Basecamp](../core/build-modules/install-and-load-a-module-in-logos-basecamp.md)
+- [Build and run a Logos core module](../core/build-modules/build-and-run-a-logos-core-module.md)
+- [Wrap a C library as a Logos core module](../core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)
+- [Build a Logos C++ UI module](../core/build-modules/build-a-logos-cpp-ui-module.md)
+- [Install and load a module in Logos Basecamp](../core/build-modules/install-and-load-a-module-in-logos-basecamp.md)
 
 ## Tutorials
 
-* [Create and use an AMM liquidity pool on the Logos Execution Zone](tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)
-* [Build a dApp with the Logos Zone SDK](tutorials/build-dapp-with-logos-zone-sdk.md)
-* [Readme](<README (1).md>)
+- [Create and use an AMM liquidity pool on the Logos Execution Zone](tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md)
+- [Build a dApp with the Logos Zone SDK](./tutorials/build-dapp-with-logos-zone-sdk.md)
+
+<!-- Keep this README at the end of the SUMMARY -->
+- [Readme](README.md)

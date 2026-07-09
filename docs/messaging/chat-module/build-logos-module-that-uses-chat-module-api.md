@@ -14,7 +14,7 @@ slug: build-logos-module-that-uses-chat-module-api
 
 #### Get started with private 1:1 end-to-end encrypted messaging in your own Logos module.
 
-This procedure covers how to build a Logos module that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.2`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos [module](https://docs.logos.co/get-started/glossary#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.2`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
 {% hint style="info" %}
 Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations.
@@ -35,7 +35,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
-- You can open a private 1:1 conversation by exchanging introduction bundles out of band and calling `create_conversation` from the initiating side.
+- You can open a private 1:1 conversation by exchanging introduction bundles [out of band](https://docs.logos.co/get-started/glossary#out-of-band) and calling `create_conversation` from the initiating side.
 - You can integrate the full chat lifecycle — init, subscribe to events, create bundle, open conversation, send, shut down — into any Logos C++ module.
 
 ## Step 1: Scaffold a new Logos module
@@ -99,7 +99,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    }
    ```
 
-2. In `flake.nix`, pin `chat_module` and its transport dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
+2. In `flake.nix`, pin `chat_module` and its [transport](https://docs.logos.co/get-started/glossary#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
 
    ```nix
    inputs = {
@@ -198,7 +198,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 |---|---|---|
 | `instance_path` | string | Directory for this instance's persistent state. Use a distinct directory per instance to run several side by side. |
 | `delivery_preset` | string | Network preset for the delivery node. Use `logos.test` to reach the Logos test network. Must match across all participants. |
-| `tcp_port` | int | Logos Delivery TCP port. `0` picks a random port. |
+| `tcp_port` | int | [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) TCP port. `0` picks a random port. |
 
 1. Initialise the chat client:
 

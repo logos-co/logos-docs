@@ -34,7 +34,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can start a `delivery_module` node connected to the Logos Network.
-- You can confirm the node is running and has a live network identity by querying its discv5 ENR.
+- You can confirm the node is running and has a live network identity by querying its discv5 [ENR](https://docs.logos.co/get-started/glossary#enr).
 - You can configure the node for a different network preset by swapping the config file passed to `createNode`.
 
 ## Step 1: Install and start the daemon

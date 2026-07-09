@@ -13,7 +13,7 @@ slug: transports
 
 #### Understand how nodes move data between peers and which transports suit each environment.
 
-Transports help move data packets across a network by establishing connections between peers. They define the rules and protocols to ensure efficient network transmission, routing, and data delivery. Logos Delivery is a transport-agnostic framework that allows developers to choose and support multiple protocols according to their requirements.
+[Transports](https://docs.logos.co/get-started/glossary#transport) help move data packets across a network by establishing connections between peers. They define the rules and protocols to ensure efficient network transmission, routing, and data delivery. [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) is a transport-agnostic framework that allows developers to choose and support multiple protocols according to their requirements.
 
 ## The basics
 

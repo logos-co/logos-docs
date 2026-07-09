@@ -14,12 +14,12 @@ slug: bridge-assets-from-logos-blockchain-to-zone-using-app
 
 #### Get started locking wallet notes into a Logos Zone, including the LEZ, using the Logos Blockchain UI app.
 
-This procedure covers how to lock one or more of your wallet notes (UTXOs) into a Logos Zone (such as the LEZ) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on testnet v0.2 who need to fund a channel for off-chain or on-chain channel operations without hand-assembling note IDs, keys, and fees on a CLI.
+This procedure covers how to lock one or more of your wallet [notes](https://docs.logos.co/get-started/glossary#note) (UTXOs) into a Logos [Zone](https://docs.logos.co/get-started/glossary#zone) (such as the [LEZ](https://docs.logos.co/get-started/glossary#lez)) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on testnet v0.2 who need to fund a [channel](https://docs.logos.co/get-started/glossary#channel) for off-chain or on-chain channel operations without hand-assembling note IDs, keys, and fees on a CLI.
 
 Before you start, make sure you have the following:
 
 - The [Logos Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and able to launch
-- A Logos Blockchain node user config selected or generated on the first screen, with an associated keystore (`user_config.yaml`, optional `deployment-settings.yaml`, `keystore.yaml`)
+- A [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node user config selected or generated on the first screen, with an associated keystore (`user_config.yaml`, optional `deployment-settings.yaml`, `keystore.yaml`)
 - At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/)
 - The target Zone's channel ID you are depositing into. You can get the channel ID of the public LEZ instance by running:
 

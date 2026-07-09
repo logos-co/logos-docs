@@ -14,7 +14,7 @@ slug: claim-leader-rewards-in-logos-blockchain-ui-app
 
 #### Learn how to get rewarded for having your Logos Blockchain node propose blocks
 
-This procedure covers how to claim rewards for participating in the consensus protocol of the Logos Blockchain. It is intended for node operators running their node via the Blockchain UI app.
+This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain). It is intended for node operators running their node via the Blockchain UI app.
 
 Before you start, make sure you have the following:
 

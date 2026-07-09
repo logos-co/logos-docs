@@ -16,7 +16,7 @@ slug: run-a-logos-blockchain-node-from-cli
 
 With this tutorial, you will install the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
-There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while bootstrapping, it does not save sync progress and restarts from the beginning.
+There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](https://docs.logos.co/get-started/glossary#bootstrapping), it does not save sync progress and restarts from the beginning.
 
 Before you start, ensure you have:
 

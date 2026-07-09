@@ -434,7 +434,7 @@ The sequencer must track the Zone state on the blockchain so it can detect reorg
 
 ## Indexer
 
-The indexer is the node that follows a Zone's channel on the Logos Blockchain and re-executes updates locally to maintain a current copy of the Zone state. The steps in this section implement the indexer using the Zone SDK, continuing the password manager example. The indexer must obtain the sequencer's channel ID via an out-of-band mechanism (in our case, the `channel_path` file) before it can start.
+The indexer is the node that follows a Zone's channel on the Logos Blockchain and re-executes updates locally to maintain a current copy of the Zone state. The steps in this section implement the indexer using the Zone SDK, continuing the password manager example. The indexer must obtain the sequencer's channel ID via an [out-of-band](https://docs.logos.co/get-started/glossary#out-of-band) mechanism (in our case, the `channel_path` file) before it can start.
 
 ### Step 1: Initialise the `ZoneIndexer` struct
 

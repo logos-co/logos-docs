@@ -1,8 +1,5 @@
 # GitBook configuration for the Logos Messaging documentation space.
 # Reference: https://docs.gitbook.com/getting-started/git-sync/content-configuration
-#
-# This file is read relative to the GitBook space's "Project directory"
-# setting (configured in the GitBook UI as docs/messaging).
 
 root: ./
 

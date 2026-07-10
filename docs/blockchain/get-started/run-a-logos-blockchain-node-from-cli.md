@@ -61,7 +61,7 @@ Download the Logos Blockchain [module](https://docs.logos.co/get-started/glossar
     logoscore load-module blockchain_module
     ```
 
-## Step 2: Configure and start the node
+## Step 3: Configure and start the node
 
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
@@ -83,13 +83,27 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     ```
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
+
+    {% hint style="info" %}
+    To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
+
+    ```bash
+    logoscore call blockchain_module migrate_user_config_0_1_2 \
+        user_config.yaml \
+        old_user_config.yaml \
+        my_keystore.yaml
+
+    logoscore call blockchain_module stop
+    ```
+    {% endhint %}
+
 2.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
     ```
 
-## Step 3: Verify that your node is running and connected to peers
+## Step 4: Verify that your node is running and connected to peers
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
@@ -139,7 +153,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 3. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
 4. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
-## Step 4: Request tokens from the faucet
+## Step 5: Request tokens from the faucet
 
 A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
 

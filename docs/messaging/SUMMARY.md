@@ -2,6 +2,7 @@
 
 ## Get started
 
+- [Introduction to Logos Messaging](./get-started/introduction-to-logos-messaging.md)
 - [Send 1:1 messages with the Logos Chat app](get-started/send-1-1-messages-logos-chat.md)
 - [FAQ: Logos Messaging](get-started/faq-logos-messaging.md)
 

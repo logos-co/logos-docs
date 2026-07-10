@@ -28,18 +28,12 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   The [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) daemon CLI and the [`lgpm`](https://github.com/logos-co/logos-package-manager) package manager, built from their flakes:
+-   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
-    nix build 'github:logos-co/logos-logoscore-cli' --out-link ./logos
-    nix build 'github:logos-co/logos-package-manager#cli' -o lgpm
-    export PATH="$PWD/logos/bin:$PWD/lgpm/bin:$PATH"
+    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+    export PATH="$PWD/bin:$PATH"
     ```
-
-    :::info
-    Build the tools with Nix rather than using the prebuilt releases: the storage module package built from source in the next section provides a `linux-amd64-dev` platform variant that older release builds of `lgpm` do not recognise.
-    :::
-
 - `jq` on your `PATH` — used to pull the uploaded [CID](https://docs.logos.co/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
 
 ## What to expect
@@ -53,10 +47,16 @@ Before you start, make sure you have the following:
 1.  Build the [module](https://docs.logos.co/get-started/glossary#module) package with Nix:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx' -o storage-lgx
+    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
     ```
 
-    - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
+    - This produces a `.lgx` package in `./storage-lgx/`.
+
+    {% hint style="info" %}
+
+    Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts. The plain `#lgx` output produces a `-dev` variant that only a source-built `lgpm` can install.
+
+    {% endhint %}
 
     :::info
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.

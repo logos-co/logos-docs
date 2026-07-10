@@ -20,6 +20,19 @@ Logos Storage requires your node to be reachable from the internet and, to that 
 
 Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
+## `logoscore` or `lgpm` fails with a FUSE error
+
+**Symptom**: running a tool installed from the releases fails with `No suitable fusermount binary found on the $PATH` and `Cannot mount AppImage, please check your FUSE setup`.
+
+**Cause**: on Linux, the release binaries are AppImages, which need FUSE to run. Containers (toolbox, Docker) and some minimal distributions do not ship it.
+
+**Fix**: install FUSE (`sudo dnf install fuse` on Fedora, `sudo apt install libfuse2` on Ubuntu). Without root, extract the AppImage instead and run the extracted binary:
+
+```sh
+./bin/lgpm --appimage-extract
+./squashfs-root/AppRun --help
+```
+
 ## The node has no peers
 
 **Symptom**: the node starts successfully but never connects to any peer.

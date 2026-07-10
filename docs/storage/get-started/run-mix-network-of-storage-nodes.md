@@ -28,15 +28,14 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   The [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) daemon CLI and the [`lgpm`](https://github.com/logos-co/logos-package-manager) package manager, built from their flakes:
+-   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
-    nix build 'github:logos-co/logos-logoscore-cli' --out-link ./logos
-    nix build 'github:logos-co/logos-package-manager#cli' -o lgpm
-    export PATH="$PWD/logos/bin:$PWD/lgpm/bin:$PATH"
+    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+    export PATH="$PWD/bin:$PATH"
     ```
 
-    These commands create the `./logos` and `./lgpm` links in the current directory: run them in the same working directory as the rest of this procedure (the module seeding step below copies from `./logos/modules/`).
+    The script installs the tools into `./bin` of the current directory: run it in the same working directory as the rest of this procedure.
 - `jq` on your `PATH` — used to read each node's identity out of the `debug` JSON. Verify: `jq --version`
 
 ## What to expect
@@ -50,27 +49,22 @@ Before you start, make sure you have the following:
 1.  Build the [module](https://docs.logos.co/get-started/glossary#module) package with Nix:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx' -o storage-lgx
+    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
     ```
 
     - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
 
     :::info
-    The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.
+    The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds. Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts.
     :::
 
-2.  Seed the modules directory with the bundled capability module. `storage_module` is loaded through the host's capability layer, so the modules directory also needs the `capability_module` that ships with `logoscore`:
+2.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`. All six daemons share this one modules directory:
 
     ```sh
     mkdir -p modules
-    cp -RL ./logos/modules/. ./modules/
-    ```
-3.  Install the package into the modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`. All six daemons share this one modules directory:
-
-    ```sh
     lgpm --modules-dir ./modules --allow-unsigned install --file storage-lgx/*.lgx
     ```
-4.  Confirm the module landed:
+3.  Confirm the module landed:
 
     ```sh
     lgpm --modules-dir ./modules list
@@ -101,7 +95,7 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
 2.  Start a `logoscore` daemon for node 1 in the background, with its own config directory and its output captured:
 
     ```sh
-    logoscore --config-dir=./logoscore-1 -D -m ./modules > logs-1.txt &
+    logoscore --config-dir=./logoscore-1 -D -m ./modules > logs-1.txt 2>&1 &
     # Wait a few seconds for the daemon to come up
     ```
 3.  Load the module, initialise it, and start the node:
@@ -147,7 +141,7 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
 
     ```sh
     for id in 2 3 4; do
-      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt &
+      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt 2>&1 &
     done
     # Wait a few seconds for the daemons to come up
     ```
@@ -236,7 +230,7 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
 
     ```sh
     for id in 5 6; do
-      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt &
+      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt 2>&1 &
     done
     # Wait a few seconds for the daemons to come up
     ```

@@ -6,7 +6,7 @@ topics:
   - storage
   - node
 steps_layout: flat
-authors: gmega, kashepavadan
+authors: gmega, kashepavadan, arnaud
 owner: logos
 doc_version: 1
 slug: run-logos-storage-node
@@ -28,12 +28,18 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+-   The [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) daemon CLI and the [`lgpm`](https://github.com/logos-co/logos-package-manager) package manager, built from their flakes:
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-    export PATH="$PWD/bin:$PATH"
+    nix build 'github:logos-co/logos-logoscore-cli' --out-link ./logos
+    nix build 'github:logos-co/logos-package-manager#cli' -o lgpm
+    export PATH="$PWD/logos/bin:$PWD/lgpm/bin:$PATH"
     ```
+
+    :::info
+    Build the tools with Nix rather than using the prebuilt releases: the storage module package built from source in the next section provides a `linux-amd64-dev` platform variant that older release builds of `lgpm` do not recognise.
+    :::
+
 - `jq` on your `PATH` — used to pull the uploaded [CID](https://docs.logos.co/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
 
 ## What to expect
@@ -55,170 +61,173 @@ Before you start, make sure you have the following:
     :::info
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.
     :::
-2.  Install the package into a local modules directory using `lgpm`:
+
+2.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`:
 
     ```sh
-    lgpm --modules-dir ./modules install --file storage-lgx/*.lgx
+    mkdir -p modules
+    lgpm --modules-dir ./modules --allow-unsigned install --file storage-lgx/*.lgx
+    ```
+3.  Confirm the module landed:
+
+    ```sh
+    lgpm --modules-dir ./modules list
+    # storage_module appears in the listing
     ```
 
 ## Start the daemon and load the storage module
 
 Run `logoscore` with the modules directory, then load and initialise the [storage module](https://docs.logos.co/get-started/glossary#storage-module) against the testnet config.
 
-1.  Start the `logoscore` daemon in background mode:
+Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome arrives later as an event in the daemon log (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). This is why the daemon is started with its output captured to `logs.txt`, and why the steps below check that file.
+
+1.  Start the `logoscore` daemon in background mode, capturing its output:
 
     ```sh
-    logoscore -D -m ./modules
+    logoscore -D -m ./modules > logs.txt 2>&1 &
     ```
+
+    - The client subcommands below connect to this running process via the config written under `~/.logoscore/`.
 2.  Verify the daemon is running:
 
     ```sh
     logoscore status
     ```
-3.  Create the storage config:
+3.  Confirm the storage module was discovered:
 
     ```sh
-    mkdir -p storage-data
+    logoscore list-modules
+    # storage_module appears in the list
+    ```
+4.  Load the storage module and confirm it reports `loaded`:
+
+    ```sh
+    logoscore load-module storage_module
+    logoscore status
+    # storage_module now shows "status":"loaded"
+    ```
+
+    - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.
+5.  Create the storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
+
+    ```sh
+    mkdir -p "$(pwd)/storage-data"
     cat > config.json <<EOF
     {
-      "data-dir": "./storage-data",
-      "log-level": "INFO",
-      "listen-ip": "0.0.0.0",
-      "listen-port": 8091,
-      "disc-port": 8090,
-      "nat": "extip:<public-ip>",
-      "network": "logos.test"
+      "data-dir": "$(pwd)/storage-data",
+      "log-level": "DEBUG",
+      "log-file": "$(pwd)/storage-data/storage.log",
+      "nat": "none"
     }
     EOF
     ```
+
+    - With `"nat": "none"` the node announces the machine's own IP as-is: it can download from the network but is not reachable from the internet from behind a router. To make it reachable, use `"nat": "upnp"` or `"nat": "extip:<your-public-IP>"` with the ports forwarded: see [Connectivity](../concepts/connectivity.md).
 
     - `config.json` includes the following fields:
 
     | Field         | Purpose                      |
     | ------------- | ---------------------------- |
-    | `data-dir`    | Storage repository path      |
+    | `data-dir`    | Storage repository path (absolute) |
     | `log-level`   | Log verbosity                |
+    | `log-file`    | Node log destination (absolute) |
     | `listen-ip`   | Local TCP bind address       |
     | `listen-port` | Public TCP libp2p port       |
     | `disc-port`   | Public UDP discovery port    |
-    | `nat`         | Public IP advertisement mode |
+    | `nat`         | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
     | `network`     | Storage network preset       |
 
     - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
     - The `logos.test` preset provides the storage bootstrap settings.
-    - Fields
 
-    :::info
-    To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
+6.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
 
     ```sh
-    cat > make-mix-storage-config.sh <<'EOF'
-    #!/usr/bin/env bash
-    set -e
-
-    data_dir=${1:-"./logos-storage-data"}
-    udp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/udp-sprs.json)
-    tcp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/tcp-sprs.json)
-
-    wget https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/mix-pool.json
-    mp_path=$(realpath "./mix-pool.json")
-
-    cat <<JSON
-    {
-      "nat": "any",
-      "log-level": "DEBUG",
-      "mix-enabled": true,
-      "listen-port": 8080,
-      "disc-port": 8090,
-      "bootstrap-node": $udp_spr_json,
-      "dht-mix-proxy": $tcp_spr_json,
-      "data-dir": "${data_dir}",
-      "mix-pool": "${mp_path}"
-    }
-    JSON
-    EOF
-
-    chmod 755 make-mix-storage-config.sh
-    ./make-mix-storage-config.sh > config.json
-    ```
-    :::
-4.  Load the storage module, initialise it with the testnet configuration, and start it:
-
-    ```sh
-    logoscore load-module storage_module
     logoscore call storage_module init @config.json
-    logoscore call storage_module start
     ```
+7.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; the real outcome is the `storageStart` event in the daemon log:
 
-    -   If using the mix config, also enable private queries and verify with a test download:
+    ```sh
+    logoscore call storage_module start
+    # Wait few seconds to start
+    ```
+8.  Inspect the running node with `debug`. It returns the node's identity: its `id` (peer ID) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](../concepts/connectivity.md)):
 
-        ```sh
-        logoscore call storage_module togglePrivateQueries true
-        logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
-        ```
+    ```sh
+    logoscore call storage_module debug
+    ```
 
 ## Publish and download a file
 
 Once the node is running and connected to the testnet, publish a file and verify the round-trip.
 
-1.  Upload a file to the network with `uploadUrl`:
+1.  Upload a file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
 
     ```sh
-    logoscore call storage_module uploadUrl <file-path-or-url> <chunk-size-in-bytes>
+    logoscore call storage_module uploadUrl "$(pwd)/logs.txt" 65536
     ```
 
     :::info
     The default chunk size is 65536.
     :::
+
 2.  After a second, extract the content ID (CID) from the first `manifests` entry:
 
-    ```sh
-    sleep 1
+2.  Extract the content ID (CID) from the first `manifests` entry:
 
+    ```sh
     logoscore call storage_module manifests \
        | jq -er '.result.value[0].cid' > cid.txt
     ```
-3.  Download the file back from the network with `downloadToUrl`. You need the CID for this step.
+3.  Download the file back from the network with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
 
     ```sh
-    logoscore call storage_module downloadToUrl "$(cat cid.txt)" <destination-path> false <chunk-size-in-bytes>
+    logoscore call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/logs-destination.txt" true 65536
     ```
 
-    - `downloadToUrl` takes a `local` flag which reads only from locally cached data if set to `true`.
-4. Confirm the downloaded file is present at `<output-path>` and matches the original.
+    - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
 
-## Remove content and destroy the storage node
+4.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
 
-To clear your local storage and destroy the storage node, follow the steps below.
+    ```sh
+    logoscore call storage_module exists "$(cat cid.txt)"
+    # returns true
+    ```
 
-1.  Remove content from local storage by its CID:
+## Remove content and shut everything down
+
+To clear your local storage, destroy the storage node, and stop the daemon, follow the steps below.
+
+1.  Remove content from local storage by its CID. `remove` returns immediately; the outcome arrives as a `storageRemoveDone` event:
 
     ```sh
     logoscore call storage_module remove "$(cat cid.txt)"
     ```
-2.  Confirm content is gone:
+2.  Confirm the content is gone:
 
     ```sh
-    sleep 1
-
-    logoscore call storage_module exists "$(cat cid.txt)"
-    # should return false
+    logoscore call storage_module exists "$(cat cid.txt)" | jq '.result.value'
+    # false
     ```
-3.  Stop the storage node:
+3.  Stop the storage node. `stop` is asynchronous like `start`; a `storageStop` event follows in the log. The node can be started and stopped multiple times:
 
     ```sh
     logoscore call storage_module stop
     ```
-4.  Wait a bit and destroy the entire storage context:
+4.  Destroy the storage context. `destroy` is synchronous and must be called after the node is stopped:
 
     ```sh
-    sleep 2
-
     logoscore call storage_module destroy
+    ```
+5.  Stop the daemon and confirm it has exited:
+
+    ```sh
+    logoscore stop
+    # Wait 5 seconds
+    logoscore status
+    # reports "status":"not_running"
     ```
 
 ## Troubleshooting Logos Storage
 
-### Why does `downloadToUrl` time out when downloading from a different machine?
-
-NAT is blocking the peer connection. When running multiple nodes across machines, the external IP and port mapping must be configured in `config.json`. See the NAT section of the [Logos Storage Module documentation](https://logos-co.github.io/logos-storage-module/latest/) for guidance.
+Connectivity problems (downloads timing out from another machine, no peers, unreachable node) are covered in the [FAQ](faq.md) and in [Connectivity](../concepts/connectivity.md).

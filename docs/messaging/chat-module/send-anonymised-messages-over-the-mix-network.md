@@ -43,7 +43,7 @@ The mix chat app can be found in the `logos-chat-ui` repository.
 1. Start the app:
 
    ```sh
-   nix run
+   nix run --accept-flake-config
    ```
 
    {% hint style="info" %}

@@ -126,19 +126,15 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 
     - `config.json` includes the following fields:
 
-    | Field         | Purpose                      |
-    | ------------- | ---------------------------- |
-    | `data-dir`    | Storage repository path (absolute) |
-    | `log-level`   | Log verbosity                |
-    | `log-file`    | Node log destination (absolute) |
-    | `listen-ip`   | Local TCP bind address       |
-    | `listen-port` | Public TCP libp2p port       |
-    | `disc-port`   | Public UDP discovery port    |
-    | `nat`         | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
-    | `network`     | Storage network preset       |
+    | Field       | Purpose                            |
+    | ----------- | ---------------------------------- |
+    | `data-dir`  | Storage repository path (absolute) |
+    | `log-level` | Log verbosity                      |
+    | `log-file`  | Node log destination (absolute)    |
+    | `nat`       | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
 
-    - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
-    - The `logos.test` preset provides the storage bootstrap settings.
+    - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings) and picks random ports.
+    - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values and a `nat` mode that announces your address: see [Connectivity](../concepts/connectivity.md).
 
 6.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
 
@@ -176,10 +172,11 @@ Once the node is running and connected to the testnet, publish a file and verify
 2.  Extract the content ID (CID) from the first `manifests` entry:
 
     ```sh
+    # Wait a second for the upload to complete first
     logoscore call storage_module manifests \
        | jq -er '.result.value[0].cid' > cid.txt
     ```
-3.  Download the file back from the network with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
+3.  Download the file back from local storage with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. With `local` set to `true`, the download reads the blocks straight back out of this node's own repository. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
 
     ```sh
     logoscore call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/logs-destination.txt" true 65536
@@ -206,6 +203,7 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
 2.  Confirm the content is gone:
 
     ```sh
+    # Wait a second for the removal to complete first
     logoscore call storage_module exists "$(cat cid.txt)" | jq '.result.value'
     # false
     ```
@@ -213,6 +211,7 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
 
     ```sh
     logoscore call storage_module stop
+    # Wait a few seconds for the node to stop before destroying it
     ```
 4.  Destroy the storage context. `destroy` is synchronous and must be called after the node is stopped:
 

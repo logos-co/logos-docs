@@ -34,7 +34,7 @@ You can install the application through Logos Basecamp (Option A), or build it f
 
 1. Download and [install](https://github.com/logos-co/logos-docs/blob/main/docs/basecamp/get-started/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 1. In the left bar, select **Package Manager**.
-1. Select `logos-storage-module` and `logos-storage-ui`, then click **Install**.
+1. Select `Storage` in `Categories` then click **Install**.
 1. Wait until a green **Installed** label appears next to both modules.
 1. In the left bar, select **storage** to launch the Logos Storage UI.
 

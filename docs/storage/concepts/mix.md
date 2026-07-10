@@ -11,6 +11,8 @@ slug: mix
 
 # Mix
 
+#### Understand how Mix hides who is looking up content on the storage network.
+
 Mix is a privacy layer. When it is enabled, the node hides *who* is asking for content when it looks up where to find data on the network.
 
 Normally, when a node searches the network to find where some content lives, the peers it asks can see its identity. With Mix, those lookups are routed through other relays first, so the peer that answers cannot tell who originally asked.

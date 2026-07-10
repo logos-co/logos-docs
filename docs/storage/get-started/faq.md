@@ -11,10 +11,12 @@ slug: faq
 
 # FAQ
 
+#### Fix the most common connectivity problems of a storage node.
+
 Logos Storage requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
 
 - **Discovery port**: UDP, defaults to `8090`. Used for discovery and DHT operations.
-- **libp2p listen port**: TCP, defaults to `8500` in the Storage UI. Used for data transfer and peer connections. The storage module itself has no fixed default: it picks a random free port unless you set `listen-port`.
+- **libp2p listen port**: TCP. Used for data transfer and peer connections. The Storage UI sets it during onboarding; the storage module picks a random free port unless you set `listen-port`.
 
 Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
@@ -28,7 +30,7 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 ## Another application is using the listen port
 
-**Symptom**: the node fails to start, or peers cannot connect, because the TCP listen port (`8500` in the Storage UI) is already taken.
+**Symptom**: the node fails to start, or peers cannot connect, because the TCP listen port is already taken.
 
 **Cause**: another process is occupying the port.
 
@@ -64,10 +66,10 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 **Cause**: the machine's own firewall blocks incoming connections. Some Linux distributions (such as Fedora) enable a firewall by default.
 
-**Fix**: allow both ports through the firewall. With firewalld (Fedora):
+**Fix**: allow both ports through the firewall, replacing `<listen-port>` with your TCP listen port (shown during onboarding in the Storage UI, or the `listen-port` value of your config). With firewalld (Fedora):
 
 ```sh
-sudo firewall-cmd --permanent --add-port=8500/tcp
+sudo firewall-cmd --permanent --add-port=<listen-port>/tcp
 sudo firewall-cmd --permanent --add-port=8090/udp
 sudo firewall-cmd --reload
 ```
@@ -75,7 +77,7 @@ sudo firewall-cmd --reload
 With ufw (Ubuntu):
 
 ```sh
-sudo ufw allow 8500/tcp
+sudo ufw allow <listen-port>/tcp
 sudo ufw allow 8090/udp
 ```
 

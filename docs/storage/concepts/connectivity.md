@@ -11,6 +11,8 @@ slug: connectivity
 
 # Connectivity
 
+#### Understand how a storage node joins a network and becomes reachable from the internet.
+
 A node is useful only when it can reach other nodes. This page explains how a node joins a network and how to make it reachable from the outside.
 
 ## Joining a network

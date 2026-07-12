@@ -81,8 +81,8 @@ Never run two instances in the same working directory. The app stages credential
 
 1. Exchange intro bundles between the two instances:
 
-   - In one instance, click **My Bundle** and copy the displayed bundle.
-   - In the other instance, click **+ new**, paste the bundle and enter a first message, then click **create**.
+   - In one instance, click **Get Intro Bundle**, then click **Copy to Clipboard** in the **My Bundle** dialog that opens.
+   - In the other instance, click **+ new**, paste the bundle and enter a first message, then click **Create**.
 
 1. Send a message from one instance and confirm it arrives in the other:
 

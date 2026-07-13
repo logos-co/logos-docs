@@ -31,7 +31,7 @@ Logos was designed around modularity, structural privacy, and sovereignty.
 
 Modularity determines how the system tolerates failure and change. Each layer and module can be developed, audited, and upgraded independently of the others. A defect in the storage module does not affect the messaging layer, and an upgrade to consensus does not require changes to the networking layer.
 
-Structural privacy means that privacy guarantees are properties of the infrastructure rather than features that individual applications must implement. The mixnet obscures communication patterns at the networking layer, [Cryptarchia](https://press.logos.co/article/why-proposer-anonymity) hides validator identities and stake amounts at the consensus layer, and the Logos Execution Zone supports private state at the execution layer.
+Structural privacy means that privacy guarantees are properties of the infrastructure rather than features that individual applications must implement. The mixnet obscures communication patterns at the networking layer, [Cryptarchia and the Blend Network](https://press.logos.co/article/why-proposer-anonymity) hides validator identities and stake amounts at the consensus layer, and the Logos Execution Zone supports private state at the execution layer.
 
 Sovereignty refers to the operator's control over the infrastructure they run. A Logos node does not route messages through a third-party server, does not store files in a third-party data centre, and does not require permission from an intermediary to process a transaction. Because the stack is modular, an operator selects only the capabilities their use case requires.
 

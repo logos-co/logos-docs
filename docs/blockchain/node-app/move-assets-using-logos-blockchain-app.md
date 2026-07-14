@@ -1,5 +1,5 @@
 ---
-title: Move assets using the Logos Blockchain app
+title: Move assets using the Logos Blockchain UI app
 doc_type: procedure
 product: blockchain
 topics: [blockchain-app]
@@ -10,7 +10,7 @@ doc_version: 1
 slug: move-assets-using-logos-blockchain-app
 ---
 
-# Move assets using the Logos Blockchain node app
+# Move assets using the Logos Blockchain UI app
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 

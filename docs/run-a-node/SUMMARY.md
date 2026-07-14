@@ -1,6 +1,6 @@
 # Table of contents
 
-## Complete node (Blockchain, Storage, Delivery modules)
+## Complete node
 
 - [Run a Logos node with blockchain, storage, and delivery](get-started/run-logos-node-blockchain-storage-delivery.md)
 

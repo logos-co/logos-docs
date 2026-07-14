@@ -213,7 +213,7 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
     logoscore call storage_module exists "$(cat cid.txt)" | jq '.result.value'
     # false
     ```
-3.  Stop the storage node. `stop` is asynchronous like `start`; a `storageStop` event follows in the log. The node can be started and stopped multiple times:
+3.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to `logs.txt`). The node can be started and stopped multiple times:
 
     ```sh
     logoscore call storage_module stop

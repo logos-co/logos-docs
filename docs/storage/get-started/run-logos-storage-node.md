@@ -133,7 +133,7 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     | `log-file`  | Node log destination (absolute)    |
     | `nat`       | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
 
-    - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings) and picks random ports.
+    - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings), binds discovery to the default UDP port `8090`, and picks a random TCP `listen-port`.
     - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values and a `nat` mode that announces your address: see [Connectivity](../concepts/connectivity.md).
 
 6.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):

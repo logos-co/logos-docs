@@ -79,7 +79,7 @@ Before you start, make sure you have the following:
 
 Run `logoscore` with the modules directory, then load and initialise the [storage module](https://docs.logos.co/get-started/glossary#storage-module) against the testnet config.
 
-Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome arrives later as an event in the daemon log (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). This is why the daemon is started with its output captured to `logs.txt`, and why the steps below check that file.
+Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
 1.  Start the `logoscore` daemon in background mode, capturing its output:
 

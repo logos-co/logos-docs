@@ -157,10 +157,16 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 
 Once the node is running and connected to the testnet, publish a file and verify the round-trip.
 
-1.  Upload a file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
+1.  Create a file to publish:
 
     ```sh
-    logoscore call storage_module uploadUrl "$(pwd)/logs.txt" 65536
+    echo "Hello world from Logos Storage" > "$(pwd)/hello.txt"
+    ```
+
+2.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
+
+    ```sh
+    logoscore call storage_module uploadUrl "$(pwd)/hello.txt" 65536
     ```
 
     :::info
@@ -169,22 +175,22 @@ Once the node is running and connected to the testnet, publish a file and verify
 
 2.  After a second, extract the content ID (CID) from the first `manifests` entry:
 
-2.  Extract the content ID (CID) from the first `manifests` entry:
+3.  Extract the content ID (CID) from the first `manifests` entry:
 
     ```sh
     # Wait a second for the upload to complete first
     logoscore call storage_module manifests \
        | jq -er '.result.value[0].cid' > cid.txt
     ```
-3.  Download the file back from local storage with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. With `local` set to `true`, the download reads the blocks straight back out of this node's own repository. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
+4.  Download the file back from local storage with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. With `local` set to `true`, the download reads the blocks straight back out of this node's own repository. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
 
     ```sh
-    logoscore call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/logs-destination.txt" true 65536
+    logoscore call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/hello-destination.txt" true 65536
     ```
 
     - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
 
-4.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
+5.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
 
     ```sh
     logoscore call storage_module exists "$(cat cid.txt)"

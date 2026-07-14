@@ -141,7 +141,7 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     ```sh
     logoscore call storage_module init @config.json
     ```
-7.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; the real outcome is the `storageStart` event in the daemon log:
+7.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to `logs.txt`):
 
     ```sh
     logoscore call storage_module start

@@ -2,8 +2,8 @@
 
 ## Get started
 
-- [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
 - [Introduction to the Logos Blockchain](get-started/introduction-to-the-logos-blockchain.md)
+- [Run a Logos Blockchain node on the public testnet from the CLI](get-started/run-a-logos-blockchain-node-from-cli.md)
 
 ## Blockchain UI app
 

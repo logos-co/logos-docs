@@ -48,22 +48,22 @@ Before you start, make sure you have the following:
 
     You will see a **No blocks found** message initially:
 
-    ![No blocks found screen](../.gitbook/assets/no_blocks_found.png)
+    ![No blocks found screen](../.gitbook/assets/start-and-use-instance-of-lez-explorer/no-blocks-found.png)
 
     After approximately one minute, refresh the page. Blocks will appear:
 
-    ![Blocks visible after refresh](../.gitbook/assets/updated_page.png)
+    ![Blocks visible after refresh](../.gitbook/assets/start-and-use-instance-of-lez-explorer/updated-page.png)
 
 ## Browse blocks, transactions, and accounts
 
 1.  Click any block in the list to view its details.
 
-    ![Block detail view](../.gitbook/assets/block_details.png)
+    ![Block detail view](../.gitbook/assets/start-and-use-instance-of-lez-explorer/block-details.png)
 2.  Use the search bar to look up a block, transaction, or account by ID.
 
-    ![Transaction search result](../.gitbook/assets/transaction_details.png)
+    ![Transaction search result](../.gitbook/assets/start-and-use-instance-of-lez-explorer/transaction-details.png)
 
-    ![Account detail view](../.gitbook/assets/account_details.png)
+    ![Account detail view](../.gitbook/assets/start-and-use-instance-of-lez-explorer/account-details.png)
 
 ## Troubleshooting LEZ Explorer
 

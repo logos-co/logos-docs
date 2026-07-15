@@ -58,18 +58,18 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
     - The wallet UI creates these files at the paths you enter if they don't already exist.
     - After the first run, the wallet UI remembers these paths and skips the setup screen on subsequent runs.
 
-    ![Wallet setup screen](../.gitbook/assets/create-wallet.png)
+    ![Wallet setup screen](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/create-wallet.png)
 2. Choose a password.
 3. Click **Create wallet**.
 4.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](https://docs.logos.co/get-started/glossary#private-account) values from the genesis block.
 
     A progress bar shows the number of blocks processed, and this step can take a few minutes.
 
-    ![Sync progress screen](../.gitbook/assets/sync-progress.png)
+    ![Sync progress screen](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/sync-progress.png)
 
     The list of accounts and their balances displays once the sync finishes.
 
-    ![Account list with balances](../.gitbook/assets/sync-done.png)
+    ![Account list with balances](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/sync-done.png)
 
 ## Create a new public account
 
@@ -78,12 +78,12 @@ Unlike the predefined accounts on the wallet, accounts you create yourself are c
 1. Click **Create** [**account**](https://docs.logos.co/get-started/glossary#account).
 2.  Select **Public**.
 
-    ![Create account menu](../.gitbook/assets/create-account.png)
+    ![Create account menu](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/create-account.png)
 3.  Click **Create**.
 
     The new [public account](https://docs.logos.co/get-started/glossary#public-account) will appear in your account list.
 
-    ![New public account in the list](../.gitbook/assets/new-account.png)
+    ![New public account in the list](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/new-account.png)
 
 ## Send a public transfer
 
@@ -94,7 +94,7 @@ This task moves tokens from a funded predefined account to the public account yo
 3. In the recipient field, paste the account ID.
 4.  Click **Send**.
 
-    ![Public transfer screen](../.gitbook/assets/public-account.png)
+    ![Public transfer screen](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/public-account.png)
 
     A transaction hash displays below the **Send** button. Use its copy button to copy the hash for the next task.
 
@@ -104,7 +104,7 @@ This task moves tokens from a funded predefined account to the public account yo
 
     The transaction details display once the transaction is finalised on the L1. Finalisation isn't immediate; it can take around 10 minutes to display.
 
-    ![Transaction details on the explorer](../.gitbook/assets/tx-finalized.png)
+    ![Transaction details on the explorer](../.gitbook/assets/initiate-native-token-transfers-on-lez-with-wallet-ui/tx-finalized.png)
 
 ## Try private, shielded, and deshielded transfers
 

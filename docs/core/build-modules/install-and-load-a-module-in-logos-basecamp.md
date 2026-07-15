@@ -40,14 +40,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalogue
 
-1. In the sidebar, click **Package Manager** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-package-manager-icon.png).
+1. In the sidebar, click **Package Manager** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
 2. Browse and locate the module you want. You can click the module to view more details in the content area below.
 3. Select the module to install and click **Install**.
-4. At the bottom of the sidebar, click the **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png). The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
+4. At the bottom of the sidebar, click the **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png). The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
 
 ### Install from a local `.lgx` file
 
-1. At the bottom of the sidebar, click **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png).
+1. At the bottom of the sidebar, click **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
 2. Click **Install LGX Package**.
 3. Select the `.lgx` file and confirm.
 4. The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
@@ -56,7 +56,7 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
-1. At the bottom of the sidebar, click **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp-modules-icon.png).
+1. At the bottom of the sidebar, click **Modules** ![](../.gitbook/assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
 2. Find the module to load under **UI Modules** or **Core Modules** depending on its type.
 3. Click **Load** next to the module.
 

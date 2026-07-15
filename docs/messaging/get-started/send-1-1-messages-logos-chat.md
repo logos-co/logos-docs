@@ -45,10 +45,10 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 1. Download and [install](https://github.com/logos-co/logos-docs/blob/main/docs/basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 2.  In the left bar, select **Package Manager**.
 
-    ![Logos Basecamp screenshot](../.gitbook/assets/basecamp-package-manager.png)
+    ![Logos Basecamp screenshot](../.gitbook/assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
 3.  Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
 
-    ![Logos Basecamp package installation screenshot](../.gitbook/assets/basecamp-install-packages.png)
+    ![Logos Basecamp package installation screenshot](../.gitbook/assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
 4. Wait until a green **Installed** label appears next to both modules.
 5. In the left bar, select **chat** to launch the Logos Chat app.
 
@@ -72,7 +72,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 
 The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances — referred to here as **A** and **B**.
 
-![Logos Chat App UI screenshot](../.gitbook/assets/chat_app_screenshot.png)
+![Logos Chat App UI screenshot](../.gitbook/assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
 
 **On instance A:**
 

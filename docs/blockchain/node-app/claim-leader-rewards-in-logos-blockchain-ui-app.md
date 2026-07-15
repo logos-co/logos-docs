@@ -32,13 +32,13 @@ Check the account balance before claiming, submit a claim, then confirm the tran
 
 1. In **Operations**, open **Accounts** and click **Refresh** to load the current wallet state.
 
-   ![Check accounts](./claim-leader-rewards-in-logos-blockchain-ui-app/04-accounts-before-claim.png)
+   ![Check accounts](../.gitbook/assets/claim-leader-rewards-in-logos-blockchain-ui-app/04-accounts-before-claim.png)
 
    - Note the balance of the account that will receive the reward before claiming.
 
 1. In **Operations**, open **Leader Rewards**.
 
-   ![Claimable vouchers](./claim-leader-rewards-in-logos-blockchain-ui-app/05-claimable-vouchers.png)
+   ![Claimable vouchers](../.gitbook/assets/claim-leader-rewards-in-logos-blockchain-ui-app/05-claimable-vouchers.png)
 
    - The panel shows the number of available claimable vouchers, the tip used for the query, and voucher details including `cm` and `nf` values.
 
@@ -48,19 +48,19 @@ Check the account balance before claiming, submit a claim, then confirm the tran
 
 1. Click **Claim**.
 
-   ![Claim submitted](./claim-leader-rewards-in-logos-blockchain-ui-app/06-claim-submitted.png)
+   ![Claim submitted](../.gitbook/assets/claim-leader-rewards-in-logos-blockchain-ui-app/06-claim-submitted.png)
 
    - The UI displays a transaction hash. Note this hash to confirm inclusion in the next step.
 
 1. Return to the **Node** tab and inspect the block list. Find a block that includes the claim transaction, expand it, and confirm the transaction hash matches the one shown after clicking **Claim**.
 
-   ![Claim transaction as seen in a block](./claim-leader-rewards-in-logos-blockchain-ui-app/07-claim-tx-in-block.png)
+   ![Claim transaction as seen in a block](../.gitbook/assets/claim-leader-rewards-in-logos-blockchain-ui-app/07-claim-tx-in-block.png)
 
    - On shared networks the block may contain other transactions too.
 
 1. Return to **Operations**, then **Accounts**, and click **Refresh**.
 
-   ![Accounts after the claim](./claim-leader-rewards-in-logos-blockchain-ui-app/08-accounts-after-claim.png)
+   ![Accounts after the claim](../.gitbook/assets/claim-leader-rewards-in-logos-blockchain-ui-app/08-accounts-after-claim.png)
 
    - Confirm the reward account balance has increased. The balance updates after the claim transaction is processed.
 

@@ -510,9 +510,9 @@ Before building, confirm the `calc_module` shared library is present from [Part 
     ```
 4.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
 
-    ![Operation buttons visible](./build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
+    ![Operation buttons visible](../.gitbook/assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
 
-    ![Result of 3 + 5 shows 8](./build-a-logos-cpp-ui-module/calc-cpp-result.png)
+    ![Result of 3 + 5 shows 8](../.gitbook/assets/build-a-logos-cpp-ui-module/calc-cpp-result.png)
 
 ## Step 10: Update view with live reloading (Optional)
 

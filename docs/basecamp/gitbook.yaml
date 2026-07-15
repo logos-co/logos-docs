@@ -6,3 +6,10 @@ root: ./
 structure:
   readme: README.md
   summary: SUMMARY.md
+
+redirects:
+  node-app/build-and-run-logos-blockchain-node-app-ui: blockchain-ui-app/build-and-run-logos-blockchain-node-app-ui.md
+  node-app/move-assets-using-logos-blockchain-app: blockchain-ui-app/move-assets-using-logos-blockchain-app.md
+  node-app/bridge-assets-from-logos-blockchain-to-zone-using-app: blockchain-ui-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md
+  node-app/claim-leader-rewards-in-logos-blockchain-ui-app: blockchain-ui-app/claim-leader-rewards-in-logos-blockchain-ui-app.md
+  

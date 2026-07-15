@@ -76,7 +76,7 @@ Internet access is required to download the binary or clone the repository, but 
 1. Run the resulting binary:
 
     ```bash
-    ./result/bin/LogosBasecamp
+    ./result/logos-basecamp.AppImage
     ```
 
 ## Troubleshooting Basecamp

@@ -193,6 +193,9 @@ Once the node is running and connected to the testnet, publish a file and verify
 5.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
 
     ```sh
+    # Confirm the download is a byte-for-byte copy of the original (both files are static):
+    diff "$(pwd)/hello.txt" "$(pwd)/hello-destination.txt" && echo "match"
+    # And confirm the content is in local storage by CID:
     logoscore call storage_module exists "$(cat cid.txt)"
     # returns true
     ```

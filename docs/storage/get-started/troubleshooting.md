@@ -1,5 +1,5 @@
 ---
-title: FAQ
+title: Troubleshooting
 doc_type: reference
 product: storage
 topics: storage, troubleshooting, connectivity
@@ -9,7 +9,7 @@ doc_version: 1
 slug: faq
 ---
 
-# FAQ
+# Troubleshooting
 
 #### Fix the most common connectivity problems of a storage node.
 

@@ -5,7 +5,7 @@
 - [Run a Logos storage node](get-started/run-logos-storage-node.md)
 - [Run a Mix network of storage nodes](get-started/run-mix-network-of-storage-nodes.md)
 - [Set up and use the Logos Storage UI](get-started/set-up-and-use-logos-storage-ui.md)
-- [FAQ](get-started/faq.md)
+- [Troubleshooting](get-started/troubleshooting.md)
 
 ## Concepts
 

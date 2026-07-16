@@ -81,12 +81,12 @@ Internet access is required to download the binary or clone the repository, but 
 
 ## Troubleshooting Basecamp
 
-### experimental Nix feature 'nix-command' when building appimage
-Following error might appear while building appimage:
+### Experimental Nix feature 'nix-command' when building the AppImage
+The following error might appear while building the AppImage:
 
 > error: experimental Nix feature 'nix-command' is disabled; add '--extra-experimental-features nix-command' to enable it
 
-in which case command should be changed to allow flakes syntax:
+in which case the command should be changed to enable flakes:
 
 ```bash
 nix build --extra-experimental-features 'nix-command flakes' '.#bin-appimage'

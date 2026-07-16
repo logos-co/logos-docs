@@ -76,10 +76,21 @@ Internet access is required to download the binary or clone the repository, but 
 1. Run the resulting binary:
 
     ```bash
-    ./result/bin/LogosBasecamp
+    ./result/logos-basecamp.AppImage
     ```
 
 ## Troubleshooting Basecamp
+
+### Experimental Nix feature 'nix-command' when building the AppImage
+The following error might appear while building the AppImage:
+
+> error: experimental Nix feature 'nix-command' is disabled; add '--extra-experimental-features nix-command' to enable it
+
+in which case the command should be changed to enable flakes:
+
+```bash
+nix build --extra-experimental-features 'nix-command flakes' '.#bin-appimage'
+```
 
 ### I see an `libEGL.so.1 / libOpenGL.so.0 missing` error when trying to launch the AppImage on Linux?
 Try running the following command:

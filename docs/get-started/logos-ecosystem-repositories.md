@@ -64,6 +64,7 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
 | [logos-blockchain-ui](https://github.com/logos-blockchain/logos-blockchain-ui) | Blockchain UI application for Logos Core. |
 | [logos-execution-zone-module](https://github.com/logos-blockchain/logos-execution-zone-module) | [Logos Execution Zone](glossary.md#logos-execution-zone) module for Logos Core. No official description; purpose inferred. |
 | [logos-execution-zone-wallet-ui](https://github.com/logos-blockchain/logos-execution-zone-wallet-ui) | Logos Execution Zone wallet UI. No official description; purpose inferred. |
+| [logos-libp2p-module](https://github.com/logos-co/logos-libp2p-module) | A Logos module that integrates libp2p networking capabilities. |
  
 ## Logos Blockchain
  

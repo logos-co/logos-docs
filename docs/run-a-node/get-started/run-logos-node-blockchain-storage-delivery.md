@@ -37,7 +37,7 @@ Before you start, make sure you have the following:
 
 - You can run a full Logos node with all three modules active and publicly reachable on the testnet.
 - You can verify each [module](https://docs.logos.co/get-started/glossary#module) is healthy by querying the daemon and checking live port bindings.
-- You can configure the node for unattended operation using the systemd service pattern described in [Troubleshooting](#troubleshooting-the-logos-node).
+- You can configure the node for unattended operation using the systemd service pattern described in [here](#optional-run-the-node-unattended-with-systemd).
 
 ## Step 1: Install runtime tools
 

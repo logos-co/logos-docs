@@ -16,7 +16,7 @@ slug: inscribe-data-on-chain-using-zone-sdk
 
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
-Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A [Zone](https://docs.logos.co/get-started/glossary#zone) could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/apps/wallet/journeys/quickstart-for-the-logos-execution-zone-wallet.md), or it could be a simple, standalone Zone tracking the state of just one application.
+Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A [Zone](https://docs.logos.co/get-started/glossary#zone) could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
 The [**Zone SDK**](https://docs.logos.co/get-started/glossary#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
 

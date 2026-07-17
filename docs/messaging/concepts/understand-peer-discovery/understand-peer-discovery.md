@@ -19,9 +19,9 @@ When initialising a [Logos Delivery](https://docs.logos.co/get-started/glossary#
 
 Once a connection is established, the node must actively seek out additional peers to have:
 
-- Sufficient peers in the [Relay](./understand-logos-delivery-protocols.md#relay) mesh: The goal is to have at least 6 peers in the mesh. This ensures a robust network where messages can be efficiently relayed.
+- Sufficient peers in the [Relay](../understand-logos-delivery-protocols.md#relay) mesh: The goal is to have at least 6 peers in the mesh. This ensures a robust network where messages can be efficiently relayed.
 - Reserve peers for backup: It is essential to have a surplus of peers available as reserves. These reserves are backups when the current peers become overloaded or experience unexpected disconnections.
-- Peers with specific capabilities: The node seeks out peers with specific capabilities, such as [Store](./understand-logos-delivery-protocols.md#store), [Light Push](./understand-logos-delivery-protocols.md#light-push), or [Filter](./understand-logos-delivery-protocols.md#filter). This allows for targeted interactions and enhanced functionality based on the desired capabilities.
+- Peers with specific capabilities: The node seeks out peers with specific capabilities, such as [Store](../understand-logos-delivery-protocols.md#store), [Light Push](../understand-logos-delivery-protocols.md#light-push), or [Filter](../understand-logos-delivery-protocols.md#filter). This allows for targeted interactions and enhanced functionality based on the desired capabilities.
 
 ## Discovery mechanisms
 

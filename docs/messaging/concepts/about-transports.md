@@ -27,7 +27,7 @@ For Logos Delivery nodes, the following transports are recommended:
 
 - **TCP**: By default, Logos Delivery nodes use TCP for communication. Service nodes should employ TCP for listening to and connecting with other nodes.
 - **Secure WebSocket**: In browser environments, secure WebSocket is used. Service nodes are encouraged to set up SSL certificates to enable incoming connections from browsers and serve them securely.
-- Other protocols like [WebRTC](https://github.com/waku-org/js-waku/issues/20), [WebTransport](https://github.com/waku-org/js-waku/issues/697), and QUIC have been researched and studied for potential integration.
+- Other protocols like [WebRTC](https://github.com/logos-messaging/logos-delivery-js/issues/20), [WebTransport](https://github.com/logos-messaging/logos-delivery-js/issues/697), and QUIC have been researched and studied for potential integration.
 
 {% hint style="info" %}
 

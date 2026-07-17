@@ -50,8 +50,8 @@ Transfers are irreversible. Double-check all details before proceeding.
 
 Before you begin, ensure that you have the following:
 
-- The [LEZ sequencer running in standalone mode](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-- The [Wallet CLI installed](https://github.com/logos-co/logos-docs/blob/main/docs/lez/transfer-tokens/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- The [LEZ sequencer running in standalone mode](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
+- The [Wallet CLI installed](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
 
 ## What to expect
 

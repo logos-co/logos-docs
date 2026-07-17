@@ -34,7 +34,7 @@ Ongoing research is being conducted, including developing [Rate Limit Nullifiers
 
 ## Data confidentiality, integrity, and authenticity
 
-[Confidentiality](https://lip.logos.co/messaging/core/draft/10/waku2.html#data-confidentiality-integrity-and-authenticity) in Logos Delivery is ensured through data encryption, while integrity and authenticity are achieved through digital signatures. These security measures are available in [Waku Message (version 1)](https://rfc.vac.dev/waku/standards/core/14/message/#version-1) and Noise protocols, which offer payload encryption and encrypted signatures.
+[Confidentiality](https://lip.logos.co/messaging/core/draft/10/waku2.html#data-confidentiality-integrity-and-authenticity) in Logos Delivery is ensured through data encryption, while integrity and authenticity are achieved through digital signatures. These security measures are available in [Waku Message (version 1)](https://lip.logos.co/messaging/core/stable/14/message.html#payload-encryption) and Noise protocols, which offer payload encryption and encrypted signatures.
 
 ## Security considerations
 

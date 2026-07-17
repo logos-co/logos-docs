@@ -20,7 +20,7 @@ Logos [core modules](https://docs.logos.co/get-started/glossary#core-module) are
 
 {% hint style="info" %}
 
-For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md), [Build a QML UI for your logos module](./build-a-qml-ui-for-your-logos-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](./logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
 
 {% endhint %}
 
@@ -72,7 +72,7 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 
    {% hint style="info" %}
 
-   The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) for more details.
+   The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
    
    {% endhint %}
 
@@ -235,7 +235,7 @@ The `logos-module-viewer` is a graphical tool for inspecting loaded modules. It 
 
 ## Step 5: Package the module
 
-Before you can run your module with `logoscore` or install it into `logos-basecamp`, you need to package the build output into an `.lgx` package and install it into a `modules/` directory. Check out the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
+Before you can run your module with `logoscore` or install it into `logos-basecamp`, you need to package the build output into an `.lgx` package and install it into a `modules/` directory. Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
 
 {% hint style="info" %}
 
@@ -285,7 +285,7 @@ The `nix bundle` command is useful if your module does not use `logos-module-bui
 
 {% hint style="success" %}
 
-Check out [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
+Check out [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
 
 {% endhint %}
 
@@ -353,7 +353,7 @@ Registry packages currently ship portable variants only (for example, `linux-amd
 
 ## Step 7: Run the module 
 
-There are two Logos runtimes, `logoscore` and `logos-basecamp`, that can load and run your module. However, to interact with your module directly through the `logos-basecamp` interface, you need to [provide a UI module](./build-a-qml-ui-for-your-logos-module.md).
+There are two Logos runtimes, `logoscore` and `logos-basecamp`, that can load and run your module. However, to interact with your module directly through the `logos-basecamp` interface, you need to [provide a UI module](./build-a-logos-cpp-ui-module.md).
 
 ### Run with `logoscore`
 
@@ -380,7 +380,7 @@ The `logoscore` CLI (from `logos-liblogos`) is a headless runtime that can load 
 
 {% hint style="success" %}
 
-Check out [Logos CLI Reference](./logos-cli-reference.md) for more details on available commands and options.
+Check out [Logos CLI Reference](../reference/logos-cli-reference.md) for more details on available commands and options.
 
 {% endhint %}
 
@@ -390,7 +390,7 @@ Logos Basecamp is a desktop shell that provides a graphical interface for managi
 
 {% hint style="warning" %}
 
-The LGX variant type must match the basecamp build type. Dev builds of basecamp expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Check out the [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md) for more details.
+The LGX variant type must match the basecamp build type. Dev builds of basecamp expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
 
 {% endhint %}
 

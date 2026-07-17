@@ -8,7 +8,7 @@ owner: logos
 doc_version: 1
 slug: protocols
 ---
- 
+
 # Understand Logos Delivery protocols
 
 #### Understand the modular protocols that let applications balance anonymity, scalability, and latency.

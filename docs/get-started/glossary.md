@@ -88,7 +88,7 @@ A module that uses the Logos Delivery network to send messages and subscribe to 
 
 ### DNS discovery
 
-A peer discovery mechanism used in Logos Delivery that allows the retrieval of an Ethereum Node Record (ENR) tree from the TXT field of a domain name, enabling the storage of node connection details and promoting decentralisation. See [About DNS discovery](https://docs.logos.co/messaging/concepts/about-dns-discovery).
+A peer discovery mechanism used in Logos Delivery that allows the retrieval of an Ethereum Node Record (ENR) tree from the TXT field of a domain name, enabling the storage of node connection details and promoting decentralisation. See [About DNS discovery](../messaging/concepts/understand-peer-discovery/about-dns-discovery.md).
 
 ---
 
@@ -329,7 +329,7 @@ When a Logos Delivery node locates and gets information about other peers in the
 
 ### Peer exchange
 
-A peer discovery mechanism used in Logos Delivery that enables light nodes to request and receive peers from other nodes in the network, allowing them to bootstrap and expand their connections without depending on Discv5. See [About peer exchange](https://docs.logos.co/messaging/concepts/about-peer-exchange).
+A peer discovery mechanism used in Logos Delivery that enables light nodes to request and receive peers from other nodes in the network, allowing them to bootstrap and expand their connections without depending on Discv5. See [About peer exchange](../messaging/concepts/understand-peer-discovery/about-peer-exchange.md).
 
 ### Peer ID
 

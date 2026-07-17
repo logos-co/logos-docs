@@ -20,7 +20,7 @@ There are two types of modules in Logos Basecamp. [Core modules](https://docs.lo
 
 Before you start, make sure you have:
 
-- Logos Basecamp [installed and running](https://github.com/logos-co/logos-docs/blob/main/docs/core/build-modules/install-logos-basecamp.md).
+- Logos Basecamp [installed and running](../../basecamp/get-started/install-logos-basecamp.md).
 - Internet access for online catalogue install.
 - [An `.lgx` file](build-and-run-a-logos-core-module.md) for local install.
 

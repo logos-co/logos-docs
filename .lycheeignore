@@ -1,0 +1,20 @@
+# .lycheeignore: URL exclusions for the Logos docs link check.
+# Regex, one per line. URLs only; use --exclude-path for file paths.
+
+# eprint.iacr.org — Cloudflare managed challenge (cf-mitigated: challenge).
+# Requires JS execution to obtain clearance; no lychee config can pass it.
+# Links confirmed reachable in browser.
+^https://eprint\.iacr\.org
+
+# app.notion.com — client-rendered SPA. Lychee only ever receives a JS shell,
+# Mantle spec page confirmed publicly reachable in incognito.
+^https://app\.notion\.com
+
+# Logos Docs project board. Only accessible to Logos CCs.
+^https://github.com/orgs/logos-co/projects/9
+
+# Raspberrypi website. Link confirmed reachable in browser.
+^https://www\.raspberrypi\.com/software/
+
+# LEZ public testnet
+^https://testnet\.lez\.logos.co/

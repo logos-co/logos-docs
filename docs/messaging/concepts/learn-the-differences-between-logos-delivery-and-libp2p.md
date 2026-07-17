@@ -13,7 +13,7 @@ slug: logos-delivery-and-libp2p
 
 #### Understand what Logos Delivery adds on top of libp2p and where the two differ.
 
-Since [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) is built on top of libp2p, they share a lot of concepts and terminologies between them. However, there are key differences between them that are worth noting.
+Since [Logos Delivery](../../get-started/glossary.md#logos-delivery) is built on top of libp2p, they share a lot of concepts and terminologies between them. However, there are key differences between them that are worth noting.
 
 ## The basics
 
@@ -23,7 +23,7 @@ Since [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery
 
 ## Logos Delivery as a service network
 
-Logos Delivery intends to incentivise mechanisms to run nodes, but it is not part of libp2p's scope. Additionally, users or developers do not have to deploy their infrastructure as a prerequisite to use Logos Delivery. It is a service network. However, you are encouraged to [run a node](../messaging/run-logos-delivery-node.md) to support and decentralise the network.
+Logos Delivery intends to incentivise mechanisms to run nodes, but it is not part of libp2p's scope. Additionally, users or developers do not have to deploy their infrastructure as a prerequisite to use Logos Delivery. It is a service network. However, you are encouraged to [run a node](../delivery/run-logos-delivery-node.md) to support and decentralise the network.
 
 ## Logos Delivery as a turnkey solution
 

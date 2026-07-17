@@ -9,6 +9,7 @@
 # app.notion.com — client-rendered SPA. Lychee only ever receives a JS shell,
 # Mantle spec page confirmed publicly reachable in incognito.
 ^https://app\.notion\.com
+^https://nomos-tech\.notion\.site
 
 # Logos Docs project board. Only accessible to Logos CCs.
 ^https://github.com/orgs/logos-co/projects/9

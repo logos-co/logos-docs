@@ -13,7 +13,7 @@
 
 ## LEZ wallet UI
 
-- [Initiate native token transfers on the LEZ with the wallet UI](get-started/initiate-native-token-transfers-on-lez-with-wallet-ui.md)
+- [Initiate native token transfers on the LEZ with the wallet UI](../lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui.md)
 
 <!-- Keep this README at the end of the SUMMARY -->
 - [Readme](README.md)

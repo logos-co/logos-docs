@@ -238,4 +238,4 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
 
 ## Troubleshooting Logos Storage
 
-Connectivity problems (downloads timing out from another machine, no peers, unreachable node) are covered in the [FAQ](faq.md) and in [Connectivity](../concepts/connectivity.md).
+Connectivity problems (downloads timing out from another machine, no peers, unreachable node) are covered in the [Troubleshooting](troubleshooting.md) and [Connectivity](../concepts/connectivity.md) pages.

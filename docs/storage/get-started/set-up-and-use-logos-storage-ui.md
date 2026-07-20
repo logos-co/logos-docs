@@ -137,7 +137,7 @@ This guide follows the `Guided` setup with `Port Forwarding`.
 
    ![Node is ready step confirming the node is reachable](../.gitbook/assets/storage-ui-port-forwarding-success.png)
 
-   - If the node is unreachable, see the [FAQ](faq.md).
+   - If the node is unreachable, see [Troubleshooting](troubleshooting.md).
    - The guided setup requires a reachable node. To run without connectivity, go **Back** and use the `Advanced` setup: the node will only be able to download files from other nodes.
 
 1. On the **Select Drives** step, choose the folder where downloaded files will be saved, then click **Continue**.
@@ -217,4 +217,4 @@ The **Mix** switch in the **Node** panel controls private queries. When enabled,
 
 ## Troubleshooting Logos Storage
 
-Connectivity problems (no peers, unreachable node, downloads timing out) are covered in the [FAQ](faq.md) and in [Connectivity](../concepts/connectivity.md).
+Connectivity problems (no peers, unreachable node, downloads timing out) are covered in the [Troubleshooting](troubleshooting.md) and [Connectivity](../concepts/connectivity.md) pages.

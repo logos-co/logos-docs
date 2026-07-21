@@ -182,14 +182,15 @@ This quickstart uses standalone mode, which runs only the LEZ sequencer locally.
 You should see the sequencer starting up at `localhost:3040` and logging information to the terminal:
 
 ```bash
-[2026-02-24T16:27:58Z INFO  sequencer_runner] HTTP server started
-[2026-02-24T16:27:58Z INFO  actix_server::server] Tokio runtime found; starting in existing Tokio runtime
-[2026-02-24T16:27:58Z INFO  actix_server::server] starting service: "actix-web-service-0.0.0.0:3040", workers: 4, listening on: 0.0.0.0:3040
-[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting main sequencer loop
-[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting pending block retry loop
-[2026-02-24T16:27:58Z INFO  sequencer_runner] Starting bedrock block listening loop
-[2026-02-24T16:27:58Z INFO  sequencer_runner] Sequencer running. Monitoring concurrent tasks...
+[2026-07-21T06:48:13Z INFO  sequencer_service] Sequencer core set up
+[2026-07-21T06:48:13Z INFO  sequencer_service] Starting Sequencer Service RPC server on 0.0.0.0:3040
+[2026-07-21T06:48:13Z INFO  sequencer_service] RPC server started
+[2026-07-21T06:48:13Z INFO  sequencer_service] Starting main sequencer loop
+[2026-07-21T06:48:28Z INFO  sequencer_service] Collecting transactions from mempool, block creation
+[2026-07-21T06:48:28Z INFO  sequencer_service] Block with id 2 created
 ```
+
+Before these lines appear, the sequencer prints a series of `risc0_zkvm` executor messages while it executes the genesis transactions — this is expected.
 
 ## Step 3 (optional): Configure the wallet home directory
 

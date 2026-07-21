@@ -54,8 +54,12 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
     ```sh
     # Run node, in terminal 1
-    just run-bedrock
+    docker compose up logos-blockchain-node-0
     ```
+
+    {% hint style="warning" %}
+    Don't use `just run-bedrock` here: the recipe runs `docker compose up` with the repository's all-in-one compose file, which also builds and starts dockerised sequencer, indexer, and explorer services. Those conflict with the `just run-sequencer` and `just run-indexer` processes you start in the next steps. Starting only the `logos-blockchain-node-0` service gives you just the node.
+    {% endhint %}
 
     ```sh
     # Terminal 2

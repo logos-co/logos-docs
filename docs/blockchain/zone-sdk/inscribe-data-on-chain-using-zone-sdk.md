@@ -165,7 +165,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
 
         // Move our finalised publishes out of `published` and into `finalized`.
-        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+        pub fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
             for info in inscriptions {
                 if let Some(i) = self
                     .published

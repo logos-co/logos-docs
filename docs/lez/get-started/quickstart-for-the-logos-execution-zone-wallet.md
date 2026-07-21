@@ -89,7 +89,7 @@ Choose the instructions for your operating system:
    ```bash
    # Ubuntu / Debian
    sudo apt update
-   apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+   sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
    ```
 
    ```bash
@@ -136,38 +136,16 @@ Rust is the language used for wallet development, while RISC Zero is the proof t
 
 ### Set up the `wallet` binary prerequisites and build the wallet
 
-The Logos Blockchain repository provides a script that downloads a circuits release required by the `wallet` build.
-
 {% hint style="success" %}
 
-"Circuits" are prebuilt files used for privacy-preserving execution (zero-knowledge proofs). Even though the quickstart flow uses public transactions, the current `wallet` build still requires these files to be present locally.
+"Circuits" are prebuilt files used for privacy-preserving execution (zero-knowledge proofs). Even though the quickstart flow uses public transactions, the current `wallet` build still requires these files to be present locally. You don't need to download them manually: the wallet build fetches the matching `logos-blockchain-circuits` release from GitHub automatically at build time. To use a pre-downloaded or locally built circuits bundle instead, set the `LBC_ROOT_DIR` environment variable to the bundle directory before building.
 
 {% endhint %}
 
-1. Create a workspace folder and clone the Logos Blockchain repository:
+1. Create a workspace folder and clone the Logos Execution Zone repository:
 
    ```bash
    mkdir -p ~/logos/src
-   cd ~/logos/src
-   git clone https://github.com/logos-blockchain/logos-blockchain.git
-   ```
-
-1. Run the script to download the circuits release:
-
-   {% hint style="info" %}
-
-   This script downloads `logos-blockchain-circuits-<version>-<platform>.tar.gz` and installs it under `~/.logos-blockchain-circuits` by default.
-
-   {% endhint %}
-
-   ```bash
-   cd logos-blockchain
-   ./scripts/setup-logos-blockchain-circuits.sh
-   ```
-
-1. From the same workspace folder, clone the Logos Execution Zone repository:
-
-   ```bash
    cd ~/logos/src
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
@@ -215,17 +193,17 @@ You should see the sequencer starting up at `localhost:3040` and logging informa
 
 ## Step 3 (optional): Configure the wallet home directory
 
-The wallet reads its configuration from a "wallet home" directory. If the `NSSA_WALLET_HOME_DIR` environment variable is not set, it falls back to `~/.nssa/wallet`.
+The wallet reads its configuration from a "wallet home" directory. If the `LEE_WALLET_HOME_DIR` environment variable is not set, it falls back to `~/.lee/wallet`.
 
 If you want the wallet to initialise in a different location, set the variable before continuing. For example, to set the wallet home to a `.wallet-home` folder in the current directory, run:
 
 ```bash
-export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
+export LEE_WALLET_HOME_DIR="$PWD/.wallet-home"
 ```
 
 {% hint style="info" %}
 
-The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.nssa/wallet` when unset, as described above. The mismatch is in the help string.
+The `wallet help` output incorrectly states that `LEE_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.lee/wallet` when unset, as described above. The mismatch is in the help string.
 
 {% endhint %}
 
@@ -325,7 +303,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ### Create and fund the recipient public account
 
-1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSA_WALLET_HOME_DIR` again.
+1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `LEE_WALLET_HOME_DIR` again.
 
    ```bash
    wallet account new public

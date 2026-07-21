@@ -82,7 +82,7 @@ Currently, it's impossible to change the token name or total supply after you cr
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, [nullifier public key](https://docs.logos.co/get-started/glossary#nullifier-public-key) (`npk`), and [viewing public key](https://docs.logos.co/get-started/glossary#viewing-public-key) (`vpk`).
 
 {% hint style="info" %}
-Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
+Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
 {% endhint %}
 
 1.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.

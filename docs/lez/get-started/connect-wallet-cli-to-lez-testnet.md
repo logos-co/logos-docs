@@ -34,7 +34,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
    ```sh
-   mv ~/.nssa/wallet ~/.nssa/wallet.old 2>/dev/null || true
+   mv ~/.lee/wallet ~/.lee/wallet.old 2>/dev/null || true
    ```
 
 1. Install the wallet CLI:

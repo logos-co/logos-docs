@@ -46,7 +46,7 @@ Logos Core is the modular runtime that ties applications together.
 | [logos-logoscore-py](https://github.com/logos-co/logos-logoscore-py) | Python wrapper for the [logoscore](glossary.md#logoscore) CLI. |
 | [logos-package-manager](https://github.com/logos-co/logos-package-manager) | C++ library and CLI for local Logos package management. |
 | [logos-package-downloader](https://github.com/logos-co/logos-package-downloader) | [Module](glossary.md#module) download tooling. No official description; purpose inferred. |
-| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | C++ library and CLI ([lgpd](glossary.md#lgpd)) for fetching Logos module [catalogs](glossary.md#catalogue) and downloading `.lgx` packages. |
+| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | Nix and CMake scaffolding library for building Logos [modules](glossary.md#module): project templates, the `logos_module()` CMake helper, and the `mkLogosModule` Nix builder. |
 | [logos-app-builder](https://github.com/logos-co/logos-app-builder) | Shared Nix library for building Logos UI applications. |
 | [Overwatch](https://github.com/logos-co/Overwatch) | Self-contained services application framework. |
  

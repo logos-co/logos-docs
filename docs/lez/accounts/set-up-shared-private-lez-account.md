@@ -27,7 +27,7 @@ Before you start, make sure you have the following:
 
 ## What to expect
 
-- You can create a shared private account from a single GMS so that every invited member independently derives the same NPK, VPK, NSK, and VSK without an interactive key exchange at spend time.
+- You can create a shared private account from a single GMS so that every invited member independently derives the same NPK, VPK, NSK, and VSK without an interactive key exchange at spend time. (Members must agree on the same PDA `--seed`, `--program-id`, and `--identifier` values; see Step 4.)
 - You can admit new members by sealing the GMS to their sealing public key and having them unseal it locally, with no shared secrets transmitted in the clear.
 - You can create a group-owned PDA family where each PDA is distinguished by an identifier derived from the same group keys.
 
@@ -95,10 +95,17 @@ The new member unseals the GMS using their local sealing secret key and derives 
 
    - The GMS is now stored locally under `my-copy`. Both the owner and this member now hold the same GMS.
 
-1. Derive the shared account from the joined group:
+1. Derive the shared account from the joined group.
+
+   {% hint style="warning" %}
+
+   For regular (non-PDA) shared accounts, each `wallet account new private-gms` invocation diversifies the derived keys with a random identifier, so running the plain command in two wallets produces two different accounts even from the same GMS. To land on the same account as the other members, use the PDA form with an agreed `--seed`, `--program-id`, and `--identifier` — with identical values, every GMS holder derives identical keys.
+
+   {% endhint %}
 
    ```sh
-   wallet account new private-gms my-copy
+   wallet account new private-gms my-copy --pda \
+     --seed <32-byte-hex> --program-id <program-id-hex> --identifier 0
    ```
 
-   - This produces the same NPK, VPK, NSK, and VSK as the owner's account derived in Step 2.
+   - With the same `--seed`, `--program-id`, and `--identifier` values as the owner used, this produces the same account ID, NPK, VPK, NSK, and VSK as the owner's account derived in Step 2.

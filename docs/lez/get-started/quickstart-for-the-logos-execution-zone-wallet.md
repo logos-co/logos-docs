@@ -227,7 +227,7 @@ If the wallet storage was not previously initialised, this command prints `Persi
 
 {% hint style="warning" %}
 
-The wallet uses this password as a seed to deterministically generate your public and private key trees. The wallet stores the derived key material and local state in storage.json under the wallet home directory.
+During setup the wallet also prints a 24-word recovery phrase — write it down and store it securely, as it is the only way to recover the wallet. The wallet stores the derived key material and local state in storage.json under the wallet home directory.
 
 {% endhint %}
 
@@ -272,7 +272,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet auth-transfer init --account-id <sender_public_account_id>
    ```
 
-   In the output, you should see `status: "Transaction submitted"`, and the transaction hash. If you change to the terminal session where the sequencer is running, you can see a message similar to this: `Validated transaction with hash <hash_id>, including it in block`.
+   In the output, you should see `Transaction hash is <hash_id>` followed by the transaction data. If you change to the terminal session where the sequencer is running, you can see a message similar to this: `Validated transaction with hash <hash_id>, including it in block`.
 
 1. Check the account updated state:
 

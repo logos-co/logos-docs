@@ -55,7 +55,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 1. Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
 
    ```bash
-   rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
+   rm -f src/ui_example.rep src/ui_example_backend.h src/ui_example_backend.cpp
    ```
 
 ## Step 2: Declare `delivery_module` as a dependency

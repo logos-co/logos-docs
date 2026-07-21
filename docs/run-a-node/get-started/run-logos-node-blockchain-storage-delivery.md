@@ -70,15 +70,16 @@ You can also install these tools by running:
    For x86_64 Linux, these are the current download URLs as of 2026-06-25:
 
    ```sh
-   wget https://github.com/logos-co/logos-logoscore-cli/releases/download/v3/logoscore-x86_64-linux.AppImage
-   wget https://github.com/logos-co/logos-package-downloader/releases/download/pre-release-99d70db-7/lgpd-x86_64-linux.tar.gz
-   wget https://github.com/logos-co/logos-package-manager/releases/download/pre-release-05b2cf8-7/lgpm-x86_64-linux.tar.gz
+   wget https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.0/logoscore-x86_64-linux.tar.gz
+   wget https://github.com/logos-co/logos-package-downloader/releases/download/0.2.0/lgpd-x86_64-linux.tar.gz
+   wget https://github.com/logos-co/logos-package-manager/releases/download/0.2.0/lgpm-x86_64-linux.tar.gz
    ```
 
-1. Install the tools under `/usr/local/bin`:
+1. Install the tools under `/usr/local/bin`. Each Linux tarball contains a single `<tool>-x86_64.AppImage`:
 
    ```sh
-   install -m755 logoscore-x86_64-linux.AppImage /usr/local/bin/logoscore
+   tar -xzf logoscore-x86_64-linux.tar.gz
+   install -m755 logoscore-x86_64.AppImage /usr/local/bin/logoscore
    tar -xzf lgpd-x86_64-linux.tar.gz
    install -m755 lgpd-x86_64.AppImage /usr/local/bin/lgpd
    tar -xzf lgpm-x86_64-linux.tar.gz
@@ -262,7 +263,6 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
 
    - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
    - The `logos.test` preset provides the storage bootstrap settings.
-   - Fields
 
    {% hint style="info" %}
    To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:

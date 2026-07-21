@@ -20,7 +20,7 @@ Logos [core modules](https://docs.logos.co/get-started/glossary#core-module) are
 
 {% hint style="info" %}
 
-For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). The [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) are still being written; those two pages are placeholders for now.
 
 {% endhint %}
 
@@ -78,7 +78,7 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 
 ## Step 2: Adapt the template for your module
 
-The template generates files with placeholder names like `minimal`/`Minimal` and `doSomething`. Replace these in every generated file to match your module's name and methods.
+The template generates files with placeholder names like `minimal`/`Minimal` and example methods (`greet`, `getStatus`). Replace these in every generated file to match your module's name and methods.
 
 1. Edit `metadata.json` and set `name`, `version`, `description`, and `main` to match your module.
    - `name` must be a valid C identifier; it is used in filenames, method calls, and module loading.
@@ -90,7 +90,7 @@ The template generates files with placeholder names like `minimal`/`Minimal` and
    - `NAME` must match the `name` field in `metadata.json`. A mismatch causes the build to succeed but the install phase to fail.
 
 1. Edit `flake.nix` and update the `description` field.
-   - The generated `flake.nix` uses an unpinned `logos-module-builder` URL. For reproducible builds, pin it to `tutorial-v1`.
+   - The generated `flake.nix` uses an unpinned `logos-module-builder` URL. For reproducible builds, pin it to `0.2.0` (`github:logos-co/logos-module-builder/0.2.0`). Do not pin it to `tutorial-v1`: that builder version bundles LGX manifests without content hashes, which `lgpm` 0.2.0 rejects at install time with `Package validation failed: Missing content hashes in manifest`.
 
 1. Rename the source files in `src/` to match your module name.
 
@@ -204,12 +204,12 @@ The `lm` tool (from `logos-module`) lets you inspect compiled module binaries wi
          ]
       },
       {
-         "name": "doSomething",
-         "signature": "doSomething(QString)",
+         "name": "greet",
+         "signature": "greet(QString)",
          "returnType": "QString",
          "isInvokable": true,
          "parameters": [
-            { "name": "input", "type": "QString" }
+            { "name": "name", "type": "QString" }
          ]
       }
    ]
@@ -264,7 +264,7 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 
    {% hint style="info" %}
 
-   `.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
+   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm` — including the ones the `install-node-tools.sh` helper script downloads — only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
 
    {% endhint %}
 
@@ -305,6 +305,12 @@ There are two ways to install `.lgx` packages:
    ```bash
    lgpm --modules-dir ./modules install --file result/logos-<module-name>-module-lib.lgx
    ```
+
+   {% hint style="warning" %}
+
+   Match the package variant to your tools: if you installed `logoscore`/`lgpm` with the `install-node-tools.sh` helper script (released, portable builds), build the package with `nix build .#lgx-portable` first — the released tools reject the `-dev` variant that `.#lgx` produces with an error like `Package does not contain variant for platform: linux-x86_64 (package provides: linux-amd64-dev)`.
+
+   {% endhint %}
 
    - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `./package-manager/bin/lgpm --modules-dir ./modules install --dir ./packages/`
    - If you bundled with `nix bundle`, the path is `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx` instead of `result/...`.
@@ -458,11 +464,11 @@ Verify the target directory exists and is writable. If installing from a local `
 
 ### LGX variant mismatch
 
-If `lgpm install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
+If `lgpm install` fails with `Package does not contain variant for platform: ...`, the LGX file does not include a variant that your build of the tools accepts. Released (portable) builds of `lgpm`/`logoscore` install only portable variants such as `linux-amd64`; dev (source) builds install only `-dev` variants such as `linux-amd64-dev`.
 
-- `nix build .#lgx` produces a single variant (for example, `linux-amd64`) suitable for `logoscore` but not for a dev build of `logos-basecamp`.
-- `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
-- `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
+- `nix build .#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) suitable for source-built tools and dev builds of `logos-basecamp`, but rejected by released tools.
+- `nix build .#lgx-portable` produces a single portable variant (for example, `linux-amd64`) suitable for released `logoscore`/`lgpm` and portable builds of `logos-basecamp`.
+- `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with either kind of build.
 
 Registry packages downloaded with `lgpd` currently ship portable variants only.
 

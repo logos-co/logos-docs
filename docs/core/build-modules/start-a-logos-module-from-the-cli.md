@@ -56,12 +56,15 @@ This guide covers how to build and install a Logos [module](https://docs.logos.c
    cd ..
    ```
 
-1. Create the `modules` directory and copy the pre-loaded logos modules to it:
+1. Create the `modules` directory:
 
    ```bash
    mkdir -p modules
-   cp -RL ./logos/modules/. ./modules/
    ```
+
+   {% hint style="info" %}
+   You don't need to copy any pre-loaded modules into this directory. `logoscore` loads its bundled modules, such as `capability_module`, from its own installation automatically.
+   {% endhint %}
 
 1. Install the LGX package into the `modules` directory:
 

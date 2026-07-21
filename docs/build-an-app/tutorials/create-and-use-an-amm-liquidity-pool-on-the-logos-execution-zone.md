@@ -70,15 +70,15 @@ If you inspect the `user-holding-a` and `user-holding-b` accounts, you will see 
 Use `wallet amm swap-exact-input` to perform a token swap:
 
 ```bash
+# --amount-in: the amount of tokens to swap
+# --min-amount-out: the minimum number of tokens expected in return
+# --token-definition: the definition ID of the token being provided to the swap.
+#   In this case, we are swapping from TOKENA to TOKENB, so this is the definition ID of TOKENA.
 wallet amm swap-exact-input \
     --user-holding-a Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw \
     --user-holding-b Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
-    # The amount of tokens to swap
     --amount-in 5 \
-    # The minimum number of tokens expected in return
     --min-amount-out 8 \
-    # The definition ID of the token being provided to the swap
-    # In this case, we are swapping from TOKENA to TOKENB, and so this is the definition ID of TOKENA
     --token-definition 4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7
 ```
 

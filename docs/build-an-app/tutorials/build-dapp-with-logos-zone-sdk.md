@@ -59,8 +59,14 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
    cd logos-sql-zone
    git checkout tutorial
    
-   git submodule update --init --recursive
+   git submodule update --init
    ```
+
+   {% hint style="warning" %}
+
+   Use `git submodule update --init` without `--recursive`. The pinned `logos-blockchain` submodule commit contains a stray nested-repository entry, so a recursive update fails with `No url found for submodule path ... Failed to recurse into submodule path 'logos-blockchain'`. The non-recursive form checks out everything the tutorial needs.
+
+   {% endhint %}
 
    The complete demo is available in the `master` branch.
 

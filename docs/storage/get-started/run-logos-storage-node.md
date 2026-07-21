@@ -103,7 +103,6 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
 
     - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
     - The `logos.test` preset provides the storage bootstrap settings.
-    - Fields
 
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>To run storage with <a href="https://docs.logos.co/get-started/glossary#mix">mix</a> support, generate the config from the published mix bootstrap data:</p><pre class="language-sh"><code class="lang-sh">cat > make-mix-storage-config.sh &#x3C;&#x3C;'EOF'
     #!/usr/bin/env bash

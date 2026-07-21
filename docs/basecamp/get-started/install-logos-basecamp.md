@@ -46,16 +46,16 @@ Internet access is required to download the binary or clone the repository, but 
 
 1. Go to the [latest release page](https://github.com/logos-co/logos-basecamp/releases/latest) and download the artifact for your OS:
     - Linux: the `AppImage` files
-    - macOS: the `.dmg` files
+    - macOS: the `.app.tar.gz` archives
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
-- On macOS, drag the `.dmg` file into `/Applications`. Then launch Basecamp from `/Applications`.
+- On macOS, extract the `.app.tar.gz` archive and drag the extracted `.app` into `/Applications`. Then launch Basecamp from `/Applications`.
 - On Linux, grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
-    chmod +x LogosBasecamp-Desktop-*.AppImage
-    ./LogosBasecamp-Desktop-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
+    chmod +x logos-basecamp-*.AppImage
+    ./logos-basecamp-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
     ```
 
 ## Build and run Logos Basecamp from source

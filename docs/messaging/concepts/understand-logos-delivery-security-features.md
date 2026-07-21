@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: security-features
+sidebar_position: 6
 ---
 
 # Understand Logos Delivery security features

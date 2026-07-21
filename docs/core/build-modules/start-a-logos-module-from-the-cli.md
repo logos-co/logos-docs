@@ -8,6 +8,7 @@ authors: iurimatias, kashepavadan
 owner: logos
 doc_version: 1
 slug: start-a-logos-module-from-the-cli
+sidebar_position: 1
 ---
 
 # Start a Logos module from the CLI

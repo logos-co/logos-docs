@@ -8,6 +8,7 @@ authors: chaitanyaprem, kashepavadan
 owner: logos
 doc_version: 1
 slug: send-anonymised-messages-over-the-mix-network
+sidebar_position: 2
 ---
 
 # Send anonymised messages over the mix network
@@ -46,9 +47,9 @@ The mix chat app can be found in the `logos-chat-ui` repository.
    nix run --accept-flake-config
    ```
 
-   {% hint style="info" %}
-   The first build pulls the full dependency chain through Nix and takes approximately 15–20 minutes. Subsequent launches use the cache and start in seconds.
-   {% endhint %}
+   :::info
+The first build pulls the full dependency chain through Nix and takes approximately 15–20 minutes. Subsequent launches use the cache and start in seconds.
+:::
 
 1. In the startup popup, pick a demo user (1–10) and click **Start**.
 
@@ -64,9 +65,9 @@ The mix chat app can be found in the `logos-chat-ui` repository.
 
 Run the second instance in its own folder with a different demo user and port to avoid credential collisions and RLN rate-limit conflicts.
 
-{% hint style="warning" %}
+:::warning
 Never run two instances in the same working directory. The app stages credential files (`rln_membership.json`, `rln_tree.db`, and others) into the current folder; two instances sharing the same folder race on identity. If a previous launch left orphaned processes behind, run `pkill -9 -f logos_host_qt` before starting a new instance.
-{% endhint %}
+:::
 
 1. In a new terminal, create a separate working directory for the second instance and start it:
 

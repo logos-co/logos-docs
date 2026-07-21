@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: protocols
+sidebar_position: 1
 ---
 
 # Understand Logos Delivery protocols
@@ -33,31 +34,25 @@ slug: protocols
  
 [`Filter` protocol](https://lip.logos.co/messaging/core/draft/12/filter.html) allows [light nodes](https://docs.logos.co/get-started/glossary#light-node) to selectively subscribe to specific messages relayed by other peers using [content topics](./about-content-topics.md). It is designed to be a lightweight alternative for accessing the `Relay` network, particularly tailored for devices with limited bandwidth.
 
-{% hint style="info" %}
-
+:::info
 `Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the [content topic](https://docs.logos.co/get-started/glossary#content-topic) to its peers to retrieve messages.
-
-{% endhint %}
+:::
  
 ## Store
  
 [`Store` protocol](https://lip.logos.co/messaging/core/draft/13/store.html) is responsible for storing messages relayed in the network, making it possible to query and retrieve them later. This functionality benefits offline peers by enabling them to retrieve missed messages upon reconnection.
 
-{% hint style="info" %}
-
+:::info
 Using `Relay` and `Filter` protocols is recommended when a node is online, as `Store` does not guarantee data availability. The `Store` protocol is suitable for retrieving messages when connecting to the network, like when a DApp starts.
-
-{% endhint %}
+:::
  
 ## Light Push
  
 [`Light Push`](https://lip.logos.co/messaging/core/draft/19/lightpush.html) is a [Request/Response](https://docs.waku.org/learn/concepts/network-domains#requestresponse-domain) protocol for nodes with limited bandwidth and short connection windows. It allows a client to receive an acknowledgement when sending messages, indicating that at least one peer has received them. Subsequently, the remote peer forwards these messages to the `Relay` network.
 
-{% hint style="info" %}
-
+:::info
 While the `Light Push` protocol acknowledges the receipt by the remote peer, it does not guarantee network-wide propagation.
-
-{% endhint %}
+:::
  
 ## Waku message
  

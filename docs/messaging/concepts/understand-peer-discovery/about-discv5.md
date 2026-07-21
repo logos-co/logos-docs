@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: discv5
+sidebar_position: 4
 ---
 
 # About Discv5

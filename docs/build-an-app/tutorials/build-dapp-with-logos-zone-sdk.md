@@ -25,9 +25,9 @@ The tutorial uses a [password manager](https://github.com/H2CO3/steelsafe) Zone 
 - Secondary devices operate as **indexers**, following the channel and obtaining SQL transactions from the chain.
 - Secondary devices run a read-only version of the password manager (in the `indexer` folder), applying SQL transactions from the channel to update their local state.
 
-{% hint style="info" %}
+:::info
 Read [**Decentralise the Log, Not the Server**](https://press.logos.co/article/decentralise-log-not-server) for the motivation behind this design.
-{% endhint %}
+:::
 
 The implementation skeleton already has most of the password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained primarily in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 

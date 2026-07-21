@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: transports
+sidebar_position: 4
 ---
 
 # About transports
@@ -29,8 +30,6 @@ For Logos Delivery nodes, the following transports are recommended:
 - **Secure WebSocket**: In browser environments, secure WebSocket is used. Service nodes are encouraged to set up SSL certificates to enable incoming connections from browsers and serve them securely.
 - Other protocols like [WebRTC](https://github.com/logos-messaging/logos-delivery-js/issues/20), [WebTransport](https://github.com/logos-messaging/logos-delivery-js/issues/697), and QUIC have been researched and studied for potential integration.
 
-{% hint style="info" %}
-
+:::info
 Logos Delivery ensures compatibility and improved communication capabilities by following these recommended transports.
-
-{% endhint %}
+:::

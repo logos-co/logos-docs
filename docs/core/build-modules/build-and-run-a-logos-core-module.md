@@ -8,6 +8,7 @@ authors: iurimatias, Khushboo-dev-cpp, cheny0
 owner: logos
 doc_version: 1
 slug: build-and-run-a-logos-core-module
+sidebar_position: 2
 ---
 
 # Build and run a Logos core module
@@ -18,11 +19,9 @@ Logos is a modular application framework built on Qt 6. Applications are compose
 
 Logos [core modules](https://docs.logos.co/get-started/glossary#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
-{% hint style="info" %}
-
+:::info
 For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
-
-{% endhint %}
+:::
 
 Before you start, make sure you have the following:
 
@@ -70,11 +69,9 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 
    The template uses `minimal` as a placeholder in the source filenames, class names, and identifiers. You replace these placeholders with your module's name in Step 2.
 
-   {% hint style="info" %}
-
-   The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
-   
-   {% endhint %}
+   :::info
+The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
+:::
 
 ## Step 2: Adapt the template for your module
 
@@ -113,11 +110,9 @@ The template generates files with placeholder names like `minimal`/`Minimal` and
 1. Edit the plugin implementation (`src/<module-name>_plugin.cpp`) and replace the placeholder method bodies with your logic.
    - In `initLogos`, assign the `LogosAPI*` pointer to the global `logosAPI` variable, not to a class member.
 
-{% hint style="success" %}
-
+:::tip
 Run `grep -ri "minimal" .` after editing to catch any remaining placeholder references (`minimal`, `Minimal`, `MINIMAL_*`, `MinimalInterface_iid`) before building.
-
-{% endhint %}
+:::
 
 ## Step 3: Build the module
 
@@ -237,11 +232,9 @@ The `logos-module-viewer` is a graphical tool for inspecting loaded modules. It 
 
 Before you can run your module with `logoscore` or install it into `logos-basecamp`, you need to package the build output into an `.lgx` package and install it into a `modules/` directory. Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
 
-{% hint style="info" %}
-
+:::info
 The `manifest.json` is auto-generated from your module's `metadata.json` by the bundler. It maps each variant to its main entry point.
-
-{% endhint %}
+:::
 
 There are two ways to create `.lgx` packages:
 
@@ -262,11 +255,9 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
-   {% hint style="info" %}
-
-   `.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
-
-   {% endhint %}
+   :::info
+`.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
+:::
 
 ### Use the `nix bundle` command
 
@@ -283,11 +274,9 @@ The `nix bundle` command is useful if your module does not use `logos-module-bui
 
 1. Check the current directory for the bundle output. `nix bundle` creates a symlink directory in the current directory named `./logos-<module-name>-module-lib-lgx-<version>/`, and the `.lgx` file is inside it at `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx`.
 
-{% hint style="success" %}
-
+:::tip
 Check out [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
-
-{% endhint %}
+:::
 
 ## Step 6: Install the module
 
@@ -315,11 +304,9 @@ There are two ways to install `.lgx` packages:
 
 The Logos module [catalogue](https://docs.logos.co/get-started/glossary#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
 
-{% hint style="warning" %}
-
+:::warning
 Registry packages currently ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They cannot be installed into a dev build of `logos-basecamp`, which expects `-dev` variants. To use a registry module with a dev build, you must build the module from source and bundle it with `#dual`. They install cleanly into `logoscore` and into portable builds of `logos-basecamp`.
-
-{% endhint %}
+:::
 
 
 1. Search the catalogue for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
@@ -328,11 +315,9 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    lgpd search <registry-name>
    ```
 
-   {% hint style="success" %}
-
-   Use `lgpd list` to browse all available packages.
-
-   {% endhint %}
+   :::tip
+Use `lgpd list` to browse all available packages.
+:::
 
 1. Download the LGX package to a local directory.
 
@@ -378,21 +363,17 @@ The `logoscore` CLI (from `logos-liblogos`) is a headless runtime that can load 
    logoscore stop
    ```
 
-{% hint style="success" %}
-
+:::tip
 Check out [Logos CLI Reference](../reference/logos-cli-reference.md) for more details on available commands and options.
-
-{% endhint %}
+:::
 
 ### Run with `logos-basecamp`
 
 Logos Basecamp is a desktop shell that provides a graphical interface for managing and running modules. Core modules run as background services in `logos-basecamp`. Other UI modules can call them through `LogosAPI` or the `logos.callModule()` bridge once they are installed.
 
-{% hint style="warning" %}
-
+:::warning
 The LGX variant type must match the basecamp build type. Dev builds of basecamp expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
-
-{% endhint %}
+:::
 
 1. Build the development version of `logos-basecamp`.
 
@@ -466,11 +447,9 @@ If `lgpm install` fails with `Package does not contain variant for platform: <pl
 
 Registry packages downloaded with `lgpd` currently ship portable variants only.
 
-{% hint style="info" %}
-
+:::info
 `lgpm` error messages report the platform as `linux-x86_64` while LGX manifests label it `linux-amd64`. These refer to the same architecture.
-
-{% endhint %}
+:::
 
 ### `nix build .#lib` does nothing or fails silently                               
   

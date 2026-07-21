@@ -7,6 +7,7 @@ authors: cheny0
 owner: logos
 doc_version: 1
 slug: logos-ecosystem-repositories
+sidebar_position: 2
 ---
 
 # Logos ecosystem repositories

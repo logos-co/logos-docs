@@ -8,6 +8,7 @@ authors: iurimatias, kashepavadan
 owner: logos
 doc_version: 1
 slug: build-a-logos-cpp-ui-module
+sidebar_position: 4
 ---
 
 # Build a Logos C++ UI module
@@ -57,9 +58,9 @@ Create a new directory and initialise it from the C++ backend UI template.
 
 Replace the template `metadata.json` with your plugin's details.
 
-{% hint style="info" %}
+:::info
 The `calc_module.url` input attribute name in `flake.nix` must match the dependency name declared here in `"dependencies"`.
-{% endhint %}
+:::
 
 1.  Replace `metadata.json` with the following:
 
@@ -233,7 +234,9 @@ The backend plugin inherits three base classes:
     #endif // CALC_UI_CPP_PLUGIN_H
     ```
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>If the interface filename or IID symbol here doesn't match the names in <code>src/calc_ui_cpp_interface.h</code>, you will get build errors or plugin-load failures at runtime.</p></div>
+    :::info
+    If the interface filename or IID symbol here doesn't match the names in `src/calc_ui_cpp_interface.h`, you will get build errors or plugin-load failures at runtime.
+    :::
 2.  Create `src/calc_ui_cpp_plugin.cpp`:
 
     ```cpp
@@ -510,9 +513,9 @@ Before building, confirm the `calc_module` shared library is present from [Part 
     ```
 4.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
 
-    ![Operation buttons visible](../.gitbook/assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
+    ![Operation buttons visible](../assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
 
-    ![Result of 3 + 5 shows 8](../.gitbook/assets/build-a-logos-cpp-ui-module/calc-cpp-result.png)
+    ![Result of 3 + 5 shows 8](../assets/build-a-logos-cpp-ui-module/calc-cpp-result.png)
 
 ## Step 10: Update view with live reloading (Optional)
 

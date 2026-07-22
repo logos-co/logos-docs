@@ -7,6 +7,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: about-bedrock
+sidebar_position: 1
 ---
 
 # About Bedrock

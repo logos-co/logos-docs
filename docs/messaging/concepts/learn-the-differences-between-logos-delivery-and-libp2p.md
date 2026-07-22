@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: logos-delivery-and-libp2p
+sidebar_position: 7
 ---
 
 # Learn the differences between Logos Delivery and libp2p

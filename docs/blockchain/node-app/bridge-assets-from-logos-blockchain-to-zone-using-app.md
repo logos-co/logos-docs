@@ -8,6 +8,7 @@ authors: danielsanchezq, kashepavadan
 owner: logos
 doc_version: 1
 slug: bridge-assets-from-logos-blockchain-to-zone-using-app
+sidebar_position: 3
 ---
 
 # Bridge assets from Logos Blockchain to a Zone using the Logos Blockchain app
@@ -89,9 +90,9 @@ The UI collects the deposit payload across three input steps, then submits it on
 
 1. On **Step 3 – Confirm**, review the exact payload — channel ID, notes and total amount, change and funding keys, max fee, metadata, and tip — then click **Confirm & deposit**.
 
-   {% hint style="warning" %}
-   Review the information carefully. Deposits are irreversible once included in a block.
-   {% endhint %}
+   :::warning
+Review the information carefully. Deposits are irreversible once included in a block.
+:::
 
 ## Read the deposit result
 

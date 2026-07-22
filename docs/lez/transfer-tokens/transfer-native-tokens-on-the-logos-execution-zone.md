@@ -8,20 +8,21 @@ authors: cheny0, jorge-campo, moudyellaz
 owner: logos
 doc_version: 1
 slug: transfer-native-tokens-on-the-logos-execution-zone
+sidebar_position: 1
 ---
 
 # Transfer native tokens on the Logos Execution Zone
 
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
-{% hint style="warning" %}
+:::warning
 This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
-{% endhint %}
+:::
 
-{% hint style="info" %}
+:::info
 - **Permissions**: No special permissions required.
 - **Product**: [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) wallet CLI.
-{% endhint %}
+:::
 
 The Logos Execution Zone ([LEZ](https://docs.logos.co/get-started/glossary#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](https://docs.logos.co/get-started/glossary#program) to transfer native tokens between public and private accounts.
 
@@ -44,9 +45,9 @@ On LEZ, public and private accounts differ in where their state lives and how tr
   - The transfer generates a zero-knowledge proof of correct execution locally, and submits the proof for validators to verify. Each update to the private state produces a new commitment (a 32-byte, hash-like binding to the actual values), and the previous commitment is marked as spent via a nullifier set so only the latest version can be used, while the actual private values remain local to the account owner.
   - Any public accounts involved are still updated visibly on-chain.
 
-{% hint style="danger" %}
+:::danger
 Transfers are irreversible. Double-check all details before proceeding.
-{% endhint %}
+:::
 
 Before you begin, ensure that you have the following:
 
@@ -78,9 +79,9 @@ Before you begin, ensure that you have the following:
 
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](https://docs.logos.co/get-started/glossary#viewing-public-key) (`vpk`).
 
-{% hint style="info" %}
+:::info
 Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
-{% endhint %}
+:::
 
 2.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
 
@@ -99,11 +100,11 @@ Your account keys and data are stored in the local file `$HOME/.nssa/wallet/stor
     wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
     ```
 
-{% hint style="info" %}
+:::info
 New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
 
 The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
-{% endhint %}
+:::
 
 4.  Fund the sender account using the Testnet Piñata program. Your account receives 150 tokens every time you fund it.
 
@@ -139,18 +140,18 @@ With the recipient account ID, you can transfer native tokens across the followi
 - Public → your private
 - Private → your private
 
-{% hint style="info" %}
+:::info
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof.
-{% endhint %}
+:::
 
 With the `npk` and `vpk` of the recipient account, you can transfer native tokens across the following account types:
 
 - Public → uninitialised private (someone else's)
 - Private → uninitialised private (someone else's)
 
-{% hint style="info" %}
+:::info
 Currently, only uninitialised private accounts can be modified without authorisation. Sending funds to initialised private accounts is not possible because only the owner can modify them.
-{% endhint %}
+:::
 
 ### Method 1: Transfer tokens using the recipient account ID
 
@@ -180,9 +181,9 @@ wallet auth-transfer send \
 
 When transferring someone else's private account, you need their account `npk` (nullifier public key)and `vpk` (viewing public key) instead of the account ID because LEZ uses the `npk` to confirm the ownership of the private account, and `vpk` to verify transactions without revealing the account owner. These keys do not expose sensitive information and allow others to verify transaction validity.
 
-{% hint style="success" %}
+:::tip
 Check your account `npk` and `vpk` using the `wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID` command.
-{% endhint %}
+:::
 
 1.  Use the `wallet auth-transfer send` to transfer tokens to another user's private account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
@@ -226,13 +227,13 @@ Account owned by authenticated-transfer program
 ```
 ````
 
-{% hint style="success" %}
+:::tip
 When checking the balance of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
-{% endhint %}
+:::
 
-{% hint style="success" %}
+:::tip
 You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
-{% endhint %}
+:::
 
 ## Troubleshooting
 

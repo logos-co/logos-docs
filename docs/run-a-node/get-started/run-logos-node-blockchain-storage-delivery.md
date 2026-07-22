@@ -8,6 +8,7 @@ authors:
 owner: logos
 doc_version: 1
 slug: run-logos-node-blockchain-storage-delivery
+sidebar_position: 1
 ---
 
 # Run a Logos node with blockchain, storage, and delivery
@@ -43,14 +44,14 @@ Before you start, make sure you have the following:
 
 Install the system dependencies and download the three Logos CLI tools.
 
-{% hint style="info" %}
+:::info
 You can also install these tools by running:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
-{% endhint %}
+:::
 
 1. Install `curl`, `jq`, `wget`, and FUSE support for AppImage binaries:
 
@@ -122,9 +123,9 @@ Create the runtime user and the directory layout the node uses at runtime.
 
 Download and install the three module packages from the configured module [catalogue](https://docs.logos.co/get-started/glossary#catalogue).
 
-{% hint style="info" %}
+:::info
 `lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
-{% endhint %}
+:::
 
 1. Download the module packages:
 
@@ -172,9 +173,9 @@ Start the `logoscore` daemon with the shared modules directory before loading an
 
 Load the blockchain module, generate the node config, and start the module.
 
-{% hint style="info" %}
+:::info
 `user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
-{% endhint %}
+:::
 
 1. Create the peer bootstrap file:
 
@@ -264,8 +265,8 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
    - The `logos.test` preset provides the storage bootstrap settings.
    - Fields
 
-   {% hint style="info" %}
-   To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
+   :::info
+To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
 
      ```sh
      cd /var/lib/logos-node/storage-module
@@ -298,7 +299,7 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
      chmod 755 make-mix-storage-config.sh
      ./make-mix-storage-config.sh > config.json
      ```
-   {% endhint %}
+:::
 
 1. Load and start the [storage module](https://docs.logos.co/get-started/glossary#storage-module):
 

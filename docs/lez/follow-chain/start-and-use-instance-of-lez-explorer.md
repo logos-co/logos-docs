@@ -8,6 +8,7 @@ authors: arjentix, kashepavadan
 owner: logos
 doc_version: 1
 slug: start-and-use-instance-of-lez-explorer
+sidebar_position: 2
 ---
 
 # Start and use an instance of the LEZ Explorer
@@ -16,9 +17,9 @@ slug: start-and-use-instance-of-lez-explorer
 
 The [LEZ](https://docs.logos.co/get-started/glossary#lez) Explorer lets you inspect the state of the [Logos Execution Zone](https://docs.logos.co/get-started/glossary#logos-execution-zone) in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up [account](https://docs.logos.co/get-started/glossary#account) balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
 
-{% hint style="info" %}
+:::info
 If you don't want to run your own LEZ explorer instance, navigate to the [public LEZ explorer](https://explorer.testnet.lez.logos.co/).
-{% endhint %}
+:::
 
 Before you start, make sure you have the following:
 
@@ -43,27 +44,29 @@ Before you start, make sure you have the following:
     just run-explorer
     ```
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>By default, the LEZ Explorer connects to the LEZ Indexer at <code>http://localhost:8779</code>. Set the <code>INDEXER_RPC_URL</code> environment variable or pass <code>--indexer-rpc-url</code> to use a different address.</p></div>
+    :::info
+    By default, the LEZ Explorer connects to the LEZ Indexer at `http://localhost:8779`. Set the `INDEXER_RPC_URL` environment variable or pass `--indexer-rpc-url` to use a different address.
+    :::
 3.  Open `http://localhost:3000/` in your browser.
 
     You will see a **No blocks found** message initially:
 
-    ![No blocks found screen](../.gitbook/assets/start-and-use-instance-of-lez-explorer/no-blocks-found.png)
+    ![No blocks found screen](../assets/start-and-use-instance-of-lez-explorer/no-blocks-found.png)
 
     After approximately one minute, refresh the page. Blocks will appear:
 
-    ![Blocks visible after refresh](../.gitbook/assets/start-and-use-instance-of-lez-explorer/updated-page.png)
+    ![Blocks visible after refresh](../assets/start-and-use-instance-of-lez-explorer/updated-page.png)
 
 ## Browse blocks, transactions, and accounts
 
 1.  Click any block in the list to view its details.
 
-    ![Block detail view](../.gitbook/assets/start-and-use-instance-of-lez-explorer/block-details.png)
+    ![Block detail view](../assets/start-and-use-instance-of-lez-explorer/block-details.png)
 2.  Use the search bar to look up a block, transaction, or account by ID.
 
-    ![Transaction search result](../.gitbook/assets/start-and-use-instance-of-lez-explorer/transaction-details.png)
+    ![Transaction search result](../assets/start-and-use-instance-of-lez-explorer/transaction-details.png)
 
-    ![Account detail view](../.gitbook/assets/start-and-use-instance-of-lez-explorer/account-details.png)
+    ![Account detail view](../assets/start-and-use-instance-of-lez-explorer/account-details.png)
 
 ## Troubleshooting LEZ Explorer
 

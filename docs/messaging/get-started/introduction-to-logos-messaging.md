@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Introduction to Logos Messaging
 
 #### Learn how Logos provides private, censorship-resistant communication for decentralised applications.

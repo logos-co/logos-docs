@@ -7,6 +7,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: introduction-to-the-logos-blockchain
+sidebar_position: 1
 ---
 
 # Introduction to the Logos Blockchain

@@ -8,6 +8,7 @@ authors: kashepavadan, davidrusu
 owner: logos
 doc_version: 1
 slug: run-a-logos-blockchain-node-from-cli
+sidebar_position: 2
 ---
 
 # Run a Logos Blockchain node on the public testnet from the CLI
@@ -65,9 +66,9 @@ Download the Logos Blockchain [module](https://docs.logos.co/get-started/glossar
 
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
-{% hint style="info" %}
+:::info
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
-{% endhint %}
+:::
 
 1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
 
@@ -84,8 +85,8 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
-    {% hint style="info" %}
-    To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
+    :::info
+To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
 
     ```bash
     logoscore call blockchain_module migrate_user_config_0_1_2 \
@@ -95,7 +96,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     logoscore call blockchain_module stop
     ```
-    {% endhint %}
+:::
 
 2.  Start the node:
 
@@ -173,7 +174,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
     ```
 2.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
-    ![Image of the faucet UI after requesting funds with a public key](../.gitbook/assets/run-a-logos-blockchain/node-faucet.png)
+    ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 3.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh
@@ -192,11 +193,11 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
 
-{% hint style="info" %}
+:::info
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
 
 Block proposal is probabilistic. Your node will not propose on every [slot](https://docs.logos.co/get-started/glossary#slot); participation depends on your stake relative to total active stake in the network.
-{% endhint %}
+:::
 
 ## Troubleshooting the Logos Blockchain node
 

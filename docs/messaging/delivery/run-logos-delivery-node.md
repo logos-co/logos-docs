@@ -8,6 +8,7 @@ authors: NagyZoltanPeter, kashepavadan
 owner: logos
 doc_version: 1
 slug: run-logos-delivery-node
+sidebar_position: 2
 ---
 
 # Run a Logos delivery node
@@ -51,9 +52,9 @@ Follow the instructions for your chosen path.
    docker compose up -d --build
    ```
 
-   {% hint style="info" %}
-   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-   {% endhint %}
+   :::info
+The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
+:::
 
 **Path B — Prebuilt binaries**
 

@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: static-peers
+sidebar_position: 2
 ---
 
 # About static peers

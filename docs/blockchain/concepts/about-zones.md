@@ -7,6 +7,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: about-zones
+sidebar_position: 5
 ---
 
 # About Zones

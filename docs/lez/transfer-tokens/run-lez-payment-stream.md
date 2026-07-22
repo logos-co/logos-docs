@@ -159,6 +159,10 @@ Clone the LEZ Payment Streams repository, initialize the journey shell, and expo
 
    - Stop if ImageID does not match the fixture.
 
+  :::info
+  `make build` builds the guest through the pinned Docker guest-builder (`risczero/risc0-guest-builder:r0.1.88.0`) against the committed `methods/guest/Cargo.lock` and release profile — that pinning is what makes the ImageID reproducible. A mismatch almost always means one of those changed; don't run `cargo update` under `methods/guest/` unless you intend to change program identity.
+  :::
+
 1. Install the scaffold, wallet CLI, and Logos modules:
 
    ```bash
@@ -181,9 +185,9 @@ Clone the LEZ Payment Streams repository, initialize the journey shell, and expo
 
 Start `logoscore` with `FIXTURE_MANIFEST` in the environment, then load the `payment_streams_module` and `logos_execution_zone` modules and open or create the wallet. `payment_streams_module` reads `FIXTURE_MANIFEST` at daemon startup — if you change it later, re-run this step.
 
-{% hint style="info" %}
+:::info
 Only `capability_module` loads automatically. `logos_execution_zone` and `payment_streams_module` must be loaded explicitly in the second block below.
-{% endhint %}
+:::
 
 1. Start the `logoscore` daemon in background mode:
 
@@ -304,9 +308,9 @@ Create a payer and payee public account, register them for authenticated transfe
 
 Initialise a vault for the payer and deposit tokens into it. Each write block captures the submission height `$h0`. Wait until `last_block` is greater than `$h0` before reading vault status.
 
-{% hint style="warning" %}
+:::warning
 If `initializeVault` fails because vault 0 already exists for `$PAYER` (from a previous run), run `export VAULT_ID=1` and retry. Or run `./scripts/user-journey-reset.sh` to start with new accounts.
-{% endhint %}
+:::
 
 1. Initialise the vault and confirm inclusion:
 

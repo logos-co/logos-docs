@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: content-topics
+sidebar_position: 2
 ---
  
 # About content topics
@@ -15,11 +16,9 @@ slug: content-topics
  
 `Content Topics` are metadata strings set by developers on outgoing messages to facilitate protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-delivery-protocols.md#relay) or [Filter](../concepts/understand-logos-delivery-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-delivery-protocols.md#store)) that meet specific filtering criteria.
 
-{% hint style="info" %}
-
+:::info
 Check out the [WAKU2-TOPICS](https://lip.logos.co/messaging/informational/draft/23/topics.html#content-topics) specification to learn more.
-
-{% endhint %}
+:::
  
 ## The basics
  
@@ -43,11 +42,9 @@ For example, if your DApp is called `SuperCrypto` and it allows users to receive
 - `/supercrypto/1/notification/proto`
 - `/supercrypto/1/private-message/proto`
 
-{% hint style="success" %}
-
+:::tip
 While you can choose any encoding format for your `Content Topic`, we highly recommend using Protocol Buffers (`proto`) because of its efficiency. Choosing a lightweight format ensures optimal performance of your DApp.
-
-{% endhint %}
+:::
 
 ## Naming considerations
 
@@ -59,11 +56,9 @@ The `Filter`, `Store`, and `Light Push` protocols share content topics with peer
 
 For example, instead of using Personally Identifiable Information (PII) in the content topic (e.g., a public key), you can create buckets (e.g., based on the first 4 bytes of the public key hash).
 
-{% hint style="info" %}
-
+:::info
 [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
-
-{% endhint %}
+:::
 
 ### Increasing k-anonymity preserves user anonymity
 
@@ -93,8 +88,6 @@ When an application uses a single content topic, all users using [request/respon
 
 This approach divides traffic into multiple topics, reducing the messages users have to download. Developers can add more first bytes to the content topic over time to improve efficiency and privacy based on messages and user needs.
 
-{% hint style="info" %}
-
+:::info
 The **k** value of **k-anonymity** equals the number of IDs for which the first character of the hash is `"a"`. For example, using a single content topic in an application with 10,000 users results in **k = 10,000**. However, using the hash ID's first character, **k** reduces to **10,000 / 16 = 625**.
-
-{% endhint %}
+:::

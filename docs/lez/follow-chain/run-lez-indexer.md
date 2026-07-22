@@ -8,6 +8,7 @@ authors: Pravdyvy, kashepavadan
 owner: logos
 doc_version: 1
 slug: run-lez-indexer
+sidebar_position: 1
 ---
 
 # Run an LEZ Indexer
@@ -109,7 +110,9 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     {"jsonrpc":"2.0","id":1,"result":null}
     ```
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p><code>checkHealth</code> reconstructs the full LEZ state from the database and can produce heavy disk usage. Run it sparingly.</p></div>
+    :::info
+    `checkHealth` reconstructs the full LEZ state from the database and can produce heavy disk usage. Run it sparingly.
+    :::
 
 ## Query account state using the wallet and RPC
 

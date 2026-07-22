@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Glossary
 
 A list of some common terms and phrases specific to the Logos ecosystem.

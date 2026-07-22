@@ -10,6 +10,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: inscribe-data-on-chain-using-zone-sdk
+sidebar_position: 1
 ---
 
 # Inscribe data on-chain using the Zone SDK
@@ -20,13 +21,13 @@ Applications built on Logos are implemented in execution environments known as [
 
 The [**Zone SDK**](https://docs.logos.co/get-started/glossary#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
 
-{% hint style="info" %}
+:::info
 You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
-{% endhint %}
+:::
 
 Before you begin, you will need:
 
-- A running [Logos node](../)
+- A running [Logos node](../get-started/run-a-logos-blockchain-node-from-cli.md)
 
 ## What to expect
 

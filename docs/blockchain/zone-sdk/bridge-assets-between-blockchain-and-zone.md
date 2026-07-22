@@ -8,6 +8,7 @@ authors: youngjoon-lee, kashepavadan
 owner: logos
 doc_version: 1
 slug: bridge-assets-between-blockchain-and-zone
+sidebar_position: 2
 ---
 
 # Bridge assets between Logos Blockchain and a Zone
@@ -20,11 +21,9 @@ This procedure covers creating a channel, depositing notes from the Blockchain i
 
 Bridging has two directions: deposit (Blockchain to Zone), where a user funds a channel and the Zone sequencer credits the user internally (`ChannelDeposit`), and withdraw (Zone to Blockchain), where the sequencer submits a signed `ChannelWithdraw` to debit the channel and mint fresh notes on-chain.
 
-{% hint style="info" %}
-
+:::info
 The Zone SDK currently supports the bundled withdrawal API only for single-sequencer Zones (`ChannelState.withdraw_threshold == 1`). Multi-sequencer Zones require building the threshold proof manually, as covered in a later step.
-
-{% endhint %}
+:::
 
 Before you start, make sure you have:
 
@@ -151,11 +150,9 @@ A withdrawal is initiated inside the zone and lands on-chain as a signed [`Chann
 
    Because the inscription and the withdrawal share one transaction, they become adopted, orphaned, or finalized as a unit, so the Zone block recording the withdrawal and the on-chain debit cannot drift apart.
 
-   {% hint style="info" %}
-   
-   `publish_atomic_withdraw` returns the `PublishResult` synchronously. For a single-signature bundle, `PublishResult.tx` is a `PendingTx::AtomicWithdraw(AtomicWithdrawInfo)` carrying the inscription and the bundled withdraw operations.
-
-   {% endhint %}
+   :::info
+`publish_atomic_withdraw` returns the `PublishResult` synchronously. For a single-signature bundle, `PublishResult.tx` is a `PendingTx::AtomicWithdraw(AtomicWithdrawInfo)` carrying the inscription and the bundled withdraw operations.
+:::
 
 1. Check the finalized transactions in `Event::BlocksProcessed.finalized` against the pending transaction's `AtomicWithdrawInfo.tx_hash`. Because it is a bundle, both the inscription and the withdrawal will appear in the same `tx.ops` once the withdrawal is finalized.
 
@@ -224,11 +221,9 @@ When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal al
 
 1. Share the unsigned transaction with the other accredited signers and collect their `IndexedSignature`s. Each signer calls `handle.sign_tx(&tx)` on the transaction the first sequencer proposes.
 
-    {% hint style="info" %}
-
-   Defining the committee transport - how proposals and signatures are exchanged - is outside the Zone SDK's scope.
-
-   {% endhint %}
+    :::info
+Defining the committee transport - how proposals and signatures are exchanged - is outside the Zone SDK's scope.
+:::
 
    ```rust
    // 3. Hand `tx` to the other accredited signers and collect their

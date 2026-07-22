@@ -7,6 +7,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: about-the-blend-network
+sidebar_position: 4
 ---
 
 # About the Blend Network
@@ -36,7 +37,7 @@ While dedicated participation in the Blend Network is reserved for declared Blen
 1. The message sender selects a random path of nodes along which it will relay its message to the receiver, covering the message in layers of encryption for every node on the path.
 2.  The sender sends the layered message to every [Blend node](https://docs.logos.co/get-started/glossary#blend-node) with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
 
-    ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../.gitbook/assets/about-the-blend-network/dissemination.png)
+    ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../assets/about-the-blend-network/dissemination.png)
 
 3. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
 4. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
@@ -52,7 +53,7 @@ An important way that the Blend Network obscures network patterns is by producin
 
 Cover messages mimic the behaviour of data messages, in that they are disseminated and processed by Blend nodes in the same manner. Blend nodes repeatedly encrypt random payload data to generate a cover message, which is then relayed to the next node in its selected path via dissemination. At each step in the transmission process, intended nodes decrypt, randomly delay, and disseminate cover messages without any indication that they may not be genuine. In fact, encrypted data and cover messages are completely indistinguishable even to adversary-controlled Blend nodes (a type of local observer). The hiding effect provided by [cover traffic](https://docs.logos.co/get-started/glossary#cover-traffic) is illustrated in the diagram below.
 
-![Disseminated Blend Network cover traffic (dotted lines) obscuring a data message (solid lines).](../.gitbook/assets/about-the-blend-network/cover-traffic-hiding-effect.png)
+![Disseminated Blend Network cover traffic (dotted lines) obscuring a data message (solid lines).](../assets/about-the-blend-network/cover-traffic-hiding-effect.png)
 
 _Disseminated Blend Network cover traffic (dotted lines) obscuring a data message (solid lines)._
 

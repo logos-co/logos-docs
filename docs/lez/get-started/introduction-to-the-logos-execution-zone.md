@@ -7,6 +7,7 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: introduction-to-the-logos-execution-zone
+sidebar_position: 1
 ---
 
 # Introduction to the Logos Execution Zone
@@ -30,11 +31,9 @@ Private accounts, by contrast, are stored locally on the account-holder’s node
 -  [Nullifier keys](https://docs.logos.co/get-started/glossary#nullifier-keys): The private nullifier key is used by the account owner to sign transactions and authorise executions. The public nullifier key is used as the account ID for verifying ownership.
 -  [Viewing keys](https://docs.logos.co/get-started/glossary#viewing-keys): The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
 
-{% hint style="info" %}
-
+:::info
 A program must obtain a [private account](https://docs.logos.co/get-started/glossary#private-account)’s [nullifier public key](https://docs.logos.co/get-started/glossary#nullifier-public-key), as well as its [viewing public key](https://docs.logos.co/get-started/glossary#viewing-public-key), in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
-
-{% endhint %}
+:::
 
 When an LEE program executes, it modifies the accounts provided to it. These accounts could be either public or private, as an LEE program can be executed over both types of accounts. In either case, the program is executed using the same bytecode, the main difference being whether the user who runs a program will generate a zero knowledge proof. Executions modifying public accounts are executed transparently by LEZ validators like any standard RISC-V VM call. On the other hand, private executions involve the generation of zero knowledge proofs via Risc0, which are then verified by LEZ validators. 
 
@@ -52,8 +51,6 @@ As an example, the LEZ could be used to host private DeFi applications. With sup
 - Confidential Lending/Borrowing Protocols: Financial services where loan details or collateral information are private.
 - Confidential Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
 
-{% hint style="success" %}
-
+:::tip
 Check out the tutorial on how to create your own [Automated Market Maker (AMM) trading pool](../../build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) program on the LEZ.
-
-{% endhint %}
+:::

@@ -8,6 +8,7 @@ authors: s-tikhomirov, kashepavadan
 owner: logos
 doc_version: 1
 slug: run-lez-payment-stream
+sidebar_position: 4
 ---
 
 # Run an LEZ payment stream

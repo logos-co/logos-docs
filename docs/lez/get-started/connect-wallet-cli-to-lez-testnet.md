@@ -8,6 +8,7 @@ authors: moudyellaz, kashepavadan
 owner: logos
 doc_version: 1
 slug: connect-wallet-cli-to-lez-testnet
+sidebar_position: 3
 ---
 
 # Connect the wallet CLI to the LEZ testnet

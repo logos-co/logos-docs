@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: peer-exchange
+sidebar_position: 5
 ---
 
 # About peer exchange
@@ -15,11 +16,9 @@ slug: peer-exchange
 
 The primary objective of this protocol is to facilitate peer connectivity for resource-limited devices without relying on `Discv5`. The [peer exchange](https://docs.logos.co/get-started/glossary#peer-exchange) protocol enables [light nodes](https://docs.logos.co/get-started/glossary#light-node) to request peers from other nodes within the network.
 
-{% hint style="info" %}
-
+:::info
 `Peer Exchange` enables requesting random peers from other network nodes without revealing information about their connectivity or neighbourhood.
-
-{% endhint %}
+:::
 
 ## How peer exchange works
 

@@ -8,6 +8,7 @@ authors: iurimatias, cheny0
 owner: logos
 doc_version: 1
 slug: install-logos-basecamp
+sidebar_position: 1
 ---
 
 # Install Logos Basecamp
@@ -23,11 +24,9 @@ You can install Logos Basecamp in two ways:
 | [Prebuilt release (AppImage or DMG)](#install-from-a-prebuilt-release) | End users | None |
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
-{% hint style="info" %}
-
+:::info
 To enable flakes in nix, add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf`.
-
-{% endhint %}
+:::
 
 Before you start, make sure you have the following:
 
@@ -36,11 +35,9 @@ Before you start, make sure you have the following:
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
 - For the source build only: [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
 
-{% hint style="info" %}
-
-Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports. 
-
-{% endhint %}
+:::info
+Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports.
+:::
 
 ## Install from a prebuilt release
 

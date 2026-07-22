@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: faq
+sidebar_position: 3
 ---
 
 # FAQ: Logos Messaging

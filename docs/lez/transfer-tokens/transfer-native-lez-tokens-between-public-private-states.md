@@ -8,6 +8,7 @@ authors: moudyellaz, kashepavadan
 owner: logos
 doc_version: 1
 slug: transfer-native-lez-tokens-between-public-private-states
+sidebar_position: 3
 ---
 
 # Transfer native LEZ tokens between public and private states
@@ -52,9 +53,9 @@ The recipient generates a reusable keypair (NPK and VPK) and shares it with send
 
 The sender credits the recipient's account at a chosen identifier. The circuit initialises the account, emits its commitment and a deterministic nullifier, and encrypts the post-state to the recipient via ephemeral ECDH against the recipient VPK.
 
-{% hint style="warning" %}
+:::warning
 Two senders who independently pick the same identifier for the same NPK target the same account. The second transfer fails at the commitment/nullifier layer. Use high-entropy identifiers to avoid collisions.
-{% endhint %}
+:::
 
 1. Send funds to the recipient's private account using their published keys:
 

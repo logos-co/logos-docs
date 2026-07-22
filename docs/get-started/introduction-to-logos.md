@@ -7,6 +7,7 @@ authors: jorge-campo, kashepavadan
 owner: logos
 doc_version: 1
 slug: what-is-logos
+sidebar_position: 1
 ---
 
 # Introduction to Logos
@@ -39,7 +40,7 @@ Sovereignty refers to the operator's control over the infrastructure they run. A
 
 Logos is organised into distinct layers, each with a defined responsibility: the runtime, the networking layer, modules, and dApps.
 
-![The Logos architecture.](./.gitbook/assets/introduction-to-logos/logos-tech-diagram.png)
+![The Logos architecture.](./assets/introduction-to-logos/logos-tech-diagram.png)
 
 ### The runtime
 

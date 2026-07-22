@@ -8,6 +8,7 @@ authors: danielsanchezq, kashepavadan
 owner: logos
 doc_version: 1
 slug: move-assets-using-logos-blockchain-app
+sidebar_position: 2
 ---
 
 # Move assets using the Logos Blockchain UI app
@@ -51,9 +52,9 @@ The **Operations** tab is disabled until the node is running and synced. Start t
 
 1. Click **Send**.
 
-   {% hint style="warning" %}
-   Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
-   {% endhint %}
+   :::warning
+Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
+:::
 
 ## Read the transfer result
 

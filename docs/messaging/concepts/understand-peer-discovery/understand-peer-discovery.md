@@ -7,6 +7,7 @@ authors: LordGhostX, fryorcraken
 owner: logos
 doc_version: 1
 slug: peer-discovery
+sidebar_position: 1
 ---
 
 # Understand peer discovery

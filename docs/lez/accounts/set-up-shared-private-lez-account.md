@@ -8,6 +8,7 @@ authors: moudyellaz, kashepavadan
 owner: logos
 doc_version: 1
 slug: set-up-shared-private-lez-account
+sidebar_position: 1
 ---
 
 # Set up a shared private LEZ account

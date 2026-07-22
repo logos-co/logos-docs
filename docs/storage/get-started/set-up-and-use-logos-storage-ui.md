@@ -8,6 +8,7 @@ authors: gmega, kashepavadan
 owner: logos
 doc_version: 1
 slug: set-up-and-use-logos-storage-ui
+sidebar_position: 2
 ---
 
 # Set up and use the Logos Storage UI
@@ -39,11 +40,9 @@ Before you start, have the following ready:
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries.
 
-{% hint style="info" %}
-
+:::info
 If Nix flakes are not enabled globally, add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf`.
-
-{% endhint %}
+:::
 
 1. Clone the [`logos-storage-ui`](https://github.com/logos-co/logos-storage-ui) repository and enter the project directory:
 

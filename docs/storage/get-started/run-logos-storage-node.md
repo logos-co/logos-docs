@@ -10,6 +10,7 @@ authors: gmega, kashepavadan
 owner: logos
 doc_version: 1
 slug: run-logos-storage-node
+sidebar_position: 1
 ---
 
 # Run a Logos storage node
@@ -51,7 +52,9 @@ Before you start, make sure you have the following:
 
     - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.</p></div>
+    :::info
+    The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.
+    :::
 2.  Install the package into a local modules directory using `lgpm`:
 
     ```sh
@@ -105,7 +108,11 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
     - The `logos.test` preset provides the storage bootstrap settings.
     - Fields
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>To run storage with <a href="https://docs.logos.co/get-started/glossary#mix">mix</a> support, generate the config from the published mix bootstrap data:</p><pre class="language-sh"><code class="lang-sh">cat > make-mix-storage-config.sh &#x3C;&#x3C;'EOF'
+    :::info
+    To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
+
+    ```sh
+    cat > make-mix-storage-config.sh <<'EOF'
     #!/usr/bin/env bash
     set -e
 
@@ -116,7 +123,7 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
     wget https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/mix-pool.json
     mp_path=$(realpath "./mix-pool.json")
 
-    cat &#x3C;&#x3C;JSON
+    cat <<JSON
     {
       "nat": "any",
       "log-level": "DEBUG",
@@ -133,7 +140,8 @@ Run `logoscore` with the modules directory, then load and initialise the [storag
 
     chmod 755 make-mix-storage-config.sh
     ./make-mix-storage-config.sh > config.json
-    </code></pre></div>
+    ```
+    :::
 4.  Load the storage module, initialise it with the testnet configuration, and start it:
 
     ```sh
@@ -159,7 +167,9 @@ Once the node is running and connected to the testnet, publish a file and verify
     logoscore call storage_module uploadUrl <file-path-or-url> <chunk-size-in-bytes>
     ```
 
-    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>The default chunk size is 65536.</p></div>
+    :::info
+    The default chunk size is 65536.
+    :::
 2.  After a second, extract the content ID (CID) from the first `manifests` entry:
 
     ```sh

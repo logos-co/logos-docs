@@ -8,6 +8,7 @@ authors: kashepavadan, igor-sirotin
 owner: logos
 doc_version: 1
 slug: build-logos-module-that-uses-chat-module-api
+sidebar_position: 1
 ---
 
 # Build a Logos module that uses the Chat module API
@@ -16,9 +17,9 @@ slug: build-logos-module-that-uses-chat-module-api
 
 This procedure covers how to build a Logos [module](https://docs.logos.co/get-started/glossary#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.2`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
-{% hint style="info" %}
+:::info
 Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations.
-{% endhint %}
+:::
 
 Before you start, make sure you have the following:
 
@@ -71,17 +72,17 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
    You add your chat code in `UiExamplePlugin::initLogos()`. Leave the example `status` / `add` UI as is for now.
 
-{% hint style="info" %}
+:::info
 Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`) — they must all match, or `nix build` fails. To use a different name, change it in every one of these.
-{% endhint %}
+:::
 
 ## Step 2: Declare `chat_module` as a dependency
 
 Add `chat_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module's API evolves.
 
-{% hint style="info" %}
+:::info
 The flake input name (`chat_module`) must match the dependency name in `metadata.json`. `logos-module-builder` automatically generates the typed `chat_module` wrapper at build time.
-{% endhint %}
+:::
 
 1. In `metadata.json`, add `chat_module` and `delivery_module` to the dependencies array and reuse `chat_module`'s bundled `delivery_module` contract:
 
@@ -121,9 +122,9 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
      };
    ```
 
-{% hint style="info" %}
+:::info
 The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation — it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/flake.nix) wires the two modules together.
-{% endhint %}
+:::
 
 ## Step 3: Initialise `LogosModules` and subscribe to events
 
@@ -188,9 +189,9 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`.
 
 Ongoing activity — incoming messages, new conversations, delivery-state changes — arrives **asynchronously** through the push events you subscribed to in Step 3.
 
-{% hint style="info" %}
+:::info
 `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
-{% endhint %}
+:::
 
 `init()` takes the instance directory, a delivery preset, and a TCP port:
 
@@ -230,9 +231,9 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    }
    ```
 
-   {% hint style="warning" %}
-   Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
-   {% endhint %}
+   :::warning
+Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
+:::
 
 4. Open a private conversation as the initiator, or receive one as the recipient:
 
@@ -262,9 +263,9 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    const QVariantMap  st     = m_logos->chat_module.status().toMap();      // { convo_count, delivery_state, detail }
    ```
 
-   {% hint style="warning" %}
-   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
-   {% endhint %}
+   :::warning
+Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
+:::
 
 7. Shut down cleanly:
 

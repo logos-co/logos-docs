@@ -8,6 +8,7 @@ authors: ntn-x2, kashepavadan
 owner: logos
 doc_version: 1
 slug: join-the-blend-network-as-a-core-node
+sidebar_position: 1
 ---
 
 # Join the Blend Network as a core node
@@ -18,7 +19,7 @@ Joining the [Blend Network](https://docs.logos.co/get-started/glossary#blend-net
 
 You need:
 
-- [A running blockchain node](../).
+- [A running blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
 - A publicly reachable IP and port (or DNS) combination for the node.
 
 ## What to expect

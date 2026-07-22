@@ -127,26 +127,26 @@ This guide follows the `Guided` setup with `Port Forwarding`.
 
 1. On the **Network Configuration** step, select **Port Forwarding** and click **Continue**.
 
-   ![Network Configuration step with the UPnP and Port Forwarding cards](../.gitbook/assets/storage-ui-port-forwarding.png)
+   ![Network Configuration step with the UPnP and Port Forwarding cards](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding.png)
 
 1. On the **Port Configuration** step, note the TCP port (or type your own), then forward it on your router along with UDP `8090` (see [Forwarding ports manually](../concepts/connectivity.md#forwarding-ports-manually)). Click **Continue**.
 
-   ![Port Configuration step with the TCP port field](../.gitbook/assets/storage-ui-port-forwarding-configuration.png)
+   ![Port Configuration step with the TCP port field](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding-configuration.png)
 
 1. Wait for the connectivity checker to confirm your node is reachable: "Node is ready — Your node is up and reachable." Click **Continue**.
 
-   ![Node is ready step confirming the node is reachable](../.gitbook/assets/storage-ui-port-forwarding-success.png)
+   ![Node is ready step confirming the node is reachable](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding-success.png)
 
    - If the node is unreachable, see [Troubleshooting](troubleshooting.md).
    - The guided setup requires a reachable node. To run without connectivity, go **Back** and use the `Advanced` setup: the node will only be able to download files from other nodes.
 
 1. On the **Select Drives** step, choose the folder where downloaded files will be saved, then click **Continue**.
 
-   ![Select Drives step with the downloads folder field](../.gitbook/assets/storage-ui-select-drives.png)
+   ![Select Drives step with the downloads folder field](../assets/set-up-and-use-logos-storage-ui/storage-ui-select-drives.png)
 
 1. Wait for the dashboard to open and the node status to reach **Running**.
 
-   ![Storage UI dashboard with the node running](../.gitbook/assets/storage-ui-dashboard.png)
+   ![Storage UI dashboard with the node running](../assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
 
    - A red status dot means the node is running but not reachable from the internet; green means it is reachable and ready to share files.
 
@@ -176,7 +176,7 @@ If you are running the standalone app built with Nix:
 
 1. When the upload completes, the file appears in the **Manifests** list at the bottom of the UI, with its CID, filename, mimetype, and size.
 
-   ![Dashboard after an upload, with the file listed in the Manifests panel](../.gitbook/assets/storage-ui-uploaded.png)
+   ![Dashboard after an upload, with the file listed in the Manifests panel](../assets/set-up-and-use-logos-storage-ui/storage-ui-uploaded.png)
 
 1. Click the copy icon next to the CID. Share this string with others so they can download the file.
 
@@ -190,7 +190,7 @@ The manifest is the representation of a file on the network: it carries the meta
 
 1. Watch the download widget at the top: it shows progress in real time and reports **Complete** when the file has been written to the downloads folder you chose during onboarding.
 
-   ![Dashboard after a download, with the download widget reporting Complete](../.gitbook/assets/storage-ui-downloaded.png)
+   ![Dashboard after a download, with the download widget reporting Complete](../assets/set-up-and-use-logos-storage-ui/storage-ui-downloaded.png)
 
 :::info
 No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ`, the [Farewell to Westphalia book](https://logos.co/farewell-to-westphalia). It is available on the network the default configuration connects to.
@@ -200,7 +200,7 @@ No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gB
 
 The **Mix** switch in the **Node** panel controls private queries. When enabled, the node forwards its content lookups over the Logos mix network, which makes them much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
 
-![Node panel with the Mix switch enabled](../.gitbook/assets/storage-ui-mix.png)
+![Node panel with the Mix switch enabled](../assets/set-up-and-use-logos-storage-ui/storage-ui-mix.png)
 
 - The switch is on by default when your configuration includes the Mix options.
 - Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off — observers will then be able to link you to your queries.

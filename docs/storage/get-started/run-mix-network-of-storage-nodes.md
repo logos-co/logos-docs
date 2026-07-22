@@ -11,6 +11,7 @@ authors: arnaud
 owner: logos
 doc_version: 1
 slug: run-mix-network-of-storage-nodes
+sidebar_position: 3
 ---
 
 # Run a Mix network of storage nodes

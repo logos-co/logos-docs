@@ -7,6 +7,7 @@ authors: arnaud
 owner: logos
 doc_version: 1
 slug: mix
+sidebar_position: 2
 ---
 
 # Mix

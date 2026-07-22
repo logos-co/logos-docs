@@ -7,6 +7,7 @@ authors: arnaud
 owner: logos
 doc_version: 1
 slug: connectivity
+sidebar_position: 1
 ---
 
 # Connectivity

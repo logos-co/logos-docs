@@ -35,12 +35,15 @@ Before you begin, ensure you have:
 
 ## Step 1: Install logos-scaffold
 
-1. Download and install the latest `logos-scaffold` binary:
+1. Clone the logos-scaffold repository and install the CLI:
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/logos-co/scaffold/master/install.sh | sh
-    export PATH="$HOME/.logos-scaffold/bin:$PATH"
+    git clone https://github.com/logos-co/scaffold.git
+    cd scaffold
+    cargo install --path .
     ```
+
+    This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical.
 
 2. Verify the installation:
 

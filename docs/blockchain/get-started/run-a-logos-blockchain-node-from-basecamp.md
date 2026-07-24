@@ -8,7 +8,7 @@ authors: xalisher
 owner: logos
 doc_version: 1
 slug: run-a-logos-blockchain-node-from-basecamp
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Run a Logos Blockchain node from Basecamp
@@ -71,26 +71,25 @@ Basecamp opens.
 
 ## Step 3: Install the blockchain module
 
-In the sidebar, open **Package Manager** and find **`blockchain_module`** (category: Blockchain).
+1. In the sidebar, open **Package Manager** and find **`blockchain_module`** (category: Blockchain).
 
-:::caution Use Package Manager, not Applications
-Install blockchain modules from **Package Manager**. Open the version dropdown and **select `0.2.0`** before installing — the pre-selected version is `0.0.999`, the devnet build.
-:::
+   :::caution Use Package Manager, not Applications
+   Install blockchain modules from **Package Manager**. Open the version dropdown and **select `0.2.0`** before installing — the pre-selected version is `0.0.999`, the devnet build.
+   :::
 
-Select `0.2.0`, then press **Install** (~142 MB). When it completes, the Details pane shows `Installed version: 0.2.0`. If it shows `0.0.999`, select `0.2.0` again and reinstall — Basecamp will offer to upgrade, which is safe.
+1. Select `0.2.0`, then press **Install** (~142 MB). When it completes, the Details pane shows `Installed version: 0.2.0`. If it shows `0.0.999`, select `0.2.0` again and reinstall — Basecamp will offer to upgrade, which is safe.
 
 ## Step 4: Install the blockchain UI
 
-On the same screen, select **`blockchain_ui`** at version **`0.2.0`** (already the default) and press **Install**.
+1. On the same screen, select **`blockchain_ui`** at version **`0.2.0`** (already the default) and press **Install**.
 
-A dependency dialog appears. Choose **"Install just 'blockchain_ui'"** — installing with dependencies replaces your `0.2.0` core with the `0.0.999` devnet build.
+1. A dependency dialog appears. Choose **"Install just 'blockchain_ui'"** — installing with dependencies replaces your `0.2.0` core with the `0.0.999` devnet build.
 
 ## Step 5: Configure the node
 
-Open the **blockchain** module from the sidebar to reach the node view, then generate a config:
+Open the **blockchain** module from the sidebar to reach the node view, then generate a config
 
-1. Choose to generate a new config.
-2. In the **Initial peers** field, add the testnet bootstrap peers (one per line):
+1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.0:
 
    ```text
    /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
@@ -99,11 +98,15 @@ Open the **blockchain** module from the sidebar to reach the node view, then gen
    /ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
    ```
 
-3. Leave the other fields at their defaults and select **Generate config**.
+   :::info
+   Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
+   :::
 
-:::caution Peers are required
-A config generated with an empty **Initial peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
-:::
+1. Leave the other fields at their defaults and select **Generate config**.
+
+   :::caution Peers are required
+   A config generated with an empty **Initial peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
+   :::
 
 ## Step 6: Start the node
 
@@ -113,15 +116,15 @@ On the node view, select **Start Node**. The status moves to *Starting*, then *B
 
 Confirm sync by evidence rather than the status label. Query the node's HTTP API and check that the height advances across two polls:
 
-```bash
-curl -s http://127.0.0.1:8080/cryptarchia/info
-```
+   ```bash
+   curl -s http://127.0.0.1:8080/cryptarchia/info
+   ```
 
-A syncing node returns a `tip` that is not genesis and a `height`/`slot` that increases between calls. The block list in the UI also begins filling within a minute or two.
+   - A syncing node returns a `tip` that is not genesis and a `height`/`slot` that increases between calls. The block list in the UI also begins filling within a minute or two.
 
-:::note Bootstrapping can take time
-If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current slot during initial sync is normal.
-:::
+   :::note Bootstrapping can take time
+   If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current slot during initial sync is normal.
+   :::
 
 ## Fund your node and propose blocks
 

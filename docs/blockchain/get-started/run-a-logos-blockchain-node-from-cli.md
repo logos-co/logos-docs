@@ -8,7 +8,7 @@ authors: kashepavadan, davidrusu
 owner: logos
 doc_version: 1
 slug: run-a-logos-blockchain-node-from-cli
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Run a Logos Blockchain node on the public testnet from the CLI
@@ -86,7 +86,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
     :::info
-To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
+    To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
 
     ```bash
     logoscore call blockchain_module migrate_user_config_0_1_2 \
@@ -96,7 +96,7 @@ To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the
 
     logoscore call blockchain_module stop
     ```
-:::
+    :::
 
 2.  Start the node:
 

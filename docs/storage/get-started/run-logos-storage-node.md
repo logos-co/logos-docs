@@ -52,11 +52,9 @@ Before you start, make sure you have the following:
 
     - This produces a `.lgx` package in `./storage-lgx/`.
 
-    {% hint style="info" %}
-
+    :::info
     Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts. The plain `#lgx` output produces a `-dev` variant that only a source-built `lgpm` can install.
-
-    {% endhint %}
+    :::
 
     :::info
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.

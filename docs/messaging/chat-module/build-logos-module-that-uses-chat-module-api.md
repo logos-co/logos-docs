@@ -63,7 +63,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
 1. Keep the generated files — you build on them, you don't delete them. The template is a working `ui_example` module. Its main files are:
 
-   | File | What it is | You edit it? |
+   | File | What it is | Can you edit it? |
    |---|---|---|
    | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes — your chat code goes here (Steps 3–4) |
    | `src/ui_example.rep`, `src/ui_example_interface.h` | The module's interface | No |

@@ -19,7 +19,7 @@ This procedure covers how to open a payment stream on the LEZ that pays a servic
 
 Before you start, make sure you have the following:
 
-- Linux host with `bash`, `git`, `python3` (stdlib only), `curl`, `rsync`
+- Linux host with `bash`, `git`, `python3` (stdlib only), `curl`, `make`
 - [Docker](https://docs.docker.com/get-docker/)
 - [Nix with flakes enabled](https://nixos.org/download)
 - [RISC Zero CLI](https://dev.risczero.com/api/zkvm/install)
@@ -382,6 +382,7 @@ Open the payment stream at the configured rate and allocation, then wait for at 
 1. Wait approximately 30 seconds for tokens to accrue, then check the stream status:
 
    ```bash
+   sleep 30
    sync_to_chain
    logoscore call payment_streams_module chainAction getStreamStatus \
      "{\"owner\":\"$PAYER\",\"vault_id\":$VAULT_ID,\"stream_id\":$STREAM_ID}"

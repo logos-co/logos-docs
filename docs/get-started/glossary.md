@@ -52,7 +52,7 @@ A repository that includes a list of Logos modules. Installing a module repo on 
 
 ### Channel
 
-A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](../blockchain/concepts/about-mantle.md)
+A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](../blockchain/concepts/about-mantle.md).
 
 ### CID
 

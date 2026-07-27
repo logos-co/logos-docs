@@ -173,6 +173,16 @@ const config: Config = {
         ],
       } satisfies PluginClientRedirects.Options,
     ],
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        indexBlog: false,
+        indexPages: true,
+        // Exact matching only — no typo-tolerant fuzzy matching.
+        fuzzyMatchingDistance: 0,
+      },
+    ],
   ],
 
   themeConfig: {

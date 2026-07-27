@@ -21,7 +21,7 @@ slug: atomic-swaps-sample-app-quickstart
 
 > [!IMPORTANT]
 >
-> **v0.1 draft** — SME dogfooded; not yet through Docs editorial review or Red Team end-to-end verification. Expect timing estimates and troubleshooting to tighten after Red Team runs a clean machine.
+> **v0.1 draft** — This packet now documents the **scaffold-first flow** adopted in the [eth-lez-atomic-swaps#27](https://github.com/logos-co/eth-lez-atomic-swaps/issues/27) Phase 2 close-out (`lgs basecamp build/setup/install/launch` replaces the retired `make swap-lgx-build` / `make basecamp-*` targets). SME dogfooded; not yet through Docs editorial review or Red Team end-to-end verification. Expect timing estimates and troubleshooting to tighten after Red Team runs a clean machine.
 
 > [!NOTE]
 >
@@ -29,16 +29,16 @@ slug: atomic-swaps-sample-app-quickstart
 > - **Product**: [eth-lez-atomic-swaps](https://github.com/logos-co/eth-lez-atomic-swaps) sample app (Basecamp UI).
 > - **Tracking**: [logos-co/ecosystem#108](https://github.com/logos-co/ecosystem/issues/108)
 
-### Tested with (SME dogfood, 2026-06-05)
+### Tested with (SME dogfood, 2026-07-27)
 
 | Item | Value |
 |------|-------|
-| Sample app | [`eth-lez-atomic-swaps`](https://github.com/logos-co/eth-lez-atomic-swaps) @ [`608179e`](https://github.com/logos-co/eth-lez-atomic-swaps/commit/608179e7c5285a10d35cc9f5cd727e3d56f6a27a) |
-| Host | Apple Silicon macOS (`arm64`), darwin 25.4 |
-| `logos-scaffold` | 0.1.1 (`~/.cargo/bin/logos-scaffold`) |
-| Rust (host) | 1.95.0 (repo pins 1.93 in `rust-toolchain.toml`) |
-| Basecamp | `bin-macos-app` via Nix (`logos-basecamp` @ `a90f7d1`) |
-| Swap outcome | Happy-path UI swap completed (maker + taker Basecamp) |
+| Sample app | [`eth-lez-atomic-swaps`](https://github.com/logos-co/eth-lez-atomic-swaps) @ [`f63e774`](https://github.com/logos-co/eth-lez-atomic-swaps/commit/f63e774) (head of [PR #37](https://github.com/logos-co/eth-lez-atomic-swaps/pull/37); bump to the merged master SHA before review) |
+| Host | Apple Silicon macOS (`arm64`), darwin 25.5 |
+| `logos-scaffold` | commit [`6789ec04`](https://github.com/logos-co/logos-scaffold/commit/6789ec04b2ad256186a5894710c419b42d16e479) (no release tag yet; `~/.cargo/bin/lgs`) |
+| Rust (host) | 1.93.0 (repo pin in `rust-toolchain.toml`, installed via rustup) |
+| Basecamp | `bin-macos-app` via Nix (`logos-basecamp` @ `a746cdbc`, pinned in `scaffold.toml`) |
+| Swap outcome | Headless end-to-end swap completed (`make demo`); two-peer Basecamp launch verified (both UIs rendered, swap plugin loaded); full UI click-through swap pending re-dogfood |
 
 > [!TIP]
 > Red Team should clone the **pinned commit** above, not floating `master`, unless intentionally testing tip-of-tree.
@@ -47,13 +47,13 @@ This quickstart walks you through the **default manual Basecamp flow**: two isol
 
 > [!NOTE]
 >
-> This guide covers the **happy path only**. Headless (`make demo`) and CLI-only flows exist in the sample-app README but are out of scope here. The README also contains legacy logos-app screenshots; the current UI uses Basecamp tabs (**Config**, **Maker**, **Taker**, **Refund**).
+> This guide covers the **happy path only**. Headless (`make demo`, which runs `lgs run --profile demo`) and CLI-only flows exist in the sample-app README but are out of scope here (`make test` runs the test suite the same way). The README also contains legacy logos-app screenshots; the current UI uses Basecamp tabs (**Config**, **Maker**, **Taker**, **Refund**).
 
 ## Before you start
 
 - **Audience**: Developers comfortable with the terminal and multi-terminal workflows.
 - **Platform**: Apple Silicon macOS (`arm64`), or Linux (`x86_64` / `aarch64`). **Intel macOS is not supported** (no published circuits bundle).
-- **Time**: ~30–45 minutes on a **first cold run** (mostly Nix LGX build); ~5 minutes on subsequent runs with warm caches.
+- **Time**: ~30–45 minutes on a **first cold run** (mostly the Nix module build); ~5 minutes on subsequent runs with warm caches.
 - **Terminals**: You need **four** during the swap phase (infra + maker Basecamp + taker Basecamp; setup can share one).
 
 ### Install prerequisites
@@ -68,14 +68,15 @@ Install the following before cloning the sample app:
 | C/C++ toolchain | Native module builds |
 | [Nix](https://nixos.org/) with flakes | LGX package builds |
 | RISC Zero (`rzup install rust`) | LEZ HTLC program |
-| `logos-scaffold` on `PATH` | LEZ localnet + wallet setup |
+| `logos-scaffold` (`lgs`) on `PATH` | Module builds, Basecamp peers, LEZ localnet + wallet setup |
 
-Install `logos-scaffold` from a local clone:
+Install `logos-scaffold` from the **pinned upstream commit** (the sample app depends on scaffold features not yet in a tagged release):
 
 ```bash
 git clone https://github.com/logos-co/logos-scaffold.git
 cd logos-scaffold
-cargo install --path .
+git checkout 6789ec04b2ad256186a5894710c419b42d16e479
+cargo install --path . --locked --bins
 ```
 
 Enable Nix flakes if needed. The config file depends on how Nix was installed:
@@ -92,15 +93,16 @@ experimental-features = nix-command flakes
 ```
 
 > [!NOTE]
-> The [Install the Logos Basecamp app](../../basecamp/get-started/install-the-logos-basecamp-app.md) procedure references `/etc/nix/nix.conf` — that path applies to typical Linux daemon installs. On macOS, use `~/.config/nix/nix.conf` (as in the [sample-app README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/608179e7c5285a10d35cc9f5cd727e3d56f6a27a/README.md)).
+> The [Install the Logos Basecamp app](../../basecamp/get-started/install-the-logos-basecamp-app.md) procedure references `/etc/nix/nix.conf` — that path applies to typical Linux daemon installs. On macOS, use `~/.config/nix/nix.conf` (as in the [sample-app README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md)).
 
 ### First-run timing (SME dogfood, cold Nix cache)
 
 | Step | Approx. duration | Notes |
 |------|------------------|-------|
 | `make setup` | 2–3 min | Longer if circuits download or `spel` rebuild |
-| `make swap-lgx-build` | ~9 min | Dominates first run; warm cache much faster |
-| `make basecamp-init-*` | ~40 s each | Installs LGX into `.basecamp/` |
+| `lgs basecamp build` | ~26 min (first build; warm cache much faster) | Dominates first run; warm cache much faster |
+| `lgs basecamp setup` | ~5 min (first run) | Builds portable Basecamp + LGPM, seeds profiles |
+| `lgs basecamp install` | ~20 min (first run; also replayed automatically on first `lgs basecamp launch <profile>` per peer) | Installs LGX into `.scaffold/basecamp/profiles/` |
 | `make infra` | ~20 s | Must stay running in its own terminal |
 | UI swap | 1–3 min | After maker is live and Delivery connects |
 
@@ -113,29 +115,35 @@ Clone at the **pinned dogfood commit** (or `master` if you accept tip-of-tree dr
 ```bash
 git clone --recurse-submodules https://github.com/logos-co/eth-lez-atomic-swaps.git
 cd eth-lez-atomic-swaps
-git checkout 608179e7c5285a10d35cc9f5cd727e3d56f6a27a
+git checkout f63e774626a94fa0d84b2442d53fe8cf87ba60f3
 make setup
 ```
 
-**Expected:** `setup complete`. Circuits land under `.scaffold/circuits`; scaffold prepares wallet and LEZ checkout under `.scaffold/`.
+**Expected:** `setup complete`. Circuits land under `.scaffold/lez-cache/circuits`; scaffold prepares the LEZ checkout and wallet under `.scaffold/`, and the default wallet address is seeded.
+
+`make setup` wraps `lgs setup` in `scripts/scaffold-setup.sh`, which bridges two gaps scaffold has with the pinned LEZ v0.2.0 repo layout (tracked upstream as [scaffold#240](https://github.com/logos-co/scaffold/issues/240)). Use `make setup` rather than plain `lgs setup` until that lands in the adopted pin.
 
 > [!TIP]
 > If you cloned without submodules: `git submodule update --init --recursive`, then re-run `make setup`.
 
 ## Step 2: Build and install LGX packages
 
-There is **no prebuilt LGX download path** in this sample app today. Build installable packages yourself:
+There is **no prebuilt LGX download path** in this sample app today. Build and install the packages with the scaffold-native commands:
 
 ```bash
-make swap-lgx-build
-make basecamp-init-maker
-make basecamp-init-taker
+lgs basecamp build
+lgs basecamp setup
+lgs basecamp install
 ```
 
-**Expected (init):** Each init installs `delivery_module`, `swap`, and `swap_ui` (portable `darwin-arm64` variant on Apple Silicon) into `.basecamp/maker/` and `.basecamp/taker/`.
+**Expected:**
+
+- `lgs basecamp build` runs the aggregate Nix module build and writes the `swap`, `swap_ui`, and `delivery_module` LGX artifacts under `.scaffold/basecamp/{lgx,portable}/`.
+- `lgs basecamp setup` builds the portable `bin-macos-app` Basecamp and the `cli-portable` LGPM, then seeds the `maker` and `taker` profiles.
+- `lgs basecamp install` installs the three `#lgx-portable` packages (`delivery_module` + `swap` as modules, `swap_ui` as a plugin; portable `darwin-arm64` variant on Apple Silicon) into each profile under `.scaffold/basecamp/profiles/maker/` and `.scaffold/basecamp/profiles/taker/` via `lgpm cli-portable`.
 
 > [!NOTE]
-> First `make swap-lgx-build` can take **~10 minutes** on a cold Nix cache. Re-run `make swap-lgx-build` and both `make basecamp-init-*` targets after changing module or UI source.
+> First `lgs basecamp build` can take **~10 minutes** on a cold Nix cache. After changing module or UI source, re-run `lgs basecamp build` and `lgs basecamp install`: the modules are declared with `git+file:` flake refs, so any tracked-file edit changes the git tree hash and triggers a rebuild (~10 min cold). Batch tracked edits and rebuild once.
 
 ## Step 3: Start local infrastructure
 
@@ -170,14 +178,16 @@ make infra
 | Path | Contents |
 |------|----------|
 | `.env`, `.env.taker` | Auto-generated maker/taker config (while infra runs) |
-| `.basecamp/maker/basecamp.log` | Maker Basecamp stdout/stderr |
-| `.basecamp/taker/basecamp.log` | Taker Basecamp stdout/stderr |
-| `.basecamp/maker/data/logs/` | Rotated Basecamp logs (maker) |
-| `.basecamp/taker/data/logs/` | Rotated Basecamp logs (taker) |
-| `.scaffold/logs/` | Scaffold / localnet logs |
-| `/tmp/lbc-maker`, `/tmp/lbc-taker` | Basecamp XDG runtime dirs |
+| `.scaffold/basecamp/profiles/maker/basecamp.log` | Maker Basecamp stdout/stderr |
+| `.scaffold/basecamp/profiles/taker/basecamp.log` | Taker Basecamp stdout/stderr |
+| `.scaffold/logs/` | Scaffold / localnet logs (including `sequencer.log`) |
+| `.scaffold/state/` | Scaffold state (wallet state, deployment records) |
+| `.scaffold/lez-cache/circuits` | Project-local circuits bundle |
+| `/tmp/lgs-maker`, `/tmp/lgs-taker` | Basecamp per-profile runtime dirs |
 
-**If the swap fails, capture:** infra terminal output, both `basecamp.log` files, and note which UI step stalled. Redact logs before sharing — they may contain private keys.
+For a structured snapshot of the resolved scaffold, circuits, module, and profile state, run `lgs doctor --json`; for Basecamp-specific state (portable stack, profiles, installed packages), run `lgs basecamp doctor --json`. Capture both when reporting a failure.
+
+**If the swap fails, capture:** infra terminal output, both `basecamp.log` files, the `lgs doctor --json` / `lgs basecamp doctor --json` output, and note which UI step stalled. Redact logs before sharing — they may contain private keys.
 
 ## Step 4: Launch maker and taker Basecamp
 
@@ -185,13 +195,16 @@ Open **two more terminals** in the repo root:
 
 ```bash
 # Terminal 3 — maker
-make basecamp-run-maker
+lgs basecamp launch maker
 
 # Terminal 4 — taker
-make basecamp-run-taker
+lgs basecamp launch taker
 ```
 
 Each window shows a role badge: **MAKER INSTANCE** or **TAKER INSTANCE**.
+
+> [!NOTE]
+> `lgs basecamp launch` works identically on macOS and Linux. On macOS the pinned portable Basecamp loads modules from an absolute per-profile `LOGOS_DATA_DIR`, which `launch` computes and sets itself since [scaffold PR #238](https://github.com/logos-co/scaffold/pull/238) — no launch bridge script is involved.
 
 ## Step 5: Configure and run the swap (UI)
 
@@ -230,7 +243,7 @@ Use this only after the UI swap completes. You need a **64-character hex hashloc
 1. **Refund tab (easiest):** On maker or taker, open **Refund**. After a completed swap, a green hint shows **Hashlock:** with a truncated value. The full 64-char hex is in the underlying swap result JSON.
 2. **Basecamp log (Red Team):** From repo root:
    ```bash
-   grep -o '"hashlock":"[0-9a-f]*"' .basecamp/maker/basecamp.log | tail -1
+   grep -o '"hashlock":"[0-9a-f]*"' .scaffold/basecamp/profiles/maker/basecamp.log | tail -1
    ```
    Strip the `"hashlock":"` / `"` wrapper to get the hex string.
 
@@ -248,10 +261,12 @@ When you are done, shut everything down so ports and wallets are not left runnin
 
 1. Quit both Basecamp windows (maker and taker).
 2. Press **Ctrl-C** in the `make infra` terminal.
-3. Optionally reset local Basecamp state:
+
+To reset the Basecamp peers to a clean state, delete the profile directories and reinstall:
 
 ```bash
-make basecamp-clean
+rm -rf .scaffold/basecamp/profiles/maker .scaffold/basecamp/profiles/taker
+lgs basecamp install
 ```
 
 ## Known limitations
@@ -260,7 +275,7 @@ make basecamp-clean
 |------------|-------|
 | Stop processes when done | Quit Basecamp windows and Ctrl-C `make infra`; leftover processes can hold ports and wallets |
 | Four terminals | Setup, infra (persistent), maker Basecamp, taker Basecamp |
-| Build LGX yourself | `make swap-lgx-build` required; no prebuilt LGX path |
+| Build LGX yourself | `lgs basecamp build` required; no prebuilt LGX path |
 | Maker must be live first | Offers are advertisements; swap only works if maker is listening |
 | Delivery warmup | UI may show **Waiting for Delivery...** on startup |
 | Intel macOS unsupported | No `macos-x86_64` circuits bundle |
@@ -269,19 +284,27 @@ make basecamp-clean
 
 ## Troubleshooting
 
+Start with the diagnostic commands — they report the resolved scaffold, circuits, module, and profile state and flag most stale-state problems directly:
+
+```bash
+lgs doctor --json
+lgs basecamp doctor --json
+```
+
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `logos-scaffold: command not found` | Scaffold not installed | `cargo install --path .` from `logos-scaffold`; add `~/.cargo/bin` to `PATH` |
+| `lgs: command not found` (or `logos-scaffold: command not found`) | Scaffold not installed, or wrong version | Install from the pinned commit: clone `logos-scaffold`, `git checkout 6789ec04b2ad256186a5894710c419b42d16e479`, `cargo install --path . --locked --bins`; add `~/.cargo/bin` to `PATH` |
 | `make setup` fails | Incomplete clone or scaffold error | `git submodule update --init --recursive`; re-run `make setup` |
 | **Load Maker/Taker Env** does nothing / validation errors | Infra not running or stale `.env` | Start `make infra` first; re-load after infra writes fresh `.env` files |
 | **Waiting for Delivery...** for 30+ s | Delivery node starting or network delay | Wait; check internet; inspect `basecamp.log` for `delivery_module` errors |
 | **Discover Offers** disabled | Delivery not connected yet | Wait until button label changes from **Waiting for Delivery...** |
 | **No offers found** | Maker not live | Maker must click **Go Live & Publish Offer** before taker discovers |
 | Offer visible but swap stalls | Maker offline or infra died | Confirm infra terminal still running; maker still **LIVE** |
-| `Module not found` / swap tab empty | Stale or wrong LGX variant | `make swap-lgx-build` then both `make basecamp-init-*`; restart Basecamp |
-| First run very slow | Cold Nix cache | Expect ~10 min for `make swap-lgx-build`; subsequent builds faster |
+| `Module not found` / swap tab empty | Stale or wrong LGX packages | `lgs basecamp build` then `lgs basecamp install`; restart Basecamp |
+| Maker escrow-funding failure (`Guest panicked: Sender has insufficient balance` in `.scaffold/logs/sequencer.log`) | Maker wallet holds fewer than the required 1000 LEZ | The headless demo self-funds via bounded faucet claims now; for the UI flow, top up the maker with repeated `logos-scaffold wallet topup <maker-account>` calls (each pinata claim credits 150 LEZ; repeat until the maker holds ≥ 1000), then retry |
+| First run very slow | Cold Nix cache | Expect ~10 min for `lgs basecamp build`; subsequent builds faster |
 | Port already in use after crash | Leftover infra/Basecamp | Quit Basecamp windows; Ctrl-C infra; `logos-scaffold localnet stop`; kill stray `anvil` if needed |
-| Restart from scratch | Mixed stale state | Ctrl-C infra → `make basecamp-clean` → `make infra` → relaunch Basecamp → reload env in UI |
+| Restart from scratch | Mixed stale state | Ctrl-C infra → `rm -rf .scaffold/basecamp/profiles/{maker,taker}` → `lgs basecamp install` → `make infra` → relaunch Basecamp → reload env in UI |
 
 ## See also
 

@@ -14,7 +14,7 @@ sidebar_position: 6
 
 #### See the services that keep Logos Delivery communication private and abuse-resistant.
 
-[Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery)'s protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
+[Logos Delivery](../../get-started/glossary.md#logos-delivery)'s protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
 
 ## Pseudonymity
 
@@ -39,4 +39,4 @@ Ongoing research is being conducted, including developing [Rate Limit Nullifiers
 
 ## Security considerations
 
-In protocols like `Store` and `Filter`, where direct connections are required for the designated service, anonymity or unlinkability is not guaranteed. This is because nodes use their `PeerID` to identify each other during direct connections, making the service obtained in these protocols linkable to the beneficiary's `PeerID`, considered Personally Identifiable Information (PII). In `Store`, the queried node can link the querying node's `PeerID` to the topics being queried. Similarly, in `Filter`, a node can link the `PeerID` of a [light node](https://docs.logos.co/get-started/glossary#light-node) to its content filter. Check out the [Security considerations](https://lip.logos.co/messaging/core/draft/10/waku2.html#security-considerations) section in the Waku2 RFC for more details.
+In protocols like `Store` and `Filter`, where direct connections are required for the designated service, anonymity or unlinkability is not guaranteed. This is because nodes use their `PeerID` to identify each other during direct connections, making the service obtained in these protocols linkable to the beneficiary's `PeerID`, considered Personally Identifiable Information (PII). In `Store`, the queried node can link the querying node's `PeerID` to the topics being queried. Similarly, in `Filter`, a node can link the `PeerID` of a [light node](../../get-started/glossary.md#light-node) to its content filter. Check out the [Security considerations](https://lip.logos.co/messaging/core/draft/10/waku2.html#security-considerations) section in the Waku2 RFC for more details.

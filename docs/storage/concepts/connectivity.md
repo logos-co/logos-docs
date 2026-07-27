@@ -26,7 +26,7 @@ You can share files once you are part of a network formed by entry points called
 | ------------ | --------------------------------- |
 | `logos.test` | Logos testnet (default)           |
 | `logos.dev`  | Logos devnet                      |
-| `codex.dev`  | Codex legacy devnet (deprecated)  |
+| `codex.dev`  | [Codex](../../get-started/glossary.md#codex) legacy devnet (deprecated)  |
 
 **Create your own network.** Start the first node with `no-bootstrap-node` set to `true`: it bootstraps from no one and becomes the entry point. Read its address with the `spr` method, then use that address as the `bootstrap-node` of every other node you want in the network.
 

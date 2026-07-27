@@ -34,17 +34,17 @@ Before you start, make sure you have the following:
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
     export PATH="$PWD/bin:$PATH"
     ```
-- `jq` on your `PATH` — used to pull the uploaded [CID](https://docs.logos.co/get-started/glossary#cid) out of the manifests JSON. Verify: `jq --version`
+- `jq` on your `PATH` — used to pull the uploaded [CID](../../get-started/glossary.md#cid) out of the manifests JSON. Verify: `jq --version`
 
 ## What to expect
 
-- You can connect a [Logos Storage](https://docs.logos.co/get-started/glossary#logos-storage) node to the testnet and have it listed among the bootstrap peers.
+- You can connect a [Logos Storage](../../get-started/glossary.md#logos-storage) node to the testnet and have it listed among the bootstrap peers.
 - You can publish a file to the network and retrieve a content address to share with other nodes.
 - You can download the file back from the network and confirm it lands on disk.
 
 ## Build and install the storage module
 
-1.  Build the [module](https://docs.logos.co/get-started/glossary#module) package with Nix:
+1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
@@ -75,7 +75,7 @@ Before you start, make sure you have the following:
 
 ## Start the daemon and load the storage module
 
-Run `logoscore` with the modules directory, then load and initialise the [storage module](https://docs.logos.co/get-started/glossary#storage-module) against the testnet config.
+Run `logoscore` with the modules directory, then load and initialise the [storage module](../../get-started/glossary.md#storage-module) against the testnet config.
 
 Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
@@ -145,7 +145,7 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     logoscore call storage_module start
     # Wait few seconds to start
     ```
-8.  Inspect the running node with `debug`. It returns the node's identity: its `id` (peer ID) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](../concepts/connectivity.md)):
+8.  Inspect the running node with `debug`. It returns the node's identity: its `id` ([peer ID](../../get-started/glossary.md#peer-id)) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](../concepts/connectivity.md)):
 
     ```sh
     logoscore call storage_module debug

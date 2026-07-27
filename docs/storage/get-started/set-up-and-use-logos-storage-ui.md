@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Get started sharing and downloading files on the Logos Storage network
 
-The [Logos Storage](https://docs.logos.co/get-started/glossary#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos Basecamp or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
+The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
 
 Before you start, have a router where you can configure port forwarding or that supports UPnP/NAT-PMP ready (see [Connectivity](../concepts/connectivity.md)).
 
@@ -23,7 +23,7 @@ Before you start, have a router where you can configure port forwarding or that 
 
 - You can build and run a standalone Logos Storage UI application using a single `nix build` command.
 - You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
-- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](https://docs.logos.co/get-started/glossary#cid)).
+- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
 - You can make content lookups private with the **Mix** switch, and stop and restart the node without losing your files.
 
 ## Step 1: Run the application
@@ -152,7 +152,7 @@ This guide follows the `Guided` setup with `Port Forwarding`.
 
 ### Configuration
 
-The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the [Storage Module](https://docs.logos.co/get-started/glossary#storage-module) to apply the changes.
+The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the [Storage Module](../../get-started/glossary.md#storage-module) to apply the changes.
 
 After onboarding, the settings are saved to a file whose location depends on the OS. If you are running the UI inside the Basecamp application:
 

@@ -13,10 +13,10 @@ slug: faq
 
 #### Fix the most common connectivity problems of a storage node.
 
-Logos Storage requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
+[Logos Storage](../../get-started/glossary.md#logos-storage) requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
 
 - **Discovery port**: UDP, defaults to `8090`. Used for discovery and DHT operations.
-- **libp2p listen port**: TCP. Used for data transfer and peer connections. The Storage UI sets it during onboarding; the storage module picks a random free port unless you set `listen-port`.
+- **libp2p listen port**: TCP. Used for data transfer and peer connections. The Storage UI sets it during onboarding; the [storage module](../../get-started/glossary.md#storage-module) picks a random free port unless you set `listen-port`.
 
 Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
@@ -104,7 +104,7 @@ sudo ufw allow 8090/udp
 
 ## Downloads time out when downloading from a different machine
 
-**Symptom**: downloading a CID works on the node that published it, but times out from another machine.
+**Symptom**: downloading a [CID](../../get-started/glossary.md#cid) works on the node that published it, but times out from another machine.
 
 **Cause**: NAT is blocking the peer connection: the publishing node is not reachable from the internet.
 

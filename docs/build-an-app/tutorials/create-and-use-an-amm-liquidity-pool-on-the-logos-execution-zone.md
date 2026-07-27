@@ -4,7 +4,7 @@
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
 :::
 
-This tutorial covers the AMM [program](https://docs.logos.co/get-started/glossary#program) in [LEZ](https://docs.logos.co/get-started/glossary#lez). The AMM manages liquidity pools and enables swaps between custom tokens. By the end, you will have practiced:
+This tutorial covers the AMM [program](../../get-started/glossary.md#program) in [LEZ](../../get-started/glossary.md#lez). The AMM manages liquidity pools and enables swaps between custom tokens. By the end, you will have practiced:
 
 1. Creating a liquidity pool for a token pair.
 2. Swapping tokens.
@@ -30,7 +30,7 @@ Generated new account with account_id Public/FHgLW9jW4HXMV6egLWbwpTqVAGiCHw2vkg7
 
 ### b. Initialise the pool
 
-Deposit tokens A and B and specify the [account](https://docs.logos.co/get-started/glossary#account) that will receive LP tokens:
+Deposit tokens A and B and specify the [account](../../get-started/glossary.md#account) that will receive LP tokens:
 
 ```bash
 wallet amm new \
@@ -42,7 +42,7 @@ wallet amm new \
 ```
 
 :::warning
-The LP holding account is owned by the [token program](https://docs.logos.co/get-started/glossary#token-program), so LP tokens are managed using the same token infrastructure as regular tokens.
+The LP holding account is owned by the [token program](../../get-started/glossary.md#token-program), so LP tokens are managed using the same token infrastructure as regular tokens.
 :::
 
 ```bash

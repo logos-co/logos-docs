@@ -47,7 +47,7 @@ Before you start, make sure you have the following:
 
 ## Build and install the storage module
 
-1.  Build the [module](https://docs.logos.co/get-started/glossary#module) package with Nix:
+1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
@@ -169,7 +169,7 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
 
 The storage nodes need two files to use the Mix relays:
 
-- `mix-pool.json`: the relays' peer IDs, multiaddrs, mix and libp2p public keys.
+- `mix-pool.json`: the relays' [peer IDs](../../get-started/glossary.md#peer-id), multiaddrs, mix and libp2p public keys.
 - `mix-proxies.json`: the relays' TCP SPRs.
 
 Since this is a local network, every relay is reachable at `127.0.0.1` on its fixed `listen-port` (`808<id>`), so the pool `multiAddr` is built from that rather than from the announced addresses.
@@ -264,7 +264,7 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
     echo "Hello through Mix from the storage doc-test." > hello.txt
     logoscore --config-dir=./logoscore-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
     ```
-2.  The upload runs in the background; give it a moment, then read the CID of the stored manifest from node 5:
+2.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
 
     ```sh
     logoscore --config-dir=./logoscore-5 call storage_module manifests \

@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Try out end-to-end encrypted private messaging over the Logos network.
 
-This procedure shows how to use the [Logos Chat](https://docs.logos.co/get-started/glossary#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](https://docs.logos.co/get-started/glossary#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 :::info
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
@@ -29,7 +29,7 @@ You need the following to complete this procedure:
 
 ## What to expect
 
-- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp).
+- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](../../get-started/glossary.md#basecamp).
 - You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
 - You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
 
@@ -80,7 +80,7 @@ The app auto-initialises on launch and displays your identity ID in the bottom s
 1.  Click **Get Intro Bundle**, then click **Copy to Clipboard**.
 
     The bundle is a string starting with `logos_chatintro…`.
-2. Send the copied bundle to instance B through any [out-of-band](https://docs.logos.co/get-started/glossary#out-of-band) [channel](https://docs.logos.co/get-started/glossary#channel).
+2. Send the copied bundle to instance B through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
 3. Close the **My Bundle** popup.
 
 **On instance B:**
@@ -108,7 +108,7 @@ The app auto-initialises on launch and displays your identity ID in the bottom s
 
 ### Messages never arrive and the left panel shows "Waiting for connection…"
 
-Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for [peer discovery](https://docs.logos.co/get-started/glossary#peer-discovery).
+Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for [peer discovery](../../get-started/glossary.md#peer-discovery).
 
 ### A previously open conversation has disappeared
 

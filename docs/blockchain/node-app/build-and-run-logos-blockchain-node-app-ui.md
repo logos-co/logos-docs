@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Run a node that participates in consensus via a standalone application.
 
-The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the blockchain [module](https://docs.logos.co/get-started/glossary#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
 
 :::info
 For testnet v0.1, you must manually edit the config file and restart the node to add new keys.

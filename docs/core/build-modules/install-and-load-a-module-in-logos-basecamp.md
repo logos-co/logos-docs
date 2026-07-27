@@ -15,9 +15,9 @@ sidebar_position: 5
 
 #### Access features and functionalities through modules in Logos Basecamp.
 
-In Logos [Basecamp](https://docs.logos.co/get-started/glossary#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](https://docs.logos.co/get-started/glossary#catalogue) or local `.lgx` files.
+In Logos [Basecamp](../../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../../get-started/glossary.md#catalogue) or local `.lgx` files.
 
-There are two types of modules in Logos Basecamp. [Core modules](https://docs.logos.co/get-started/glossary#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](https://docs.logos.co/get-started/glossary#ui-module) are the visual front-ends users interact with.
+There are two types of modules in Logos Basecamp. [Core modules](../../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../../get-started/glossary.md#ui-module) are the visual front-ends users interact with.
 
 Before you start, make sure you have:
 
@@ -31,7 +31,7 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 ## What to expect
 
-- You can install a [module](https://docs.logos.co/get-started/glossary#module) from the online catalogue or from a local `.lgx` file.
+- You can install a [module](../../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
 - You can load or unload a module from the **Modules** view.
 - You can read a loading module's status, CPU, and memory in the **Modules** view.
 

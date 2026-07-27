@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Install the blockchain modules and run a syncing testnet node from the Basecamp desktop app.
 
-The [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) is the blockchain [module](https://docs.logos.co/get-started/glossary#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or — as described here — from **Basecamp**, the modular Logos desktop app, by installing the blockchain module and its UI.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or — as described here — from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
 
 This procedure covers Linux, Windows (via WSL), and macOS on Apple Silicon. It requires no terminal beyond a single prerequisite-install command on Linux.
 
@@ -29,7 +29,7 @@ Make sure you have the following:
 
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.
 
-:::info Pin the versions
+:::info
 Install **`blockchain_module` `0.2.0`** and **`blockchain_ui` `0.2.0`**. In the Package Manager, `blockchain_module` may pre-select `0.0.999`, which is a *devnet* build and will not sync the public testnet. Always select `0.2.0` explicitly (Step 3).
 :::
 
@@ -73,7 +73,7 @@ Basecamp opens.
 
 1. In the sidebar, open **Package Manager** and find **`blockchain_module`** (category: Blockchain).
 
-   :::caution Use Package Manager, not Applications
+   :::caution
    Install blockchain modules from **Package Manager**. Open the version dropdown and **select `0.2.0`** before installing — the pre-selected version is `0.0.999`, the devnet build.
    :::
 
@@ -104,7 +104,7 @@ Open the **blockchain** module from the sidebar to reach the node view, then gen
 
 1. Leave the other fields at their defaults and select **Generate config**.
 
-   :::caution Peers are required
+   :::caution
    A config generated with an empty **Initial peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
    :::
 
@@ -122,8 +122,8 @@ Confirm sync by evidence rather than the status label. Query the node's HTTP API
 
    - A syncing node returns a `tip` that is not genesis and a `height`/`slot` that increases between calls. The block list in the UI also begins filling within a minute or two.
 
-   :::note Bootstrapping can take time
-   If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current slot during initial sync is normal.
+   :::note
+   If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current [slot](../../get-started/glossary.md#slot) during initial sync is normal.
    :::
 
 ## Fund your node and propose blocks
@@ -135,8 +135,8 @@ A synced node validates the chain but does not **propose** blocks until its wall
 3. Once the funds arrive they auto-stake. Your node starts winning leader slots proportional to your balance and proposes blocks on its own.
 4. Rewards appear under **Operations → Leader Rewards**, where **Claim** redeems them into your wallet.
 
-:::note Blend staking is separate
-Participating in the [Blend network](https://docs.logos.co/get-started/glossary#blend) as a *Core* node requires a separate locked note (staked funds) and does not affect block proposing. See [Join the Blend network as a Core node](../blend/join-the-blend-network-as-a-core-node.md).
+:::note
+Participating in the [Blend network](../../get-started/glossary.md#blend-network) as a [*Core* node](../../get-started/glossary.md#core-node) requires a separate locked [note](../../get-started/glossary.md#note) (staked funds) and does not affect block proposing. See [Join the Blend network as a Core node](../blend/join-the-blend-network-as-a-core-node.md).
 :::
 
 ## Keeping your node running

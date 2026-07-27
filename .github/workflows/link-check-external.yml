@@ -1,0 +1,49 @@
+name: Link Check (external, scheduled)
+
+# Scheduled run. Checks EXTERNAL links across the whole repo and files an
+# issue if any are broken. It never blocks a merge.
+# Runs weekly.
+
+on:
+  workflow_dispatch:        # manual "Run workflow" button (needs the file on the default branch)
+  schedule:
+    - cron: "37 4 * * 1"    # Mondays 04:37 UTC.
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write         # required for peter-evans/create-issue-from-file
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Restore lychee cache
+        uses: actions/cache@v5
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --cache
+            --max-cache-age 1d
+            --cache-exclude-status '429, 500..502'
+            --no-progress
+            --include-fragments
+            --extensions md
+            .
+          fail: false        # must be false, or the run stops before the issue step
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Issue From File
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/out.md
+          labels: report, automated issue

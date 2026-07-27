@@ -33,7 +33,7 @@ slug: atomic-swaps-sample-app-quickstart
 
 | Item | Value |
 |------|-------|
-| Sample app | [`eth-lez-atomic-swaps`](https://github.com/logos-co/eth-lez-atomic-swaps) @ [`f63e774`](https://github.com/logos-co/eth-lez-atomic-swaps/commit/f63e774) (head of [PR #37](https://github.com/logos-co/eth-lez-atomic-swaps/pull/37); bump to the merged master SHA before review) |
+| Sample app | [`eth-lez-atomic-swaps`](https://github.com/logos-co/eth-lez-atomic-swaps) @ [`5858f91`](https://github.com/logos-co/eth-lez-atomic-swaps/commit/5858f91fede91360d8ba95464b1ce2ec42d9fd31) (master; includes [PR #37](https://github.com/logos-co/eth-lez-atomic-swaps/pull/37)) |
 | Host | Apple Silicon macOS (`arm64`), darwin 25.5 |
 | `logos-scaffold` | commit [`6789ec04`](https://github.com/logos-co/logos-scaffold/commit/6789ec04b2ad256186a5894710c419b42d16e479) (no release tag yet; `~/.cargo/bin/lgs`) |
 | Rust (host) | 1.93.0 (repo pin in `rust-toolchain.toml`, installed via rustup) |
@@ -115,7 +115,7 @@ Clone at the **pinned dogfood commit** (or `master` if you accept tip-of-tree dr
 ```bash
 git clone --recurse-submodules https://github.com/logos-co/eth-lez-atomic-swaps.git
 cd eth-lez-atomic-swaps
-git checkout f63e774626a94fa0d84b2442d53fe8cf87ba60f3
+git checkout 5858f91fede91360d8ba95464b1ce2ec42d9fd31
 make setup
 ```
 
@@ -139,11 +139,11 @@ lgs basecamp install
 **Expected:**
 
 - `lgs basecamp build` runs the aggregate Nix module build and writes the `swap`, `swap_ui`, and `delivery_module` LGX artifacts under `.scaffold/basecamp/{lgx,portable}/`.
-- `lgs basecamp setup` builds the portable `bin-macos-app` Basecamp and the `cli-portable` LGPM, then seeds the `maker` and `taker` profiles.
-- `lgs basecamp install` installs the three `#lgx-portable` packages (`delivery_module` + `swap` as modules, `swap_ui` as a plugin; portable `darwin-arm64` variant on Apple Silicon) into each profile under `.scaffold/basecamp/profiles/maker/` and `.scaffold/basecamp/profiles/taker/` via `lgpm cli-portable`.
+- `lgs basecamp setup` builds the portable `bin-macos-app` Basecamp and the `cli-portable` LGPM, then seeds scaffold's default profiles.
+- `lgs basecamp install` installs the three `#lgx-portable` packages (`delivery_module` + `swap` as modules, `swap_ui` as a plugin; portable `darwin-arm64` variant on Apple Silicon) into scaffold's default profiles via `lgpm cli-portable` as a stack check. The `maker` and `taker` profiles under `.scaffold/basecamp/profiles/` are provisioned the same way automatically on their first `lgs basecamp launch`.
 
 > [!NOTE]
-> First `lgs basecamp build` can take **~10 minutes** on a cold Nix cache. After changing module or UI source, re-run `lgs basecamp build` and `lgs basecamp install`: the modules are declared with `git+file:` flake refs, so any tracked-file edit changes the git tree hash and triggers a rebuild (~10 min cold). Batch tracked edits and rebuild once.
+> First `lgs basecamp build` can take **~26 minutes** on a cold Nix cache (see the timing table above). After changing module or UI source, re-run `lgs basecamp build` and `lgs basecamp install`: the modules are declared with `git+file:` flake refs, so any tracked-file edit changes the git tree hash and triggers a rebuild (~10 min cold). Batch tracked edits and rebuild once.
 
 ## Step 3: Start local infrastructure
 
@@ -168,7 +168,7 @@ make infra
   Press Ctrl-C to stop all services.
 ```
 
-`make infra` writes `.env` (maker) and `.env.taker` (taker). Do not edit these while infra is running.
+The Anvil WebSocket port is chosen at random each run, so it will differ from the example above. `make infra` writes `.env` (maker) and `.env.taker` (taker) with the current run's values. Do not edit these while infra is running.
 
 > [!NOTE]
 > **Terminal that must stay running:** the `make infra` session. It owns Anvil, the LEZ sequencer, and the `swap-cli infra` process. If it exits, Basecamp cannot complete swaps.
@@ -262,12 +262,13 @@ When you are done, shut everything down so ports and wallets are not left runnin
 1. Quit both Basecamp windows (maker and taker).
 2. Press **Ctrl-C** in the `make infra` terminal.
 
-To reset the Basecamp peers to a clean state, delete the profile directories and reinstall:
+To reset the Basecamp peers to a clean state, delete the profile directories:
 
 ```bash
 rm -rf .scaffold/basecamp/profiles/maker .scaffold/basecamp/profiles/taker
-lgs basecamp install
 ```
+
+The next `lgs basecamp launch maker` / `lgs basecamp launch taker` re-seeds each profile and reinstalls the captured packages automatically (`launch` scrubs and replays the module set on every invocation).
 
 ## Known limitations
 
@@ -302,9 +303,9 @@ lgs basecamp doctor --json
 | Offer visible but swap stalls | Maker offline or infra died | Confirm infra terminal still running; maker still **LIVE** |
 | `Module not found` / swap tab empty | Stale or wrong LGX packages | `lgs basecamp build` then `lgs basecamp install`; restart Basecamp |
 | Maker escrow-funding failure (`Guest panicked: Sender has insufficient balance` in `.scaffold/logs/sequencer.log`) | Maker wallet holds fewer than the required 1000 LEZ | The headless demo self-funds via bounded faucet claims now; for the UI flow, top up the maker with repeated `logos-scaffold wallet topup <maker-account>` calls (each pinata claim credits 150 LEZ; repeat until the maker holds ≥ 1000), then retry |
-| First run very slow | Cold Nix cache | Expect ~10 min for `lgs basecamp build`; subsequent builds faster |
+| First run very slow | Cold Nix cache | Expect ~26 min for the first `lgs basecamp build` (~10 min for cold rebuilds after source edits); subsequent builds faster |
 | Port already in use after crash | Leftover infra/Basecamp | Quit Basecamp windows; Ctrl-C infra; `logos-scaffold localnet stop`; kill stray `anvil` if needed |
-| Restart from scratch | Mixed stale state | Ctrl-C infra → `rm -rf .scaffold/basecamp/profiles/{maker,taker}` → `lgs basecamp install` → `make infra` → relaunch Basecamp → reload env in UI |
+| Restart from scratch | Mixed stale state | Ctrl-C infra → `rm -rf .scaffold/basecamp/profiles/{maker,taker}` → `make infra` → relaunch Basecamp (`launch` re-provisions the profiles) → reload env in UI |
 
 ## See also
 

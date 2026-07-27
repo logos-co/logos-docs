@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors:
 owner: logos
 doc_version: 1
-slug: run-logos-node-blockchain-storage-delivery
+slug: /run-a-node
 sidebar_position: 1
 ---
 

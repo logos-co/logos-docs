@@ -1,5 +1,5 @@
 ---
-title: Introduction to Logos
+title: What is Logos?
 doc_type: concept
 product: logos
 topics: architecture
@@ -10,7 +10,7 @@ slug: what-is-logos
 sidebar_position: 1
 ---
 
-# Introduction to Logos
+# What is Logos?
 
 #### Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
 
@@ -23,7 +23,7 @@ Logos ships with a default configuration consisting of the runtime plus storage,
 ## The basics
 
 - Logos is organised into four layers: a runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and decentralised applications on top that compose those modules.
-- [Logos Basecamp](../basecamp/get-started/install-logos-basecamp.md) is the default launcher for the stack. It runs the Logos runtime locally, loads a configured module profile, and provides a unified interface. The **Logos Node** runs the same runtime without a user interface, for validators, operators, or backend services.
+- [Logos Basecamp](../basecamp/install-logos-basecamp.md) is the default launcher for the stack. It runs the Logos runtime locally, loads a configured module profile, and provides a unified interface. The **Logos Node** runs the same runtime without a user interface, for validators, operators, or backend services.
 - Privacy is implemented at the infrastructure layer rather than the application layer. An application built on Logos inherits metadata protection and support for private state regardless of whether its developer has implemented anonymity measures directly.
 
 ## Design principles
@@ -68,9 +68,9 @@ The networking layer is itself packaged as a module and loaded by the runtime in
 
 Modules are self-contained components that sit above the networking layer, each providing a defined capability. Logos includes three foundational modules, and the architecture supports the addition of further modules.
 
-The [**Blockchain**](../blockchain/get-started/introduction-to-the-logos-blockchain.md) module provides decentralised compute and consensus. It is built on **[Cryptarchia](glossary.md#cryptarchia)**, a private proof-of-stake consensus mechanism in which block proposers cannot be linked to their proposals, with additional privacy by the **[Blend Network](glossary.md#blend-network)**. The **Logos Execution Zone (LEZ)**, a Layer 2 execution environment, supports [program](glossary.md#program) deployment with both public and private [account](glossary.md#account) states.
+The [**Blockchain**](/blockchain) module provides decentralised compute and consensus. It is built on **[Cryptarchia](glossary.md#cryptarchia)**, a private proof-of-stake consensus mechanism in which block proposers cannot be linked to their proposals, with additional privacy by the **[Blend Network](glossary.md#blend-network)**. The **Logos Execution Zone (LEZ)**, a Layer 2 execution environment, supports [program](glossary.md#program) deployment with both public and private [account](glossary.md#account) states.
 
-The [**Messaging**](../messaging/get-started/introduction-to-logos-messaging.md) module provides private, censorship-resistant communication between parties and consists of two components. [Logos Delivery](https://github.com/logos-messaging/logos-delivery) provides the [transport](glossary.md#transport) layer, implementing publish-subscribe messaging for reliable delivery. [Logos Chat](https://github.com/logos-messaging/nim-chat-poc) uses Delivery as its transport and provides encrypted one-to-one conversations, implemented with double-ratchet encryption, with support for group conversations under development using de-MLS.
+The [**Messaging**](/messaging) module provides private, censorship-resistant communication between parties and consists of two components. [Logos Delivery](https://github.com/logos-messaging/logos-delivery) provides the [transport](glossary.md#transport) layer, implementing publish-subscribe messaging for reliable delivery. [Logos Chat](https://github.com/logos-messaging/nim-chat-poc) uses Delivery as its transport and provides encrypted one-to-one conversations, implemented with double-ratchet encryption, with support for group conversations under development using de-MLS.
 
 The [**Storage**](../storage/get-started/run-logos-storage-node.md) module provides decentralised file storage and retrieval using content-addressed data. It exposes an API for storing a file and receiving a content identifier ([CID](glossary.md#cid)) in return, and for retrieving a file given its CID.
 
@@ -80,4 +80,4 @@ The [**Storage**](../storage/get-started/run-logos-storage-node.md) module provi
 
 Dapps are the decentralised applications that compose the modules described above. A chat application could use the messaging and storage modules; a decentralised finance application could use the blockchain module and the LEZ; a file-sharing application could use the storage module.
 
-The [Logos Basecamp](../basecamp/get-started/install-logos-basecamp.md), is the default launcher for the stack. It starts the runtime, loads the configured module profile, and provides a unified interface. By default, it includes a set of applications for each foundational module: a wallet for managing tokens, a chat interface for encrypted messaging, a file-sharing tool, and an explorer for inspecting blockchain and LEZ activity. The [Logos Node](../run-a-node/get-started/run-logos-node-blockchain-storage-delivery.md) provides an alternative entry point, starting the same runtime without a user interface. Because a distribution is defined by its selected modules rather than by its launcher, developers can assemble distributions for purposes other than the default configuration.
+The [Logos Basecamp](../basecamp/install-logos-basecamp.md), is the default launcher for the stack. It starts the runtime, loads the configured module profile, and provides a unified interface. By default, it includes a set of applications for each foundational module: a wallet for managing tokens, a chat interface for encrypted messaging, a file-sharing tool, and an explorer for inspecting blockchain and LEZ activity. The [Logos Node](/run-a-node) provides an alternative entry point, starting the same runtime without a user interface. Because a distribution is defined by its selected modules rather than by its launcher, developers can assemble distributions for purposes other than the default configuration.

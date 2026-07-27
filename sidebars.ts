@@ -21,7 +21,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'link',
               label: 'Install Logos Basecamp',
-              href: '/basecamp/get-started/install-logos-basecamp',
+              href: '/basecamp/install-logos-basecamp',
             },
             {
               type: 'link',
@@ -185,9 +185,15 @@ const sidebars: SidebarsConfig = {
   basecampSidebar: [
     {
       type: 'category',
-      label: 'Get started',
+      label: 'Basecamp',
+      link: {
+        type: 'generated-index',
+        title: 'Basecamp',
+        description: 'Install and run Logos Basecamp, the desktop launcher for the Logos stack.',
+        slug: '/basecamp',
+      },
       items: [
-        'basecamp/get-started/install-logos-basecamp',
+        'basecamp/install-logos-basecamp',
         'core/build-modules/install-and-load-a-module-in-logos-basecamp',
       ],
     },

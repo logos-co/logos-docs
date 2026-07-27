@@ -12,7 +12,7 @@ A list of some common terms and phrases specific to the Logos ecosystem.
 
 ### Account
 
-The basic organisational unit of the LEZ state, with all persistent data stored in accounts. Accounts can be either public or private, and can also represent LEZ programs. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+The basic organisational unit of the LEZ state, with all persistent data stored in accounts. Accounts can be either public or private, and can also represent LEZ programs. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ---
 
@@ -148,11 +148,11 @@ A type of Mantle operation that writes data to the Logos Blockchain. Inscription
 
 ### LEE
 
-The **Logos Execution Environment** - the virtual machine that runs on the Logos Execution Zone. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+The **Logos Execution Environment** - the virtual machine that runs on the Logos Execution Zone. See [Introduction to the Logos Execution Zone](/lez).
 
 ### LEZ
 
-The **Logos Execution Zone** - the primary execution layer for general-purpose applications on Logos, with built-in support for private execution. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+The **Logos Execution Zone** - the primary execution layer for general-purpose applications on Logos, with built-in support for private execution. See [Introduction to the Logos Execution Zone](/lez).
 
 ### `lgpm`
 
@@ -188,7 +188,7 @@ An address assigned to a Logos Blockchain node participating in the Blend Networ
 
 ### Logos Blockchain
 
-The foundational infrastructure layer of the Logos technology stack. See [Introduction to the Logos Blockchain](../blockchain/get-started/introduction-to-the-logos-blockchain.md).
+The foundational infrastructure layer of the Logos technology stack. See [Introduction to the Logos Blockchain](/blockchain).
 
 ### Logos Chat
 
@@ -200,11 +200,11 @@ A peer-to-peer messaging network with DoS protection via Rate Limiting Nullifier
 
 ### Logos Execution Environment
 
-The virtual machine that runs on the Logos Execution Zone. Also known as the **LEE**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+The virtual machine that runs on the Logos Execution Zone. Also known as the **LEE**. See [Introduction to the Logos Execution Zone](/lez).
 
 ### Logos Execution Zone
 
-The primary execution layer for general-purpose applications on Logos, with built-in support for private execution. Also known as the **LEZ**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+The primary execution layer for general-purpose applications on Logos, with built-in support for private execution. Also known as the **LEZ**. See [Introduction to the Logos Execution Zone](/lez).
 
 ### Logos Messaging
 
@@ -212,7 +212,7 @@ The private messaging layer of the Logos technology stack.
 
 ### Logos node
 
-A node running one or several Logos modules that connect to a network of other such nodes. See [Run a Logos node with blockchain, storage, and delivery](../run-a-node/get-started/run-logos-node-blockchain-storage-delivery.md).
+A node running one or several Logos modules that connect to a network of other such nodes. See [Run a Logos node with blockchain, storage, and delivery](/run-a-node).
 
 ### `logos-module-builder`
 
@@ -236,7 +236,7 @@ A daemon that runs Logos modules from the command line.
 
 ### LSSA
 
-An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](/lez).
 
 ---
 
@@ -272,11 +272,11 @@ Logos Delivery clients who spend most of their time offline or disconnected from
 
 ### Nescience
 
-An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](/lez).
 
 ### Nomos
 
-An old name for the Logos Blockchain. See [Introduction to the Logos Blockchain](../blockchain/get-started/introduction-to-the-logos-blockchain.md).
+An old name for the Logos Blockchain. See [Introduction to the Logos Blockchain](/blockchain).
 
 ### Node key
 
@@ -288,28 +288,28 @@ A fungible UTXO token used on Mantle. See [About Mantle](../blockchain/concepts/
 
 ### NPK
 
-A **Nullifier Public Key** - a public key used to verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Nullifier Public Key** - a public key used to verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### NSSA
 
-An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](/lez).
 
 ### NSK
 
-A **Nullifier Secret Key** - a secret key used to sign LEZ transactions. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Nullifier Secret Key** - a secret key used to sign LEZ transactions. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Nullifier keys
 
-A key pair used to sign transactions and verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A key pair used to sign transactions and verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Nullifier Public Key
 
-A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 
 ### Nullifier Secret Key
 
-A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ---
 
@@ -325,7 +325,7 @@ Exchanging information through a separate, secure channel distinct from the main
 
 ### PDA
 
-**Program Derived Address** - the address assigned to an LEE program. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+**Program Derived Address** - the address assigned to an LEE program. See [Introduction to the Logos Execution Zone](/lez).
 
 ### Peer discovery
 
@@ -353,7 +353,7 @@ The LEZ-specific testnet faucet program that funds accounts with native tokens.
 
 ### Private account
 
-A type of LEZ account that keeps its transactions private. Account updates are proven via ZK proofs. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A type of LEZ account that keeps its transactions private. Account updates are proven via ZK proofs. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Private Proof of Stake
 
@@ -361,11 +361,11 @@ A Proof of Stake consensus mechanism that protects the identity of block propose
 
 ### Program
 
-An executable smart contract on the LEZ, associated with an LEZ account. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+An executable smart contract on the LEZ, associated with an LEZ account. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Program Derived Address
 
-The address assigned to an LEZ program, also known as a **PDE**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md).
+The address assigned to an LEZ program, also known as a **PDE**. See [Introduction to the Logos Execution Zone](/lez).
 
 ### Proof of Leadership
 
@@ -373,7 +373,7 @@ The ZK proof that a note's owner is eligible to propose a block. Also known as *
 
 ### Public account
 
-A type of LEZ account whose state is publicly available. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A type of LEZ account whose state is publicly available. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ---
 
@@ -453,23 +453,23 @@ A Logos module that includes a user interface view.
 
 ### Viewing keys
 
-A key pair used to generate and verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A key pair used to generate and verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Viewing Public Key
 
-A public key used to verify ZK proofs on the LEZ, also known as a **VPK**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A public key used to verify ZK proofs on the LEZ, also known as a **VPK**. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### Viewing Secret Key
 
-A secret key used to generate ZK proofs on the LEZ, also known as a **VSK**. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A secret key used to generate ZK proofs on the LEZ, also known as a **VSK**. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### VPK
 
-A **Viewing Public Key** - a public key used to verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Viewing Public Key** - a public key used to verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ### VSK
 
-A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/get-started/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](/lez#accounts-model).
 
 ---
 

@@ -88,11 +88,11 @@ const config: Config = {
           // generated-index page now (sidebars.ts), not a redirect target.
           {
             from: '/run-an-app/basecamp/install-logos-basecamp',
-            to: '/basecamp/get-started/install-logos-basecamp',
+            to: '/basecamp/install-logos-basecamp',
           },
           {
             from: '/run-an-app/basecamp/readme',
-            to: '/basecamp/get-started/install-logos-basecamp',
+            to: '/basecamp/install-logos-basecamp',
           },
           {
             from: '/run-an-app/blockchain-ui-app/build-and-run-logos-blockchain-node-app-ui',

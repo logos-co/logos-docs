@@ -52,7 +52,7 @@ Zones can implement almost anything, ranging from applications to virtual machin
 
 ### Logos Execution Zone
 
-The [Logos Execution Zone (LEZ)](https://github.com/logos-co/logos-docs/blob/main/docs/lez/get-started/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It serves as the home for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), see the page below:
+The [Logos Execution Zone (LEZ)](https://github.com/logos-co/logos-docs/blob/main/docs/lez/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It serves as the home for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), see the page below:
 
 ### Other uses
 

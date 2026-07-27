@@ -2,7 +2,7 @@
 title: Introduction to the Logos Execution Zone
 doc_type: concept
 product: blockchain
-topics: Logos Execution Zone
+topics: lez
 authors: kashepavadan
 owner: logos
 doc_version: 1

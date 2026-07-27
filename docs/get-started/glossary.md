@@ -339,6 +339,10 @@ A peer discovery mechanism used in Logos Delivery that enables light nodes to re
 
 The unique identifier of a node in the Logos Delivery network generated from the cryptographic hash of the node's public key.
 
+### Piñata
+
+The LEZ-specific testnet faucet program that funds accounts with native tokens.
+
 ### PoL
 
 **Proof of Leadership** - the ZK proof that a note's owner is eligible to propose a block. See [About Cryptarchia](../blockchain/concepts/about-cryptarchia.md).

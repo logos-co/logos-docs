@@ -106,7 +106,7 @@ New accounts are created in an uninitialised state, which means no program on LE
 The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
 :::
 
-4.  Fund the sender account using the Testnet Piñata program. Your account receives 150 tokens every time you fund it.
+4.  Fund the sender account using the Testnet [Piñata](../../get-started/glossary.md#piñata) program. Your account receives 150 tokens every time you fund it.
 
     ```sh
     wallet pinata claim --to ACCOUNT-TYPE/ACCOUNT-ID

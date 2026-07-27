@@ -22,15 +22,6 @@ sidebar_position: 2
 
 #### Set up the wallet, connect to a sequencer, and run a minimal transfer flow.
 
-:::warning
-This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
-:::
-
-:::info
-- **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
-:::
-
 :::tip
 A public [LEZ](../../get-started/glossary.md#lez) testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
 
@@ -279,7 +270,7 @@ Running `wallet auth-transfer init` initialises the sender account under the aut
 
 ### Claim funds using the Piñata faucet
 
-"Piñata" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
+"[Piñata](../../get-started/glossary.md#piñata)" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
 
 1. Fund the sender account via Piñata:
 

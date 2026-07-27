@@ -17,14 +17,14 @@ sidebar_position: 1
 
 #### Use `logos-scaffold` to create, build, and deploy a guest program on the Logos Execution Zone testnet.
 
-[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a LEZ guest program — from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
+[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program) — from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
 
 Before you begin, ensure you have:
 
 - Linux x86\_64 or macOS
 - Rust and Cargo (latest stable)
 - Node.js v20 or later
-- A running Logos Blockchain node connected to the public testnet (see [Run a Logos Blockchain node from Basecamp](../../blockchain/get-started/run-a-logos-blockchain-node-from-basecamp.md))
+- A running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node connected to the public testnet (see [Run a Logos Blockchain node from Basecamp](../../blockchain/get-started/run-a-logos-blockchain-node-from-basecamp.md))
 
 ## What to expect
 
@@ -95,7 +95,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     $EDITOR methods/guest/src/bin/hello_world.rs
     ```
 
-1. The program receives an `Input` struct via the zkVM environment, applies your logic, and writes an `Output` struct to the journal. The sequencer verifies the proof and updates the on-chain account state.
+1. The program receives an `Input` struct via the zkVM environment, applies your logic, and writes an `Output` struct to the journal. The sequencer verifies the proof and updates the on-chain [account](../../get-started/glossary.md#account) state.
 
     Key concepts:
     - **Instructions** are encoded as `Vec<u8>` (opcode byte followed by payload).

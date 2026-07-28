@@ -57,7 +57,7 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
  
 | Repository | Description |
 |:---|:---|
-| [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos Core module that exposes [Logos Chat](glossary.md#logos-chat). |
+| [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos [Core module](glossary.md#core-module) that exposes [Logos Chat](glossary.md#logos-chat). |
 | [logos-chat-ui](https://github.com/logos-co/logos-chat-ui) | UI application for the Logos Chat SDK proof of concept. |
 | [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early-stage wallet module built on go-wallet-sdk. |
 | [logos-accounts-module](https://github.com/logos-co/logos-accounts-module) | Early-stage [account](glossary.md#account)-management module built on go-wallet-sdk. |

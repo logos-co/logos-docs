@@ -15,7 +15,7 @@ sidebar_position: 4
 
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 
-The wallet UI is a simple entrypoint for getting started on the [LEZ](https://docs.logos.co/get-started/glossary#lez). This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
+The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
 :::info
 Recovery from mnemonic and withdrawals to the L1 are not yet supported.
@@ -62,7 +62,7 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
     ![Wallet setup screen](../assets/initiate-native-token-transfers-on-lez-with-wallet-ui/create-wallet.png)
 2. Choose a password.
 3. Click **Create wallet**.
-4.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](https://docs.logos.co/get-started/glossary#private-account) values from the genesis block.
+4.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](../../get-started/glossary.md#private-account) values from the genesis block.
 
     A progress bar shows the number of blocks processed, and this step can take a few minutes.
 
@@ -76,13 +76,13 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
 
 Unlike the predefined accounts on the wallet, accounts you create yourself are controlled only by you and aren't shared.
 
-1. Click **Create** [**account**](https://docs.logos.co/get-started/glossary#account).
+1. Click **Create** [**account**](../../get-started/glossary.md#account).
 2.  Select **Public**.
 
     ![Create account menu](../assets/initiate-native-token-transfers-on-lez-with-wallet-ui/create-account.png)
 3.  Click **Create**.
 
-    The new [public account](https://docs.logos.co/get-started/glossary#public-account) will appear in your account list.
+    The new [public account](../../get-started/glossary.md#public-account) will appear in your account list.
 
     ![New public account in the list](../assets/initiate-native-token-transfers-on-lez-with-wallet-ui/new-account.png)
 

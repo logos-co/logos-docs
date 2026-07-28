@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 
-This procedure covers how to send funds from one of your wallet addresses to a recipient on the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) using the Logos Blockchain dashboard. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
+This procedure covers how to send funds from one of your wallet addresses to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the Logos Blockchain dashboard. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
 Before you start, make sure you have the following:
 
@@ -60,7 +60,7 @@ Transfers are irreversible; double-check the 64-hex recipient key and the amount
 
 1. Check the result row directly below the **Send** button:
 
-   - On success, the row displays the transaction ID or hash returned by the [module](https://docs.logos.co/get-started/glossary#module). Click the copy button to copy it to the clipboard.
+   - On success, the row displays the transaction ID or hash returned by the [module](../../get-started/glossary.md#module). Click the copy button to copy it to the clipboard.
    - On failure, the row displays `Error: <message>` with the rejection reason from the module.
 
 1. Confirm the sender's balance decreased by pressing **Refresh** in the **Accounts** panel.

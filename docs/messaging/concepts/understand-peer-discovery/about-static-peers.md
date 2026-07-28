@@ -14,7 +14,7 @@ sidebar_position: 2
 
 #### Understand how hard-coded bootstrap peers work and the trade-offs they carry.
 
-[Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) applications have the flexibility to embed bootstrap node addresses directly into their codebase. Developers can either use static peers operated by [Status](https://status.im/) or [run a node](../../delivery/run-logos-delivery-node.md).
+[Logos Delivery](../../../get-started/glossary.md#logos-delivery) applications have the flexibility to embed bootstrap node addresses directly into their codebase. Developers can either use static peers operated by [Status](https://status.im/) or [run a node](../../delivery/run-logos-delivery-node.md).
 
 ## How static peers work
 

@@ -22,7 +22,7 @@ Check out the [WAKU2-TOPICS](https://lip.logos.co/messaging/informational/draft/
  
 ## The basics
  
-- [Content topics](https://docs.logos.co/get-started/glossary#content-topic) are developer-set metadata strings that let protocols filter, route, and retrieve messages.
+- [Content topics](../../get-started/glossary.md#content-topic) are developer-set metadata strings that let protocols filter, route, and retrieve messages.
 - The recommended [naming format](#naming-format) combines an application name, version, content topic name, and encoding.
 - [Naming considerations](#naming-considerations) matter for privacy, because some protocols disclose content topics to peers.
 
@@ -57,7 +57,7 @@ The `Filter`, `Store`, and `Light Push` protocols share content topics with peer
 For example, instead of using Personally Identifiable Information (PII) in the content topic (e.g., a public key), you can create buckets (e.g., based on the first 4 bytes of the public key hash).
 
 :::info
-[Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
+[Logos Delivery](../../get-started/glossary.md#logos-delivery) is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
 :::
 
 ### Increasing k-anonymity preserves user anonymity

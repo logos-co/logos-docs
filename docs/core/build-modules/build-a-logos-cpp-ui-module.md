@@ -15,7 +15,7 @@ sidebar_position: 4
 
 #### Get started building a ui\_qml module with a C++ backend that runs in a separate process.
 
-This guide covers building a [module](https://docs.logos.co/get-started/glossary#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
+This guide covers building a [module](../../get-started/glossary.md#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
 
 **Before you start**, make sure you have the following:
 
@@ -94,7 +94,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
     - `"type": "ui_qml"` — tells the builder this is a QML view module.
     - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
     - `"view": "qml/Main.qml"` — the QML entry point.
-    - `"dependencies": ["calc_module"]` — [core modules](https://docs.logos.co/get-started/glossary#core-module) the backend calls.
+    - `"dependencies": ["calc_module"]` — [core modules](../../get-started/glossary.md#core-module) the backend calls.
 2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash

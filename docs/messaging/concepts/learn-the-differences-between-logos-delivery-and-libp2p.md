@@ -30,7 +30,7 @@ Logos Delivery intends to incentivise mechanisms to run nodes, but it is not par
 
 Logos Delivery includes various protocols covering the following domains: privacy preservation, censorship resistance, and platform agnosticism, allowing it to run on any platform or environment.
 
-Logos Delivery provides out-of-the-box protocols to enable [mostly offline](https://docs.logos.co/get-started/glossary#mostly-offline)/resource-limited devices, [Store](./understand-logos-delivery-protocols.md#store)/[Light Push](./understand-logos-delivery-protocols.md#light-push)/[Filter](./understand-logos-delivery-protocols.md#filter) caters to those use cases.
+Logos Delivery provides out-of-the-box protocols to enable [mostly offline](../../get-started/glossary.md#mostly-offline)/resource-limited devices, [Store](./understand-logos-delivery-protocols.md#store)/[Light Push](./understand-logos-delivery-protocols.md#light-push)/[Filter](./understand-logos-delivery-protocols.md#filter) caters to those use cases.
 
 ## Economic spam protection
 

@@ -14,7 +14,7 @@ sidebar_position: 3
 
 #### Understand how a node retrieves peer connection details from an ENR tree published in DNS.
 
-Built upon the foundation of [EIP-1459: Node Discovery via DNS](https://eips.ethereum.org/EIPS/eip-1459), [DNS Discovery](https://docs.logos.co/get-started/glossary#dns-discovery) allows the retrieval of an `ENR` tree from the `TXT` field of a domain name. This approach enables the storage of essential node connection details, including IP, port, and multiaddr. This [bootstrapping](https://docs.logos.co/get-started/glossary#bootstrapping) method allows anyone to register and publish a domain name for the network, promoting increased decentralisation.
+Built upon the foundation of [EIP-1459: Node Discovery via DNS](https://eips.ethereum.org/EIPS/eip-1459), [DNS Discovery](../../../get-started/glossary.md#dns-discovery) allows the retrieval of an `ENR` tree from the `TXT` field of a domain name. This approach enables the storage of essential node connection details, including IP, port, and multiaddr. This [bootstrapping](../../../get-started/glossary.md#bootstrapping) method allows anyone to register and publish a domain name for the network, promoting increased decentralisation.
 
 ## How DNS discovery works
 
@@ -43,7 +43,7 @@ Pros:
 
 - Low latency, low resource requirements.
 - Easy bootstrap list updates by modifying the domain name, eliminating the need for code changes.
-- Ability to reference a larger list of nodes by including other domain names in the code or [ENR](https://docs.logos.co/get-started/glossary#enr) tree.
+- Ability to reference a larger list of nodes by including other domain names in the code or [ENR](../../../get-started/glossary.md#enr) tree.
 
 Cons:
 

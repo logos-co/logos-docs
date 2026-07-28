@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Get started sending and receiving messages with sender anonymity using the Logos Chat UI.
 
-This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co/logos-chat-ui/tree/feat/logos-testnetv02-mix) desktop app, connect to the testnet-0.2 mix fleet, and exchange messages between two instances with sender unlinkability. No configuration is required — the app ships with shared testnet credentials and discovers the fleet automatically.
+This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co/logos-chat-ui/tree/feat/logos-testnetv02-mix) desktop app, connect to the testnet-0.2 [mix](../../get-started/glossary.md#mix) fleet, and exchange messages between two instances with sender unlinkability. No configuration is required — the app ships with shared testnet credentials and discovers the fleet automatically.
 
 Before you start, make sure you have the following:
 

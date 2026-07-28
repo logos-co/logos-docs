@@ -28,7 +28,7 @@ Bedrock is organised into three key components. The most basic of these is the p
 
 ### Cryptarchia
 
-On top of the peer-to-peer network sits [Cryptarchia](./about-cryptarchia.md), the Logos Blockchain’s consensus protocol used to reach an agreement about the state of the blockchain. As a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) protocol, Cryptarchia gives all participants a proportional chance to propose a block, while ensuring that blocks cannot be linked to their proposers both before and after the proposal.
+On top of the peer-to-peer network sits [Cryptarchia](./about-ryptarchia.md), the Logos Blockchain’s consensus protocol used to reach an agreement about the state of the blockchain. As a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) protocol, Cryptarchia gives all participants a proportional chance to propose a block, while ensuring that blocks cannot be linked to their proposers both before and after the proposal.
 
 ### Mantle
 

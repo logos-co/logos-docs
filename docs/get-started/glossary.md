@@ -397,7 +397,7 @@ Used to keep track of Logos Blockchain nodes that opted in to participate in the
 
 ### Service Reward Distribution Protocol
 
-The **Service Reward Distribution Protocol** - enables reward distribution to Logos Blockchain nodes participating in the Blend Network. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network#service-reward-distribution-protocol).
+Enables reward distribution to Logos Blockchain nodes participating in the Blend Network. Also known as the **SRDP**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network#service-reward-distribution-protocol).
 
 ### Slot
 
@@ -405,7 +405,7 @@ The basic time unit used by the Logos Blockchain, equivalent to 1 second. See [A
 
 ### SRDP
 
-Enables reward distribution to Logos Blockchain nodes participating in the Blend Network. Also known as the **SRDP**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network#service-reward-distribution-protocol).
+The **Service Reward Distribution Protocol** - enables reward distribution to Logos Blockchain nodes participating in the Blend Network. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network#service-reward-distribution-protocol).
 
 ### Storage module
 

@@ -16,7 +16,7 @@ sidebar_position: 3
 
 ## What is Logos Messaging,Logos Delivery?
 
-[Logos Messaging](https://docs.logos.co/get-started/glossary#logos-messaging) is the messaging component of the Logos technology stack, composed of [Logos Delivery](https://docs.logos.co/get-started/glossary#logos-delivery) and [Logos Chat](https://docs.logos.co/get-started/glossary#logos-chat). Logos Delivery is a peer-to-peer messaging network with DoS protection via RLN (Rate Limiting Nullifiers). Any application can use it to send and receive messages over an open, censorship-resistant network.
+[Logos Messaging](../../get-started/glossary.md#logos-messaging) is the messaging component of the Logos technology stack, composed of [Logos Delivery](../../get-started/glossary.md#logos-delivery) and [Logos Chat](../../get-started/glossary.md#logos-chat). Logos Delivery is a peer-to-peer messaging network with DoS protection via RLN (Rate Limiting Nullifiers). Any application can use it to send and receive messages over an open, censorship-resistant network.
 
 Logos Chat is a protocol and library that provides 1:1 and group conversations with end-to-end encryption using de-MLS - everything an application needs to add private chat without rolling its own protocol.
 

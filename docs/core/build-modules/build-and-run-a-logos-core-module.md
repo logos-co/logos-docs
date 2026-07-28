@@ -17,10 +17,10 @@ sidebar_position: 2
 
 Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
 
-Logos [core modules](https://docs.logos.co/get-started/glossary#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
+Logos [core modules](../../get-started/glossary.md#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
 :::info
-For other [module](https://docs.logos.co/get-started/glossary#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+For other [module](../../get-started/glossary.md#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
 :::
 
 Before you start, make sure you have the following:
@@ -302,7 +302,7 @@ There are two ways to install `.lgx` packages:
 
 ### Download and install a `.lgx` file from a registry
 
-The Logos module [catalogue](https://docs.logos.co/get-started/glossary#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
+The Logos module [catalogue](../../get-started/glossary.md#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
 
 :::warning
 Registry packages currently ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They cannot be installed into a dev build of `logos-basecamp`, which expects `-dev` variants. To use a registry module with a dev build, you must build the module from source and bundle it with `#dual`. They install cleanly into `logoscore` and into portable builds of `logos-basecamp`.
@@ -334,7 +334,7 @@ Use `lgpd list` to browse all available packages.
    lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
-   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing [UI modules](https://docs.logos.co/get-started/glossary#ui-module).
+   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing [UI modules](../../get-started/glossary.md#ui-module).
 
 ## Step 7: Run the module 
 
@@ -369,7 +369,7 @@ Check out [Logos CLI Reference](../reference/logos-cli-reference.md) for more de
 
 ### Run with `logos-basecamp`
 
-Logos Basecamp is a desktop shell that provides a graphical interface for managing and running modules. Core modules run as background services in `logos-basecamp`. Other UI modules can call them through `LogosAPI` or the `logos.callModule()` bridge once they are installed.
+Logos [Basecamp](../../get-started/glossary.md#basecamp) is a desktop shell that provides a graphical interface for managing and running modules. Core modules run as background services in `logos-basecamp`. Other UI modules can call them through `LogosAPI` or the `logos.callModule()` bridge once they are installed.
 
 :::warning
 The LGX variant type must match the basecamp build type. Dev builds of basecamp expect dev LGX variants (for example, `darwin-arm64-dev`), and portable builds expect portable variants (for example, `darwin-arm64`). Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.

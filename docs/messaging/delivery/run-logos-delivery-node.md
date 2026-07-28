@@ -35,7 +35,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can start a `delivery_module` node connected to the Logos Network.
-- You can confirm the node is running and has a live network identity by querying its discv5 [ENR](https://docs.logos.co/get-started/glossary#enr).
+- You can confirm the node is running and has a live network identity by querying its discv5 [ENR](../../get-started/glossary.md#enr).
 - You can configure the node for a different network preset by swapping the config file passed to `createNode`.
 
 ## Step 1: Install and start the daemon
@@ -65,7 +65,7 @@ The first Docker build runs Nix and downloads release packages. It can take 30â€
    export PATH="$PWD/bin:$PATH"
    ```
 
-1. Download and install the [delivery module](https://docs.logos.co/get-started/glossary#delivery-module):
+1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
 
    ```bash
    mkdir -p packages modules
@@ -93,7 +93,7 @@ The first Docker build runs Nix and downloads release packages. It can take 30â€
 
 **Path C â€” Nix**
 
-1. Clone the repository and build the runtime, package manager, and [module](https://docs.logos.co/get-started/glossary#module):
+1. Clone the repository and build the runtime, package manager, and [module](../../get-started/glossary.md#module):
 
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git

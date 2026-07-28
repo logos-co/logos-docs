@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors:
 owner: logos
 doc_version: 1
-slug: run-logos-node-blockchain-storage-delivery
+slug: /run-a-node
 sidebar_position: 1
 ---
 
@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Get started running a full Logos node with all three core modules on testnet v0.2.
 
-This procedure covers installing and running a single [Logos node](https://docs.logos.co/get-started/glossary#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
+This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 The default paths used throughout this procedure are:
 
@@ -37,7 +37,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can run a full Logos node with all three modules active and publicly reachable on the testnet.
-- You can verify each [module](https://docs.logos.co/get-started/glossary#module) is healthy by querying the daemon and checking live port bindings.
+- You can verify each [module](../../get-started/glossary.md#module) is healthy by querying the daemon and checking live port bindings.
 - You can configure the node for unattended operation using the systemd service pattern described in [here](#optional-run-the-node-unattended-with-systemd).
 
 ## Step 1: Install runtime tools
@@ -121,7 +121,7 @@ Create the runtime user and the directory layout the node uses at runtime.
 
 ## Step 3: Install modules
 
-Download and install the three module packages from the configured module [catalogue](https://docs.logos.co/get-started/glossary#catalogue).
+Download and install the three module packages from the configured module [catalogue](../../get-started/glossary.md#catalogue).
 
 :::info
 `lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
@@ -266,7 +266,7 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
    - Fields
 
    :::info
-To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) support, generate the config from the published mix bootstrap data:
+To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data:
 
      ```sh
      cd /var/lib/logos-node/storage-module
@@ -301,7 +301,7 @@ To run storage with [mix](https://docs.logos.co/get-started/glossary#mix) suppor
      ```
 :::
 
-1. Load and start the [storage module](https://docs.logos.co/get-started/glossary#storage-module):
+1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
 
    ```sh
    cd /var/lib/logos-node/storage-module
@@ -353,7 +353,7 @@ Create the delivery config and start the module. Replace `<public-ip>` with the 
    - Use fixed `tcpPort` and `discv5UdpPort`; do not leave public nodes on random ports.
    - The `logos.test` preset provides the delivery network bootstrap settings.
 
-1. Load and start the [delivery module](https://docs.logos.co/get-started/glossary#delivery-module):
+1. Load and start the [delivery module](../../get-started/glossary.md#delivery-module):
 
    ```sh
    cd /var/lib/logos-node/delivery-module

@@ -15,9 +15,20 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         {
-          type: 'link',
-          label: 'Install Logos Basecamp',
-          href: '/basecamp/get-started/install-logos-basecamp',
+          type: 'category',
+          label: 'Basecamp',
+          items: [
+            {
+              type: 'link',
+              label: 'Install Logos Basecamp',
+              href: '/basecamp/install-logos-basecamp',
+            },
+            {
+              type: 'link',
+              label: 'Install and load a module in Logos Basecamp',
+              href: '/core/build-modules/install-and-load-a-module-in-logos-basecamp',
+            },
+          ],
         },
         {
           type: 'category',
@@ -54,6 +65,28 @@ const sidebars: SidebarsConfig = {
               type: 'link',
               label: 'Initiate native token transfers on the LEZ with the wallet UI',
               href: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Chat App',
+          items: [
+            {
+              type: 'link',
+              label: 'Send 1:1 messages with the Logos Chat app',
+              href: '/messaging/get-started/send-1-1-messages-logos-chat',
+            },
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Storage UI',
+          items: [
+            {
+              type: 'link',
+              label: 'Set up and use the Logos Storage UI',
+              href: '/storage/get-started/set-up-and-use-logos-storage-ui',
             },
           ],
         },
@@ -100,8 +133,6 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Build an app',
-      // Same reasoning as run-an-app above: gives this grouping a real
-      // page to anchor to, at a URL nobody else owns.
       link: {
         type: 'generated-index',
         title: 'Build an app',
@@ -154,9 +185,15 @@ const sidebars: SidebarsConfig = {
   basecampSidebar: [
     {
       type: 'category',
-      label: 'Get started',
+      label: 'Basecamp',
+      link: {
+        type: 'generated-index',
+        title: 'Basecamp',
+        description: 'Install and run Logos Basecamp, the desktop launcher for the Logos stack.',
+        slug: '/basecamp',
+      },
       items: [
-        'basecamp/get-started/install-logos-basecamp',
+        'basecamp/install-logos-basecamp',
         'core/build-modules/install-and-load-a-module-in-logos-basecamp',
       ],
     },

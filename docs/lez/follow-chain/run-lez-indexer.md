@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Get started with the LEZ Indexer and query finalized LEZ state over HTTP RPC.
 
-The [LEZ](https://docs.logos.co/get-started/glossary#lez) Indexer is a service that reads the finalized LEZ state from the [Logos Blockchain](https://docs.logos.co/get-started/glossary#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](https://docs.logos.co/get-started/glossary#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
+The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the finalized LEZ state from the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](../../get-started/glossary.md#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
 
 Before you start, make sure you have the following:
 
@@ -38,7 +38,7 @@ Before you start, make sure you have the following:
 The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequencer running alongside it. For a local deployment, start each service in its own terminal.
 
 1. In the LEZ repository, run `just clean` to remove any leftover artifacts from previous runs.
-2.  Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's [channel](https://docs.logos.co/get-started/glossary#channel) ID. Get the channel ID from the public LEZ sequencer by running:
+2.  Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's [channel](../../get-started/glossary.md#channel) ID. Get the channel ID from the public LEZ sequencer by running:
 
     ```bash
     curl https://testnet.lez.logos.co/ \

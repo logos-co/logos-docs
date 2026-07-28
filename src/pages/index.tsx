@@ -22,7 +22,7 @@ const choosePath: CardItem[] = [
   {
     title: 'Run a node',
     description: 'Run one service or all three: blockchain, delivery, and storage',
-    to: '/run-a-node/get-started/run-logos-node-blockchain-storage-delivery',
+    to: '/run-a-node',
     icon: '/img/home/run-a-node.png',
   },
   {
@@ -43,17 +43,17 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Basecamp',
     description: 'The desktop shell for Logos',
-    to: '/basecamp/get-started/install-logos-basecamp',
+    to: '/basecamp',
   },
   {
     title: 'λ Blockchain',
     description: 'A sovereign, censorship-resistant base layer for building apps',
-    to: '/blockchain/get-started/introduction-to-the-logos-blockchain',
+    to: '/blockchain',
   },
   {
     title: 'λ LEZ',
     description: 'The flagship execution environment built on the Logos Blockchain',
-    to: '/lez/get-started/introduction-to-the-logos-execution-zone',
+    to: '/lez',
   },
   {
     title: 'λ Core',
@@ -63,7 +63,7 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Messaging',
     description: 'Private, censorship-resistant communication',
-    to: '/messaging/get-started/introduction-to-logos-messaging',
+    to: '/messaging',
   },
   {
     title: 'λ Storage',

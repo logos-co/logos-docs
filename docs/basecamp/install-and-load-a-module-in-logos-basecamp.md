@@ -8,22 +8,24 @@ authors: iurimatias, cheny0
 owner: logos
 doc_version: 1
 slug: install-and-load-a-module-in-logos-basecamp
-sidebar_position: 5
+sidebar_position: 2
 ---
+
+import YouTube from '@site/src/components/YouTube';
 
 # Install and load a module in Logos Basecamp
 
 #### Access features and functionalities through modules in Logos Basecamp.
 
-In Logos [Basecamp](../../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../../get-started/glossary.md#catalogue) or local `.lgx` files.
+In Logos [Basecamp](../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../get-started/glossary.md#catalogue) or local `.lgx` files.
 
-There are two types of modules in Logos Basecamp. [Core modules](../../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../../get-started/glossary.md#ui-module) are the visual front-ends users interact with.
+There are two types of modules in Logos Basecamp. [Core modules](../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../get-started/glossary.md#ui-module) are the visual front-ends users interact with.
 
 Before you start, make sure you have:
 
-- Logos Basecamp [installed and running](../../basecamp/install-logos-basecamp.md).
+- Logos Basecamp [installed and running](./install-logos-basecamp.md).
 - Internet access for online catalogue install.
-- [An `.lgx` file](build-and-run-a-logos-core-module.md) for local install.
+- [An `.lgx` file](../core/build-modules/build-and-run-a-logos-core-module.md) for local install.
 
 :::info
 The `.lgx` file's archive must contain a variant matching your platform. For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
@@ -31,9 +33,14 @@ The `.lgx` file's archive must contain a variant matching your platform. For exa
 
 ## What to expect
 
-- You can install a [module](../../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
+- You can install a [module](../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
 - You can load or unload a module from the **Modules** view.
 - You can read a loading module's status, CPU, and memory in the **Modules** view.
+
+:::tip
+An introduction to modules in Logos Basecamp is available in video form:
+<YouTube id="yZ_93uAAY9A" title="Understanding .lgx modules on Logos Basecamp" />
+:::
 
 ## Step 1: Install the module package
 
@@ -41,14 +48,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalogue
 
-1. In the sidebar, click **Package Manager** ![](../assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. In the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
 2. Browse and locate the module you want. You can click the module to view more details in the content area below.
 3. Select the module to install and click **Install**.
-4. At the bottom of the sidebar, click the **Modules** ![](../assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png). The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
+4. At the bottom of the sidebar, click the **Modules** ![](./assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png). The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
 
 ### Install from a local `.lgx` file
 
-1. At the bottom of the sidebar, click **Modules** ![](../assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
+1. At the bottom of the sidebar, click **Modules** ![](./assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
 2. Click **Install LGX Package**.
 3. Select the `.lgx` file and confirm.
 4. The newly installed module appears under **UI Modules** or **Core Modules** depending on its type.
@@ -57,7 +64,7 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
-1. At the bottom of the sidebar, click **Modules** ![](../assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
+1. At the bottom of the sidebar, click **Modules** ![](./assets/install-and-load-a-module-in-logos-basecamp/modules-icon.png).
 2. Find the module to load under **UI Modules** or **Core Modules** depending on its type.
 3. Click **Load** next to the module.
 

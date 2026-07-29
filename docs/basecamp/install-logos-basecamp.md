@@ -11,6 +11,8 @@ slug: install-logos-basecamp
 sidebar_position: 1
 ---
 
+import YouTube from '@site/src/components/YouTube';
+
 # Install Logos Basecamp
 
 #### Get Logos Basecamp running on your desktop.
@@ -37,6 +39,11 @@ Before you start, make sure you have the following:
 
 :::info
 Internet access is required to download the binary or clone the repository, but not to launch Logos Basecamp afterward. Logos Basecamp itself opens no inbound ports.
+:::
+
+:::tip
+This tutorial is also available in video form:
+<YouTube id="SZ72xolkZz4" title="Installing Logos Basecamp" />
 :::
 
 ## Install from a prebuilt release

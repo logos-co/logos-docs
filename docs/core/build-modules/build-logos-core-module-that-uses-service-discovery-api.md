@@ -8,7 +8,7 @@ authors: gmelodie, kashepavadan
 owner: logos
 doc_version: 1
 slug: build-logos-core-module-that-uses-service-discovery-api
-sidebar_position: 6
+sidebar_position: 5
 ---
 
 # Build a Logos Core module that uses the Service Discovery API

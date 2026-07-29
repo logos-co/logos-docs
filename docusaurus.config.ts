@@ -164,7 +164,7 @@ const config: Config = {
           },
           {
             from: '/build-an-app/build-modules/install-and-load-a-module-in-logos-basecamp',
-            to: '/core/build-modules/install-and-load-a-module-in-logos-basecamp',
+            to: '/basecamp/install-and-load-a-module-in-logos-basecamp',
           },
           {
             from: '/build-an-app/build-modules/readme',

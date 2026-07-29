@@ -282,6 +282,15 @@ const config: Config = {
             },
           ],
         },
+        {
+          title: 'Legal',
+          items: [
+            {
+              label: 'Terms and Conditions',
+              href: 'https://logos.co/terms-and-conditions',
+            },
+          ],
+        },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Logos. Built with Docusaurus.`,
     },

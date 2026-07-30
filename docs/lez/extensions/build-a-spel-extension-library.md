@@ -162,7 +162,9 @@ pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
-Never read or strip `#[account(...)]` attrs in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults (`#[require_my_gate(state = my_cfg, signer = owner)]`).
+Never read or strip `#[account(...)]` attrs in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
+
+**The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved param name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))` and assert the declared account names equal the kwarg set a probe fn hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert.
 
 To spare consumers declaring your gate's account params on every gated instruction, declare them in your `Cargo.toml`:
 
@@ -179,7 +181,45 @@ wrapper = "require_my_gate"
   signer = true
 ```
 
-Any consumer instruction carrying `#[require_my_gate]` gets the listed params synthesized at expansion time unless it already declares them (skip-if-declared). The injected params are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account.
+Any consumer instruction carrying `#[require_my_gate]` gets the listed params synthesized at expansion time unless it already declares them (skip-if-declared). The injected params are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account. Compound PDA seeds work too: `seed = [{ const = "frozen" }, { account = "caller" }]` derives from a literal plus another account's id.
+
+## Auto-wrap every instruction (optional)
+
+A gate that should apply to every dispatched instruction by default, the freeze pattern, declares a wrap block instead of relying on consumers to annotate each fn:
+
+```toml
+[package.metadata.spel.wrap_instructions]
+wrapper = "my_extension::require_my_gate"
+skip = "manual"
+self_exempt_marker = "my_gate_exempt"
+exempt = ["admin_authority::admin_transfer"]
+```
+
+The framework prepends the wrapper attr to every instruction the consumer dispatches, including other extensions' discovered instructions. `skip` names a marker word that disables auto mode (`#[my_extension(manual)]`), `self_exempt_marker` is the attr your own library and consumers use to opt single instructions out, and `exempt` carves out other extensions' instructions by qualified name. Injection and wrapping compose, a wrapped instruction gets your gate's params injected like an annotated one.
+
+## Embedded mode (optional)
+
+An extension whose per-program state is one fixed-size slot can let consumers embed that slot inside one of their own accounts instead of a dedicated PDA. The consumer declares it on your marker, role name plus byte offset:
+
+```rust
+#[my_extension(my_state = config, offset = 32)]
+```
+
+To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction fns a trailing `offset: usize` param, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal:
+
+```toml
+[package.metadata.spel.embedded]
+skip = ["my_extension_initialize"]
+
+[[package.metadata.spel.bound_args]]
+arg = "offset"
+from = "offset"
+default = 0
+```
+
+`embedded.skip` names instructions not emitted in embedded mode (typically your initializer, the consumer's own account creation replaces it). Bound args are stripped from the IDL and the transaction entirely, a caller can never supply an offset, and dedicated mode is the degenerate case offset 0 through the declared default. `from` also accepts a peer marker's kwarg (`from = "admin_authority::offset"`) so an extension can read state a peer embedded, without depending on the peer's crate. A missing marker or kwarg without a declared default is a hard compile error, never a silent zero.
+
+When two extensions embed into the same consumer account at distinct offsets, the framework merges the duplicated account into one transaction account (listed once in the IDL with unioned constraints, cloned into each position of the call) and your instruction must emit exactly one post-state per unique account id. Same account at the same offset is a compile error.
 
 ## Consumer integration
 
@@ -190,6 +230,8 @@ A consumer adds your extension to their `Cargo.toml`:
 my-extension = { git = "https://github.com/you/my-extension" }
 spel-framework = { git = "https://github.com/logos-co/spel" }
 ```
+
+Path, git, and registry dependencies are all discoverable. Discovery is restricted to the consumer's direct dependencies, a transitive crate can never contribute instructions by claiming a matching `extension_attr`, and the generated call paths use your `[package].name`, never a directory name.
 
 Then puts the marker on their `#[lez_program]` module:
 
@@ -220,6 +262,8 @@ mod my_program { ... }
 
 Each extension is discovered independently by its own `extension_attr`. Each contributes its own instructions to the dispatcher, and each gate attribute re-expands on its own gated handlers without touching the others.
 
+Marker order is the cross-extension ABI: the first marker's instructions and injected params come first in the dispatcher, the IDL, and the account order. When two extensions inject the same param name with identical constraints they share one account, conflicting constraints are a compile error naming both extensions. Duplicate instruction names between extensions (or an extension and a consumer fn) are a compile error naming both sources. Two extensions can even embed into the same consumer account at distinct offsets, see embedded mode above.
+
 ## Verifying your extension
 
 Build a small sample program that consumes your extension. Then:
@@ -231,8 +275,10 @@ spel generate-idl path/to/sample/src/main.rs
 The IDL should contain your extension's instructions alongside the consumer's own. If they are missing, the most common causes are:
 
 - `[package.metadata.spel.extension_attr]` not declared, or value does not match the attribute name the consumer wrote.
-- Library's `Cargo.toml` not listed as a path dependency in the consumer's `Cargo.toml` (registry / git deps are not scanned).
+- The library is a transitive dependency rather than a direct one. Only the consumer's own `[dependencies]` are scanned, by design.
 - Cached macro expansion, try `cargo clean -p <sample-crate>` and rebuild. Cargo doesn't know proc-macros read external `Cargo.toml` files, so metadata changes don't always invalidate the cache.
+
+Malformed `[package.metadata.spel]` is a hard compile error, never a silent skip. And when a marker is present but its extension cannot be located because dependency resolution failed (for example `cargo metadata` failing in a constrained environment), the build refuses to compile rather than shipping a program silently missing its extension surface. When every marker matched a path dependency, the same degradation stays a warning.
 
 ## Why this design
 

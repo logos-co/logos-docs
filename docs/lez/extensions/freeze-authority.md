@@ -138,38 +138,25 @@ pub fn balance_of(/* ... */) -> SpelResult { /* read-only, safe while frozen */ 
 
 The framework reads `self_exempt_marker = "freeze_exempt"` from freeze-authority's Cargo metadata and skips the wrap for any fn carrying the attribute.
 
-## Choose an initial freeze authority
+## Initialize the freeze authority
 
-`freeze_initialize` takes a `FreezeCandidate` — same shape as `AdminCandidate` from admin-authority:
-
-```rust
-pub enum FreezeCandidate {
-    /// The new freeze authority is a keyholder. Validated by checking that
-    /// `new_freeze_account.is_authorized == true` (co-signed the tx).
-    Signer,
-    /// The new freeze authority is a program-owned PDA. Validated by deriving
-    /// the address from (program_id, seed) and confirming the PDA exists on chain.
-    Pda { program_id: AccountId, seed: [u8; 32] },
-}
-```
-
-From the SPEL CLI (note the required admin signature):
+`freeze_initialize` takes no candidate argument. The admin signs, and the admin becomes the initial freeze authority, the same self-election pattern as `admin_initialize`. Hand the role to a dedicated operations key or a PDA afterwards with `freeze_authority_transfer`.
 
 ```bash
-spel tx send freeze_initialize \
-    --admin-signer <admin-account-id> \
-    --new-freeze Signer \
-    --new-freeze-account <new-freeze-authority-account-id>
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-initialize --caller <admin-account-id>
 ```
 
 ## Freeze and unfreeze the program
 
 ```bash
 # Freeze: rejects every interaction except the F3 carve-outs and admin operations.
-spel tx send freeze_program
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-program --caller <freeze-authority-account-id>
 
 # Unfreeze: restores normal operation.
-spel tx send freeze_program_release
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-program-release --caller <freeze-authority-account-id>
 ```
 
 Both require the current freeze authority to sign.
@@ -178,23 +165,39 @@ Both require the current freeze authority to sign.
 
 ```bash
 # Block account X from interacting with this program.
-spel tx send freeze_account --target <account-id-X>
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-account --caller <freeze-authority-account-id> --target <account-id-X>
 
 # Restore X's access.
-spel tx send freeze_account_release --target <account-id-X>
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-account-release --caller <freeze-authority-account-id> --target <account-id-X>
 ```
 
 When account X is frozen, any instruction in your program that's auto-gated or carries `#[require_not_frozen]` rejects when X is the signer. Other accounts are unaffected. Per-account state survives the program-wide frozen flag toggling — the two layers are independent.
 
 ## Transfer freeze authority to another party
 
-`freeze_authority_transfer` requires the admin to sign. The freeze authority slot can also be transferred from a Renounced (vacant) state, so admins can rotate the role with or without an interim vacancy:
+`freeze_authority_transfer` requires the admin to sign. It takes a `FreezeCandidate` describing the new holder, the same shape as `AdminCandidate`, paired with a `new_account` that carries the chain-state evidence:
+
+```rust
+pub enum FreezeCandidate {
+    /// The new freeze authority is a keyholder. Validated by checking that
+    /// the new account co-signed the transaction.
+    Signer,
+    /// The new freeze authority is a program-owned PDA. Validated by deriving
+    /// the address from (program_id, seed) and confirming the PDA exists on chain.
+    Pda { program_id: AccountId, seed: [u8; 32] },
+}
+```
+
+The slot can also be transferred from a Renounced (vacant) state, so admins can rotate the role with or without an interim vacancy:
 
 ```bash
-spel tx send freeze_authority_transfer \
-    --admin-signer <admin-account-id> \
-    --new-freeze Signer \
-    --new-freeze-account <new-freeze-authority-account-id>
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-authority-transfer \
+    --caller <admin-account-id> \
+    --new-account <new-freeze-authority-account-id> \
+    --candidate Signer
 ```
 
 ## Use a program (PDA) as freeze authority
@@ -202,10 +205,11 @@ spel tx send freeze_authority_transfer \
 To delegate freeze authority to another program (e.g. a multisig or a circuit-breaker DAO), pass `FreezeCandidate::Pda`:
 
 ```bash
-spel tx send freeze_authority_transfer \
-    --admin-signer <admin-account-id> \
-    --new-freeze 'Pda { program_id: <multisig-program-id>, seed: <32-byte-seed> }' \
-    --new-freeze-account <pda-account-id>
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-authority-transfer \
+    --caller <admin-account-id> \
+    --new-account <pda-account-id> \
+    --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
 When the multisig invokes `freeze_program` (or any freeze-authority-signed instruction), it does so through a chained call and declares its PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true`; the gate sees the PDA as the legitimate freeze authority.
@@ -214,12 +218,42 @@ When the multisig invokes `freeze_program` (or any freeze-authority-signed instr
 
 ```bash
 # Either the current admin OR the current freeze authority can sign.
-spel tx send freeze_authority_renounce
+spel --idl program-idl.json --program <program-id> -- \
+    freeze-authority-renounce --caller <admin-or-freeze-authority-account-id>
 ```
 
 Unlike admin renounce, this is NOT terminal. The freeze authority slot becomes vacant; the admin can repopulate it later via `freeze_authority_transfer`. While the slot is vacant, `freeze_program`, `freeze_program_release`, `freeze_account`, and `freeze_account_release` all fail. The program-wide `is_frozen` flag and per-account states are preserved at the moment of renounce — they don't reset.
 
 If the admin has already been renounced first (terminal), the freeze slot becomes effectively permanent: there is no one to call `freeze_authority_transfer` to repopulate it. Plan the order of renounces carefully if you intend to commit to no-future-freeze.
+
+## Embedded mode, the freeze slot inside your own account
+
+Like admin-authority, the freeze state can live inside one of your program's own accounts instead of a dedicated Config PDA, and both extensions can share the same account at distinct offsets:
+
+```rust
+#[account_type]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug)]
+pub struct ProgramConfig {
+    pub value: u64,            // bytes 0..8
+    pub padding: [u8; 24],     // bytes 8..32
+    pub admin: AdminConfig,    // bytes 32..64
+    pub freeze: FreezeConfig,  // bytes 64..97
+}
+
+#[lez_program]
+#[admin_authority(admin_config = config, offset = 32)]
+#[freeze_authority(freeze_config = config, offset = 64)]
+mod my_program { /* ... */ }
+```
+
+What changes:
+
+- **No `freeze_initialize`.** Your account-creating instruction writes the struct, and the freeze slot is born vacant: it rejects every holder-path caller until the admin appoints the first holder via `freeze_authority_transfer`, the same path that repopulates a renounced slot. There is no initialization ordering to get right because there is no initializer.
+- **One account per transaction.** When admin and freeze share the embedding account, management instructions that read both carry the shared account once. `freeze_authority_renounce` drops from 3 accounts to 2.
+- **Splice-only writes.** Freeze operations write only the 33 byte window (32 byte slot plus the frozen flag), your neighboring fields survive every toggle and transfer.
+- **Offsets never appear in a transaction.** They compile into the program as literals, and the IDL carries no offset arguments.
+
+The library repository ships `freeze-authority-sample-embedded` with the full layout, adjacent-window tests, and a committed dry-run walkthrough.
 
 ## Verify your integration
 
@@ -244,7 +278,7 @@ Expected output includes:
 "freeze_account_release"
 ```
 
-Plus your own instructions. If the freeze instructions are missing, the most common causes are:
+Plus your own instructions. In embedded mode neither `admin_initialize` nor `freeze_initialize` appears, and the config accounts in every instruction are your own embedding account instead of the dedicated PDAs. If the freeze instructions are missing, the most common causes are:
 
 - `freeze-authority` not declared as a path or git dependency in your `Cargo.toml`.
 - `admin-authority` missing (freeze-authority hard-depends on it).

@@ -1,0 +1,21 @@
+name: Vale
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '**/*.mdx'
+      - '.vale.ini'
+      - '.github/styles/**'
+
+jobs:
+  prose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: errata-ai/vale-action@reviewdog
+        with:
+          version: 3.11.1          # pin it; match your local version
+          files: docs
+          reporter: github-pr-check
+          filter_mode: added        # only lint lines the PR changed
+          fail_on_error: false      # start non-blocking

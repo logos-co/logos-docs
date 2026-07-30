@@ -1,0 +1,43 @@
+extends: substitution
+message: "Use British spelling: '%s'."
+level: error
+ignorecase: true
+
+swap:
+  # -our endings
+  color: colour
+  colors: colours
+  behavior: behaviour
+  behaviors: behaviours
+  favor: favour
+  flavor: flavour
+  honor: honour
+  labor: labour
+  neighbor: neighbour
+  # -re endings
+  center: centre
+  centers: centres
+  fiber: fibre
+  liter: litre
+  meter: metre
+  theater: theatre
+  # -ise endings (traditional British)
+  centralize: centralise
+  decentralize: decentralise
+  decentralization: decentralisation
+  organize: organise
+  organized: organised
+  organizing: organising
+  organization: organisation
+  recognize: recognise
+  analyze: analyse
+  customize: customise
+  optimize: optimise
+  # -ogue / doubled-l / misc
+  catalog: catalogue
+  dialog: dialogue
+  traveled: travelled
+  traveling: travelling
+  canceled: cancelled
+  modeling: modelling
+  gray: grey

@@ -1,0 +1,12 @@
+Docusaurus
+Logos
+Waku
+Nomos
+Nim
+Nimbus
+libp2p
+zkSNARK
+zkSNARKs
+Codex
+MDX
+frontmatter

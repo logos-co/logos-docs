@@ -1,12 +1,12 @@
 artifact
-Basecamp
+[Bb]asecamp
 Bedrock
 Blend Network
 boostrapping
 Codex
-Core
+[Cc]ore
 Cryptarchia
-Delivery
+[Dd]elivery
 dApp
 dApps
 devnet
@@ -17,8 +17,7 @@ indexer
 LEZ
 libp2p
 liveness
-Logos
-logos
+[Ll]ogos
 Logos Execution Zone
 mainnet
 mempool
@@ -47,9 +46,9 @@ tokenomics
 unstaking
 validator
 validators
-Waku
+[Ww]aku
 zk
 zkSNARK
 zkSNARKs
-Zone
-Zones
+[Zz]one
+[Zz]ones

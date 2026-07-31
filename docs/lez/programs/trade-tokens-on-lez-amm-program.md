@@ -36,6 +36,8 @@ This procedure explains how developers and node operators deploy and drive the a
 1. Install `spel`.
 
    ```bash
+   git clone https://github.com/logos-co/spel.git
+   cd spel
    cargo install --path spel-cli  # installs as "spel"
    ```
 
@@ -99,16 +101,16 @@ Use `spel` to create the two fungible tokens your pool will hold.
 1. Create two public LEZ accounts for each token, as well as an additional account to hold liquidity provider (LP) tokens, using `wallet`.
 
    ```bash
-   wallet create account new public ---label "Token A Definition"
-   wallet create account new public ---label "Token A Holding"
+   wallet account new public --label "Token A Definition"
+   wallet account new public --label "Token A Holding"
 
-   wallet create account new public ---label "Token B Definition"
-   wallet create account new public ---label "Token B Holding"
+   wallet account new public --label "Token B Definition"
+   wallet account new public --label "Token B Holding"
 
-   wallet create account new public ---label "User Holding LP"
+   wallet account new public --label "User Holding LP"
    ```
 
-1. Record the generates account IDs:
+1. Record the generated account IDs:
 
    ```bash
    wallet account list
@@ -120,7 +122,7 @@ Use `spel` to create the two fungible tokens your pool will hold.
    # /2 Public/EcWWrBekMaER4JRAzzP4rpB8TFD2eHvyYJxScQPwzmpE [Token B Holding]
    ```
 
-   - Use the listed ids instead of the `<DEF_*>`, `<HOLDING_*>`, and `<USER_HOLDING_LP`> placeholders in later steps.
+   - Use the listed ids instead of the `<DEF_*>`, `<HOLDING_*>`, and `<USER_HOLDING_LP>` placeholders in later steps.
 
 1. Create both tokens' definition and holding accounts.
 
@@ -162,7 +164,7 @@ AMM PDAs use a SHA-256 seed scheme, so derive them with the program's own `*_pda
      "<AMM_PROGRAM_ID>" "<TWAP_PROGRAM_ID>" "<DEF_A>" "<DEF_B>"
    ```
 
-   - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, and `<CURRENT_TICK_PDA>`.
+   - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, and `<CURRENT_TICK_PDA>`.
 
 1. Select any of your accounts to be `<AUTHORITY>` — the admin who can later call `update_config`.
 

@@ -20,7 +20,7 @@ This procedure explains how developers and node operators deploy and drive the a
 **Before you start**, make sure you have the following:
 
 - Docker
-- [A funded LEZ wallet](https://docs.logos.co/lez/get-started/lez-quickstart)
+- [A funded LEZ wallet](../get-started/quickstart-for-the-logos-execution-zone-wallet.md/)
 - [RISC0 installed](https://dev.risczero.com/api/zkvm/install)
 
 ## What to expect
@@ -114,12 +114,6 @@ Use `spel` to create the two fungible tokens your pool will hold.
 
    ```bash
    wallet account list
-
-   # Sample output:
-   # /1 Public/4T69U868K6UzX8zbesU5wyr36gxaU7wb91Q45yedP4Rb [Token A Holding]
-   # /0 Public/CER21z16YgmWr3aN8FEHsrmfm2iRfQiwZTac3FQa21US [Tokan A Definition]
-   # /0/0 Public/EW2eoxcQyRDffrr94LkmuyByhaXx8emNzfDSAp9q29m5 [Token B Definition]
-   # /2 Public/EcWWrBekMaER4JRAzzP4rpB8TFD2eHvyYJxScQPwzmpE [Token B Holding]
    ```
 
    - Use the listed ids instead of the `<DEF_*>`, `<HOLDING_*>`, and `<USER_HOLDING_LP>` placeholders in later steps.
@@ -268,8 +262,8 @@ Initiate a swap between your two tokens, then feed the resulting price tick into
         --pool <POOL_PDA> \
         --vault-a <VAULT_A_PDA> \
         --vault-b <VAULT_B_PDA> \
-        --user-holding-a <USER_HOLDING_A> \
-        --user-holding-b <USER_HOLDING_B> \
+        --user-input-holding <USER_HOLDING_A> \
+        --user-output-holding-b <USER_HOLDING_B> \
         --current-tick-account <CURRENT_TICK_PDA> \
         --clock 4BdcjoXkq786TMWcBGGHqcxeLYMZmn17rL4eM9ZyRWNU \
         --swap-amount-in <AMOUNT_IN> \
@@ -278,8 +272,7 @@ Initiate a swap between your two tokens, then feed the resulting price tick into
         --deadline 18446744073709551615
    ```
 
-   - `--token-definition-id-in` sets the direction: `<DEF_A>` swaps A→B, `<DEF_B>` swaps B→A.
-   - Pass and sign both `user-holding-a` and `user-holding-b`, even though only the input side is debited.
+   - The swap direction is set by which holding you pass as `--user-input-holding`
 
    :::info
    To verify, run the following:

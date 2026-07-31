@@ -20,7 +20,7 @@ This procedure explains how developers and node operators deploy and drive the a
 **Before you start**, make sure you have the following:
 
 - Docker
-- [A funded LEZ wallet](../get-started/quickstart-for-the-logos-execution-zone-wallet.md/)
+- [A funded LEZ wallet](../get-started/lez-quickstart)
 - [RISC0 installed](https://dev.risczero.com/api/zkvm/install)
 
 ## What to expect

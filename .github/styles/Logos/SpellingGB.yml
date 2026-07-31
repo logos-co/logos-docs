@@ -1,0 +1,6 @@
+extends: spelling
+message: "'%s' is not in British English."
+level: error
+scope: ~text.frontmatter.authors
+dictionaries:
+  - en_GB

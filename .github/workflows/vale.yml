@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1    
+
+      - uses: actions/cache@v5
+        with:
+          path: .github/styles 
+          key: vale-styles-${{ hashFiles('.vale.ini') }}
+
       - uses: errata-ai/vale-action@reviewdog
         with:
-          path: .github/styles
-          key: vale-styles-${{ hashFiles('.vale.ini') }}
-          version: 3.11.1          # pin it; match your local version
+          version: 3.11.1
           files: docs
           reporter: github-pr-check
-          filter_mode: added        # only lint lines the PR changed
+          filter_mode: added
           fail_on_error: true
-          fetch-depth: 1

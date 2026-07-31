@@ -1,6 +1,6 @@
 artifact
 [Bb]asecamp
-Bedrock
+[Bb]edrock
 Blend Network
 boostrapping
 Codex
@@ -21,7 +21,7 @@ liveness
 Logos Execution Zone
 mainnet
 mempool
-Messaging
+[Mm]essaging
 Mix
 Mixnet
 multisig
@@ -40,7 +40,7 @@ rollups
 sharding
 slashing
 staking
-Storage
+[Ss]torage
 testnet
 tokenomics
 unstaking

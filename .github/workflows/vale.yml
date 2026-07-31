@@ -20,5 +20,5 @@ jobs:
           files: docs
           reporter: github-pr-check
           filter_mode: added        # only lint lines the PR changed
-          fail_on_error: false      # start non-blocking
+          fail_on_error: true
           fetch-depth: 1

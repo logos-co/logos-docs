@@ -32,6 +32,8 @@ swap:
   recognize: recognise
   analyze: analyse
   customize: customise
+  customisable: customisable
+  customisation: customisation
   optimize: optimise
   # -ogue / doubled-l / misc
   catalog: catalogue

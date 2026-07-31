@@ -4,18 +4,27 @@ Bedrock
 Blend Network
 boostrapping
 Codex
+Core
 Cryptarchia
+Delivery
 dApp
 dApps
 devnet
+Discv5
 Docusaurus
 frontmatter
+indexer
+LEZ
 libp2p
 liveness
 Logos
 logos
+Logos Execution Zone
 mainnet
 mempool
+Messaging
+Mix
+Mixnet
 multisig
 Mantle
 MDX
@@ -26,11 +35,13 @@ Ouroboros
 performant
 permissioned
 permissionless
+quickstart
 rollup
 rollups
 sharding
 slashing
 staking
+Storage
 testnet
 tokenomics
 unstaking

@@ -139,8 +139,8 @@ pub enum AdminCandidate {
 spel --idl program-idl.json --program <program-id> -- \
     admin-transfer \
     --caller <current-admin-account-id> \
-    --new-admin-account <new-admin-account-id> \
-    --new-admin Signer
+    --new-account <new-admin-account-id> \
+    --candidate Signer
 ```
 
 A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message, an off-chain co-signing exchange handled by the CLI's witness exchange flow.
@@ -155,8 +155,8 @@ To delegate admin authority to another program, for example a multisig, use `Adm
 spel --idl program-idl.json --program <program-id> -- \
     admin-transfer \
     --caller <current-admin-account-id> \
-    --new-admin-account <pda-account-id> \
-    --new-admin '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
+    --new-account <pda-account-id> \
+    --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
 The PDA must already be deployed, an undeployed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then sees the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.

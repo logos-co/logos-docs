@@ -14,7 +14,7 @@ slug: build-dapp-with-logos-zone-sdk
 
 #### Learn how to use the Zone SDK to implement a decentralised password manager application.
 
-This tutorial covers building a Logos [Zone](../../get-started/glossary.md#zone) from scratch using the [Zone SDK](../../get-started/glossary.md#zone-sdk). Zones are execution environments built on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or a simple standalone Zone tracking the state of a single application.
+This tutorial covers building a Logos [Zone](../../get-started/glossary.md#zone) from scratch using the [Zone SDK](../../get-started/glossary.md#zone-sdk). Zones are execution environments built on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or a simple standalone Zone tracking the state of a single application.
 
 The Zone SDK provides a ready-to-use toolbox for basic interactions with a Logos Zone. Every Zone is operated by one or more **sequencers**, which collect transactions, batch them, and publish them as inscriptions on the Logos Blockchain. **Indexers** are nodes that follow a Zone's updates on-chain, re-executing them locally to maintain an up-to-date copy of the Zone state. The Zone SDK supports building both.
 

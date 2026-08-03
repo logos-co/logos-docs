@@ -7,11 +7,11 @@ steps_layout: flat
 authors: schohy, kashepavadan
 owner: logos
 doc_version: 1
-slug: initiate-native-token-transfers-on-lez-with-wallet-ui
-sidebar_position: 4
+slug: run-lez-wallet-ui-and-initiate-native-token-transfers
+sidebar_position: 1
 ---
 
-# Initiate native token transfers on the LEZ with the wallet UI
+# Run the LEZ wallet UI and initiate native token transfers
 
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 

@@ -12,7 +12,7 @@ topics:
 authors: [danisharora099]
 owner: logos
 doc_version: 1
-slug: atomic-swaps-sample-app-quickstart
+slug: run-the-atomic-swaps-sample-app-locally
 ---
 
 # Run the atomic swaps sample app locally

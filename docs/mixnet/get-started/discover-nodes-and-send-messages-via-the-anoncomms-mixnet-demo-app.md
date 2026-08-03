@@ -1,12 +1,16 @@
+---
+sidebar_position: 1
+---
+
 # Discover nodes and send messages via the AnonComms Mixnet demo app
 
-> [!IMPORTANT]
->
-> This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+:::warning
+This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+:::
 
 ## A. Outcome + value (required)
 
-- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering mix nodes through Logos capability discovery.
+- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering [mix](../../get-started/glossary.md#mix) nodes through Logos capability discovery.
 - **Why it matters:** Proves two core testnet v0.1 primitives work end-to-end: capability-based node discovery and anonymous message routing via the mixnet.
 
 ## B. Scope + ownership
@@ -16,7 +20,7 @@
 - **Applies to:**
   - [Chat UI App](https://github.com/logos-co/logos-chat-ui), branch: logos-testnet-demo
   - [Chat module](https://github.com/logos-co/logos-chat-module), branch: logos-testnet-demo
-  - [Waku Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
+  - [Logos Messaging (Waku) Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
 
 - **Runtime target:** Logos testnet v0.1.
 
@@ -58,8 +62,8 @@
 - **Expected outputs:**
   1.  Once the app is up and running, the user should see the UI with the following:
       - Status shown as Ready
-      - LP Peer count increasing over time before stabilizing
-      - Mix peer count increasing over time before stabilizing
+      - LP Peer count increasing over time before stabilising
+      - Mix peer count increasing over time before stabilising
       - Warning message `Waiting for network peers...` disappears once 3 mix nodes are discovered.
   2.  After sending a message from the app (which is possible once the warning message disappears), the app should display the same message in the `Messages` section.
       Note that it takes some time for this to happen due to latency introduced by mix nodes.

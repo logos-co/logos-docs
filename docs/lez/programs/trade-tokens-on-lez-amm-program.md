@@ -263,12 +263,11 @@ Initiate a swap between your two tokens, then feed the resulting price tick into
         --vault-a <VAULT_A_PDA> \
         --vault-b <VAULT_B_PDA> \
         --user-input-holding <USER_HOLDING_A> \
-        --user-output-holding-b <USER_HOLDING_B> \
+        --user-output-holding <USER_HOLDING_B> \
         --current-tick-account <CURRENT_TICK_PDA> \
         --clock 4BdcjoXkq786TMWcBGGHqcxeLYMZmn17rL4eM9ZyRWNU \
         --swap-amount-in <AMOUNT_IN> \
         --min-amount-out <MIN_OUT> \
-        --token-definition-id-in <DEF_OF_INPUT_TOKEN> \
         --deadline 18446744073709551615
    ```
 

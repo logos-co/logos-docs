@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Try the wallet CLI against the live LEZ testnet.
 
-This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the [LEZ](../../get-started/glossary.md#lez) testnet sequencer. It is intended for developers who have previously run the wallet against a local sequencer and want to test against testnet v0.2 instead.
+This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.
 
 ## What to expect
 

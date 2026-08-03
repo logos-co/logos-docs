@@ -22,9 +22,9 @@ sidebar_position: 1
 Before you begin, ensure you have:
 
 - Linux x86\_64 or macOS
-- Rust and Cargo (latest stable)
-- Node.js v20 or later
-- A running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node connected to the public testnet (see [Run a Logos Blockchain node from Basecamp](../../blockchain/get-started/run-a-logos-blockchain-node-from-basecamp.md))
+- `git`, `curl`, and Rust/Cargo (latest stable)
+- Docker or Podman — required for the RISC0 guest method build
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) installed via `rzup`: run `rzup install rust` (needed by `logos-scaffold build`) and `rzup install r0vm` (needed by the sequencer to execute transactions)
 
 ## What to expect
 
@@ -95,7 +95,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     $EDITOR methods/guest/src/bin/hello_world.rs
     ```
 
-1. The program receives an `Input` struct via the zkVM environment, applies your logic, and writes an `Output` struct to the journal. The sequencer verifies the proof and updates the on-chain [account](../../get-started/glossary.md#account) state.
+1. The program receives a `ProgramInput` struct via the zkVM environment, applies your logic, and writes a `ProgramOutput` struct to the journal. The sequencer verifies the proof and updates the on-chain [account](../../get-started/glossary.md#account) state.
 
     Key concepts:
     - **Instructions** are encoded as `Vec<u8>` (opcode byte followed by payload).
@@ -110,7 +110,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold build
     ```
 
-    The build compiles your guest programs and produces `.bin` artifacts under `.scaffold/`.
+    The build compiles your guest programs and produces `.bin` artifacts under `target/riscv-guest/…/riscv32im-risc0-zkvm-elf/release/`.
 
 ## Step 6: Start a local sequencer
 
@@ -130,7 +130,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After a successful deployment, `logos-scaffold` prints the `program_id` for each guest program — a hex-encoded RISC0 image ID computed from the submitted ELF. Save the `program_id`; you need it to interact with your program.
+    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id` — a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
 
 1. To deploy a specific program by name:
 
@@ -142,7 +142,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
 Use the project-local wallet CLI to submit transactions to your deployed program. The wallet is available at `logos-scaffold wallet`.
 
-1. Check your wallet balance:
+1. With the sequencer from Step 6 running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
 
     ```bash
     logos-scaffold wallet topup
@@ -152,7 +152,8 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 1. Run one of the example runner scripts that submit transactions to your program:
 
     ```bash
-    RISC0_DEV_MODE=1 cargo run --bin run_hello_world
+    export NSSA_WALLET_HOME_DIR="$(pwd)/.scaffold/wallet"
+    RISC0_DEV_MODE=1 cargo run --bin run_hello_world -- <PUBLIC_ACCOUNT_ID>
     ```
 
     The runner scripts in `src/bin/` demonstrate how to construct and sign a `PublicTransaction`, set the `program_id`, encode an instruction, and submit the transaction via the sequencer RPC.

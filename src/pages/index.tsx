@@ -78,7 +78,7 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Peer discovery',
     description: 'Peer discovery and connection management without central registries',
-    to: '/peer-discovery/welcome',
+    to: '/peer-discovery/build-logos-core-module-that-uses-service-discovery-api',
   },
 ];
 

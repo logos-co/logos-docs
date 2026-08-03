@@ -405,6 +405,10 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
    lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
    ```
 
+:::tip
+Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-logos-storage-node.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the full list of [Logos modules](https://github.com/logos-co/logos-modules#modules).
+:::
+
 ## Troubleshooting
 
 ### Known constraints

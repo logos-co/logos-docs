@@ -63,8 +63,8 @@ const sidebars: SidebarsConfig = {
           items: [
             {
               type: 'link',
-              label: 'Initiate native token transfers on the LEZ with the wallet UI',
-              href: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+              label: 'Run the LEZ wallet UI and initiate native token transfers',
+              href: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
             },
           ],
         },

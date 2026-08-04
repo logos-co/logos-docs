@@ -15,15 +15,6 @@ sidebar_position: 2
 
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
-:::warning
-This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-:::
-
-:::info
-- **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
-:::
-
 The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
 
 The token program is a built-in LEZ [program](../../get-started/glossary.md#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.
@@ -51,8 +42,7 @@ Transfers are irreversible. Double-check all details before proceeding.
 
 Before you begin, ensure that you have the following:
 
-- The [LEZ sequencer running in standalone mode](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-- The [Wallet CLI installed](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- The [Wallet CLI installed](../get-started/run-lez-wallet-via-cli.md) on your computer
 
 ## What to expect
 

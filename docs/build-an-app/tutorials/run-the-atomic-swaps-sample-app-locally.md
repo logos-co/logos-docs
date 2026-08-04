@@ -93,7 +93,7 @@ experimental-features = nix-command flakes
 ```
 
 > [!NOTE]
-> The [Install the Logos Basecamp app](../../basecamp/get-started/install-the-logos-basecamp-app.md) procedure references `/etc/nix/nix.conf` — that path applies to typical Linux daemon installs. On macOS, use `~/.config/nix/nix.conf` (as in the [sample-app README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md)).
+> The [Install the Logos Basecamp app](../../basecamp/install-logos-basecamp.md) procedure references `/etc/nix/nix.conf` — that path applies to typical Linux daemon installs. On macOS, use `~/.config/nix/nix.conf` (as in the [sample-app README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md)).
 
 ### First-run timing (SME dogfood, cold Nix cache)
 
@@ -310,4 +310,4 @@ lgs basecamp doctor --json
 ## See also
 
 - [eth-lez-atomic-swaps README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md) — full repo docs (CLI, headless demo, tests)
-- [Install and load a module in Logos Basecamp](../../core/build-modules/install-and-load-a-module-in-logos-basecamp.md)
+- [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md)

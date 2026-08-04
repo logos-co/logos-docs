@@ -90,7 +90,7 @@ pub fn set_fee_bps(
 }
 ```
 
-The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared params. Declaring them explicitly produces the same program:
+The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program:
 
 ```rust
 #[instruction]
@@ -105,7 +105,7 @@ pub fn set_fee_bps(
 }
 ```
 
-If your instruction already has params by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. The framework also recognizes declared params by role, a `#[account(signer)]` param or a PDA param with the matching seed is reused under its declared name instead of being injected twice.
+If your instruction already has parameters by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. The framework also recognises declared parameters by role, a `#[account(signer)]` parameter or a PDA parameter with the matching seed is reused under its declared name instead of being injected twice.
 
 ## Become the first admin
 
@@ -159,7 +159,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
-The PDA must already be deployed, an undeployed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then sees the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
+The PDA must already be deployed, an undeployed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then accepts the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
 
 ## Embedded mode, the admin slot inside your own account
 

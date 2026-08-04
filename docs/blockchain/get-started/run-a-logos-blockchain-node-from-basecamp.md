@@ -30,14 +30,14 @@ Make sure you have the following:
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.
 
 :::info
-Install **`blockchain_module` `0.2.0`** and **`blockchain_ui` `0.2.0`**. In the Package Manager, `blockchain_module` may pre-select `0.0.999`, which is a *devnet* build and will not sync the public testnet. Always select `0.2.0` explicitly (Step 3).
+Install **`blockchain_module` `0.2.1`** and **`blockchain_ui` `0.2.1`**. In the Package Manager, `blockchain_module` may pre-select `0.0.999`, which is a *devnet* build and will not sync the public testnet. Always select `0.2.1` explicitly (Step 3).
 :::
 
 ## What to expect
 
 By the end of this procedure:
 
-- Basecamp will be running the `blockchain_module` and `blockchain_ui` modules, both at `0.2.0`.
+- Basecamp will be running the `blockchain_module` and `blockchain_ui` modules, both at `0.2.1`.
 - Your node will be connected to testnet peers and syncing the chain.
 - You will confirm sync by observing an advancing block height.
 - Optionally, you can fund your wallet from the faucet so your node proposes blocks.
@@ -74,16 +74,16 @@ Basecamp opens.
 1. In the sidebar, open **Package Manager** and find **`blockchain_module`** (category: Blockchain).
 
    :::caution
-   Install blockchain modules from **Package Manager**. Open the version dropdown and **select `0.2.0`** before installing — the pre-selected version is `0.0.999`, the devnet build.
+   Install blockchain modules from **Package Manager**. Open the version dropdown and **select `0.2.1`** before installing — the pre-selected version is `0.0.999`, the devnet build.
    :::
 
-1. Select `0.2.0`, then press **Install** (~142 MB). When it completes, the Details pane shows `Installed version: 0.2.0`. If it shows `0.0.999`, select `0.2.0` again and reinstall — Basecamp will offer to upgrade, which is safe.
+1. Select `0.2.1`, then press **Install** (~142 MB). When it completes, the Details pane shows `Installed version: 0.2.1`. If it shows `0.0.999`, select `0.2.1` again and reinstall — Basecamp will offer to upgrade, which is safe.
 
 ## Step 4: Install the blockchain UI
 
-1. On the same screen, select **`blockchain_ui`** at version **`0.2.0`** (already the default) and press **Install**.
+1. On the same screen, select **`blockchain_ui`** at version **`0.2.1`** (already the default) and press **Install**.
 
-1. A dependency dialog appears. Choose **"Install just 'blockchain_ui'"** — installing with dependencies replaces your `0.2.0` core with the `0.0.999` devnet build.
+1. A dependency dialog appears. Choose **"Install just 'blockchain_ui'"** — installing with dependencies replaces your `0.2.1` core with the `0.0.999` devnet build.
 
 ## Step 5: Configure the node
 
@@ -175,7 +175,7 @@ The node runs only while Basecamp is open, and it does not resume automatically 
 This is a UI-side issue, not a node fault — the core is healthy but the UI cannot render the call. Recover least-destructively first:
 
 1. **Fully quit Basecamp and relaunch** (Quit, not just close the window), then reopen the node. This clears most cases with no data loss.
-2. **Check the versions match** — both `blockchain_module` and `blockchain_ui` should be `0.2.0`. A version mismatch is a common cause.
+2. **Check the versions match** — both `blockchain_module` and `blockchain_ui` should be `0.2.1`. A version mismatch is a common cause.
 3. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder — that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
 
 If `curl http://127.0.0.1:8080/cryptarchia/info` shows an advancing height, the node is syncing and a restart (step 1) is enough — do not wipe a working node.

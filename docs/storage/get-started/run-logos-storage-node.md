@@ -28,7 +28,7 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -47,7 +47,7 @@ Before you start, make sure you have the following:
 1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
+    nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
     ```
 
     - This produces a `.lgx` package in `./storage-lgx/`.
@@ -60,13 +60,14 @@ Before you start, make sure you have the following:
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.
     :::
 
-2.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`:
+1.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`:
 
     ```sh
     mkdir -p modules
     lgpm --modules-dir ./modules --allow-unsigned install --file storage-lgx/*.lgx
     ```
-3.  Confirm the module landed:
+
+1.  Confirm the module landed:
 
     ```sh
     lgpm --modules-dir ./modules list
@@ -86,18 +87,21 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     ```
 
     - The client subcommands below connect to this running process via the config written under `~/.logoscore/`.
-2.  Verify the daemon is running:
+
+1.  Verify the daemon is running:
 
     ```sh
     logoscore status
     ```
-3.  Confirm the storage module was discovered:
+
+1.  Confirm the storage module was discovered:
 
     ```sh
     logoscore list-modules
     # storage_module appears in the list
     ```
-4.  Load the storage module and confirm it reports `loaded`:
+
+1.  Load the storage module and confirm it reports `loaded`:
 
     ```sh
     logoscore load-module storage_module
@@ -106,46 +110,51 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     ```
 
     - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.
-5.  Create the storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
+
+1.  Create the storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
 
     ```sh
     mkdir -p "$(pwd)/storage-data"
     cat > config.json <<EOF
     {
-      "data-dir": "$(pwd)/storage-data",
-      "log-level": "DEBUG",
-      "log-file": "$(pwd)/storage-data/storage.log",
-      "nat": "none"
+        "data-dir": "./storage-data",
+        "log-level": "INFO",
+        "listen-ip": "0.0.0.0",
+        "listen-port": 8091,
+        "disc-port": 8090,
+        "network": "logos.test"
     }
     EOF
     ```
 
-    - With `"nat": "none"` the node announces the machine's own IP as-is: it can download from the network but is not reachable from the internet from behind a router. To make it reachable, use `"nat": "upnp"` or `"nat": "extip:<your-public-IP>"` with the ports forwarded: see [Connectivity](../concepts/connectivity.md).
-
     - `config.json` includes the following fields:
 
-    | Field       | Purpose                            |
-    | ----------- | ---------------------------------- |
-    | `data-dir`  | Storage repository path (absolute) |
-    | `log-level` | Log verbosity                      |
-    | `log-file`  | Node log destination (absolute)    |
-    | `nat`       | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
+    | Field | Purpose |
+    |-------|---------|
+    | `data-dir` | Storage repository path |
+    | `log-level` | Log verbosity |
+    | `listen-ip` | Local TCP bind address |
+    | `listen-port` | Public TCP libp2p port |
+    | `disc-port` | Public UDP discovery port |
+    | `network` | Storage network preset |
 
     - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings), binds discovery to the default UDP port `8090`, and picks a random TCP `listen-port`.
-    - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values and a `nat` mode that announces your address: see [Connectivity](../concepts/connectivity.md).
+    - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values: see [Connectivity](../concepts/connectivity.md).
 
-6.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
+1.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
 
     ```sh
     logoscore call storage_module init @config.json
     ```
-7.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to `logs.txt`):
+
+1.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to `logs.txt`):
 
     ```sh
     logoscore call storage_module start
     # Wait few seconds to start
     ```
-8.  Inspect the running node with `debug`. It returns the node's identity: its `id` ([peer ID](../../get-started/glossary.md#peer-id)) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](../concepts/connectivity.md)):
+
+1.  Inspect the running node with `debug`. It returns the node's identity: its `id` ([peer ID](../../get-started/glossary.md#peer-id)) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](../concepts/connectivity.md)):
 
     ```sh
     logoscore call storage_module debug
@@ -161,7 +170,7 @@ Once the node is running and connected to the testnet, publish a file and verify
     echo "Hello world from Logos Storage" > "$(pwd)/hello.txt"
     ```
 
-2.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
+1.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
 
     ```sh
     logoscore call storage_module uploadUrl "$(pwd)/hello.txt" 65536
@@ -171,16 +180,17 @@ Once the node is running and connected to the testnet, publish a file and verify
     The default chunk size is 65536.
     :::
 
-2.  After a second, extract the content ID (CID) from the first `manifests` entry:
+1.  After a second, extract the content ID (CID) from the first `manifests` entry:
 
-3.  Extract the content ID (CID) from the first `manifests` entry:
+1.  Extract the content ID (CID) from the first `manifests` entry:
 
     ```sh
     # Wait a second for the upload to complete first
     logoscore call storage_module manifests \
        | jq -er '.result.value[0].cid' > cid.txt
     ```
-4.  Download the file back from local storage with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. With `local` set to `true`, the download reads the blocks straight back out of this node's own repository. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
+
+1.  Download the file back from local storage with `downloadToUrl`. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. With `local` set to `true`, the download reads the blocks straight back out of this node's own repository. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
 
     ```sh
     logoscore call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/hello-destination.txt" true 65536
@@ -188,7 +198,7 @@ Once the node is running and connected to the testnet, publish a file and verify
 
     - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
 
-5.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
+1.  Confirm the downloaded file is present at the destination path and matches the original. You can also check the content is in local storage by CID:
 
     ```sh
     # Confirm the download is a byte-for-byte copy of the original (both files are static):
@@ -207,25 +217,29 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
     ```sh
     logoscore call storage_module remove "$(cat cid.txt)"
     ```
-2.  Confirm the content is gone:
+
+1.  Confirm the content is gone:
 
     ```sh
     # Wait a second for the removal to complete first
     logoscore call storage_module exists "$(cat cid.txt)" | jq '.result.value'
     # false
     ```
-3.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to `logs.txt`). The node can be started and stopped multiple times:
+
+1.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to `logs.txt`). The node can be started and stopped multiple times:
 
     ```sh
     logoscore call storage_module stop
     # Wait a few seconds for the node to stop before destroying it
     ```
-4.  Destroy the storage context. `destroy` is synchronous and must be called after the node is stopped:
+
+1.  Destroy the storage context. `destroy` is synchronous and must be called after the node is stopped:
 
     ```sh
     logoscore call storage_module destroy
     ```
-5.  Stop the daemon and confirm it has exited:
+
+1.  Stop the daemon and confirm it has exited:
 
     ```sh
     logoscore stop

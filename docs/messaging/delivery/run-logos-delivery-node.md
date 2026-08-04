@@ -53,8 +53,8 @@ Follow the instructions for your chosen path.
    ```
 
    :::info
-The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-:::
+   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
+   :::
 
 **Path B — Prebuilt binaries**
 
@@ -78,13 +78,16 @@ The first Docker build runs Nix and downloads release packages. It can take 30�
    ```bash
    cat > logos-test.json <<EOF
    {
-      "preset": "logos.test",
-      "mode": "Core",
-      "logLevel": "INFO",
-      "tcpPort": 30303,
-      "discv5UdpPort": 9000,
-      "discv5Discovery": true,
-      "nat": "extip:<public-ip>"
+      "entryLayer": "kernel",
+      "kernelConf": {
+         "preset": "logos.test",
+         "relay": true,
+         "logLevel": "INFO",
+         "tcpPort": 30303,
+         "discv5UdpPort": 9000,
+         "discv5Discovery": true,
+         "nat": "extip:<public-ip>"
+      }
    }
    EOF
 

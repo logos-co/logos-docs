@@ -162,12 +162,16 @@ Instead of a dedicated Config PDA, the admin slot can live inside one of your pr
 pub struct ProgramConfig {
     pub value: u64,           // bytes 0..8
     pub padding: [u8; 24],    // bytes 8..32
+    #[admin_slot]
     pub admin: AdminConfig,   // bytes 32..64, the embedded slot
 }
 
 #[lez_program]
 #[admin_authority(admin_config = config, offset = 32)]
 mod my_program {
+    use admin_authority::admin_initialize;
+
+    #[admin_initialize]
     #[instruction]
     pub fn initialize(
         #[account(init, pda = literal("program_config"))] mut config: AccountWithMetadata,
@@ -175,7 +179,6 @@ mod my_program {
     ) -> SpelResult {
         ProgramConfig { value: 0, padding: [0; 24], admin: AdminConfig::default() }
             .write_to(&mut config)?;
-        AdminConfig::bootstrap_at(&mut config, 32, AdminCandidate::Signer, &signer)?;
         // ...
     }
 }
@@ -183,7 +186,8 @@ mod my_program {
 
 What changes:
 
-- **No `admin_initialize`.** Your own account-creating instruction writes the struct and splices the admin in with `bootstrap_at`. The slot is born initialized, so the initialization window from the warning above does not exist in embedded mode. An account created without the bootstrap is born renounced, permanently.
+- **No `admin_initialize` instruction.** Mark your own account-creating instruction with `#[admin_initialize]` instead. The bootstrap is injected, the caller is installed as admin in the same transaction that creates the account, and the slot is born initialized, so the initialization window from the warning above does not exist in embedded mode. An account created without the bootstrap is born renounced, permanently.
+- **`#[admin_slot]` keeps the layout honest.** The field marker derives an `ADMIN_SLOT_OFFSET` const and a layout test, and the build fails if the marker position and the `offset = ...` declaration ever disagree, for example after a field is added above the slot.
 - **Everything retargets.** Gates read the slot at the declared offset from your account, `admin_transfer` and `admin_renounce` splice only the 32 byte window and leave your neighboring fields untouched, and the IDL shows your account wherever the dedicated PDA used to appear.
 - **The offset is never in a transaction.** It compiles into the program as a literal. The IDL carries no offset argument, and writing `admin_config = ...` or `offset = ...` on a gate by hand is a compile error in embedded mode.
 - **One account fewer** on every gated transaction, the slot travels with state you were already passing.

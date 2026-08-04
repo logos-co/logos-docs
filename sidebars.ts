@@ -28,6 +28,11 @@ const sidebars: SidebarsConfig = {
               label: 'Install and load a module in Logos Basecamp',
               href: '/basecamp/install-and-load-a-module-in-logos-basecamp',
             },
+            {
+              type: 'link',
+              label: 'Swap ETH and LEZ tokens in Logos Basecamp',
+              href: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
+            },
           ],
         },
         {
@@ -172,7 +177,6 @@ const sidebars: SidebarsConfig = {
           items: [
             'build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone',
             'build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
-            'build-an-app/tutorials/run-the-atomic-swaps-sample-app-locally'
           ],
         },
       ],

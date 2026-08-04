@@ -8,13 +8,14 @@ authors: moudyellaz, kashepavadan
 owner: logos
 doc_version: 1
 slug: connect-wallet-cli-to-lez-testnet
+sidebar_position: 3
 ---
 
 # Connect the wallet CLI to the LEZ testnet
 
 #### Try the wallet CLI against the live LEZ testnet instead of a local sequencer.
 
-This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the LEZ testnet sequencer. It is intended for developers who have previously run the wallet against a local sequencer and want to test against testnet v0.2 instead.
+This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the [LEZ](../../get-started/glossary.md#lez) testnet sequencer. It is intended for developers who have previously run the wallet against a local sequencer and want to test against testnet v0.2 instead.
 
 ## What to expect
 
@@ -28,7 +29,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.1.2
+   git checkout v0.2.0
    ```
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
@@ -40,7 +41,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 1. Install the wallet CLI:
 
    ```sh
-   cargo install --path wallet --force
+   cargo install --path lez/wallet --force
    ```
 
 1. Set the testnet sequencer address:

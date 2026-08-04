@@ -8,17 +8,18 @@ authors: arjentix, kashepavadan
 owner: logos
 doc_version: 1
 slug: start-and-use-instance-of-lez-explorer
+sidebar_position: 2
 ---
 
 # Start and use an instance of the LEZ Explorer
 
 #### Get a clear view of on-chain activity including blocks, transactions, and accounts.
 
-The LEZ Explorer lets you inspect the state of the Logos Execution Zone in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up account balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
+The [LEZ](../../get-started/glossary.md#lez) Explorer lets you inspect the state of the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up [account](../../get-started/glossary.md#account) balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
 
-{% hint style="info" %}
+:::info
 If you don't want to run your own LEZ explorer instance, navigate to the [public LEZ explorer](https://explorer.testnet.lez.logos.co/).
-{% endhint %}
+:::
 
 Before you start, make sure you have the following:
 
@@ -27,7 +28,7 @@ Before you start, make sure you have the following:
 - [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed
 - [`just`](https://github.com/casey/just) installed
 - A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/)
-- A running instance of an [LEZ Indexer](./run-lez-indexer.md)
+- A running instance of an [LEZ Indexer](run-lez-indexer.md)
 
 ## What to expect
 
@@ -37,38 +38,35 @@ Before you start, make sure you have the following:
 ## Start the LEZ Explorer
 
 1. Navigate to your local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/).
+2.  In a new terminal window, start the LEZ Explorer:
 
-1. In a new terminal window, start the LEZ Explorer:
+    ```bash
+    just run-explorer
+    ```
 
-   ```bash
-   just run-explorer
-   ```
+    :::info
+    By default, the LEZ Explorer connects to the LEZ Indexer at `http://localhost:8779`. Set the `INDEXER_RPC_URL` environment variable or pass `--indexer-rpc-url` to use a different address.
+    :::
+3.  Open `http://localhost:3000/` in your browser.
 
-   {% hint style="info" %}
-   By default, the LEZ Explorer connects to the LEZ Indexer at `http://localhost:8779`. Set the `INDEXER_RPC_URL` environment variable or pass `--indexer-rpc-url` to use a different address.
-   {% endhint %}
+    You will see a **No blocks found** message initially:
 
-1. Open `http://localhost:3000/` in your browser.
+    ![No blocks found screen](../assets/start-and-use-instance-of-lez-explorer/no-blocks-found.png)
 
-   You will see a **No blocks found** message initially:
+    After approximately one minute, refresh the page. Blocks will appear:
 
-   ![No blocks found screen](./start-and-use-instance-of-lez-explorer/no_blocks_found.png)
-
-   After approximately one minute, refresh the page. Blocks will appear:
-
-   ![Blocks visible after refresh](./start-and-use-instance-of-lez-explorer/updated_page.png)
+    ![Blocks visible after refresh](../assets/start-and-use-instance-of-lez-explorer/updated-page.png)
 
 ## Browse blocks, transactions, and accounts
 
-1. Click any block in the list to view its details.
+1.  Click any block in the list to view its details.
 
-   ![Block detail view](./start-and-use-instance-of-lez-explorer/block_details.png)
+    ![Block detail view](../assets/start-and-use-instance-of-lez-explorer/block-details.png)
+2.  Use the search bar to look up a block, transaction, or account by ID.
 
-1. Use the search bar to look up a block, transaction, or account by ID.
+    ![Transaction search result](../assets/start-and-use-instance-of-lez-explorer/transaction-details.png)
 
-   ![Transaction search result](./start-and-use-instance-of-lez-explorer/transaction_details.png)
-
-   ![Account detail view](./start-and-use-instance-of-lez-explorer/account_details.png)
+    ![Account detail view](../assets/start-and-use-instance-of-lez-explorer/account-details.png)
 
 ## Troubleshooting LEZ Explorer
 

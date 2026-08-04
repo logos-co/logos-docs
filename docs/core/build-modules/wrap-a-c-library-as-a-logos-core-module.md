@@ -8,13 +8,14 @@ authors: iurimatias, kashepavadan
 owner: logos
 doc_version: 1
 slug: wrap-a-c-library-as-a-logos-core-module
+sidebar_position: 3
 ---
 
 # Wrap a C library as a Logos module
 
 #### Expose functions from a C shared library through a Logos core module.
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos module. By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -51,19 +52,17 @@ Before writing any C code, scaffold the Logos module project using the official 
    mkdir logos-calc-module && cd logos-calc-module
 
     # To wrap an external C library
-   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#with-external-lib
+   nix flake init -t github:logos-co/logos-module-builder/0.2.0#with-external-lib
 
    # Or for a plain module (no external library):
-   # nix flake init -t github:logos-co/logos-module-builder/tutorial-v3
+   # nix flake init -t github:logos-co/logos-module-builder/0.2.0
    ```
 
    This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customise them for your specific library.
 
-    {% hint style="info" %}
-    
-    As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
-    
-    {% endhint %}
+    :::info
+As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
+:::
 
 1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files — this tutorial supplies its own pure-C++ `src/` files:
 
@@ -195,11 +194,9 @@ Create the C library that your module will wrap. Place the header and implementa
    0000000000001299 T calc_version
    ```
 
-   {% hint style="info" %}
-   
-   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
-   
-   {% endhint %}
+   :::info
+If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
+:::
 
 ## Step 3: Configure the Logos module
 
@@ -310,7 +307,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
      description = "Calculator module - wraps libcalc C library for Logos";
 
      inputs = {
-       logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v3";
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
 
        # Fetch the library source (non-flake)
        # libfoo-src = {
@@ -328,11 +325,9 @@ To fetch and build external libraries from source, add `"build_command": "make s
    }
    ```
 
-   {% hint style="info" %}
-   
-   When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
-   
-   {% endhint %}
+   :::info
+When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
+:::
 
 1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logoscore`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
 
@@ -464,11 +459,9 @@ To fetch and build external libraries from source, add `"build_command": "make s
    nix build '.#lib'
    ```
 
-   {% hint style="info" %}
-   
-   The first build takes 5–15 minutes as Nix downloads Qt, the Logos SDK, and other dependencies. Subsequent builds are fast due to caching.
-   
-   {% endhint %}
+   :::info
+The first build takes 5–15 minutes as Nix downloads Qt, the Logos SDK, and other dependencies. Subsequent builds are fast due to caching.
+:::
 
 1. Build everything - both the library and generated SDK headers. For a `universal` module this is also where `logos-cpp-generator --from-header` runs over `src/calc_module_impl.h` to produce the Qt plugin glue under `generated_code/` before CMake compiles it:
 
@@ -503,7 +496,7 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 1. Build the `lm` tool:
 
    ```bash
-   nix build 'github:logos-co/logos-module/tutorial-v3#lm' --out-link ./lm
+   nix build 'github:logos-co/logos-module/0.2.0#lm' --out-link ./lm
    ```
 
 1. View metadata:
@@ -580,17 +573,17 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 
 ## Step 6: Test with logoscore
 
-1. Build logoscore:
+1. Build [logoscore](../../get-started/glossary.md#logoscore):
 
    ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/tutorial-v3' --out-link ./logos
+   nix build 'github:logos-co/logos-logoscore-cli/0.2.0' --out-link ./logos
    ```
 
 1. Set up the modules directory. `logoscore` expects modules in subdirectories, each with a `manifest.json`. Use the Nix derivation to create an LGX package and install it with the package manager:
 
    ```bash
    nix build '.#lgx'
-   nix build 'github:logos-co/logos-package-manager/tutorial-v3#cli' --out-link ./pm
+   nix build 'github:logos-co/logos-package-manager/0.2.0#cli' --out-link ./pm
    
    mkdir -p modules
    
@@ -634,7 +627,7 @@ Because your module is a plain C++ class, you can unit-test it directly. The [Lo
      description = "Calculator module - wraps libcalc C library for Logos";
 
      inputs = {
-       logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v3";
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
      };
 
      outputs = inputs@{ logos-module-builder, ... }:

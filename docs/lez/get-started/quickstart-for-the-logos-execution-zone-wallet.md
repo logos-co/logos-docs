@@ -15,51 +15,33 @@ authors: [jorge-campo]
 owner: logos
 doc_version: 2
 slug: lez-quickstart
+sidebar_position: 2
 ---
 
 # Quickstart for the Logos Execution Zone wallet
 
 #### Set up the wallet, connect to a sequencer, and run a minimal transfer flow.
 
-{% hint style="warning" %}
-
-This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
-
-{% endhint %}
-
-{% hint style="info" %}
-
-- **Permissions**: No special permissions required.
-- **Product**: Logos Execution Zone wallet CLI.
-
-{% endhint %}
-
-{% hint style="success" %}
-
-A public LEZ testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
+:::tip
+A public [LEZ](../../get-started/glossary.md#lez) testnet is available. This quickstart runs against a local sequencer you start yourself, but you can browse live testnet activity in the block explorer, and the testnet sequencer is reachable at its public RPC endpoint.
 
 - Explorer: https://explorer.testnet.lez.logos.co/
 - Sequencer RPC: https://testnet.lez.logos.co/
-
-{% endhint %}
+:::
 
 The Logos Execution Zone (LEZ, for short) is a programmable blockchain that records transactions, maintains public on-chain state, and exposes a sequencer endpoint that clients (like a wallet) can submit transactions to.
 
-LEZ separates account state into public (visible, on-chain) and private (hidden, off-chain). You choose which one you are using by creating a public or private account and using it in transactions. This ability to maintain a public and private state is provided by the Logos Execution Environment (LEE), that defines what an account is, how transactions are structured, and how executions are validated when some data must remain private. You can think of LEZ as the blockchain you connect to and where transactions are recorded, and LEE as the execution model that powers it.
+LEZ separates [account](../../get-started/glossary.md#account) state into public (visible, on-chain) and private (hidden, off-chain). You choose which one you are using by creating a public or [private account](../../get-started/glossary.md#private-account) and using it in transactions. This ability to maintain a public and private state is provided by the [Logos Execution Environment](../../get-started/glossary.md#logos-execution-environment) ([LEE](../../get-started/glossary.md#lee)), that defines what an account is, how transactions are structured, and how executions are validated when some data must remain private. You can think of LEZ as the blockchain you connect to and where transactions are recorded, and LEE as the execution model that powers it.
 
-{% hint style="info" %}
-
+:::info
 This quickstart covers the public wallet flow only so you can get set up quickly. Privacy-preserving transfers require local proof generation and take longer to run. For the private workflow, see [Transfer native tokens on the Logos Execution Zone](../transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md).
-
-{% endhint %}
+:::
 
 When a transaction touches the private state, the client runs the private part locally using your private keys and local client data, producing a zero-knowledge proof (ZKP). Validators verify the proof and accept the state update (for example, updating public balances), so the network stays correct even though the private data is never published.
 
-{% hint style="info" %}
-
+:::info
 In the context of the Logos Execution Zone, a zero-knowledge proof (ZKP) is a cryptographic proof that lets a blockchain client, such as a wallet, prove a private transaction followed LEE’s rules without revealing the private inputs (like balances). Using ZKPs, LEZ can safely accept the resulting state update and keep the public chain consistent with private execution, even though the network never sees the private values.
-
-{% endhint %}
+:::
 
 In this quickstart, you install the wallet tooling, connect to a local sequencer endpoint, and complete a minimal transfer flow with balance checks. In wallet terms, the wallet client is your control panel for the system: you install it, create and manage public or private accounts, sync private state, and send commands.
 
@@ -72,17 +54,15 @@ In this quickstart, you install the wallet tooling, connect to a local sequencer
 
 ## Step 1: Install the prerequisites
 
-To run the LEZ wallet CLI, you first need to install system dependencies, the Rust toolchain, and the Logos Blockchain circuits files.
+To run the LEZ wallet CLI, you first need to install system dependencies, the Rust toolchain, and the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) circuits files.
 
 ### Install system build dependencies
 
 Install the build prerequisites you need to compile the sequencer and wallet.
 
-{% hint style="success" %}
-
+:::tip
 These prerequisites include a working C toolchain and linker on your machine. You may already have these installed if you have experience building software from source.
-
-{% endhint %}
+:::
 
 Choose the instructions for your operating system:
 
@@ -105,11 +85,9 @@ Choose the instructions for your operating system:
 
 ### Install Rust and RISC Zero components
 
-{% hint style="info" %}
-
+:::info
 Rust is the language used for wallet development, while RISC Zero is the proof toolchain used to generate the ZKPs.
-
-{% endhint %}
+:::
 
 1. Install Rust with `rustup`:
 
@@ -138,11 +116,9 @@ Rust is the language used for wallet development, while RISC Zero is the proof t
 
 The Logos Blockchain repository provides a script that downloads a circuits release required by the `wallet` build.
 
-{% hint style="success" %}
-
+:::tip
 "Circuits" are prebuilt files used for privacy-preserving execution (zero-knowledge proofs). Even though the quickstart flow uses public transactions, the current `wallet` build still requires these files to be present locally.
-
-{% endhint %}
+:::
 
 1. Create a workspace folder and clone the Logos Blockchain repository:
 
@@ -154,11 +130,9 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
 
 1. Run the script to download the circuits release:
 
-   {% hint style="info" %}
-
-   This script downloads `logos-blockchain-circuits-<version>-<platform>.tar.gz` and installs it under `~/.logos-blockchain-circuits` by default.
-
-   {% endhint %}
+   :::info
+This script downloads `logos-blockchain-circuits-<version>-<platform>.tar.gz` and installs it under `~/.logos-blockchain-circuits` by default.
+:::
 
    ```bash
    cd logos-blockchain
@@ -171,12 +145,13 @@ The Logos Blockchain repository provides a script that downloads a circuits rele
    cd ~/logos/src
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
+   git checkout v0.2.0
    ```
 
 1. From the repository root, install the wallet CLI:
 
    ```bash
-   cargo install --path wallet --force
+   cargo install --path lez/wallet --force
    ```
 
 1. Confirm that the `wallet` command is available:
@@ -191,14 +166,12 @@ Open a new terminal window and start the LEZ sequencer from the root of the Logo
 
 ```bash
 cd ~/logos/src/logos-execution-zone
-RUST_LOG=info cargo run --features standalone -p sequencer_service sequencer/service/configs/debug/sequencer_config.json
+RUST_LOG=info cargo run --features standalone -p sequencer_service lez/sequencer/service/configs/debug/sequencer_config.json
 ```
 
-{% hint style="info" %}
-
+:::info
 This quickstart uses standalone mode, which runs only the LEZ sequencer locally. The full local stack also runs a Logos Blockchain node and the indexer service for development and block exploration, but it adds extra components and is covered separately.
-
-{% endhint %}
+:::
 
 You should see the sequencer starting up at `localhost:3040` and logging information to the terminal:
 
@@ -222,21 +195,17 @@ If you want the wallet to initialise in a different location, set the variable b
 export NSSA_WALLET_HOME_DIR="$PWD/.wallet-home"
 ```
 
-{% hint style="info" %}
-
+:::info
 The `wallet help` output incorrectly states that `NSSA_WALLET_HOME_DIR` "must be set." In practice, the binary falls back to `~/.nssa/wallet` when unset, as described above. The mismatch is in the help string.
-
-{% endhint %}
+:::
 
 ## Step 4: Initialise the wallet local storage and verify connectivity
 
 The wallet persistent storage is defined by the `storage.json` file. When you run any `wallet` subcommand, the wallet checks whether `storage.json` exists in the wallet home directory. If it does not exist, it requires a password to initialise the wallet storage.
 
-{% hint style="success" %}
-
+:::tip
 Leave the sequencer running in the other terminal window while you initialise the wallet storage.
-
-{% endhint %}
+:::
 
 Run a `wallet` command to initialise the storage. Use the built-in health check:
 
@@ -246,21 +215,19 @@ wallet check-health
 
 If the wallet storage was not previously initialised, this command prints `Persistent storage not found, need to execute setup`, and prompts you to create a password. You can choose any password you like, but make sure to remember it, as you will need it to access the wallet in the future.
 
-{% hint style="warning" %}
-
+:::warning
 The wallet uses this password as a seed to deterministically generate your public and private key trees. The wallet stores the derived key material and local state in storage.json under the wallet home directory.
-
-{% endhint %}
+:::
 
 ## Step 5: Complete a minimal wallet flow
 
 In this flow, you create and initialise an account, claim testnet funds, send a transfer, and confirm resulting balances.
 
-In this task, wallet account and transfer commands interact with the authenticated-transfer program, and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
+In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and private account paths share command patterns, while private paths can include local proof generation.
 
 ### Create and initialise the sender public account
 
-1. Create a sender public account and record the `account_id` value:
+1. Create a sender [public account](../../get-started/glossary.md#public-account) and record the `account_id` value:
 
    ```bash
    cd ~/logos/src/logos-execution-zone
@@ -279,15 +246,13 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
    ```
 
-   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the token program). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
+   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the [token program](../../get-started/glossary.md#token-program)). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
 
 1. Initialise the sender account, then check the updated state:
 
-   {% hint style="info" %}
-
-   Running `wallet auth-transfer init` initialises the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
-   
-   {% endhint %}
+   :::info
+Running `wallet auth-transfer init` initialises the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
+:::
 
    ```bash
    wallet auth-transfer init --account-id <sender_public_account_id>
@@ -305,7 +270,7 @@ In this task, wallet account and transfer commands interact with the authenticat
 
 ### Claim funds using the Piñata faucet
 
-"Piñata" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
+"[Piñata](../../get-started/glossary.md#piñata)" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
 
 1. Fund the sender account via Piñata:
 
@@ -366,5 +331,5 @@ This should show a `"balance":37`.
 
 ## Next steps
 
-- [Transfer native tokens on the Logos Execution Zone](./transfer-native-tokens-on-the-logos-execution-zone.md)
-- [Create and transfer custom tokens on the Logos Execution Zone](./create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)
+- [Transfer native tokens on the Logos Execution Zone](../transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md)
+- [Create and transfer custom tokens on the Logos Execution Zone](../transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)

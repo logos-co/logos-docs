@@ -1,5 +1,5 @@
 ---
-title: Connect the wallet CLI to the LEZ testnet
+title: Run an LEZ wallet via the CLI
 doc_type: procedure
 product: lez
 topics: lez
@@ -16,6 +16,23 @@ sidebar_position: 2
 #### Try the wallet CLI against the live LEZ testnet.
 
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.
+
+
+**Before you start**, make sure you have the following installed:
+- **Rust and `cargo`** — install with [`rustup`](https://rustup.rs). The wallet pins its toolchain via `rust-toolchain.toml`, so the correct version is selected automatically.
+- **System build dependencies** for compiling the wallet from source:
+   ```bash
+  # Ubuntu / Debian
+  sudo apt update
+  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+
+  # Fedora
+  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+  
+  # macOS
+  xcode-select --install
+  brew install pkg-config openssl
+  ```
 
 ## What to expect
 
@@ -35,7 +52,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
    ```sh
-   mv ~/.nssa/wallet ~/.nssa/wallet.old 2>/dev/null || true
+   mv ~/.lee/wallet ~/.lee/wallet.old 2>/dev/null || true
    ```
 
 1. Install the wallet CLI:
@@ -75,7 +92,6 @@ In this task, wallet account and transfer commands interact with the authenticat
 1. Create a sender [public account](../../get-started/glossary.md#public-account) and record the `account_id` value:
 
    ```bash
-   cd ~/logos/src/logos-execution-zone
    wallet account new public
    ```
 
@@ -103,7 +119,7 @@ Running `wallet auth-transfer init` initialises the sender account under the aut
    wallet auth-transfer init --account-id <sender_public_account_id>
    ```
 
-   In the output, you should see `status: "Transaction submitted"`, and the transaction hash. If you change to the terminal session where the sequencer is running, you can see a message similar to this: `Validated transaction with hash <hash_id>, including it in block`.
+   In the output, you should see the transaction hash printed as `Transaction hash is <hash>`.
 
 1. Check the account updated state:
 
@@ -134,7 +150,7 @@ Running `wallet auth-transfer init` initialises the sender account under the aut
 
 ### Create and fund the recipient public account
 
-1. Create a recipient public account and record the `account_id` value. Complete this step in the same terminal session as the sender account commands to avoid exporting `NSSA_WALLET_HOME_DIR` again.
+1. Create a recipient public account and record the `account_id` value:
 
    ```bash
    wallet account new public

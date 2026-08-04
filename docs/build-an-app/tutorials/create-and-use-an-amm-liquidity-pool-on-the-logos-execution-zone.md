@@ -77,16 +77,18 @@ Use `wallet amm swap-exact-input` to swap a fixed input amount of one token for 
 
    ```bash
    wallet amm swap-exact-input \
-       --user-holding-a Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw \
-       --user-holding-b Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
-       # The amount of tokens to swap
-       --amount-in 5 \
-       # The minimum number of tokens expected in return
-       --min-amount-out 8 \
-       # The definition ID of the token being provided to the swap
-       # In this case, we are swapping from TOKENA to TOKENB, and so this is the definition ID of TOKENA
-       --token-definition 4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7
+    --user-holding-a Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw \
+    --user-holding-b Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
+    --amount-in 5 \
+    --min-amount-out 8 \
+    --token-definition 4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7
    ```
+
+   The parameters used for the swap:
+
+   - `--amount-in`: the amount of tokens to swap
+   - `--min-amount-out`: the minimum number of tokens expected in return
+   - `--token-definition`: the definition ID of the token you are providing. Here we swap TOKENA → TOKENB, so this is TOKENA's definition ID. Pass the raw base58 definition ID with no Public/ prefix — a prefixed value is rejected with invalid base58.
 
    - Once executed, 5 tokens are deducted from the Token A holding account and the corresponding amount, computed by the pool's pricing function, is credited to the Token B holding account.
 

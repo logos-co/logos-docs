@@ -53,8 +53,8 @@ Follow the instructions for your chosen path.
    ```
 
    :::info
-The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-:::
+   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
+   :::
 
 **Path B — Prebuilt binaries**
 

@@ -50,12 +50,14 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
     lgpd download blockchain_module --version 0.2.0 --output ./
     # writes ./blockchain_module-0.2.0.lgx
     ```
-2.  Install the module:
+
+1.  Install the module:
 
     ```bash
     lgpm --modules-dir ./modules install --file blockchain_module-0.2.0.lgx
     ```
-3.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
+
+1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
 
     ```bash
     logoscore -m ./modules -D &
@@ -98,7 +100,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     ```
     :::
 
-2.  Start the node:
+1.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
@@ -132,7 +134,8 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
     - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
-2.  Check peer connectivity:
+
+1.  Check peer connectivity:
 
     ```sh
     curl -s http://localhost:8080/network/info | jq .
@@ -151,8 +154,10 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     ```
 
     - Confirm `n_peers` is greater than `0`.
-3. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
-4. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
+
+1. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
+
+1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
 ## Step 5: Request tokens from the faucet
 
@@ -172,10 +177,12 @@ A faucet distributes free tokens on test networks so you can experiment without 
         de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
     voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
     ```
-2.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
+
+1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
-3.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+    
+1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh
     curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .

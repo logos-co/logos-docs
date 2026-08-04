@@ -59,13 +59,14 @@ Before you start, make sure you have the following:
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds. Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts.
     :::
 
-2.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`. All six daemons share this one modules directory:
+1.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`. All six daemons share this one modules directory:
 
     ```sh
     mkdir -p modules
     lgpm --modules-dir ./modules --allow-unsigned install --file storage-lgx/*.lgx
     ```
-3.  Confirm the module landed:
+
+1.  Confirm the module landed:
 
     ```sh
     lgpm --modules-dir ./modules list
@@ -93,13 +94,15 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     }
     EOF
     ```
-2.  Start a `logoscore` daemon for node 1 in the background, with its own config directory and its output captured:
+
+1.  Start a `logoscore` daemon for node 1 in the background, with its own config directory and its output captured:
 
     ```sh
     logoscore --config-dir=./logoscore-1 -D -m ./modules > logs-1.txt 2>&1 &
     # Wait a few seconds for the daemon to come up
     ```
-3.  Load the module, initialise it, and start the node:
+
+1.  Load the module, initialise it, and start the node:
 
     ```sh
     logoscore --config-dir=./logoscore-1 load-module storage_module
@@ -107,7 +110,8 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     logoscore --config-dir=./logoscore-1 call storage_module start
     # Wait a few seconds for the node to start
     ```
-4.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](../concepts/connectivity.md)):
+
+1.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](../concepts/connectivity.md)):
 
     ```sh
     logoscore --config-dir=./logoscore-1 call storage_module debug \
@@ -138,7 +142,8 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     EOF
     done
     ```
-2.  Start one daemon per node, each with its own `--config-dir`:
+
+1.  Start one daemon per node, each with its own `--config-dir`:
 
     ```sh
     for id in 2 3 4; do
@@ -146,7 +151,8 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     done
     # Wait a few seconds for the daemons to come up
     ```
-3.  Load the module, initialise from each config, and start each node:
+
+1.  Load the module, initialise from each config, and start each node:
 
     ```sh
     for id in 2 3 4; do
@@ -156,7 +162,8 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     done
     # Wait a few seconds for the nodes to start
     ```
-4.  Verify the network is up: every node must report a non-empty identity (`id` and `spr`) through `debug`:
+
+1.  Verify the network is up: every node must report a non-empty identity (`id` and `spr`) through `debug`:
 
     ```sh
     for id in 1 2 3 4; do
@@ -181,7 +188,8 @@ Since this is a local network, every relay is reachable at `127.0.0.1` on its fi
       logoscore --config-dir=./logoscore-$id call storage_module debug > debug-$id.json
     done
     ```
-2.  Assemble `mix-pool.json`. `debug` already returns `peerId`, `mixPubKey` and `libp2pPubKey` in exactly the form the pool wants:
+
+1.  Assemble `mix-pool.json`. `debug` already returns `peerId`, `mixPubKey` and `libp2pPubKey` in exactly the form the pool wants:
 
     ```sh
     for id in 1 2 3 4; do
@@ -194,7 +202,8 @@ Since this is a local network, every relay is reachable at `127.0.0.1` on its fi
         }' debug-$id.json
     done | jq -s '{version: 1, relays: .}' > mix-pool.json
     ```
-3.  Collect the relays' proxy SPRs (`providerRecord`) into a JSON array:
+
+1.  Collect the relays' proxy SPRs (`providerRecord`) into a JSON array:
 
     ```sh
     jq -s -c '[.[].result.value.providerRecord]' debug-*.json > mix-proxies.json
@@ -227,7 +236,8 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     EOF
     done
     ```
-2.  Start one daemon per storage node:
+
+1.  Start one daemon per storage node:
 
     ```sh
     for id in 5 6; do
@@ -235,7 +245,8 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     done
     # Wait a few seconds for the daemons to come up
     ```
-3.  Load the module, initialise from each config, and start each node:
+
+1.  Load the module, initialise from each config, and start each node:
 
     ```sh
     for id in 5 6; do
@@ -245,7 +256,8 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     done
     # Wait a few seconds for the nodes to start
     ```
-4.  Verify the storage nodes are up:
+
+1.  Verify the storage nodes are up:
 
     ```sh
     for id in 5 6; do
@@ -264,24 +276,28 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
     echo "Hello through Mix from the storage doc-test." > hello.txt
     logoscore --config-dir=./logoscore-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
     ```
-2.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
+
+1.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
 
     ```sh
     logoscore --config-dir=./logoscore-5 call storage_module manifests \
       | jq -er '.result.value[0].cid' > cid.txt
     ```
-3.  Download the CID through node 6:
+
+1.  Download the CID through node 6:
 
     ```sh
     logoscore --config-dir=./logoscore-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536
     # Wait a few seconds for the download to complete
     ```
-4.  Confirm the lookup was tunnelled through Mix: node 6's log records the relay selection (SURB):
+
+1.  Confirm the lookup was tunnelled through Mix: node 6's log records the relay selection (SURB):
 
     ```sh
     grep "Selected mix node for surbs" storage-data/node-6/storage.log logs-6.txt
     ```
-5.  Verify the round-trip: the downloaded file matches what node 5 uploaded:
+
+1.  Verify the round-trip: the downloaded file matches what node 5 uploaded:
 
     ```sh
     cat downloaded.txt
@@ -299,7 +315,8 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
       logoscore --config-dir=./logoscore-$id stop || true
     done
     ```
-2.  Confirm the daemons have stopped:
+
+1.  Confirm the daemons have stopped:
 
     ```sh
     logoscore --config-dir=./logoscore-1 status

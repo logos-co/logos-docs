@@ -282,7 +282,7 @@ Create the storage config and start the module. Replace `<public-ip>` with the n
    - Fields
 
    :::info
-To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data:
+   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data:
 
      ```sh
      cd /var/lib/logos-node/storage-module
@@ -315,7 +315,7 @@ To run storage with [mix](../../get-started/glossary.md#mix) support, generate t
      chmod 755 make-mix-storage-config.sh
      ./make-mix-storage-config.sh > config.json
      ```
-:::
+   :::
 
 1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
 

@@ -41,7 +41,8 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     # ... Wait ~1h, then re-run until you see:
     # > "Online"
     ```
-2.  Open your `keystore.yaml` and use the [faucet](https://testnet.blockchain.logos.co/web/faucet/) to send funds to both the `BlendZk` and `SdpFunding` public keys.
+
+1.  Open your `keystore.yaml` and use the [faucet](https://testnet.blockchain.logos.co/web/faucet/) to send funds to both the `BlendZk` and `SdpFunding` public keys.
 
     ```yaml
     # keystore.yaml
@@ -52,7 +53,8 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       SdpFunding: 91d381a87e05d46fc9bc95246273b6930290506f0589ad039444decd3c24940e
       ...
     ```
-3.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`. You may need to repeat the faucet requests since only one drip is allowed per block:
+
+1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`. You may need to repeat the faucet requests since only one drip is allowed per block:
 
     ```bash
     logoscore call blockchain_module wallet_get_notes <ADDRESS> "" \
@@ -66,7 +68,8 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     ```
 
     - Note the `id` of a note held by the `BlendZk` key — you need it in the next step.
-4.  Join the Blend network by locking one of the notes held by your `BlendZk` key:
+
+1.  Join the Blend network by locking one of the notes held by your `BlendZk` key:
 
     ```bash
     curl -X POST http://<YOUR_NODE_IP>:8080/blend/join \
@@ -80,7 +83,8 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     - `<YOUR_IP>`: your external IP address.
     - `<YOUR_BLEND_PORT>`: the Blend port from `blend.core.backend.listening_address` in `user_config.yaml`. If you use port mapping, use the externally mapped port.
     - `<BLEND_ZK_NOTE_ID>`: the note `id` from the `BlendZk` balance check above.
-5.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:
+
+1.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:
 
     ```bash
     curl http://<YOUR_NODE_IP>:8080/mantle/sdp/declarations | jq .

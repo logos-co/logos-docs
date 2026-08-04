@@ -8,7 +8,7 @@ authors: 0x-r4bbit, kashepavadan
 owner: logos
 doc_version: 1
 slug: trade-tokens-on-lez-amm-program
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Trade tokens on the LEZ AMM program

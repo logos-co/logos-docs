@@ -196,17 +196,28 @@ Any consumer instruction carrying `#[require_my_gate]` gets the listed parameter
 
 ## Auto-wrap every instruction (optional)
 
-A gate that should apply to every dispatched instruction by default, the freeze pattern, declares a wrap block instead of relying on consumers to annotate each function:
+If your extension is a circuit-breaker primitive (an emergency stop, a re-entrancy guard, a global rate limit), you may want EVERY consumer instruction gated, not just the ones the consumer remembered to annotate. The framework supports this via a `wrap_instructions` metadata field that activates a module-level wrap hook:
 
 ```toml
 [package.metadata.spel.wrap_instructions]
 wrapper = "my_extension::require_my_gate"
 skip = "manual"
-self_exempt_marker = "my_gate_exempt"
-exempt = ["admin_authority::admin_transfer"]
+self_exempt_marker = "my_extension_exempt"
+exempt = [
+  "admin_authority::admin_initialize",
+  "admin_authority::admin_transfer",
+  "admin_authority::admin_renounce",
+]
 ```
 
-The framework prepends the wrapper attribute to every instruction the consumer dispatches, including other extensions' discovered instructions. `skip` names a marker word that disables auto mode (`#[my_extension(manual)]`), `self_exempt_marker` is the attribute your own library and consumers use to opt single instructions out, and `exempt` carves out other extensions' instructions by qualified name. Injection and wrapping compose, a wrapped instruction gets your gate's parameters injected like an annotated one.
+- `wrapper`: a qualified path to the per-instruction attribute the framework prepends onto each non-exempt dispatched function, including other extensions' discovered instructions. Reuses the same `#[require_my_gate]` attribute consumers apply by hand in manual mode — one proc-macro, two callers.
+- `skip`: the arg literal on your `#[my_extension]` marker that DISABLES auto-wrap. With `skip = "manual"`, `#[my_extension(manual)]` opts out of the wrap and `#[my_extension]` (bare) opts in.
+- `self_exempt_marker`: an attribute name the framework recognises as "skip this function from wrap". Add another pass-through proc-macro of that name to your macros crate; consumers carry it on any instruction they want to remain callable while gated.
+- `exempt`: a list of cross-crate dispatched instructions to skip unconditionally. Use this when composing with another extension whose ops must stay operable even when your wrap is active. (Self-exemptions for your own instructions go on the function via `self_exempt_marker` instead.)
+
+When the consumer puts `#[my_extension]` on their `#[lez_program]` mod, the framework walks the dispatcher table and prepends `#[require_my_gate]` to every function that is not in `exempt` and does not carry `#[my_extension_exempt]`. Consumers write normal code, the gate arrives with the wrap. Injection and wrapping compose: a wrapped instruction gets your gate's parameters injected like an annotated one.
+
+The hook is opt-in, omit `wrap_instructions` from your metadata and the framework leaves all instructions alone. This is the right choice for most extensions (pure data primitives, single-instruction gates, etc.).
 
 ## Embedded mode (optional)
 
@@ -238,7 +249,7 @@ When two extensions embed into the same consumer account at distinct offsets, th
 
 ### Attribute-order convention in library source
 
-When a per-instruction gate attribute does shape validation on params (the way `#[require_admin]` checks for an `#[account(pda = literal("admin_config"))]` param and an `#[account(signer)]` param), the order of attributes on the library's own `#[instruction]` fns matters:
+When a per-instruction gate attribute does shape validation on parameters (the way `#[require_admin]` checks for an `#[account(pda = literal("admin_config"))]` parameter and an `#[account(signer)]` parameter), the order of attributes on the library's own `#[instruction]` functions matters:
 
 ```rust
 #[require_my_gate]   // runs first — sees params with #[account(...)] intact
@@ -246,36 +257,9 @@ When a per-instruction gate attribute does shape validation on params (the way `
 pub fn gated_op(/* ... */) -> SpelResult { /* ... */ }
 ```
 
-Rust expands attribute macros top-down. The library's `#[instruction]` shim strips `#[account(...)]` from params. If `#[require_my_gate]` is placed below `#[instruction]`, it runs after the strip and its shape check sees no PDA / no signer params, emitting a confusing error.
+Rust expands attribute macros top-down. The library's `#[instruction]` shim strips `#[account(...)]` from parameters. If `#[require_my_gate]` is placed below `#[instruction]`, it runs after the strip, no PDA or signer parameters are left for its shape check, and it emits a confusing error.
 
 The rule only applies inside libraries that re-export the shim (like the one shown in this guide). Consumer code uses SPEL's no-op `#[instruction]` from the prelude, which doesn't strip anything; order doesn't matter there.
-
-## Auto-wrapping every consumer instruction (optional)
-
-If your extension is a circuit-breaker primitive (an emergency stop, a re-entrancy guard, a global rate limit), you may want EVERY consumer instruction gated, not just the ones the consumer remembered to annotate. The framework supports this via a `wrap_instructions` metadata field that activates a module-level wrap hook.
-
-Add this section to your `my-extension/Cargo.toml`:
-
-```toml
-[package.metadata.spel.wrap_instructions]
-wrapper = "my_extension::require_my_gate"
-skip = "manual"
-self_exempt_marker = "my_extension_exempt"
-exempt = [
-  "admin_authority::admin_initialize",
-  "admin_authority::admin_transfer",
-  "admin_authority::admin_renounce",
-]
-```
-
-- `wrapper`: a qualified path to the per-instruction attribute the framework prepends onto each non-exempt dispatched fn. Reuses the same `#[require_my_gate]` attribute consumers apply by hand in manual mode — one proc-macro, two callers.
-- `skip`: the arg literal on your `#[my_extension]` marker that DISABLES auto-wrap. With `skip = "manual"`, `#[my_extension(manual)]` opts out of the wrap and `#[my_extension]` (bare) opts in.
-- `self_exempt_marker`: an attribute name the framework recognizes as "skip this fn from wrap". Add another pass-through proc-macro of that name to your macros crate; consumers carry it on any instruction they want to remain callable while gated.
-- `exempt`: a list of cross-crate dispatched instructions to skip unconditionally. Use this when composing with another extension whose ops must stay operable even when your wrap is active. (Self-exemptions for your own instructions go on the fn via `self_exempt_marker` instead.)
-
-When the consumer puts `#[my_extension]` on their `#[lez_program]` mod, the framework hook walks the dispatcher table and prepends `#[require_my_gate]` to every fn that isn't in `exempt` and doesn't carry `#[my_extension_exempt]`. The wrap is invisible to consumers — they write normal code; the gate appears as if by magic.
-
-The hook is opt-in: omit `wrap_instructions` from your metadata and the framework leaves all instructions alone. This is the right choice for most extensions (pure data primitives, single-instruction gates, etc.).
 
 ## Composing with another extension (hard dep)
 

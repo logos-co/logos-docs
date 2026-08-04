@@ -73,7 +73,7 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Mixnet',
     description: 'Traffic mixing that hides communication patterns from network observers',
-    to: '/mixnet/get-started/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app',
+    to: '/mixnet/get-started/send-anonymised-messages-over-the-mix-network',
   },
   {
     title: 'λ Peer discovery',

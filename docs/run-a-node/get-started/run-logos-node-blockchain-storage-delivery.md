@@ -227,6 +227,22 @@ Load the blockchain module, generate the node config, and start the module.
    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
    ```
 
+   - Your node will take about an hour to finish bootstrapping and be in the `Online` state.
+
+1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
+
+    ```sh
+    grep -A3 known_keys user_config.yaml
+    ```
+
+1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
+
+1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+
+    ```sh
+    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
+    ```
+
 ## Step 6: Configure and start the storage module
 
 Create the storage config and start the module. Replace `<public-ip>` with the node's public IPv4 address before running these commands.

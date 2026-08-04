@@ -128,12 +128,37 @@ Confirm sync by evidence rather than the status label. Query the node's HTTP API
 
 ## Fund your node and propose blocks
 
-A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For chain leadership, your wallet balance counts as stake automatically — there is no separate lock step.
+A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For chain leadership, your wallet's notes participate automatically — there is no separate staking step.
 
 1. In the node view, open **Operations → Accounts** and copy one of your wallet keys.
-2. Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste the key, and select **Request Funds** (do this once your node is *Online*).
-3. Once the funds arrive they auto-stake. Your node starts winning leader slots proportional to your balance and proposes blocks on its own.
-4. Rewards appear under **Operations → Leader Rewards**, where **Claim** redeems them into your wallet.
+1. Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste the key in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**. Make sure your node is *Online* before doing this.
+
+    ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
+1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+
+    ```sh
+    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
+    ```
+
+    Example response:
+
+    ```json
+    {
+      "tip": "5d16d4bd3712dc5869fc624e59774552b4fb0c974a6efa516563b3778bac9258",
+      "balance": 1000,
+      "address": "57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923"
+    }
+    ```
+
+    - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
+
+1. Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
+   
+   :::info
+   Block proposal is probabilistic. Your node will not propose on every [slot](../../get-started/glossary.md#slot); participation depends on your stake relative to total active stake in the network.
+   :::
+
+1. Rewards appear under **Operations → Leader Rewards**, where **Claim** redeems them into your wallet.
 
 :::note
 Participating in the [Blend network](../../get-started/glossary.md#blend-network) as a [*Core* node](../../get-started/glossary.md#core-node) requires a separate locked [note](../../get-started/glossary.md#note) (staked funds) and does not affect block proposing. See [Join the Blend network as a Core node](../blend/join-the-blend-network-as-a-core-node.md).

@@ -23,7 +23,7 @@ Before you start, make sure you have the following:
 - [Docker](https://docs.docker.com/get-docker/) installed
 - Rust 1.94.0 and `cargo` installed
 - [`just`](https://github.com/casey/just) installed
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/connect-wallet-cli-to-lez-testnet.md) set up
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/run-lez-wallet-via-cli.md) set up
 - A running [Logos Blockchain node](https://github.com/logos-co/logos-docs/blob/main/docs/blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally)
 - Port `8779` free on your machine
 

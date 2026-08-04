@@ -21,7 +21,7 @@ Before you start, make sure you have the following:
 
 - Linux or macOS — macOS requires full Xcode with the Metal toolchain for the Risc0 guest build, not just command-line tools
 - Rust toolchain, `cargo`
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/connect-wallet-cli-to-lez-testnet.md) set up and funded
+- An [LEZ wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded
 
 ## What to expect
 

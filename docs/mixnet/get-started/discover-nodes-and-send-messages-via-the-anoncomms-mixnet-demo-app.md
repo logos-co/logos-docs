@@ -1,14 +1,16 @@
+---
+sidebar_position: 1
+---
+
 # Discover nodes and send messages via the AnonComms Mixnet demo app
 
-{% hint style="warning" %}
-
+:::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-
-{% endhint %}
+:::
 
 ## A. Outcome + value (required)
 
-- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering mix nodes through Logos capability discovery.
+- **Outcome (end goal):** User will send anonymous chat messages over the mixnet by discovering [mix](../../get-started/glossary.md#mix) nodes through Logos capability discovery.
 - **Why it matters:** Proves two core testnet v0.1 primitives work end-to-end: capability-based node discovery and anonymous message routing via the mixnet.
 
 ## B. Scope + ownership

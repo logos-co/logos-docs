@@ -8,6 +8,7 @@ authors: NagyZoltanPeter, kashepavadan
 owner: logos
 doc_version: 1
 slug: run-logos-delivery-node
+sidebar_position: 2
 ---
 
 # Run a Logos delivery node
@@ -34,7 +35,7 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can start a `delivery_module` node connected to the Logos Network.
-- You can confirm the node is running and has a live network identity by querying its discv5 ENR.
+- You can confirm the node is running and has a live network identity by querying its discv5 [ENR](../../get-started/glossary.md#enr).
 - You can configure the node for a different network preset by swapping the config file passed to `createNode`.
 
 ## Step 1: Install and start the daemon
@@ -51,20 +52,20 @@ Follow the instructions for your chosen path.
    docker compose up -d --build
    ```
 
-   {% hint style="info" %}
-   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-   {% endhint %}
+   :::info
+The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
+:::
 
 **Path B — Prebuilt binaries**
 
 1. Install `logoscore`, `lgpd`, and `lgpm` into `./bin`:
 
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-delivery-module/master/scripts/install-node-tools.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
 
-1. Download and install the delivery module:
+1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
 
    ```bash
    mkdir -p packages modules
@@ -75,16 +76,24 @@ Follow the instructions for your chosen path.
 1. Write the testnet config and start the daemon:
 
    ```bash
-   cat > logos-test.json <<'JSON'
-   { "preset": "logos.test", "logLevel": "DEBUG" }
-   JSON
+   cat > logos-test.json <<EOF
+   {
+      "preset": "logos.test",
+      "mode": "Core",
+      "logLevel": "INFO",
+      "tcpPort": 30303,
+      "discv5UdpPort": 9000,
+      "discv5Discovery": true,
+      "nat": "extip:<public-ip>"
+   }
+   EOF
 
    logoscore -D -m ./modules > logs.txt
    ```
 
 **Path C — Nix**
 
-1. Clone the repository and build the runtime, package manager, and module:
+1. Clone the repository and build the runtime, package manager, and [module](../../get-started/glossary.md#module):
 
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git

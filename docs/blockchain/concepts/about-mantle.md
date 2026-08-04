@@ -7,13 +7,14 @@ authors: kashepavadan
 owner: logos
 doc_version: 1
 slug: about-mantle
+sidebar_position: 3
 ---
 
 # About Mantle
 
 #### Understand how Mantle lets nodes and Zones interact with Bedrock.
 
-Mantle is a Bedrock component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](./about-the-blend-network.md), as well as to enable [Zones](./about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
+[Mantle](../../get-started/glossary.md#mantle) is a [Bedrock](../../get-started/glossary.md#bedrock) component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](./about-the-blend-network.md), as well as to enable [Zones](./about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
 
 ## The basics
 
@@ -27,11 +28,11 @@ Mantle operations are the way Logos nodes interact with Bedrock Services, and al
 
 Logos nodes use Mantle operations to indicate their participation in the Blend Network, with Mantle providing a locking mechanism used to incentivise correct behaviour by participants. The operations supported by Mantle include transferring notes, staking notes for participation in the Blend Network, paying rewards to compensate participants, and unstaking notes.
 
-Inscription operations can be used to write arbitrary data to the Logos Blockchain, enabling a variety of ways to leverage the blockchain as a permanent, decentralised record. Crucially, Mantle can be used as a censorship resistant message delivery mechanism for Zones, allowing Zone sequencers to send information to each other and engage in coordinated action. This form of message passing facilitates cross-Zone interaction including arranging atomic transactions and state updates.
+[Inscription](../../get-started/glossary.md#inscription) operations can be used to write arbitrary data to the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain), enabling a variety of ways to leverage the blockchain as a permanent, decentralised record. Crucially, Mantle can be used as a censorship resistant [message](../../get-started/glossary.md#message) delivery mechanism for Zones, allowing [Zone](../../get-started/glossary.md#zone) sequencers to send information to each other and engage in coordinated action. This form of message passing facilitates cross-Zone interaction including arranging atomic transactions and state updates.
 
 ## Mantle ledger
 
-Mantle maintains a restricted ledger that keeps track of fungible assets known as notes, which are bound to their owners. Notes are primarily used to pay for Mantle operations, but can also be bridged to equivalent Zone tokens. Mantle notes are stored by Logos nodes in a dictionary mapping notes to their unique note identifiers.
+Mantle maintains a restricted ledger that keeps track of fungible assets known as notes, which are bound to their owners. Notes are primarily used to pay for Mantle operations, but can also be bridged to equivalent Zone tokens. Mantle notes are stored by Logos nodes in a dictionary mapping notes to their unique [note](../../get-started/glossary.md#note) identifiers.
 
 Note transfers are effected by using transfer operations, which are based on the UTXO model. To transfer value, a sender spends their note and creates an equivalent new note belonging to the recipient. A spent note can never be spent again. These notes each have their own secret key for spending, and a corresponding public key for receiving new notes.
 
@@ -43,13 +44,13 @@ Logos channels, or channels for short, are lightweight virtual chains overlaid o
 
 Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganise. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
 
-![A diagram illustrating how two channels are included in the Logos Blockchain.](../.gitbook/assets/about-mantle-two-channels.png)
+![A diagram illustrating how two channels are included in the Logos Blockchain.](../assets/about-mantle/two-channels.png)
 
 It is important to note that Logos channels can only be relied on if the sequencer is trusted to act honestly. In the absence of this assumption, users must wait for the true blockchain finality.
 
 ### Decentralised sequencing
 
-A channel may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
+A [channel](../../get-started/glossary.md#channel) may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
 
 A given threshold of sequencers may also modify the sequencer list or change other channel properties by signing a message together, allowing an honest majority to remove a malicious sequencer. This form of decentralised Zone sequencing distributes the potential for MEV extraction across a set of parties rather than concentrating it as in the single-sequencer rollup design.
 

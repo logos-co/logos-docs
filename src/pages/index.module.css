@@ -1,0 +1,109 @@
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 3rem 0;
+}
+
+.heroImage {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroImage img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--ifm-card-border-radius);
+}
+
+.heroText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Both the heading and the grid below it share this width, so the
+   heading's left edge lines up with the grid's leftmost box instead of
+   the (wider) page container's edge. */
+.section {
+  /* 4 fixed 240px columns + 3 gaps between them */
+  max-width: calc(4 * 240px + 3 * 1rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionTitle {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardGrid {
+  display: grid;
+  /* No justify-content here on purpose: .section is already sized to
+     exactly 4 columns + gaps and centered on the page, so the grid fills
+     it exactly — no independent centering needed, which is also what
+     keeps the grid's left edge flush with the (left-aligned) title above
+     it. */
+  grid-template-columns: repeat(4, 240px);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .section {
+    max-width: calc(2 * 240px + 1 * 1rem);
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(2, 240px);
+  }
+}
+
+@media (max-width: 520px) {
+  .section {
+    max-width: 240px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 240px;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-card-border-radius);
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.cardIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.cardDescription {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+  }
+}

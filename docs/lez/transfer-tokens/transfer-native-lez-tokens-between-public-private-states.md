@@ -8,13 +8,14 @@ authors: moudyellaz, kashepavadan
 owner: logos
 doc_version: 1
 slug: transfer-native-lez-tokens-between-public-private-states
+sidebar_position: 3
 ---
 
 # Transfer native LEZ tokens between public and private states
 
 #### Get started with private transfers to accounts you don't control, using a recipient-published keypair.
 
-This procedure covers how to credit a private account — regular or a Program Derived Address (PDA) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender account registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
+This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account) — regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
 
 Before you start, make sure you have the following:
 
@@ -24,7 +25,7 @@ Before you start, make sure you have the following:
 
 ## What to expect
 
-- You can credit a recipient's private account using only their published NPK and VPK, with no interactive setup required.
+- You can credit a recipient's private account using only their published [NPK](../../get-started/glossary.md#npk) and [VPK](../../get-started/glossary.md#vpk), with no interactive setup required.
 - You can receive tokens into up to 2^128 distinct accounts from the same keypair by varying the identifier, so one published key serves many independent senders.
 - You can discover and spend incoming funds with `wallet account sync-private` after the sender's transaction is confirmed.
 
@@ -52,9 +53,9 @@ The recipient generates a reusable keypair (NPK and VPK) and shares it with send
 
 The sender credits the recipient's account at a chosen identifier. The circuit initialises the account, emits its commitment and a deterministic nullifier, and encrypts the post-state to the recipient via ephemeral ECDH against the recipient VPK.
 
-{% hint style="warning" %}
+:::warning
 Two senders who independently pick the same identifier for the same NPK target the same account. The second transfer fails at the commitment/nullifier layer. Use high-entropy identifiers to avoid collisions.
-{% endhint %}
+:::
 
 1. Send funds to the recipient's private account using their published keys:
 

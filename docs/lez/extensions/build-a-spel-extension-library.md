@@ -1,10 +1,21 @@
+---
+title: Build a SPEL extension library
+doc_type: procedure
+product: lez
+topics: lez
+steps_layout: sectioned
+authors: mmlado
+owner: logos
+doc_version: 1
+slug: build-a-spel-extension-library
+sidebar_position: 2
+---
+
 # Build a SPEL extension library
 
-{% hint style="warning" %}
-## Important
-
+:::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-{% endhint %}
+:::
 
 SPEL extension libraries ship reusable on-chain primitives, access control, freeze switches, multisig, etc., that consuming programs adopt with a single attribute. This guide is for library authors. App developers consuming an existing extension should follow that extension's own integration guide instead.
 
@@ -12,11 +23,11 @@ SPEL extension libraries ship reusable on-chain primitives, access control, free
 
 An extension is a normal Rust crate that:
 
-1. Defines one or more `#[instruction]` fns that consumers can call from the SPEL CLI / wallets.
+1. Defines one or more `#[instruction]` functions that consumers can call from the SPEL CLI / wallets.
 2. Declares a marker attribute name in its `Cargo.toml` so consumers can opt in.
 3. Optionally ships per-instruction gate attributes (like `#[require_admin]`) that consumers apply to their own instructions.
 
-When a consumer puts the marker attribute on a `#[lez_program]` module, the framework discovers the extension via Cargo metadata, scans the library's `src/lib.rs` for `#[instruction]` fns, and merges them into the consumer's dispatcher and IDL automatically. No framework changes are needed per extension.
+When a consumer puts the marker attribute on a `#[lez_program]` module, the framework discovers the extension via Cargo metadata, scans the library's `src/lib.rs` for `#[instruction]` functions, and merges them into the consumer's dispatcher and IDL automatically. No framework changes are needed per extension.
 
 ## Layout
 
@@ -52,7 +63,7 @@ extension_attr = "my_extension"
 
 - `extension_attr` is the attribute name consumers put on their `#[lez_program]` module to opt in. By convention, match it to your crate name (with `_` not `-`).
 
-Per-instruction gate attributes your library defines (e.g. `#[require_admin]` from `admin-authority`) need no metadata for the check itself: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone. If your gate needs specific account params on every gated instruction, you can declare those in an optional inject block so consumers do not have to write them out (see the gate attribute section below).
+Per-instruction gate attributes your library defines (e.g. `#[require_admin]` from `admin-authority`) need no metadata for the check itself: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone. If your gate needs specific account parameters on every gated instruction, you can declare those in an optional inject block so consumers do not have to write them out (see the gate attribute section below).
 
 ## Define the runtime library
 
@@ -162,11 +173,11 @@ pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
-Never read or strip `#[account(...)]` attrs in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
+Never read or strip `#[account(...)]` attributes in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
 
-**The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved param name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))` and assert the declared account names equal the kwarg set a probe fn hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert.
+**The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved parameter name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))` and assert the declared account names equal the kwarg set a probe function hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert.
 
-To spare consumers declaring your gate's account params on every gated instruction, declare them in your `Cargo.toml`:
+To spare consumers declaring your gate's account parameters on every gated instruction, declare them in your `Cargo.toml`:
 
 ```toml
 [[package.metadata.spel.inject]]
@@ -181,11 +192,11 @@ wrapper = "require_my_gate"
   signer = true
 ```
 
-Any consumer instruction carrying `#[require_my_gate]` gets the listed params synthesized at expansion time unless it already declares them (skip-if-declared). The injected params are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account. Compound PDA seeds work too: `seed = [{ const = "frozen" }, { account = "caller" }]` derives from a literal plus another account's id.
+Any consumer instruction carrying `#[require_my_gate]` gets the listed parameters synthesized at expansion time unless it already declares them (skip-if-declared). The injected parameters are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account. Compound PDA seeds work too: `seed = [{ const = "frozen" }, { account = "caller" }]` derives from a literal plus another account's id.
 
 ## Auto-wrap every instruction (optional)
 
-A gate that should apply to every dispatched instruction by default, the freeze pattern, declares a wrap block instead of relying on consumers to annotate each fn:
+A gate that should apply to every dispatched instruction by default, the freeze pattern, declares a wrap block instead of relying on consumers to annotate each function:
 
 ```toml
 [package.metadata.spel.wrap_instructions]
@@ -195,7 +206,7 @@ self_exempt_marker = "my_gate_exempt"
 exempt = ["admin_authority::admin_transfer"]
 ```
 
-The framework prepends the wrapper attr to every instruction the consumer dispatches, including other extensions' discovered instructions. `skip` names a marker word that disables auto mode (`#[my_extension(manual)]`), `self_exempt_marker` is the attr your own library and consumers use to opt single instructions out, and `exempt` carves out other extensions' instructions by qualified name. Injection and wrapping compose, a wrapped instruction gets your gate's params injected like an annotated one.
+The framework prepends the wrapper attribute to every instruction the consumer dispatches, including other extensions' discovered instructions. `skip` names a marker word that disables auto mode (`#[my_extension(manual)]`), `self_exempt_marker` is the attribute your own library and consumers use to opt single instructions out, and `exempt` carves out other extensions' instructions by qualified name. Injection and wrapping compose, a wrapped instruction gets your gate's parameters injected like an annotated one.
 
 ## Embedded mode (optional)
 
@@ -205,7 +216,7 @@ An extension whose per-program state is one fixed-size slot can let consumers em
 #[my_extension(my_state = config, offset = 32)]
 ```
 
-To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction fns a trailing `offset: usize` param, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal:
+To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction functions a trailing `offset: usize` parameter, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal:
 
 ```toml
 [package.metadata.spel.embedded]
@@ -221,7 +232,7 @@ default = 0
 
 **Slot field markers.** The framework derives a marker name from your role, the role name minus a `_config` suffix plus `_slot` (role `admin_config` gives `#[admin_slot]`, role `my_state` gives `#[my_state_slot]`). A consumer who puts that marker on the embedding field of an `#[account_type]` struct gets a derived `<MARKER>_OFFSET` const, an emitted layout test, and a compile-time assert that the derived offset equals the `offset = ...` declared on your marker, so a field added above the slot fails the build instead of silently moving the window. Adoption is optional (no marker, no check), and two structs carrying the same marker is a compile error. Nothing to implement on your side, the mechanism ships with `#[account_type]`, but document the marker name your role produces.
 
-**Born-initialized slots.** If your slot must never exist uninitialized (the way an admin slot without a holder is a takeover window), ship a bootstrap attribute consumers put on their own account-creating instruction (the way `admin-authority` ships `#[admin_initialize]`). Implement it as a proc macro that injects your `bootstrap_at` call into the handler body, and declare it as an inject wrapper in metadata so your role params synthesize on the marked instruction like they do on gates. Make it embedded-mode only and let the framework stamp the location kwargs, and reject instructions whose embedding account is not `init`, a bootstrap against an existing account is a takeover. A slot that can start empty (the way freeze starts vacant and the admin appoints the first holder via transfer) needs no bootstrap attribute at all.
+**Born-initialized slots.** If your slot must never exist uninitialized (the way an admin slot without a holder is a takeover window), ship a bootstrap attribute consumers put on their own account-creating instruction (the way `admin-authority` ships `#[admin_initialize]`). Implement it as a proc macro that injects your `bootstrap_at` call into the handler body, and declare it as an inject wrapper in metadata so your role parameters synthesize on the marked instruction like they do on gates. Make it embedded-mode only and let the framework stamp the location kwargs, and reject instructions whose embedding account is not `init`, a bootstrap against an existing account is a takeover. A slot that can start empty (the way freeze starts vacant and the admin appoints the first holder via transfer) needs no bootstrap attribute at all.
 
 When two extensions embed into the same consumer account at distinct offsets, the framework merges the duplicated account into one transaction account (listed once in the IDL with unioned constraints, cloned into each position of the call) and your instruction must emit exactly one post-state per unique account id. Same account at the same offset is a compile error.
 
@@ -303,7 +314,7 @@ mod my_program {
 }
 ```
 
-After compilation, the consumer's binary contains your extension's instructions in its `Instruction` enum, dispatcher, and `PROGRAM_IDL_JSON` const. `spel generate-idl` shows them too. The consumer never sees the extension's source copied into their module; calls dispatch directly to your library via `::my_extension::extension_action(...)`.
+After compilation, the consumer's binary contains your extension's instructions in its `Instruction` enum, dispatcher, and `PROGRAM_IDL_JSON` const. `spel generate-idl` shows them too. The extension's source is never copied into the consumer's module; calls dispatch directly to your library via `::my_extension::extension_action(...)`.
 
 ## Multiple extensions on one program
 
@@ -318,7 +329,7 @@ mod my_program { ... }
 
 Each extension is discovered independently by its own `extension_attr`. Each contributes its own instructions to the dispatcher, and each gate attribute re-expands on its own gated handlers without touching the others.
 
-Marker order is the cross-extension ABI: the first marker's instructions and injected params come first in the dispatcher, the IDL, and the account order. When two extensions inject the same param name with identical constraints they share one account, conflicting constraints are a compile error naming both extensions. Duplicate instruction names between extensions (or an extension and a consumer fn) are a compile error naming both sources. Two extensions can even embed into the same consumer account at distinct offsets, see embedded mode above.
+Marker order is the cross-extension ABI: the first marker's instructions and injected parameters come first in the dispatcher, the IDL, and the account order. When two extensions inject the same parameter name with identical constraints they share one account, conflicting constraints are a compile error naming both extensions. Duplicate instruction names between extensions (or an extension and a consumer function) are a compile error naming both sources. Two extensions can even embed into the same consumer account at distinct offsets, see embedded mode above.
 
 ## Verifying your extension
 

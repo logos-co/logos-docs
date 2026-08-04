@@ -427,3 +427,8 @@ FodyWeavers.xsd
 
 # macOS system files
 .DS_Store
+
+# Docusaurus
+/build
+.docusaurus
+.cache-loader

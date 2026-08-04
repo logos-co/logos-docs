@@ -1,10 +1,21 @@
+---
+title: Freeze program execution with freeze-authority
+doc_type: procedure
+product: lez
+topics: lez
+steps_layout: sectioned
+authors: mmlado
+owner: logos
+doc_version: 1
+slug: freeze-authority
+sidebar_position: 3
+---
+
 # Freeze program execution with freeze-authority
 
-{% hint style="warning" %}
-## Important
-
+:::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-{% endhint %}
+:::
 
 `freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your LEZ program. A designated freeze authority can pause all program execution (program-wide freeze) and block specific accounts from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only unfreeze, authority management, and admin operations remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
@@ -97,11 +108,9 @@ That single annotation pair (plus `#[admin_authority]`) exposes seven new instru
 | `freeze_account(target)` | Sets per-account frozen flag to true for `target`. Freeze authority only. Callable while frozen. |
 | `freeze_account_release(target)` | Sets per-account frozen flag to false for `target`. Freeze authority only. Callable while frozen. |
 
-{% hint style="warning" %}
-## Initialization window
-
-Until `freeze_initialize` is called, the freeze Config PDA does not exist and no gates are active. Unlike `admin_initialize`, freeze initialization is NOT front-runnable — `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: bundle `admin_initialize` and `freeze_initialize` in the same transaction immediately after deployment.
-{% endhint %}
+:::warning
+**Initialization window.** Until `freeze_initialize` is called, the freeze Config PDA does not exist and no gates are active. Unlike `admin_initialize`, freeze initialization is NOT front-runnable — `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: bundle `admin_initialize` and `freeze_initialize` in the same transaction immediately after deployment.
+:::
 
 ## Gate an instruction
 

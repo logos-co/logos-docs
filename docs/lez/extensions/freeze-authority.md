@@ -145,7 +145,7 @@ Use `#[freeze_exempt]` to opt out per instruction:
 pub fn balance_of(/* ... */) -> SpelResult { /* read-only, safe while frozen */ }
 ```
 
-The framework reads `self_exempt_marker = "freeze_exempt"` from freeze-authority's Cargo metadata and skips the wrap for any fn carrying the attribute.
+The framework reads `self_exempt_marker = "freeze_exempt"` from freeze-authority's Cargo metadata and skips the wrap for any function carrying the attribute.
 
 ## Initialize the freeze authority
 
@@ -221,7 +221,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
-When the multisig invokes `freeze_program` (or any freeze-authority-signed instruction), it does so through a chained call and declares its PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true`; the gate sees the PDA as the legitimate freeze authority.
+When the multisig invokes `freeze_program` (or any freeze-authority-signed instruction), it does so through a chained call and declares its PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true`; the gate accepts the PDA as the legitimate freeze authority.
 
 ## Renounce freeze authority
 
@@ -314,7 +314,7 @@ Plus your own instructions. In embedded mode neither `admin_initialize` nor `fre
 
 - **Initialization order matters.** `freeze_initialize` requires admin signature and an initialized `admin_config`. Bundle both inits in the same transaction immediately after deployment.
 - **Renounce is recoverable (unlike admin).** Vacating the freeze authority slot is reversible by the admin via `freeze_authority_transfer`. Plan accordingly if your operational model assumes the role is permanent — only renouncing admin first locks it down.
-- **Exempt is shallow.** A `#[freeze_exempt]` consumer fn that uses `chained_call` to invoke a gated fn still hits the gated fn's check. Frozen-state behavior of chained calls is determined by the called fn's exemption status, not the caller's.
+- **Exempt is shallow.** A `#[freeze_exempt]` consumer function that uses `chained_call` to invoke a gated function still hits the gated function's check. Frozen-state behaviour of chained calls is determined by the called function's exemption status, not the caller's.
 - **Auto mode covers all dispatched instructions.** Including admin operations? No — admin-authority's three management instructions are exempt by an explicit entry in freeze-authority's metadata. Admin can still transfer or renounce while the program is frozen. This is by design to avoid deadlock from a lost admin key during freeze.
 - **Per-account PDAs persist.** Per-account freeze state writes a PDA per target. Once initialized, the PDA exists for the program's lifetime (LEZ has no close primitive). Toggling release writes `is_frozen = false`; the PDA itself stays. No rent applies in LEZ.
 

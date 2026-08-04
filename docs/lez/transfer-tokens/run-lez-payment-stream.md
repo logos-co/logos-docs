@@ -15,7 +15,7 @@ sidebar_position: 4
 
 #### Get started opening and closing a continuous payment stream on testnet v0.2.
 
-This procedure covers how to open a payment stream on the LEZ that pays a service provider continuously over time and lets the provider claim the accrued tokens. Both the payer and payee roles run on a single host with one `logoscore` daemon and one wallet file holding two public accounts. Payment streams are based on the [LIP-155](https://lip.logos.co/anoncomms/raw/payment-streams.html) protocol.
+This procedure covers how to open a payment stream on the [LEZ](../../get-started/glossary.md#lez) that pays a service provider continuously over time and lets the provider claim the accrued tokens. Both the payer and payee roles run on a single host with one `logoscore` daemon and one wallet file holding two [public accounts](../../get-started/glossary.md#public-account). Payment streams are based on the [LIP-155](https://lip.logos.co/anoncomms/raw/payment-streams.html) protocol.
 
 Before you start, make sure you have the following:
 
@@ -46,7 +46,7 @@ Clone the LEZ Payment Streams repository, initialize the journey shell, and expo
    ./scripts/user-journey-shell.sh
    ```
 
-   - `user-journey-shell.sh` installs `lgs` when missing, then opens a Nix shell with pinned `logoscore` and `lgpm` that load `linux-amd64-dev` modules.
+   - `user-journey-shell.sh` installs `lgs` when missing, then opens a Nix shell with pinned `logoscore` and `lgpm` that load `linux-amd64-dev` [modules](../../get-started/glossary.md#module).
 
 1. Export session variables and define shell helper functions:
 
@@ -227,7 +227,7 @@ Only `capability_module` loads automatically. `logos_execution_zone` and `paymen
 
 ## Step 3: Create and fund accounts
 
-Create a payer and payee public account, register them for authenticated transfers, and fund them from the LEZ pinata (testnet faucet).
+Create a payer and payee public account, register them for authenticated transfers, and fund them from the LEZ [pinata](../../get-started/glossary.md#piñata) (testnet faucet).
 
 1. Create payer and payee public accounts:
 

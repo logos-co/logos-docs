@@ -70,7 +70,7 @@ Before you begin, ensure that you have the following:
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
 :::info
-Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
+Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
 :::
 
 2.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
@@ -110,7 +110,7 @@ The only exception is native token credits: any program can credit native tokens
     The output looks like this:
 
     ```
-    Account owned by authenticated-transfer program
+    Account owned by authenticated transfer program
     {..."balance":150...}
     ```
 
@@ -212,7 +212,7 @@ The output looks like this:
 
 ````
 ```text
-Account owned by authenticated-transfer program
+Account owned by authenticated transfer program
 {..."balance":BALANCE-AMOUNT...}
 ```
 ````
@@ -234,7 +234,7 @@ The wallet command panics and fails during proof generation with an assertion er
 The error message looks like this:
 
 ```
-thread 'main' panicked at .../privacy_preserving_circuit.rs:394:13:
+thread 'main' panicked at .../privacy_preserving_circuit/src/output.rs:58:17:
 assertion `left == right` failed: Found new private account with non default values
   left: Account { ... }
   right: Account { ... }

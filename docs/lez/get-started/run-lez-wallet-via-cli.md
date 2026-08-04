@@ -46,7 +46,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.0
+   git checkout v0.2.1
    ```
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
@@ -61,10 +61,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    cargo install --path lez/wallet --force
    ```
 
-1. Set the testnet sequencer address:
+1. Point the wallet at the testnet:
 
    ```sh
-   wallet config set sequencer_addr https://testnet.lez.logos.co
+   wallet change-network testnet
    ```
 
 ## Verify the connection

@@ -104,7 +104,7 @@ The wallet reconstructs the account ID from the decrypted `PrivateAccountKind` h
 
 ### Why does the second transfer to the same (NPK, identifier) fail?
 
-Two transfers to the same `(npk, identifier)` pair resolve to the same `AccountId` and collide at the commitment/nullifier layer (`check_commitments_are_new` / `check_nullifiers_are_valid` in `lee/state_machine/src/state.rs`). Each sender must use a unique identifier for a given recipient NPK.
+Two transfers to the same `(npk, identifier)` pair resolve to the same `AccountId` and collide at the commitment/nullifier layer (`check_commitments_are_new` / `check_nullifiers_are_valid` in `lee/state_machine/src/state/mod.rs`). Each sender must use a unique identifier for a given recipient NPK.
 
 ### Why does spending multiple incoming transfers become expensive?
 

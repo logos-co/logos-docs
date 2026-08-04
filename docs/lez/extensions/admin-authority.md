@@ -1,10 +1,21 @@
+---
+title: Gate program instructions with admin-authority
+doc_type: procedure
+product: lez
+topics: lez
+steps_layout: sectioned
+authors: mmlado
+owner: logos
+doc_version: 1
+slug: admin-authority
+sidebar_position: 1
+---
+
 # Gate program instructions with admin-authority
 
-{% hint style="warning" %}
-## Important
-
+:::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-{% endhint %}
+:::
 
 `admin-authority` is a SPEL extension that adds a single transferable admin role to your LEZ program. The admin is the only account allowed to call admin-gated instructions. The role can be transferred to another signer or PDA, or renounced permanently. This page walks through using `admin-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
@@ -59,11 +70,9 @@ That single annotation exposes three new instructions in your program's IDL:
 | `admin_transfer` | Replaces the current admin with a new signer or PDA. |
 | `admin_renounce` | Zeros the admin permanently. Terminal, no recovery path. |
 
-{% hint style="warning" %}
-## Initialization window
-
-Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Send it as the very next transaction after deployment to prevent a third party from claiming the role. Bundling with the deployment itself is not possible today because a LEZ deployment transaction carries no instructions.
-{% endhint %}
+:::warning
+**Initialization window.** Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Send it as the very next transaction after deployment to prevent a third party from claiming the role. Bundling with the deployment itself is not possible today because a LEZ deployment transaction carries no instructions.
+:::
 
 ## Gate an instruction
 

@@ -1,10 +1,21 @@
+---
+title: Build a SPEL extension library
+doc_type: procedure
+product: lez
+topics: lez
+steps_layout: sectioned
+authors: mmlado
+owner: logos
+doc_version: 1
+slug: build-a-spel-extension-library
+sidebar_position: 2
+---
+
 # Build a SPEL extension library
 
-{% hint style="warning" %}
-## Important
-
+:::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
-{% endhint %}
+:::
 
 SPEL extension libraries ship reusable on-chain primitives, access control, freeze switches, multisig, etc., that consuming programs adopt with a single attribute. This guide is for library authors. App developers consuming an existing extension should follow that extension's own integration guide instead.
 

@@ -236,19 +236,35 @@ Like admin-authority, the freeze state can live inside one of your program's own
 pub struct ProgramConfig {
     pub value: u64,            // bytes 0..8
     pub padding: [u8; 24],     // bytes 8..32
+    #[admin_slot]
     pub admin: AdminConfig,    // bytes 32..64
+    #[freeze_slot]
     pub freeze: FreezeConfig,  // bytes 64..97
 }
 
 #[lez_program]
 #[admin_authority(admin_config = config, offset = 32)]
 #[freeze_authority(freeze_config = config, offset = 64)]
-mod my_program { /* ... */ }
+mod my_program {
+    use admin_authority::admin_initialize;
+
+    #[admin_initialize]
+    #[instruction]
+    pub fn initialize(
+        #[account(init, pda = literal("program_config"))] mut config: AccountWithMetadata,
+        #[account(signer)] signer: AccountWithMetadata,
+    ) -> SpelResult {
+        // write the struct with both slots defaulted; the admin
+        // bootstrap is injected by the attribute
+        // ...
+    }
+}
 ```
 
 What changes:
 
-- **No `freeze_initialize`.** Your account-creating instruction writes the struct, and the freeze slot is born vacant: it rejects every holder-path caller until the admin appoints the first holder via `freeze_authority_transfer`, the same path that repopulates a renounced slot. There is no initialization ordering to get right because there is no initializer.
+- **No `freeze_initialize`.** Your account-creating instruction writes the struct, and the freeze slot is born vacant: it rejects every holder-path caller until the admin appoints the first holder via `freeze_authority_transfer`, the same path that repopulates a renounced slot. There is no initialization ordering to get right because there is no initializer. The admin slot next door is bootstrapped by marking that same instruction with `#[admin_initialize]`, the caller becomes admin in the transaction that creates the account.
+- **Slot markers keep the layout honest.** `#[admin_slot]` and `#[freeze_slot]` each derive an offset const and a layout test, and the build fails if a marker position and its `offset = ...` declaration ever disagree, for example after a field is added above a slot.
 - **One account per transaction.** When admin and freeze share the embedding account, management instructions that read both carry the shared account once. `freeze_authority_renounce` drops from 3 accounts to 2.
 - **Splice-only writes.** Freeze operations write only the 33 byte window (32 byte slot plus the frozen flag), your neighboring fields survive every toggle and transfer.
 - **Offsets never appear in a transaction.** They compile into the program as literals, and the IDL carries no offset arguments.

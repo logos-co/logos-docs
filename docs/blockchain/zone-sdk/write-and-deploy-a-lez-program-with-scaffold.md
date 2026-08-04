@@ -22,9 +22,10 @@ sidebar_position: 4
 Before you begin, ensure you have:
 
 - Linux x86\_64 or macOS
-- Rust and Cargo (latest stable)
-- Node.js v20 or later
-- A running Logos Blockchain node connected to the public testnet (see [Run a Logos Blockchain node from the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md))
+- `git`, `curl`, and Rust/Cargo (latest stable)
+- Docker or Podman — required for the RISC0 guest method build
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) installed via `rzup`: run `rzup install rust` (needed by `logos-scaffold build`) and `rzup install r0vm` (needed by the sequencer to execute transactions)
+- [Nix](https://nixos.org/download/) — `logos-scaffold setup` builds the `basecamp` and `lgpm` dependencies as Nix flakes (`build = "nix-flake"` in `scaffold.toml`); `logos-scaffold doctor` flags a missing `nix` with *Install `nix`*
 
 ## What to expect
 

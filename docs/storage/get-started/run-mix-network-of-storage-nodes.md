@@ -29,7 +29,7 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+-   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -50,7 +50,7 @@ Before you start, make sure you have the following:
 1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
+    nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
     ```
 
     - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
@@ -77,7 +77,7 @@ Before you start, make sure you have the following:
 
 The first node is the bootstrap node: the other nodes use it to join the Mix network.
 
-1.  Write node 1's configuration. It uses `"nat": "none"` to avoid port mapping attempts on the local network, `"mix-enabled": true`, and `"no-bootstrap-node": true` because it is the bootstrap node. Paths are absolute (`$(pwd)`) because each module runs in its own process:
+1.  Write node 1's configuration. It uses `"mix-enabled": true` and `"no-bootstrap-node": true` because it is the bootstrap node. Paths are absolute (`$(pwd)`) because each module runs in its own process:
 
     ```sh
     mkdir -p "$(pwd)/storage-data/node-1"
@@ -88,7 +88,6 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
       "log-file": "$(pwd)/storage-data/node-1/storage.log",
       "disc-port": 9091,
       "listen-port": 8081,
-      "nat": "none",
       "mix-enabled": true,
       "no-bootstrap-node": true
     }
@@ -135,7 +134,6 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
       "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
-      "nat": "none",
       "mix-enabled": true,
       "bootstrap-node": ["$BOOTSTRAP"]
     }
@@ -227,7 +225,6 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
       "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
-      "nat": "none",
       "mix-enabled": true,
       "bootstrap-node": ["$BOOTSTRAP"],
       "dht-mix-proxy": $PROXIES,

@@ -33,7 +33,7 @@ Before you start, ensure you have:
 
 ## Step 1: Install Logos core tools
 
-1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
+1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) into `./bin`:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -44,17 +44,17 @@ Before you start, ensure you have:
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
-1.  Download the module:
+1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.0 --output ./
-    # writes ./blockchain_module-0.2.0.lgx
+    lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output ./
+    # writes ./blockchain_module-0.2.1.lgx
     ```
 
 1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.0.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.1.lgx
     ```
 
 1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
@@ -88,7 +88,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
     :::info
-    To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
+    To migrate an existing version 0.1.2 blockchain config to version 0.2.1, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
 
     ```bash
     logoscore call blockchain_module migrate_user_config_0_1_2 \
@@ -181,7 +181,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
-    
+
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh

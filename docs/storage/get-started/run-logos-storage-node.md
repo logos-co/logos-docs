@@ -28,7 +28,7 @@ Before you start, make sure you have the following:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
--   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -47,7 +47,7 @@ Before you start, make sure you have the following:
 1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.0.1#lgx-portable' -o storage-lgx
+    nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
     ```
 
     - This produces a `.lgx` package in `./storage-lgx/`.
@@ -117,27 +117,29 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     mkdir -p "$(pwd)/storage-data"
     cat > config.json <<EOF
     {
-      "data-dir": "$(pwd)/storage-data",
-      "log-level": "DEBUG",
-      "log-file": "$(pwd)/storage-data/storage.log",
-      "nat": "none"
+        "data-dir": "./storage-data",
+        "log-level": "INFO",
+        "listen-ip": "0.0.0.0",
+        "listen-port": 8091,
+        "disc-port": 8090,
+        "network": "logos.test"
     }
     EOF
     ```
 
-    - With `"nat": "none"` the node announces the machine's own IP as-is: it can download from the network but is not reachable from the internet from behind a router. To make it reachable, use `"nat": "upnp"` or `"nat": "extip:<your-public-IP>"` with the ports forwarded: see [Connectivity](../concepts/connectivity.md).
-
     - `config.json` includes the following fields:
 
-    | Field       | Purpose                            |
-    | ----------- | ---------------------------------- |
-    | `data-dir`  | Storage repository path (absolute) |
-    | `log-level` | Log verbosity                      |
-    | `log-file`  | Node log destination (absolute)    |
-    | `nat`       | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
+    | Field | Purpose |
+    |-------|---------|
+    | `data-dir` | Storage repository path |
+    | `log-level` | Log verbosity |
+    | `listen-ip` | Local TCP bind address |
+    | `listen-port` | Public TCP libp2p port |
+    | `disc-port` | Public UDP discovery port |
+    | `network` | Storage network preset |
 
     - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings), binds discovery to the default UDP port `8090`, and picks a random TCP `listen-port`.
-    - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values and a `nat` mode that announces your address: see [Connectivity](../concepts/connectivity.md).
+    - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values: see [Connectivity](../concepts/connectivity.md).
 
 1.  Initialise the storage module with the testnet configuration. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
 

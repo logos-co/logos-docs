@@ -32,23 +32,43 @@ You can share files once you are part of a network formed by entry points called
 
 ## Being reachable: NAT
 
-On a home network, your node usually sits behind a router (NAT), so it is not reachable from the internet by default.
+On a home network, your node usually sits behind a router (NAT), so it is
+not reachable from the internet by default.
 
-An unreachable node still works in one direction: you can download content from other nodes, but you cannot publish to the network — other nodes cannot download your files.
+With NAT traversal, the node will try different ways to become reachable.
+After checking the reachability of its listen port, the node will try
+the following actions in order if it is unreachable:
+
+1. Try to open the ports: if the router has UPnP, NAT-PMP or PCP enabled,
+   the node asks it to open the listen port for incoming connections.
+   If that works, the node becomes reachable.
+2. Go through a relay: if it fails, the node will use another peer as a
+   relay. When a peer tries to connect to this node, it will be redirected
+   to the relay, which will forward the connection to the node.
+3. Escape the relay: ideally, when a peer arrives through the relay, the node
+   tries to open a direct connection with it anyway (hole punching). If it
+   works, the relay is dropped and the two nodes talk directly.
+
+The reachability check is done regularly, every 2 minutes by default
+(depending on the configuration).
+
+Being unreachable is no longer a dead end. A node behind a relay can still
+share content, but the performance will be lower than for a reachable node.
+
+Note that the node keeps checking its reachability, so if it becomes
+unreachable at some point, it will try again to become reachable.
 
 :::info
-Automatic NAT traversal (hole punching) is coming. It will let nodes behind a router reach each other without manual port mapping.
+The port mapping is currently being tested, so it is not available for now.
+The node will try to use a relay if it is unreachable.
 :::
 
-Behind a router, the address your node listens on is a private one (e.g. `192.168.1.20`): other peers cannot dial it. Being reachable therefore means two things: the node **announces** a public address to the network, and that address actually **leads back** to your machine (the port is open or mapped on your router). The `nat` option controls how the node finds the address to announce:
+The `nat` option controls how the node finds the address to announce:
 
 | Value        | When to use it                                                                                                                                                                                       |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `any`        | Default. Tries the methods below automatically.                                                                                                                                                        |
-| `none`       | No NAT traversal: the node announces the machine's own IP as-is. Use this when the machine already has a public IP (e.g. a cloud server or VPS). With only a private IP, the node stays unreachable.   |
-| `upnp`       | If your router has UPnP enabled, the node asks it to open a port so you become reachable from the internet.                                                                                            |
-| `pmp`        | Same as `upnp`, but using NAT-PMP. Use it when your router supports NAT-PMP instead.                                                                                                                   |
-| `extip:<IP>` | Set your public IP yourself, e.g. `extip:203.0.113.7`. Use this when you know your public IP and have opened your listen port on the router yourself.                                                  |
+| `auto`       | Default. Everything described above.                                                                                                                                                                   |
+| `extip:<IP>` | Set your public IP yourself, e.g. `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know your public IP and have opened your listen port on the router yourself, or on a machine with a public IP (a cloud server or VPS). |
 
 :::warning
 

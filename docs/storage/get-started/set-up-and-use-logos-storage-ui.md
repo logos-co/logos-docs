@@ -113,46 +113,37 @@ git config --global http.maxRequestBuffer 100M
 
 On first launch, the app opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
 
-Your node must be reachable from the internet to share files (an unreachable node can still download). Choose the setup option that matches your network environment:
+The Guided option will use the default configuration and start the node automatically.
+The Advanced option allows you to edit the configuration before starting the node.
 
-| Scenario | Setup option | Details |
-|:---------|:-------------|:--------|
-| Behind NAT with UPnP or NAT-PMP | `Guided` followed by `UPnP` | Logos Storage configures the network automatically. |
-| Behind NAT, manual port forwarding available | `Guided` followed by `Port Forwarding` | Requires forwarding one TCP port (chosen during onboarding) and UDP `8090`. See [Forwarding ports manually](../concepts/connectivity.md#forwarding-ports-manually). |
-| Custom or complex network | `Advanced` | Displays a prepopulated configuration JSON you can edit manually. See the [API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html). |
-
-This guide follows the `Guided` setup with `Port Forwarding`.
+This guide follows the `Guided` setup.
 
 1. Select **Guided** and click **Continue**.
 
-1. On the **Network Configuration** step, select **Port Forwarding** and click **Continue**.
-
-   ![Network Configuration step with the UPnP and Port Forwarding cards](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding.png)
-
-1. On the **Port Configuration** step, note the TCP port (or type your own), then forward it on your router along with UDP `8090` (see [Forwarding ports manually](../concepts/connectivity.md#forwarding-ports-manually)). Click **Continue**.
-
-   ![Port Configuration step with the TCP port field](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding-configuration.png)
-
-1. Wait for the connectivity checker to confirm your node is reachable: "Node is ready — Your node is up and reachable." Click **Continue**.
-
-   ![Node is ready step confirming the node is reachable](../assets/set-up-and-use-logos-storage-ui/storage-ui-port-forwarding-success.png)
-
-   - If the node is unreachable, see [Troubleshooting](troubleshooting.md).
-   - The guided setup requires a reachable node. To run without connectivity, go **Back** and use the `Advanced` setup: the node will only be able to download files from other nodes.
+   ![Onboarding](../assets/set-up-and-use-logos-storage-ui/storage-ui-onboarding.png)
 
 1. On the **Select Drives** step, choose the folder where downloaded files will be saved, then click **Continue**.
 
    ![Select Drives step with the downloads folder field](../assets/set-up-and-use-logos-storage-ui/storage-ui-select-drives.png)
 
-1. Wait for the dashboard to open and the node status to reach **Running**.
+1. Wait for the dashboard to open and the node status icon to be green.
 
    ![Storage UI dashboard with the node running](../assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
 
-   - A red status dot means the node is running but not reachable from the internet; green means it is reachable and ready to share files.
+   A red status dot means the node is not running.
+
+   When you start the node, you will see a status `Unknown` with a grey dot blinking. This is the NAT status check, updated every 2 minutes.
+   A grey dot means the reachability check has not been performed yet.
+   A green dot means the node is reachable from the network and can upload and download content.
+   An orange dot means the node is not reachable from the network but falls back to the relay network. The node can still upload and download content using a relay with other peers. The speed might be reduced unless both peers were able to create a direct connection (hole punching).
+
+   See [Connectivity](../concepts/connectivity.md).
+
+1. Clicking on the help icon on the right of the NAT status will give you more information about the node's reachability.
+
+   ![NAT status](../assets/set-up-and-use-logos-storage-ui/storage-ui-nat.png)
 
 ### Configuration
-
-The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the Storage Module to apply the changes.
 
 After onboarding, the settings are saved to a file whose location depends on the OS. If you are running the UI inside the Basecamp application:
 
@@ -196,16 +187,45 @@ The manifest is the representation of a file on the network: it carries the meta
 No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ`, the [Farewell to Westphalia book](https://logos.co/farewell-to-westphalia). It is available on the network the default configuration connects to.
 :::
 
+When the file is downloaded, the download icon will turn green indicating that the file exists in your downloads folder.
+
 ## Step 5: Make your lookups private with Mix
 
 The **Mix** switch in the **Node** panel controls private queries. When enabled, the node forwards its content lookups over the Logos mix network, which makes them much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
 
-![Node panel with the Mix switch enabled](../assets/set-up-and-use-logos-storage-ui/storage-ui-mix.png)
-
 - The switch is on by default when your configuration includes the Mix options.
 - Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off — observers will then be able to link you to your queries.
 
-## Step 6: Manage the node lifecycle
+## Step 6: Settings
+
+In the top right section, the settings icon on the right of **Manage node** opens the settings popup.
+
+![Settings 1](../assets/set-up-and-use-logos-storage-ui/storage-ui-settings-1.png)
+
+![Settings 2](../assets/set-up-and-use-logos-storage-ui/storage-ui-settings-2.png)
+
+The default configuration should be suitable for most users.
+
+Some settings cannot be updated, such as the `Data directory` and `Mix enabled`.
+Most of the editable settings will require a node restart to take effect. You should see a message indicating that on the bottom right:
+
+> Unsaved changes - the node must restart to apply them.
+
+After saving the changes, you will need to close the settings and click **Stop** then **Start** to restart the node.
+
+:::info
+The active configuration is saved to `${HOME}/.logos_storage/config.json`. This file should not be edited manually. The settings UI should be used to change the configuration instead. If your configuration is messed up, you can delete this file and restart the node to reset it to the default configuration.
+:::
+
+## Step 7: Debug
+
+A debug popup is available on the top right section, next to the settings icon. You can also display it using the `Ctrl+D` keyboard shortcut.
+
+![Debug](../assets/set-up-and-use-logos-storage-ui/storage-ui-debug.png)
+
+While it seems to be oriented toward advanced users, it can be useful to check the node's reachability status and if the relay is running.
+
+## Step 8: Manage the node lifecycle
 
 1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns grey, the node reports **Stopped**, and peer connections drop.
 

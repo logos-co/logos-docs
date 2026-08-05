@@ -21,6 +21,7 @@ You need:
 
 - [A running blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
 - A publicly reachable IP and port (or DNS) combination for the node.
+- Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation.
 
 ## What to expect
 

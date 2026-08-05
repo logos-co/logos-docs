@@ -27,7 +27,7 @@ Before you start, make sure you have the following:
   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
   ```
 - 2 GB RAM (sufficient for a local two-module test)
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0) installed. To install it, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) installed. To install it, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -58,8 +58,8 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    ```
 
    :::info
-The first-run Nix build can take 5–20 minutes to fetch dependencies; subsequent builds are cached. Estimated total time is 15–25 minutes.
-:::
+   The first-run Nix build can take 5–20 minutes to fetch dependencies; subsequent builds are cached. Estimated total time is 15–25 minutes.
+   :::
    
 1. Vendor the C-binding header and shared library that `logos_module()` expects in `./lib`:
 
@@ -99,8 +99,8 @@ The first-run Nix build can take 5–20 minutes to fetch dependencies; subsequen
    - Peer IDs are non-deterministic across runs.
 
    :::info
-The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT — a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
-:::
+   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT — a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
+   :::
 
 ## Step 2: Scaffold the new Logos Core module
 
@@ -209,12 +209,12 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    ```
 
    :::info
-For local development, override`flake.nix` at build time:
+   For local development, override`flake.nix` at build time:
 
    ```bash
    nix build --override-input libp2p_module path:../logos-libp2p-module
    ```
-:::
+   :::
 
 ## Step 3: Build both modules
 
@@ -365,8 +365,8 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
    - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` (`version=1`) that A advertised.
 
    :::info
-A first `discover` returning `[]` means the advertisement has not yet propagated. Repeat the call after a few seconds.
-:::
+   A first `discover` returning `[]` means the advertisement has not yet propagated. Repeat the call after a few seconds.
+   :::
 
 1. Tear down all three daemons:
 

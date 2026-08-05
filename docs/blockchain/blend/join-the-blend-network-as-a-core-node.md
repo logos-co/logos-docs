@@ -72,7 +72,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 1.  Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
 :::info
-Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`.
+Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
 :::
 
    ```sh
@@ -87,6 +87,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
    - `<YOUR_IP>`: Must be your external IP address
    - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
    - `<BLEND_ZK_NOTE_ID>`: The note ID of one of the notes held by your `BlendZk` key, as queried above.
+   - The Blend core listener starts only after the node's declaration becomes active.
 
 1.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:
 

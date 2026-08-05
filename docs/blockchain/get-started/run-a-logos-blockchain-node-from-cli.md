@@ -44,10 +44,10 @@ Before you start, ensure you have:
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
-1.  Download the module:
+1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.1 --output ./
+    lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output ./
     # writes ./blockchain_module-0.2.1.lgx
     ```
 

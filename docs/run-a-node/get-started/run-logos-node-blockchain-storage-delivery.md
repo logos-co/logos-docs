@@ -76,6 +76,16 @@ You can also install these tools by running:
    wget https://github.com/logos-co/logos-package-manager/releases/download/0.2.1/lgpm-x86_64-linux.tar.gz
    ```
 
+1. Verify the runtime-tool archives against the SHA-256 digests recorded for the pinned GitHub release assets:
+
+   ```sh
+   sha256sum --check <<'EOF'
+   6f216f4b807520194dd0e4d1a3d69bd2bc83f38781a5e7b2c1abf66e40143b33  logoscore-x86_64-linux.tar.gz
+   2581f5bb6618623b9eb27b8bba37d39647b33c56d2f5bf15b41d0da286d45aee  lgpd-x86_64-linux.tar.gz
+   41c897a6da6db0ecabe03c0098b9bd0652ea8cd2eaf091e2d646a65b71260780  lgpm-x86_64-linux.tar.gz
+   EOF
+   ```
+
 1. Install the tools under `/usr/local/bin`:
 
    ```sh
@@ -128,12 +138,12 @@ Download and install the three module packages from the configured module [catal
 `lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
 :::
 
-1. Download the module packages:
+1. Download the module packages. The root hash selects the exact published package identity for the pinned version:
 
    ```sh
-   lgpd download blockchain_module --version 0.2.1 --output /opt/logos-node/packages
-   lgpd download storage_module --version 2.1.0 --output /opt/logos-node/packages
-   lgpd download delivery_module --version 0.2.0 --output /opt/logos-node/packages
+   lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output /opt/logos-node/packages
+   lgpd download storage_module --version 2.1.0 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
+   lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output /opt/logos-node/packages
    ```
 
 1. Install all three packages into the shared modules directory:
@@ -215,7 +225,7 @@ Load the blockchain module, generate the node config, and start the module.
    logoscore load-module blockchain_module
    cd /var/lib/logos-node/blockchain-module-testnet
    logoscore call blockchain_module generate_user_config "$(cat peers.json)"
-   chmod 600 /var/lib/logos-node/user_config.yaml
+   chmod 600 /var/lib/logos-node/user_config.yaml /var/lib/logos-node/keystore.yaml
    ```
 
    - `generate_user_config` writes `user_config.yaml` to the `logoscore` daemon working directory (`/var/lib/logos-node/user_config.yaml` with this guide's layout).
@@ -288,7 +298,7 @@ The public keys and note IDs below are examples. Use the corresponding values fr
 1. Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
 :::info
-Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`.
+Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
 :::
 
    ```sh
@@ -300,6 +310,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
    - `<YOUR_IP>`: Must be your external IP address
    - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
    - `<BLEND_ZK_NOTE_ID>`: The note ID of one of the notes held by your `BlendZk` key, as queried above.
+   - The Blend core listener starts only after the node's declaration becomes active.
 
 1. Verify the declaration was accepted on chain by polling `/mantle/sdp/declarations`, looking for your declaration
 
@@ -463,8 +474,9 @@ Create the kernel-only delivery config for a node operator and start the module.
 1. Verify the delivery module is running:
 
    ```sh
+   logoscore call delivery_module getAvailableNodeInfoIDs
    logoscore call delivery_module getNodeInfo Version
-   logoscore call delivery_module getNodeInfo MyBoundPorts
+   logoscore call delivery_module getNodeInfo MyMultiaddresses
    ```
 
 ## Step 8: Verify the full node is healthy
@@ -513,7 +525,7 @@ Run health checks against the daemon and all three modules to confirm the node i
 1. Check the delivery module bound ports:
 
    ```sh
-   logoscore call delivery_module getNodeInfo MyBoundPorts
+   logoscore call delivery_module getNodeInfo MyMultiaddresses
    ```
 
 ### Optional: Run the node unattended with systemd

@@ -132,7 +132,7 @@ This guide follows the `Guided` setup.
 
    A red status dot means the node is not running.
 
-   When you start the node, you will see a status `Unknown` with a grey dot blinking. This is the NAT status check, updated every 2 minutes.
+   When you start the node, you will see a status `Unknown` with a grey dot blinking. This is the NAT status check, updated every minute.
    A grey dot means the reachability check has not been performed yet.
    A green dot means the node is reachable from the network and can upload and download content.
    An orange dot means the node is not reachable from the network but falls back to the relay network. The node can still upload and download content using a relay with other peers. The speed might be reduced unless both peers were able to create a direct connection (hole punching).
@@ -142,6 +142,70 @@ This guide follows the `Guided` setup.
 1. Clicking on the help icon on the right of the NAT status will give you more information about the node's reachability.
 
    ![NAT status](../assets/set-up-and-use-logos-storage-ui/storage-ui-nat.png)
+
+:::warning 
+
+The latest Logos Storage Module (v2.1.0) relies on AutoNAT servers, which are not deployed on the `logos.test` network yet. NAT detection will not work until they are.
+
+In the meantime, you can point the node at other AutoNAT servers with a manual configuration:
+
+1. Bootstrap nodes: 
+
+```json
+[
+  "spr:CiUIAhIhA_30VxBSXq0xCjoMIlFKlnY7gBEQzHv0pRY5kHP17-pTEgIDARpICicAJQgCEiED_fRXEFJerTEKOgwiUUqWdjuAERDMe_SlFjmQc_Xv6lMQrJLE0wYaCgoIBM-a0SUGH5AaCwoJBM-a0SWRAh-aKkYwRAIgHGe5zrUfxBfg0bY-rf0WOaYkci1mvYnwmgMKeXRVo68CIHjJUGqlj5jwNklm_BuIdz5_kHpLYH4tfiADtZx3Xmnu",
+  "spr:CiUIAhIhAo61xuA0H8l-DQs4pjcsXRgIK_VrDlW9br-ad6-EAUKTEgIDARpICicAJQgCEiECjrXG4DQfyX4NCzimNyxdGAgr9WsOVb1uv5p3r4QBQpMQrJLE0wYaCgoIBEDicIcGH5AaCwoJBEDicIeRAh-aKkcwRQIhAIpb9JvG6OiphjL9gb1awcrGX8f-_j_qRcYkce5U6moLAiBjBF_uAtD5G6m_E_-TVHA-yV0klnYmrtCeyzm18KE9DA",
+  "spr:CiUIAhIhAlvt_ed7o68o2EjRMAOLxOaAjhfs4Xo1mSMj4zFmGjqJEgIDARpICicAJQgCEiECW-3953ujryjYSNEwA4vE5oCOF-zhejWZIyPjMWYaOokQrJLE0wYaCgoIBIZ6WPAGH5AaCwoJBIZ6WPCRAh-aKkcwRQIhAPR-rNdpKYHhVb-jW7rEFMvlILBgWn9TTCAPOhCxCSf9AiAa4yqBS1U-a1BfYKzFCQ86wh2LLTxtwLgXKekMmuHxsg",
+  "spr:CiUIAhIhAskyX6nTawF8y_IBEFWYiRNnjQDl8zpO78ImQpb5cXOuEgIDARpICicAJQgCEiECyTJfqdNrAXzL8gEQVZiJE2eNAOXzOk7vwiZClvlxc64QrJLE0wYaCgoIBIbR-fEGH5AaCwoJBIbR-fGRAh-aKkYwRAIgdbClsN6hpvfQRFopGJPN9-1P6fmrbv6sN0LNwSDs8xICIG_NXwQVb8IiGB5qMuREF6p-SjCWSKTFllWZFBmJHYmW"
+]
+```
+
+2. Mix relay pool:
+
+```json
+{
+  "version": 1,
+  "relays": [
+    {
+      "peerId": "16Uiu2HAmVkKbPiweAgwiqjWkhptDUApzEM2w7jEjpRWB3zpQe9ZU",
+      "multiAddr": "/ip4/207.154.209.37/tcp/8080",
+      "mixPubKey": "2922d84ffd5a2d0dc8206034390ec38972a64402188c265b92a2045d0559775a",
+      "libp2pPubKey": "03fdf45710525ead310a3a0c22514a96763b801110cc7bf4a516399073f5efea53"
+    },
+    {
+      "peerId": "16Uiu2HAm52kdvfTWTrkGhkvGQX8dp8FfRcaPc6UgTzLFHsSLVQCi",
+      "multiAddr": "/ip4/64.226.112.135/tcp/8080",
+      "mixPubKey": "d91c44f0aebb26a2d78f83d31c805ce478a86c7b35d9b44e10a8ae6f6c30ba00",
+      "libp2pPubKey": "028eb5c6e0341fc97e0d0b38a6372c5d18082bf56b0e55bd6ebf9a77af84014293"
+    },
+    {
+      "peerId": "16Uiu2HAm1cXZXgyw47PM7xL1FFiNVQuntihVevNFK5Fy18uZU62c",
+      "multiAddr": "/ip4/134.122.88.240/tcp/8080",
+      "mixPubKey": "7eccd26d9decc8c8f236788313f2d76247614a005ff85808b0e6b473e435514a",
+      "libp2pPubKey": "025bedfde77ba3af28d848d130038bc4e6808e17ece17a35992323e331661a3a89"
+    },
+    {
+      "peerId": "16Uiu2HAm8y4UgDx9L5FVBPPgpoA36sdydWkewuLVgM4rnvnMtg1T",
+      "multiAddr": "/ip4/134.209.249.241/tcp/8080",
+      "mixPubKey": "fdb59c1dc2eb066f697b69d58866579dfb50586b161e8c604becfe177c8eb147",
+      "libp2pPubKey": "02c9325fa9d36b017ccbf2011055988913678d00e5f33a4eefc2264296f97173ae"
+    }
+  ]
+}
+```
+
+3. DHT mix proxies: 
+
+```json
+[
+  "spr:CiUIAhIhA_30VxBSXq0xCjoMIlFKlnY7gBEQzHv0pRY5kHP17-pTEgIDARo7CicAJQgCEiED_fRXEFJerTEKOgwiUUqWdjuAERDMe_SlFjmQc_Xv6lMQl4nE0wYaCgoIBM-a0SUGH5AqRjBEAiAqH3RfY85YEUtyqBcFzGvDdQ8vV3g6teXDzocPeCWWKgIgGHFpJyc2-wxEaDQ5a5kIKgNOKxXqtF35dCfDQTKvgjg",
+  "spr:CiUIAhIhAo61xuA0H8l-DQs4pjcsXRgIK_VrDlW9br-ad6-EAUKTEgIDARo7CicAJQgCEiECjrXG4DQfyX4NCzimNyxdGAgr9WsOVb1uv5p3r4QBQpMQ0ZHE0wYaCgoIBEDicIcGH5AqRjBEAiAUDfpZJRvZ2QjNHZV3fRQ3Hz4NaMlf-reFir93l9JJJQIgYXzXn0Kuw1I5H4G9M2hrV0B7ufspkiTySJEXqbjc2TI",
+  "spr:CiUIAhIhAlvt_ed7o68o2EjRMAOLxOaAjhfs4Xo1mSMj4zFmGjqJEgIDARo7CicAJQgCEiECW-3953ujryjYSNEwA4vE5oCOF-zhejWZIyPjMWYaOokQ0ZHE0wYaCgoIBIZ6WPAGH5AqRzBFAiEA0CDBW5lpQ1IHZvh17-0aHS0YBrLVRrYlHDNVNnzrxiACIHrxDmdsrDKM2gFnU67yGXq0ukUMLMyVoUv7NmMbAh1V",
+  "spr:CiUIAhIhAskyX6nTawF8y_IBEFWYiRNnjQDl8zpO78ImQpb5cXOuEgIDARo7CicAJQgCEiECyTJfqdNrAXzL8gEQVZiJE2eNAOXzOk7vwiZClvlxc64Q0pHE0wYaCgoIBIbR-fEGH5AqRzBFAiEAovgkG6R4aF6vdwB2t8tI8S0BAHey8O6AgZr-RpfITxUCIDEV4e4P_Vhf8h_gHi4AyE5T-gDJWvsMnPhbGFITcOQm"
+]
+```
+
+:::
 
 ### Configuration
 
@@ -195,6 +259,12 @@ The **Mix** switch in the **Node** panel controls private queries. When enabled,
 
 - The switch is on by default when your configuration includes the Mix options.
 - Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off — observers will then be able to link you to your queries.
+
+:::warning
+
+When using `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries. See [Connectivity](../concepts/connectivity.md) for details.
+
+:::
 
 ## Step 6: Settings
 

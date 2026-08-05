@@ -60,6 +60,12 @@ The port mapping is currently being tested, so it is not available for now.
 The node will try to use a relay if it is unreachable.
 :::
 
+:::warning
+
+If you are using Mix with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
+
+:::
+
 The `nat` option controls how the node finds the address to announce:
 
 | Value        | When to use it                                                                                                                                                                                       |

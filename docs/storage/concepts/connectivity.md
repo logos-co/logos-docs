@@ -55,9 +55,6 @@ The reachability check is done regularly, every 2 minutes by default
 Being unreachable is no longer a dead end. A node behind a relay can still
 share content, but the performance will be lower than for a reachable node.
 
-Note that the node keeps checking its reachability, so if it becomes
-unreachable at some point, it will try again to become reachable.
-
 :::info
 The port mapping is currently being tested, so it is not available for now.
 The node will try to use a relay if it is unreachable.

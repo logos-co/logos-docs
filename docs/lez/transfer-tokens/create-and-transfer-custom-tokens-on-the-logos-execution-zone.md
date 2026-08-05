@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
+The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
 
 The token program is a built-in LEZ [program](../../get-started/glossary.md#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.
 
@@ -48,7 +48,7 @@ Before you begin, ensure that you have the following:
 
 - The token program can move balances between token holding accounts.
 - If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
-- You can transfer custom tokens to any uninitialised public or [private account](../../get-started/glossary.md#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
+- You can transfer custom tokens to any uninitialised public or private account. Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 :::info
 Currently, it's impossible to change the token name or total supply after you create the token.

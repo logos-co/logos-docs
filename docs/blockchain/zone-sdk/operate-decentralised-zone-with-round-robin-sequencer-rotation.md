@@ -59,14 +59,14 @@ The [Mantle specification](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa0
    ...
    ```
 
-    :::info
-The Zone SDK exposes the current rotation state to your sequencer in two forms:
-   
+   :::info
+   The Zone SDK exposes the current rotation state to your sequencer in two forms:
+
    - The full `SequencerChannelView` (`subscribe_channel_view`) — a `tokio::sync::watch` receiver carrying `authorized_key_index`, `own_key_index`, `our_turn_to_write`, the current [slot](../../get-started/glossary.md#slot), and the turn window's `turn_to_write_slots`.
    - A focused `TurnNotification` (`subscribe_turn_to_write`) plus `Event::TurnNotification` — emitted only when the turn boundary actually changes.
-   
+
    `our_turn_to_write` is the boolean a sequencer reads to decide whether it is currently authorised.
-:::
+   :::
 
 ## Step 2: Publish inscriptions and monitor turn state
 

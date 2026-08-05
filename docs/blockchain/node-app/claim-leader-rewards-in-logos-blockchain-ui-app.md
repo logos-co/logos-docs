@@ -44,8 +44,8 @@ Check the account balance before claiming, submit a claim, then confirm the tran
    - The panel shows the number of available claimable vouchers, the tip used for the query, and voucher details including `cm` and `nf` values.
 
    :::info
-If the voucher count shows `0`, wait for more blocks and refresh the **Leader Rewards** panel before proceeding.
-:::
+   If the voucher count shows `0`, wait for more blocks and refresh the **Leader Rewards** panel before proceeding.
+   :::
 
 1. Click **Claim**.
 

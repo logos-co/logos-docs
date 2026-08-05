@@ -232,8 +232,8 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    ```
 
    :::warning
-Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
-:::
+   Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
+   :::
 
 4. Open a private conversation as the initiator, or receive one as the recipient:
 
@@ -264,8 +264,8 @@ Each introduction bundle is **single-use** — it can open exactly one conversat
    ```
 
    :::warning
-Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
-:::
+   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
+   :::
 
 7. Shut down cleanly:
 

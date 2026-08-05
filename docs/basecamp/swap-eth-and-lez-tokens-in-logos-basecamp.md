@@ -17,7 +17,7 @@ sidebar_position: 3
 
 The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
-You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. One part still isn't as smooth: on the currently published version, creating your LEZ account in [Step 3](#step-3-set-up-your-accounts) needs a command-line tool. That step says so plainly, and a release that removes the need is on the way.
+You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. One part still isn't as smooth: on the currently published version, creating your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account) in [Step 3](#step-3-set-up-your-accounts) needs a command-line tool. That step says so plainly, and a release that removes the need is on the way.
 
 ## Networks and addresses
 
@@ -246,7 +246,7 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 A Basecamp app can't open your browser for you. Logos app interfaces run inside a sandboxed QML engine that silently ignores requests to open an external URL, as reported in [eth-lez-atomic-swaps#84](https://github.com/logos-co/eth-lez-atomic-swaps/issues/84). That's why the receipt offers **Copy value** and **Copy explorer link** buttons instead of clickable links, and why every instruction here says to paste the link into your browser yourself.
 :::
 
-Two rows are deliberately copy-only, with no explorer link. **ETH swap ID (lock)** is an identifier internal to the contract rather than a transaction hash, and **LEZ HTLC program** names a program rather than a transaction. Keep the swap ID anyway. It's what the **Refund** tab asks for if a later swap stalls.
+Two rows are deliberately copy-only, with no explorer link. **ETH swap ID (lock)** is an identifier internal to the contract rather than a transaction hash, and **LEZ HTLC program** names a [program](../get-started/glossary.md#program) rather than a transaction. Keep the swap ID anyway. It's what the **Refund** tab asks for if a later swap stalls.
 
 ## Step 7: Send feedback
 

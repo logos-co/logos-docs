@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Move tokens between Logos Blockchain and a Zone using channels and the Zone SDK.
 
-[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones, with the [Zone](../../get-started/glossary.md#zone)'s associated [channel](../../get-started/glossary.md#channel) maintaining a token balance that keeps track of the total token value stored in the Zone. 
+[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones, with the Zone's associated [channel](../../get-started/glossary.md#channel) maintaining a token balance that keeps track of the total token value stored in the Zone. 
 
 This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the [Zone SDK](../../get-started/glossary.md#zone-sdk)'s `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel balance maps to its internal accounts, while the SDK only surfaces the on-chain events.
 
@@ -151,8 +151,8 @@ A withdrawal is initiated inside the zone and lands on-chain as a signed [`Chann
    Because the inscription and the withdrawal share one transaction, they become adopted, orphaned, or finalized as a unit, so the Zone block recording the withdrawal and the on-chain debit cannot drift apart.
 
    :::info
-`publish_atomic_withdraw` returns the `PublishResult` synchronously. For a single-signature bundle, `PublishResult.tx` is a `PendingTx::AtomicWithdraw(AtomicWithdrawInfo)` carrying the inscription and the bundled withdraw operations.
-:::
+   `publish_atomic_withdraw` returns the `PublishResult` synchronously. For a single-signature bundle, `PublishResult.tx` is a `PendingTx::AtomicWithdraw(AtomicWithdrawInfo)` carrying the inscription and the bundled withdraw operations.
+   :::
 
 1. Check the finalized transactions in `Event::BlocksProcessed.finalized` against the pending transaction's `AtomicWithdrawInfo.tx_hash`. Because it is a bundle, both the inscription and the withdrawal will appear in the same `tx.ops` once the withdrawal is finalized.
 
@@ -222,8 +222,8 @@ When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal al
 1. Share the unsigned transaction with the other accredited signers and collect their `IndexedSignature`s. Each signer calls `handle.sign_tx(&tx)` on the transaction the first sequencer proposes.
 
     :::info
-Defining the committee transport - how proposals and signatures are exchanged - is outside the Zone SDK's scope.
-:::
+    Defining the committee transport - how proposals and signatures are exchanged - is outside the Zone SDK's scope.
+    :::
 
    ```rust
    // 3. Hand `tx` to the other accredited signers and collect their

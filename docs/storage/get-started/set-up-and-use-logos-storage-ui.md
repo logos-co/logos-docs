@@ -152,7 +152,7 @@ This guide follows the `Guided` setup with `Port Forwarding`.
 
 ### Configuration
 
-The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the [Storage Module](../../get-started/glossary.md#storage-module) to apply the changes.
+The active configuration is saved to `${HOME}/.logos_storage/config.json`. Change this file and restart the Storage Module to apply the changes.
 
 After onboarding, the settings are saved to a file whose location depends on the OS. If you are running the UI inside the Basecamp application:
 

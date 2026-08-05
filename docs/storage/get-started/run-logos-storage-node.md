@@ -44,7 +44,7 @@ Before you start, make sure you have the following:
 
 ## Build and install the storage module
 
-1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
+1.  Build the module package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
@@ -76,7 +76,7 @@ Before you start, make sure you have the following:
 
 ## Start the daemon and load the storage module
 
-Run `logoscore` with the modules directory, then load and initialise the [storage module](../../get-started/glossary.md#storage-module) against the testnet config.
+Run `logoscore` with the modules directory, then load and initialise the storage module against the testnet config.
 
 Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 

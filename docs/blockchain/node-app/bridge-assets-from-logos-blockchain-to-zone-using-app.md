@@ -91,8 +91,8 @@ The UI collects the deposit payload across three input steps, then submits it on
 1. On **Step 3 – Confirm**, review the exact payload — channel ID, notes and total amount, change and funding keys, max fee, metadata, and tip — then click **Confirm & deposit**.
 
    :::warning
-Review the information carefully. Deposits are irreversible once included in a block.
-:::
+   Review the information carefully. Deposits are irreversible once included in a block.
+   :::
 
 ## Read the deposit result
 

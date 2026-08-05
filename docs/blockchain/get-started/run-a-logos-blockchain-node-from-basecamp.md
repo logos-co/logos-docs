@@ -110,7 +110,7 @@ Open the **blockchain** module from the sidebar to reach the node view, then gen
 
 ## Step 6: Start the node
 
-On the node view, select **Start Node**. The status moves to *Starting*, then *Bootstrapping*, and the node begins connecting to peers.
+On the node view, select **Start Node**. The status moves to *Starting*, then *[Bootstrapping](../../get-started/glossary.md#bootstrapping)*, and the node begins connecting to peers.
 
 ## Step 7: Verify that your node is syncing
 

@@ -17,10 +17,10 @@ sidebar_position: 2
 
 Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
 
-Logos [core modules](../../get-started/glossary.md#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
+Logos core modules are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
 :::info
-For other [module](../../get-started/glossary.md#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+For other module types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
 :::
 
 Before you start, make sure you have the following:
@@ -70,8 +70,8 @@ The `logos-module-builder` provides four scaffolding templates for different mod
    The template uses `minimal` as a placeholder in the source filenames, class names, and identifiers. You replace these placeholders with your module's name in Step 2.
 
    :::info
-The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
-:::
+   The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
+   :::
 
 ## Step 2: Adapt the template for your module
 
@@ -256,8 +256,8 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
    :::info
-`.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
-:::
+   `.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
+   :::
 
 ### Use the `nix bundle` command
 
@@ -316,8 +316,8 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    ```
 
    :::tip
-Use `lgpd list` to browse all available packages.
-:::
+   Use `lgpd list` to browse all available packages.
+   :::
 
 1. Download the LGX package to a local directory.
 
@@ -334,7 +334,7 @@ Use `lgpd list` to browse all available packages.
    lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
-   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing [UI modules](../../get-started/glossary.md#ui-module).
+   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
 
 ## Step 7: Run the module 
 

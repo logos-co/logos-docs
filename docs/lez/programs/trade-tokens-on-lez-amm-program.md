@@ -15,7 +15,7 @@ sidebar_position: 2
 
 #### Use the SPEL CLI to deploy an AMM, create a pool, swap tokens, and publish a TWAP price on LEZ testnet v0.2.
 
-This procedure explains how developers and node operators deploy and drive the automated market maker (AMM) program on the Logos Execution Zone (LEZ), from building the on-chain programs through swapping tokens and publishing a TWAP oracle price, all using the [SPEL CLI](https://github.com/logos-co/spel). The AMM is one of the essential launch-day applications for Logos, since it enables on-chain trading and supplies the price data that on-chain oracles rely on. Follow this procedure on LEZ testnet v0.2 whenever you need to stand up a pool from scratch, execute a swap, or publish a fresh price to the TWAP oracle.
+This procedure explains how developers and node operators deploy and drive the automated market maker (AMM) [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) ([LEZ](../../get-started/glossary.md#lez)), from building the on-chain programs through swapping tokens and publishing a TWAP oracle price, all using the [SPEL CLI](https://github.com/logos-co/spel). The AMM is one of the essential launch-day applications for Logos, since it enables on-chain trading and supplies the price data that on-chain oracles rely on. Follow this procedure on LEZ testnet v0.2 whenever you need to stand up a pool from scratch, execute a swap, or publish a fresh price to the TWAP oracle.
 
 **Before you start**, make sure you have the following:
 
@@ -25,7 +25,7 @@ This procedure explains how developers and node operators deploy and drive the a
 
 ## What to expect
 
-- You can build, deploy, and initialize the AMM, TWAP oracle, and token programs on LEZ testnet.
+- You can build, deploy, and initialize the AMM, TWAP oracle, and [token programs](../../get-started/glossary.md#token-program) on LEZ testnet.
 - You can create a liquidity pool and swap between two tokens using the SPEL CLI.
 - You can publish a TWAP price that on-chain oracles can consume.
 
@@ -43,7 +43,7 @@ This procedure explains how developers and node operators deploy and drive the a
 
 ## Step 2: Prepare your wallet
 
-This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-execution-zone/tree/main/lez/wallet) to point your tooling at the [LEZ Sequencer](https://github.com/logos-blockchain/logos-execution-zone/tree/main/lez/sequencer/service) and to create the accounts the rest of this procedure reuses.
+This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-execution-zone/tree/main/lez/wallet) to point your tooling at the [LEZ Sequencer](https://github.com/logos-blockchain/logos-execution-zone/tree/main/lez/sequencer/service) and to create the [accounts](../../get-started/glossary.md#account) the rest of this procedure reuses.
 
 1. Export your wallet home directory in every shell you use.
 
@@ -62,7 +62,7 @@ This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-ex
 Build and deploy the `token`, `twap_oracle`, and `amm` programs from the [lez-programs](https://github.com/logos-blockchain/lez-programs/tree/main) repository, then record each program's ProgramId; you need all three before you can initialize the AMM.
 
 :::warning
-Recompiling a guest changes its ProgramId, and every PDA derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize` — never reuse old values.
+Recompiling a guest changes its ProgramId, and every [PDA](../../get-started/glossary.md#pda) derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize` — never reuse old values.
 :::
 
 1. Clone the lez-programs repository and navigate to it.

@@ -61,8 +61,8 @@ Before writing any C code, scaffold the Logos module project using the official 
    This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customise them for your specific library.
 
     :::info
-As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
-:::
+    As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
+    :::
 
 1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files — this tutorial supplies its own pure-C++ `src/` files:
 
@@ -195,8 +195,8 @@ Create the C library that your module will wrap. Place the header and implementa
    ```
 
    :::info
-If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
-:::
+   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
+   :::
 
 ## Step 3: Configure the Logos module
 
@@ -217,7 +217,7 @@ logos-calc-module/
     └── calc_module_impl.cpp   # Implementation (wrapping logic)
 ```
 
-1. Create `metadata.json`. Set `name`, `description`, `main`, add `"interface": "universal"`, and declare your library under `nix.external_libraries`. This file is the single source of truth: it is embedded into the generated plugin binary, read by `logos-module-builder` to configure the Nix build, used by CMake to resolve and link external libraries, and used by `nix-bundle-lgx` to generate the LGX manifest.
+1. Create `metadata.json`. Set `name`, `description`, `main`, add `"interface": "universal"`, and declare your library under `nix.external_libraries`. This file is the single source of truth: it is embedded into the generated plugin binary, read by `logos-module-builder` to configure the Nix build, used by CMake to resolve and link external libraries, and used by `nix-bundle-lgx` to generate the [LGX](../../get-started/glossary.md#lgx) manifest.
 
 To fetch and build external libraries from source, add `"build_command": "make shared"` and `"output_pattern": "build/<libname>"` to `"external_libraries"`.
 
@@ -325,9 +325,9 @@ To fetch and build external libraries from source, add `"build_command": "make s
    }
    ```
 
-   :::info
-When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
-:::
+    :::info
+    When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
+    :::
 
 1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logoscore`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
 
@@ -460,8 +460,8 @@ When adding module dependencies, the flake input attribute name must match the `
    ```
 
    :::info
-The first build takes 5–15 minutes as Nix downloads Qt, the Logos SDK, and other dependencies. Subsequent builds are fast due to caching.
-:::
+   The first build takes 5–15 minutes as Nix downloads Qt, the Logos SDK, and other dependencies. Subsequent builds are fast due to caching.
+   :::
 
 1. Build everything - both the library and generated SDK headers. For a `universal` module this is also where `logos-cpp-generator --from-header` runs over `src/calc_module_impl.h` to produce the Qt plugin glue under `generated_code/` before CMake compiles it:
 

@@ -69,3 +69,4 @@ Sepolia
 [Tt]imelock
 [Tt]imelocks
 tx
+rustup

@@ -24,8 +24,10 @@ This procedure covers Linux, Windows (via WSL), and macOS on Apple Silicon. It r
 Make sure you have the following:
 
 - A graphical desktop session on one of: **Linux** (tested on Ubuntu 24.04), **Windows 11 with WSL2** (plus WSLg for the GUI), or an **Apple Silicon Mac** (M1 or later). Basecamp is a desktop application and needs a real display.
-- Around **8 GB of RAM** and a few GB of free disk. The chain downloads on first sync and grows over time.
-- An always-on machine is recommended — a laptop that sleeps will fall behind and resync on wake.
+- 2 Core CPU, 2Ghz. Modern multi-core processor.
+- Minimal RAM (1 Gb).
+- SSD with 100+ GB free with ability to expand storage on demand.
+- Relatively reliable network connection. 1Mbps of free bandwidth.
 
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.
 
@@ -110,7 +112,7 @@ Open the **blockchain** module from the sidebar to reach the node view, then gen
 
 ## Step 6: Start the node
 
-On the node view, select **Start Node**. The status moves to *Starting*, then *Bootstrapping*, and the node begins connecting to peers.
+On the node view, select **Start Node**. The status moves to *Starting*, then *[Bootstrapping](../../get-started/glossary.md#bootstrapping)*, and the node begins connecting to peers.
 
 ## Step 7: Verify that your node is syncing
 

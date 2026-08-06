@@ -96,7 +96,7 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    Done
    ```
 
-   - Peer IDs are non-deterministic across runs.
+   - [Peer IDs](../../get-started/glossary.md#peer-id) are non-deterministic across runs.
 
    :::info
    The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT — a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.

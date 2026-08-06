@@ -23,7 +23,10 @@ Before you start, ensure you have:
 
 - Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
-- At least 64 GB of storage
+- 2 Core CPU, 2Ghz. Modern multi-core processor.
+- Minimal RAM (1 Gb).
+- SSD with 100+ GB free with ability to expand storage on demand.
+- Relatively reliable network connection. 1Mbps of free bandwidth.
 
 ## What to expect
 

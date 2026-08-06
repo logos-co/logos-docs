@@ -28,7 +28,7 @@ Delivery's functionality is split across a set of [protocols](concepts/understan
 
 - **Relay** extends [libp2p GossipSub](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md) to provide the base publish/subscribe messaging that peers use to send and receive messages.
 - **RLN Relay** extends Relay with rate limiting nullifiers for economic, privacy-preserving spam prevention.
-- **Filter** lets [light nodes](../get-started/glossary.md#light-node) selectively subscribe to messages by [content topic](../get-started/glossary.md#content-topic), trading some privacy for lower bandwidth use.
+- **Filter** lets [light nodes](../get-started/glossary.md#light-node) selectively subscribe to messages by content topic, trading some privacy for lower bandwidth use.
 - **Store** temporarily retains messages so offline peers can retrieve what they missed, though it does not guarantee availability — applications that need durable storage should pair Delivery with [Logos Storage](../get-started/glossary.md#logos-storage) instead.
 - **Light Push** lets bandwidth-constrained nodes publish a message and receive an acknowledgement that at least one peer received it, without guaranteeing network-wide propagation.
 

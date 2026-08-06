@@ -44,7 +44,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
 
 ## Install the module
 
-`logoscore` expects each module in its own subdirectory containing a `manifest.json`. The `lgpm` package manager handles this layout automatically when given an LGX package.
+`logoscore` expects each module in its own subdirectory containing a `manifest.json`. The `lgpm` package manager handles this layout automatically when given an [LGX](../../get-started/glossary.md#lgx) package.
 
 1. Clone the `logos-accounts-module` repository and build the LGX package:
 

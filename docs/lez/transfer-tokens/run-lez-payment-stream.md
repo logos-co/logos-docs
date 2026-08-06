@@ -160,7 +160,7 @@ Clone the LEZ Payment Streams repository, initialize the journey shell, and expo
    - Stop if ImageID does not match the fixture.
 
   :::info
-  `make build` builds the guest through the pinned Docker guest-builder (`risczero/risc0-guest-builder:r0.1.88.0`) against the committed `methods/guest/Cargo.lock` and release profile — that pinning is what makes the ImageID reproducible. A mismatch almost always means one of those changed; don't run `cargo update` under `methods/guest/` unless you intend to change program identity.
+  `make build` builds the guest through the pinned Docker guest-builder (`risczero/risc0-guest-builder:r0.1.88.0`) against the committed `methods/guest/Cargo.lock` and release profile — that pinning is what makes the ImageID reproducible. A mismatch almost always means one of those changed; don't run `cargo update` under `methods/guest/` unless you intend to change [program](../../get-started/glossary.md#program) identity.
   :::
 
 1. Install the scaffold, wallet CLI, and Logos modules:

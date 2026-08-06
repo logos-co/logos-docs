@@ -34,6 +34,16 @@ Before you start, make sure you have the following:
 - Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall
 - Root or `sudo` access to install tools and create system users
 
+Make sure your hardware meets the following requirements for running a blockchain node:
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor.
+- Memory (RAM): Minimal (1 Gb).
+- Storage: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
+
+:::info
+If you wish to run a Blend node, make sure you have a stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation. Stable and accessible external IP is mandatory.
+:::
+
 ## What to expect
 
 - You can run a full Logos node with all three modules active and publicly reachable on the testnet.
@@ -253,7 +263,7 @@ Load the blockchain module, generate the node config, and start the module.
    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
    ```
 
-   - Your node will take about an hour to finish bootstrapping and be in the `Online` state.
+   - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and be in the `Online` state.
 
 1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
 
@@ -271,12 +281,12 @@ Load the blockchain module, generate the node config, and start the module.
 
 ### Optional: Join the Blend Network
 
-With a running Logos Blockchain node, it is possible - but not necessary - to participate in the Blend Network.
+With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
 1. Request funds to both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` from the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/)
 
 :::info
-The public keys and note IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
+The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
 :::
 
    ```bash
@@ -333,10 +343,10 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
    # > ]
    ```
 
-   - `service_type: BN` identifies it as a Blend node declaration.
+   - `service_type: BN` identifies it as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
    - `zk_id` is your BlendZk public key
    - `provider_id` is your BlendSigning key.
-   - `active` is 2 epochs in the future, when the declaration will become active.
+   - `active` is 2 [epochs](../../get-started/glossary.md#epoch) in the future, when the declaration will become active.
 
 ## Step 6: Configure and start the storage module
 
@@ -450,7 +460,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    | `entryLayer` | Delivery stack layer; use `kernel` for a node-operator service |
    | `kernelConf` | Kernel node configuration |
    | `kernelConf.preset` | Network preset |
-   | `kernelConf.relay` | Enable the Relay protocol |
+   | `kernelConf.relay` | Enable the [Relay](../../get-started/glossary.md#relay) protocol |
    | `kernelConf.logLevel` | Log verbosity |
    | `kernelConf.tcpPort` | Public TCP P2P port |
    | `kernelConf.discv5UdpPort` | Public UDP discovery port |

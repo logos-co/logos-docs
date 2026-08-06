@@ -53,8 +53,8 @@ The **Operations** tab is disabled until the node is running and synced. Start t
 1. Click **Send**.
 
    :::warning
-Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
-:::
+   Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
+   :::
 
 ## Read the transfer result
 

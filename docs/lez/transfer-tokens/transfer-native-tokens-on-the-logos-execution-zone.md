@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
+The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
 
 On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 

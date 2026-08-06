@@ -47,7 +47,7 @@ Before you start, make sure you have the following:
 
 ## Build and install the storage module
 
-1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
+1.  Build the module package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx

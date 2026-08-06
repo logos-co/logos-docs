@@ -44,7 +44,7 @@ Before you start, make sure you have the following:
 
 ## Build and install the storage module
 
-1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
+1.  Build the module package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
@@ -76,9 +76,9 @@ Before you start, make sure you have the following:
 
 ## Start the daemon and load the storage module
 
-Run `logoscore` with the modules directory, then load and initialise the [storage module](../../get-started/glossary.md#storage-module) against the testnet config.
+Run `logoscore` with the modules directory, then load and initialise the storage module against the testnet config.
 
-Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
+Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
 1.  Start the `logoscore` daemon in background mode, capturing its output:
 
@@ -92,51 +92,69 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 
     ```sh
     logoscore status
-    ```
 
-1.  Confirm the storage module was discovered:
-
-    ```sh
-    logoscore list-modules
-    # storage_module appears in the list
+    # Logoscore Daemon
+    #   Status:       running
+    #   PID:          148188
+    #   Uptime:       0s
+    #   Version:      v1.0.0
+    #
+    # Modules: 1 loaded, 0 crashed, 1 not loaded
+    #   storage_modulev         not_loaded  -
+    #   capability_modulev         loaded      -
     ```
 
 1.  Load the storage module and confirm it reports `loaded`:
 
     ```sh
     logoscore load-module storage_module
+    # Loaded module: storage_module (v)
     logoscore status
-    # storage_module now shows "status":"loaded"
+    # Logoscore Daemon
+    #   Status:       running
+    #   PID:          148188
+    #   Uptime:       0s
+    #   Version:      v1.0.0
+
+    # Modules: 2 loaded, 0 crashed, 0 not loaded
+    #   storage_modulev         loaded      -
+    #   capability_modulev         loaded      -
     ```
 
     - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.
 
-1.  Create the storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
+1.  Create the storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. Replace `your-public-IP` by your public external IP. The `$(pwd)` in the heredoc takes care of it:
 
     ```sh
     mkdir -p "$(pwd)/storage-data"
     cat > config.json <<EOF
     {
-        "data-dir": "./storage-data",
+        "data-dir": "$(pwd)/storage-data",
         "log-level": "INFO",
+        "log-file": "$(pwd)/storage-data/storage.log",
         "listen-ip": "0.0.0.0",
         "listen-port": 8091,
         "disc-port": 8090,
-        "network": "logos.test"
+        "network": "logos.test",
+        "nat": "extip:<your-public-IP>"
     }
     EOF
     ```
+
+    - With `"nat": "extip:<your-public-IP>"` the node announces the machine's own IP as-is. If it is reachable from other peers over Internet (with ports forwarded for example), the node will be able to upload and download from other peers. Otherwise, it can only download from the network but other peers will not be able to download from this node. To know more about node reachable state: see [Connectivity](../concepts/connectivity.md).
 
     - `config.json` includes the following fields:
 
     | Field | Purpose |
     |-------|---------|
-    | `data-dir` | Storage repository path |
+    | `data-dir` | Storage repository path (absolute) |
     | `log-level` | Log verbosity |
+    | `log-file` | Node log destination (absolute) |
     | `listen-ip` | Local TCP bind address |
     | `listen-port` | Public TCP libp2p port |
     | `disc-port` | Public UDP discovery port |
     | `network` | Storage network preset |
+    | `nat` | Public IP advertisement mode — see [Connectivity](../concepts/connectivity.md) |
 
     - Every omitted key keeps its default: the node joins the `logos.test` network preset (which provides the testnet bootstrap settings), binds discovery to the default UDP port `8090`, and picks a random TCP `listen-port`.
     - For a public, reachable node, set fixed `listen-port` (TCP) and `disc-port` (UDP) values: see [Connectivity](../concepts/connectivity.md).
@@ -179,8 +197,6 @@ Once the node is running and connected to the testnet, publish a file and verify
     :::info
     The default chunk size is 65536.
     :::
-
-1.  After a second, extract the content ID (CID) from the first `manifests` entry:
 
 1.  Extract the content ID (CID) from the first `manifests` entry:
 
@@ -245,7 +261,8 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
     logoscore stop
     # Wait 5 seconds
     logoscore status
-    # reports "status":"not_running"
+    # Logoscore Daemon
+    #   Status:       not_running
     ```
 
 ## Troubleshooting Logos Storage

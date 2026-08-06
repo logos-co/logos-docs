@@ -238,8 +238,8 @@ There are no port or path parameters: each [Logos Delivery](../../get-started/gl
    ```
 
    :::info
-During `init()`, the module publishes this instance's key material to the key-package registry (`https://devnet.chat-kc.logos.co`), so your address alone is enough for a peer to open an end-to-end encrypted conversation with you. The address is reusable — share the same one with any number of contacts.
-:::
+   During `init()`, the module publishes this instance's key material to the key-package registry (`https://devnet.chat-kc.logos.co`), so your address alone is enough for a peer to open an end-to-end encrypted conversation with you. The address is reusable — share the same one with any number of contacts.
+   :::
 
 4. Open a private conversation as the initiator, or receive one as the recipient:
 
@@ -269,8 +269,8 @@ During `init()`, the module publishes this instance's key material to the key-pa
    ```
 
    :::warning
-Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
-:::
+   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
+   :::
 
 7. Shut down cleanly:
 

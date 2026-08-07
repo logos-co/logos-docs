@@ -29,6 +29,8 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
+            --scheme https
+            --scheme http
             --cache
             --max-cache-age 1d
             --cache-exclude-status '429, 500..502'

@@ -185,6 +185,13 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 
+:::tip
+The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+```sh
+curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+```
+:::
+
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh

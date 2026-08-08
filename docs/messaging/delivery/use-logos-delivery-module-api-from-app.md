@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Get started integrating Logos messaging into a C++ module.
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, and react to delivery events. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) (tag `v0.2.0`).
+This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) (tag `v0.2.0`).
 
 The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.0`](https://github.com/logos-co/logos-delivery-module/tree/3258cdb0132e37228aa2519e0c01c0e7429a20dd)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 
@@ -37,6 +37,7 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
 
 - You can subscribe to a [content topic](../../get-started/glossary.md#content-topic) and receive messages.
 - You can send a message and confirm delivery by tracking `messageSent` and `messagePropagated` events.
+- You can open a reliable channel and exchange messages on it with automatic segmentation, acknowledgements, and retransmission.
 - You can integrate the full Logos Delivery lifecycle — create, start, subscribe, send, stop — into your C++ module.
 
 ## Step 1: Create a Logos module
@@ -101,7 +102,7 @@ The flake input name (`delivery_module`) must exactly match the dependency name 
    ```
 
    :::warning
-   Use `logos-module-builder` 0.2.5 or newer. On older builders, binary event payloads (the `messageReceived` payload, for example) arrive empty.
+   Use `logos-module-builder` 0.2.5 or newer. On older builders, binary event payloads (`messageReceived`, `channelMessageReceived`) arrive empty.
    :::
 
 ## Step 3: Call the delivery module API
@@ -202,7 +203,95 @@ Register event handlers before calling `start()` so you don't miss the first `co
    if (!s.success) qWarning() << "stop failed:" << s.getError();
    ```
 
-## Step 4: Build and run
+## Step 4: Send messages on a reliable channel
+
+`send()` publishes a message once and reports what the network did with it. A **reliable channel** adds end-to-end reliability on top of the same transport: it splits large payloads into segments, tracks acknowledgements with Scalable Data Sync (SDS), retransmits what peers did not acknowledge, and reassembles the payload before handing it to you. SDS also holds back a message until its causal dependencies arrive and suppresses duplicates, so `channelMessageReceived` fires once per message, in causal order. The wire format is defined by the [Reliable Channel API specification](https://lip.logos.co/messaging/raw/reliable-channel-api.html).
+
+A channel is addressed by an application-chosen `channelId`, so you never hold a channel object — every call takes the id. All four calls are synchronous and return a `LogosResult`; delivery outcomes arrive as events.
+
+:::info
+Reliable channels need the full stack, which is what `createNode` mounts by default (`"entryLayer": "channels"`). On a kernel-only node, every `channel*` call fails with `no reliable channel manager`.
+:::
+
+1. Register the channel event handlers, alongside the handlers from Step 3:
+
+   ```cpp
+   m_logos->delivery_module.on("channelMessageReceived", [](const QVariantList& data) {
+       // data[0]: QString     — channelId
+       // data[1]: QString     — senderId of the participant that sent it
+       // data[2]: QByteArray  — payload (raw bytes, reassembled, in causal order)
+       // data[3]: qint64      — timestamp (ns since epoch)
+   });
+
+   m_logos->delivery_module.on("channelMessageSent",  [](const QVariantList& data) { /* channelId, requestId, ts */ });
+   m_logos->delivery_module.on("channelMessageError", [](const QVariantList& data) { /* channelId, requestId, error, ts */ });
+   ```
+
+1. Open the channel with `channelCreate()`, after `start()` has returned success. Every participant creates the channel with the same `channelId` and `contentTopic`, and its own `senderId`:
+
+   ```cpp
+   // senderId: this participant's SDS identifier — any string unique per
+   // participant (your peer id works well).
+   LogosResult r = m_logos->delivery_module.channelCreate(channelId, contentTopic, senderId);
+   if (!r.success) {
+       qWarning() << "channelCreate failed:" << r.getError();
+       return;
+   }
+   ```
+
+   Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic. Re-creating a channel with an id you closed earlier restores its persisted state.
+
+1. Check whether a channel is currently open. An unknown id is not an error — `getString()` returns the verbatim string `"true"` or `"false"`:
+
+   ```cpp
+   LogosResult r = m_logos->delivery_module.channelExists(channelId);
+   const bool open = r.success && r.getString() == QLatin1String("true");
+   ```
+
+1. Send on the channel. As with `send()`, `getString()` returns a request ID — track it through `channelMessageSent` (every segment confirmed) or `channelMessageError` (the send finalised with a failed segment):
+
+   ```cpp
+   // payload is a QByteArray of raw bytes, same as channelMessageReceived delivers.
+   LogosResult r = m_logos->delivery_module.channelSend(channelId, payload);
+   if (!r.success) {
+       qWarning() << "channelSend failed:" << r.getError();
+       return;
+   }
+   const QString requestId = r.getString();
+   ```
+
+1. Close the channel when you are done with it. This stops the channel's SDS loops and unsubscribes its content topic, unless another open channel still uses that topic:
+
+   ```cpp
+   LogosResult r = m_logos->delivery_module.channelClose(channelId);
+   if (!r.success) qWarning() << "channelClose failed:" << r.getError();
+   ```
+
+   :::caution
+   Channel ids are node-wide. Closing an id that another module opened stops that module's channel too — namespace your channel ids per application.
+   :::
+
+To tune reliability, pass a `channelsOverrides` object in the `createNode` config. Unset keys keep the defaults shown here:
+
+```json
+{
+  "mode": "Core",
+  "preset": "logos.test",
+  "channelsOverrides": {
+    "sdsAcknowledgementTimeoutMs": 5000,
+    "sdsMaxRetransmissions": 5,
+    "sdsCausalHistorySize": 2,
+    "segmentationSegmentSizeBytes": 102400,
+    "segmentationEnableReedSolomon": false
+  }
+}
+```
+
+:::warning
+Reliable channels give you delivery reliability, not confidentiality: channel payloads travel unencrypted unless your application encrypts them. For end-to-end encrypted conversations, use the [Logos Chat module](../chat-module/build-logos-module-that-uses-chat-module-api.md), which layers encrypted sessions on top of Logos Delivery.
+:::
+
+## Step 5: Build and run
 
 1. Build the module:
 
@@ -239,6 +328,22 @@ The node may not be connected to peers yet, or the network layer rejected the me
 ### `messageReceived` never fires?
 
 `subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic.
+
+### `channelCreate` returns `channel already exists`?
+
+The channel id is already open on this node — channel ids are node-wide, so another module may hold it. Call `channelExists(channelId)` first, and reuse the open channel or pick an application-specific id.
+
+### `channelMessageReceived` never fires on the other participant?
+
+The participants disagree on the channel: both sides must call `channelCreate()` with the same `channelId` and the same `contentTopic`, each with its own `senderId`. Reusing one `senderId` for two participants breaks SDS bookkeeping. Also confirm both nodes reached a connected state through `connectionStateChanged` before sending.
+
+### `channelMessageReceived` fires but the payload is empty?
+
+Your module was built with a `logos-module-builder` older than 0.2.5, where binary event payloads arrive empty. Pin `logos-module-builder` to 0.2.5 or newer and make `delivery_module` follow the same input, as in Step 2.
+
+### `channelSend` returns `no reliable channel manager`?
+
+The node was created as kernel-only (`"entryLayer": "kernel"`). Reliable channels need the default full stack — omit `entryLayer`, or set it to `"channels"`.
 
 ### Two instances of the same app on one host fail to start?
 

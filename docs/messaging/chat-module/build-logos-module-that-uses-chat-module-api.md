@@ -37,7 +37,7 @@ Before you start, make sure you have the following:
 
 - You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
 - You can open a private 1:1 conversation by exchanging addresses [out of band](../../get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
-- You can create a group conversation with `create_group_conversation`, grow it one member at a time with `add_group_member`, and exchange messages that fan out to every member with sender attribution. Group encryption is de-MLS.
+- You can create a group conversation with `create_group_conversation`, grow it with `add_group_member`, and exchange messages with all group members.
 - You can integrate the full chat lifecycle — init, subscribe to events, share your address, open conversations, send, shut down — into any Logos C++ module.
 
 ## Step 1: Scaffold a new Logos module

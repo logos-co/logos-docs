@@ -13,9 +13,9 @@ sidebar_position: 1
 
 # Build a Logos module that uses the Chat module API
 
-#### Get started with private 1:1 end-to-end encrypted messaging in your own Logos module.
+#### Get started with private 1:1 and group end-to-end encrypted messaging in your own Logos module.
 
-This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 and group conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
 :::info
 Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity (with a new address) and an empty conversation list.
@@ -37,7 +37,8 @@ Before you start, make sure you have the following:
 
 - You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
 - You can open a private 1:1 conversation by exchanging addresses [out of band](../../get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
-- You can integrate the full chat lifecycle — init, subscribe to events, share your address, open conversation, send, shut down — into any Logos C++ module.
+- You can create a group conversation with `create_group_conversation`, grow it with `add_group_member`, and exchange messages with all group members.
+- You can integrate the full chat lifecycle — init, subscribe to events, share your address, open conversations, send, shut down — into any Logos C++ module.
 
 ## Step 1: Scaffold a new Logos module
 
@@ -65,7 +66,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
    | File | What it is | Can you edit it? |
    |---|---|---|
-   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes — your chat code goes here (Steps 3–4) |
+   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes — your chat code goes here (Steps 3–7) |
    | `src/ui_example.rep`, `src/ui_example_interface.h` | The module's interface | No |
    | `src/qml/Main.qml` | The example view | Later — replace with your own UI |
    | `metadata.json`, `CMakeLists.txt` | Build config | Step 2 only |
@@ -185,7 +186,7 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
 
    See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.2.2/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
 
-## Step 4: Drive the chat lifecycle
+## Step 4: Initialise the chat client
 
 Status-bearing methods return their result **synchronously** as a `LogosResult`.
    - `res.success` tells you whether the call succeeded;
@@ -232,12 +233,14 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 
    ```cpp
    const QString myAddress = m_logos->chat_module.get_address();
-   // share `myAddress` out of band (the peer pastes it — see Step 6)
+   // share `myAddress` out of band (the peer pastes it — see Steps 9 and 10)
    ```
 
-:::
+## Step 5: Direct conversations
 
-4. Open a private conversation as the initiator, or receive one as the recipient:
+A direct conversation is 1:1: the initiator opens it with the peer's address, and messages flow both ways end-to-end encrypted.
+
+1. Open the conversation as the initiator, or receive it as the recipient:
 
    ```cpp
    const LogosResult res = m_logos->chat_module.create_conversation(peerAddress);
@@ -247,7 +250,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    - The initiator calls `create_conversation` with the peer's address (their `get_address()`).
    - The recipient does not call anything; a `conversation_created` push event (`is_outgoing == false`) arrives automatically once the invite lands.
 
-5. Send and receive messages:
+2. Send a message:
 
    ```cpp
    m_logos->chat_module.send_message(convoId, "How are you?");
@@ -256,7 +259,58 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 
    - Message content is plain text in both directions — the module handles encoding and end-to-end encryption on the wire.
 
-6. Read history and conversation state at any time (synchronous reads):
+3. Receive messages through the `message_received` event you subscribed to in Step 3: `a[0]` is the conversation id, `a[1]` the content, `a[3]` the sender's address. Past messages are available any time via `get_messages` (Step 7).
+
+## Step 6: Group conversations
+
+A group conversation starts with its creator as the only member and grows one peer at a time. Unlike a direct conversation, membership changes are asynchronous by design: an add is committed by the group some time after it is proposed.
+
+1. Create the group:
+
+   ```cpp
+   const LogosResult res = m_logos->chat_module.create_group_conversation("Book Club", "Weekly sci-fi picks");
+   const QString groupId = res.getValue<QString>();  // the conversation id every member will share
+   ```
+
+   - The group starts with you as its only member. The name and description are shared metadata, carried to every joiner; pass empty strings for an unnamed group.
+
+2. Grow the group one member at a time:
+
+   ```cpp
+   m_logos->chat_module.add_group_member(groupId, peerAddress);
+   // Returns once the add is *proposed*; the group commits it asynchronously.
+   ```
+
+   - `add_group_member` returns as soon as the add is proposed. The group agrees on the add, its steward batches it into an MLS commit after a commit-inactivity window (60 seconds with the default de-MLS timing), and only then does the welcome travel to the invited peer — so over the live network a join lands **minutes** after the call, not seconds.
+   - The invited peer does not call anything; a `conversation_created` event (`kind == "group"`, carrying the group's shared name and description) arrives once the welcome lands.
+   - Membership is symmetric: **any** member can propose an add, not just the creator.
+   - A `members_changed` event fires on every membership change.
+
+3. Read the group's roster at any time:
+
+   ```cpp
+   const QVariantList members = m_logos->chat_module.list_group_members(groupId);  // [GroupMember]
+   // Each element: { address, pending } — committed members first, then invites
+   // this instance sent that the group has not committed yet (pending == true).
+   ```
+
+   - The `pending` flag clears when the group commits that add. An unknown conversation id reports an empty roster.
+
+4. Send a message to the group:
+
+   ```cpp
+   m_logos->chat_module.send_message(groupId, "hello group");
+   // One send reaches every member; each receiver gets a message_received event.
+   ```
+
+   - One send fans out to every member — the number of network messages does not scale with the group size.
+   - Briefly after a membership change commits, sends are rejected while the group finalises the new epoch — retry after a few seconds.
+
+5. Receive group messages through the same `message_received` event: each one carries the sender's account address (`sender`), so every message is attributable to a member.
+
+## Step 7: Read state and shut down
+
+1. Read history and conversation state at any time (synchronous reads):
 
    ```cpp
    const QVariantList convos = m_logos->chat_module.list_conversations();  // [Conversation]
@@ -268,15 +322,13 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
 :::
 
-7. Shut down cleanly:
+2. Shut down cleanly:
 
    ```cpp
    m_logos->chat_module.shutdown();   // disconnects and tears the client down
    ```
 
-:::
-
-## Step 5: Build and run
+## Step 8: Build and run
 
 1. Build the module:
 
@@ -291,7 +343,7 @@ Do not make a synchronous module read (`list_conversations`, `get_messages`, `st
    nix build .#lgx        # package as .lgx for installation into logos-basecamp
    ```
 
-## Step 6: Verify a two-instance exchange
+## Step 9: Verify a two-instance direct exchange
 
 A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own instance directory — and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (e.g. `nix run . -- --user-dir ~/.local/share/chat_a`).
 
@@ -303,6 +355,20 @@ A chat is only proven end to end when a message travels between two running inst
 
 Seeing the `message_received` events on both sides confirms the full round trip: identity, address exchange, key discovery, conversation setup, and end-to-end encrypted delivery.
 
+## Step 10: Verify a three-instance group conversation
+
+Group semantics only show with three or more members: a non-creator add, a shared conversation id, and fan-out with sender attribution. Start three instances (A, B, and C) the same way as in Step 9 and wait for all three to report `online`. Group joins land asynchronously (see Step 6) — budget minutes per membership change, not seconds.
+
+1. Collect each instance's address via `get_address()`.
+1. In instance A, call `create_group_conversation("Book Club", "Weekly sci-fi picks")` and keep the returned conversation id.
+1. In instance A, call `add_group_member(groupId, addressOfB)`. The call returns immediately; B joins once the group commits the add — B receives a `conversation_created` event (`kind == "group"`, name `"Book Club"`) under the **same** conversation id A holds.
+1. In instance B — not A — call `add_group_member(groupId, addressOfC)`: any member can grow the group. C joins the same way.
+1. In each instance, call `list_group_members(groupId)` and wait until all three addresses appear with `pending == false` on every member. Each membership change also fires `members_changed`.
+1. In instance A, send `send_message(groupId, "hello group")`. B and C each receive one `message_received` event whose `sender` is A's address. (If the send is rejected right after a join committed, retry after a few seconds.)
+1. In instance C, reply. A and B receive it, attributed to C's address — the newest member reaches the founding members and vice versa.
+
+One send reaching every other member, each time attributed to the sender's address, confirms the group journey end to end: creation, asynchronous growth by two different proposers, roster convergence, and end-to-end encrypted fan-out.
+
 ## Troubleshooting the Logos Chat module
 
 ### Why does a method fail?
@@ -312,6 +378,14 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 ### Why do peers not connect or messages not propagate?
 
 The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the key-package registry (`https://devnet.chat-kc.logos.co`), where key material is published during `init()` and looked up by `create_conversation`. For delivery-level detail, check the log file named by `get_log_path()`.
+
+### Why hasn't an invited member joined the group yet?
+
+This is the designed behaviour, not a hang. An `add_group_member` call only *proposes* the add: the group agrees on it, the group's steward batches it into an MLS commit after a commit-inactivity window (60 seconds by default), and the welcome only travels after that commit — so a join lands minutes after the call over the live network. Until the commit, the invite shows in the proposer's `list_group_members` with `pending == true`. Poll `list_conversations` on the invited instance (or wait for its `conversation_created` event) rather than assuming failure. An invite the group never commits stays pending for the life of the conversation.
+
+### Why is `send_message` rejected right after a membership change?
+
+Briefly after a membership change commits, the group is finalising its new epoch and rejects sends. Retry after a few seconds.
 
 ### Why does a read stall the UI?
 

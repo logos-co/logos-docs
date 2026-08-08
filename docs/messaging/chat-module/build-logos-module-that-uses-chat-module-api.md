@@ -15,10 +15,10 @@ sidebar_position: 1
 
 #### Get started with private 1:1 end-to-end encrypted messaging in your own Logos module.
 
-This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.1.2`) to exchange introduction bundles, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
 :::info
-Identity, conversations, and message history persist in the instance directory you pass to `init()` (`identity.db` + `history.json`). Restarting an instance against the same directory restores its identity and conversations.
+Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity (with a new address) and an empty conversation list.
 :::
 
 Before you start, make sure you have the following:
@@ -36,8 +36,8 @@ Before you start, make sure you have the following:
 ## What to expect
 
 - You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
-- You can open a private 1:1 conversation by exchanging introduction bundles [out of band](../../get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
-- You can integrate the full chat lifecycle — init, subscribe to events, create bundle, open conversation, send, shut down — into any Logos C++ module.
+- You can open a private 1:1 conversation by exchanging addresses [out of band](../../get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
+- You can integrate the full chat lifecycle — init, subscribe to events, share your address, open conversation, send, shut down — into any Logos C++ module.
 
 ## Step 1: Scaffold a new Logos module
 
@@ -104,13 +104,15 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
 
    ```nix
    inputs = {
-     logos-module-builder.url = "github:logos-co/logos-module-builder";
+     # Follow chat_module's own builder so the codegen chain matches the one the
+     # module was released against.
+     logos-module-builder.follows = "chat_module/logos-module-builder";
      # Pin chat_module to the released tag so its API can't shift under `nix flake update`.
-     chat_module.url = "github:logos-co/logos-chat-module/v0.1.2";
+     chat_module.url = "github:logos-co/logos-chat-module/v0.2.2";
      # chat_module reaches delivery over IPC, but the builder still needs delivery's
-     # runtime build from a matching flake input. Pin the v0.1.3 tag: it carries the
-     # zerokit/RLN nix-build fix that earlier delivery tags (≤ v0.1.2) lack.
-     logos-delivery-module.url = "github:logos-co/logos-delivery-module/v0.1.3";
+     # runtime build from a matching flake input. Pin the v0.2.0 tag — the exact
+     # rev chat_module v0.2.2 is built against.
+     logos-delivery-module.url = "github:logos-co/logos-delivery-module/v0.2.0";
    };
 
    outputs = inputs@{ logos-module-builder, logos-delivery-module, ... }:
@@ -123,7 +125,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    ```
 
 :::info
-The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation — it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/flake.nix) wires the two modules together.
+The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation — it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/flake.nix) wires the two modules together.
 :::
 
 ## Step 3: Initialise `LogosModules` and subscribe to events
@@ -159,7 +161,8 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
 
    // A new message arrived in a conversation.
    chat.on("message_received", [](const QVariantList& a) {
-       // a[0]: QString convo_id, a[1]: QString content, a[2]: qint64 timestamp_ms
+       // a[0]: QString convo_id, a[1]: QString content, a[2]: qint64 timestamp_ms,
+       // a[3]: QString sender (the sender's account address)
    });
    // One of your own messages was recorded/sent.
    chat.on("message_sent", [](const QVariantList& a) {
@@ -167,9 +170,11 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    });
    // A conversation was created — incoming from a peer, or your own outgoing one.
    chat.on("conversation_created", [](const QVariantList& a) {
-       // a[0]: QString convo_id, a[1]: bool is_outgoing, a[2]: QString peer_label
+       // a[0]: QString convo_id, a[1]: bool is_outgoing, a[2]: QString peer_label,
+       // a[3]: QString kind ("direct" | "group"), a[4]: QString name, a[5]: QString desc
    });
    chat.on("conversation_updated", [](const QVariantList& a) { /* a[0]: convo_id */ });
+   chat.on("members_changed",      [](const QVariantList& a) { /* a[0]: convo_id */ });
    chat.on("conversation_deleted", [](const QVariantList& a) { /* a[0]: convo_id */ });
    // Delivery/connection state changed — drives your "connected" indicator.
    chat.on("delivery_state_changed", [](const QVariantList& a) {
@@ -178,14 +183,14 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    });
    ```
 
-   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.1.2/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
+   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.2.2/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
 
 ## Step 4: Drive the chat lifecycle
 
 Status-bearing methods return their result **synchronously** as a `LogosResult`.
    - `res.success` tells you whether the call succeeded;
    - `res.getError<QString>()` carries the failure reason;
-   - `res.getValue<QString>()` carries the returned value (for example, the intro bundle).
+   - `res.getValue<QString>()` carries the returned value (for example, the new conversation's id).
 
 Ongoing activity — incoming messages, new conversations, delivery-state changes — arrives **asynchronously** through the push events you subscribed to in Step 3.
 
@@ -193,19 +198,21 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
 :::
 
-`init()` takes the instance directory, a delivery preset, and a TCP port:
+`init()` takes a single `ChatConfig` record, passed from C++ as a `QVariantMap` (records in parameter position have no generated struct — the wire shape is the contract). Both fields are optional:
 
-| Parameter | Type | Notes |
+| Field | Type | Notes |
 |---|---|---|
-| `instance_path` | string | Directory for this instance's persistent state. Use a distinct directory per instance to run several side by side. |
-| `delivery_preset` | string | Network preset for the delivery node. Use `logos.test` to reach the Logos test network. Must match across all participants. |
-| `tcp_port` | int | [Logos Delivery](../../get-started/glossary.md#logos-delivery) TCP port. `0` picks a random port. |
+| `delivery_preset` | string | The delivery network to join. Use `logos.test` to reach the Logos test network; absent or empty means `logos.dev`. Must match across all participants. |
+| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`) |
 
 1. Initialise the chat client:
 
    ```cpp
-   const QString dir = qEnvironmentVariable("CHAT_INSTANCE_DIR", "/tmp/chat-instance");
-   const LogosResult res = m_logos->chat_module.init(dir, "logos.test", 0);
+   const QVariantMap config{
+       {"delivery_preset", "logos.test"},
+       {"log_level", "info"},
+   };
+   const LogosResult res = m_logos->chat_module.init(config);
    if (!res.success) {
        qWarning() << "init failed:" << res.getError<QString>();
        return;
@@ -221,30 +228,24 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    // Optionally choose a name: m_logos->chat_module.set_installation_name("alice");
    ```
 
-3. Create and share your introduction bundle:
+3. Share your address:
 
    ```cpp
-   const LogosResult bundle = m_logos->chat_module.create_intro_bundle();
-   if (bundle.success) {
-       const QString myBundle = bundle.getValue<QString>();
-       // share `myBundle` out of band (the recipient pastes it — see Step 6)
-   }
+   const QString myAddress = m_logos->chat_module.get_address();
+   // share `myAddress` out of band (the peer pastes it — see Step 6)
    ```
 
-   :::warning
-   Each introduction bundle is **single-use** — it can open exactly one conversation. Generate a fresh bundle with `create_intro_bundle()` for every new contact you want to be able to reach you.
-   :::
+:::
 
 4. Open a private conversation as the initiator, or receive one as the recipient:
 
    ```cpp
-   // content is plain text — no encoding required.
-   const LogosResult res = m_logos->chat_module.create_conversation(peerBundle, "Hello!");
+   const LogosResult res = m_logos->chat_module.create_conversation(peerAddress);
    // On success a conversation_created event (is_outgoing == true) fires with the new convo_id.
    ```
 
-   - The initiator calls `create_conversation` with the peer's intro bundle and a plain-text opening message.
-   - The recipient does not call anything; a `conversation_created` push event arrives automatically, followed by a `message_received` event.
+   - The initiator calls `create_conversation` with the peer's address (their `get_address()`).
+   - The recipient does not call anything; a `conversation_created` push event (`is_outgoing == false`) arrives automatically once the invite lands.
 
 5. Send and receive messages:
 
@@ -264,14 +265,16 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    ```
 
    :::warning
-   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.1.2/src/ChatBackend.cpp)).
-   :::
+Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
+:::
 
 7. Shut down cleanly:
 
    ```cpp
    m_logos->chat_module.shutdown();   // disconnects and tears the client down
    ```
+
+:::
 
 ## Step 5: Build and run
 
@@ -290,14 +293,15 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 
 ## Step 6: Verify a two-instance exchange
 
-A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own `instance_path` and `tcp_port` — and confirm a message lands as a `message_received` event.
+A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own instance directory — and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (e.g. `nix run . -- --user-dir ~/.local/share/chat_a`).
 
 1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
-1. In instance A, call `create_intro_bundle()` and share the returned bundle out of band (copy it into instance B).
-1. In instance B, call `create_conversation(bundleFromA, "Hello from B")`. Instance A receives a `conversation_created` event (`is_outgoing == false`) followed by a `message_received` event carrying `"Hello from B"`.
+1. In instance A, call `get_address()` and share the returned address out of band (copy it into instance B).
+1. In instance B, call `create_conversation(addressFromA)`. Instance B sees a `conversation_created` event (`is_outgoing == true`); instance A receives one with `is_outgoing == false` once the invite lands.
+1. In instance B, send the first message: `send_message(convoId, "Hello from B")`. Instance A receives a `message_received` event carrying `"Hello from B"`.
 1. In instance A, reply with `send_message(convoId, "Hi B")`. Instance B receives the matching `message_received` event.
 
-Seeing the `message_received` events on both sides confirms the full round trip: identity, intro-bundle exchange, conversation setup, and end-to-end encrypted delivery.
+Seeing the `message_received` events on both sides confirms the full round trip: identity, address exchange, key discovery, conversation setup, and end-to-end encrypted delivery.
 
 ## Troubleshooting the Logos Chat module
 
@@ -307,12 +311,12 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 
 ### Why do peers not connect or messages not propagate?
 
-The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages.
+The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the key-package registry (`https://devnet.chat-kc.logos.co`), where key material is published during `init()` and looked up by `create_conversation`. For delivery-level detail, check the log file named by `get_log_path()`.
 
 ### Why does a read stall the UI?
 
 You issued a synchronous module read (`list_conversations`, `get_messages`, `status`) from inside an event handler. That re-enters the IPC replica while its read notifier is disabled and blocks until the call times out. Defer such reads to the next event-loop turn.
 
-### Why is a previously created conversation still there after a restart?
+### Why are my conversations gone after a restart?
 
-Chat state is **persistent**. Identity and history live in the instance directory passed to `init()` (`identity.db`, `history.json`), so restarting against the same directory restores conversations and your identity. Point `init()` at a fresh directory to start from a clean state.
+Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity with a new address and an empty conversation list, so peers must re-open conversations with the new address. Persistence across restarts is planned for a later release.

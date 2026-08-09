@@ -251,7 +251,11 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    }
    ```
 
-   Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic. Re-creating a channel with an id you closed earlier restores its persisted state.
+   Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic.
+
+   :::caution
+   Do not re-create a channel id you have already closed: `channelCreate` with the id of a closed channel currently crashes the delivery node process. Use a fresh channel id instead, and keep a channel open for as long as your application needs it.
+   :::
 
 1. Check whether a channel is currently open.
 
@@ -272,7 +276,7 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    const QString requestId = r.getString();
    ```
 
-1. Receive channel messages through the `channelMessageReceived` event.
+1. Receive channel messages through the `channelMessageReceived` event. Unlike `messageReceived`, it fires only for the other participants' messages — your own channel sends come back as `channelMessageSent`, not as a received message.
 
 1. Close the channel when you are done with it. This stops the channel's SDS loops and unsubscribes its content topic, unless another open channel still uses that topic:
 
@@ -381,6 +385,10 @@ The node may not be connected to peers yet, or the network layer rejected the me
 ### `messageReceived` never fires?
 
 `subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic.
+
+### The node process dies when I re-open a channel I closed?
+
+Known issue in this Developer Preview: calling `channelCreate` with the id of a channel that was closed with `channelClose` crashes the delivery node (a null dereference while re-opening the channel's persisted SDS state). The module reports the call as failed and the node is gone — every later call fails until the module is reloaded. Use a fresh channel id rather than re-opening a closed one.
 
 ### `channelCreate` returns `channel already exists`?
 

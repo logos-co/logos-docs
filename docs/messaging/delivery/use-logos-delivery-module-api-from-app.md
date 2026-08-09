@@ -142,7 +142,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
 
    ```cpp
    // "mode": "Core" (relay node) or "Edge" (light node).
-   // "preset": the network to join — "logos.test", "logos.dev", or "twn".
+   // "preset": the network to join — "logos.test" or "logos.dev"
    const QString cfg = R"({"mode":"Core","preset":"logos.test"})";
 
    LogosResult r = m_logos->delivery_module.createNode(cfg);
@@ -153,7 +153,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
    ```
 
    :::warning
-   Keep the config to `mode`, `preset`, `messagingOverrides`, and `channelsOverrides`. Any other top-level key (`logLevel`, for example) selects the legacy flat configuration shape, which is a raw `WakuNodeConf` blob and applies the kernel defaults — including the fixed listening port `60000`, so two instances on one host collide.
+   Keep the config to `mode`, `preset`, `messagingOverrides`, and `channelsOverrides`. Any other top-level key (`logLevel`, for example) selects the legacy flat configuration shape.
    :::
 
 1. Connect to the network with `start()`. The `connectionStateChanged` event fires on the Qt event loop once the node connects to peers:

@@ -235,8 +235,6 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    // share `myAddress` out of band (the peer pastes it — see Step 6)
    ```
 
-:::
-
 4. Open a private conversation as the initiator, or receive one as the recipient:
 
    ```cpp
@@ -273,8 +271,6 @@ Do not make a synchronous module read (`list_conversations`, `get_messages`, `st
    ```cpp
    m_logos->chat_module.shutdown();   // disconnects and tears the client down
    ```
-
-:::
 
 ## Step 5: Build and run
 

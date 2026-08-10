@@ -96,3 +96,31 @@ The [Service Reward Distribution Protocol](../../get-started/glossary.md#service
 - Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
 
 The selection of nodes receiving rewards in each block follows a deterministic, pseudo-random process based on the Cryptarchia epoch randomness from the start of the epoch. This approach ensures fairness and prevents manipulation of the distribution order.
+
+### Checking whether your node is participating
+
+Two different questions have two different checks.
+
+**Did my core declaration land?** After declaring as a core node, query the on-chain SDP declarations and look for your entry:
+
+```bash
+curl -s http://localhost:8080/mantle/sdp/declarations
+```
+
+Find the entry whose `zk_id` is your BlendZk key, with `"service_type": "BN"`. It becomes active a couple of epochs after the declaring transaction is included in a block, and stays active only while the node keeps sending Active messages. This check applies to the **core** role only — edge and broadcast nodes make no declaration.
+
+**Is my node blending right now?** Check the node log for the Blend service lifecycle:
+
+```bash
+grep -aE "blend::service" <node-log> | tail
+```
+
+- `Waiting for chain to become Online mode` — not yet; the node is still bootstrapping.
+- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — the node is participating (as an edge or core node).
+- `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to broadcast for that epoch (no Blend privacy) — a graceful degradation, not a fault.
+
+There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so prefer the log check during sync.
+
+### Running Blend on a Basecamp node
+
+The [Basecamp](../get-started/run-a-logos-blockchain-node-from-basecamp.md) desktop app runs the same node under the hood, so the same three roles apply. Its Generate-Config screen exposes a **Blend port** field, which maps to the same `blend.core.backend.listening_address` a CLI node uses. Edge and broadcast participation are automatic, exactly as on a CLI node — no configuration or stake. There is **no "join as core" button**, however: to become a core node from Basecamp you still run the CLI `blend_join_as_core_node` procedure described in [Join the Blend Network as a core node](../blend/join-the-blend-network-as-a-core-node.md).

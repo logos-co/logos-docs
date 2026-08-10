@@ -227,11 +227,12 @@ An extension whose per-program state is one fixed-size slot can let consumers em
 #[my_extension(my_state = config, offset = 32)]
 ```
 
-To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction functions a trailing `offset: usize` parameter, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal:
+To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction functions a trailing `offset: usize` parameter, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal. Bound args must be the trailing parameters of the function, in the same order as their metadata blocks. Any other position is a hard error at discovery naming the function, because the framework always appends the literals last:
 
 ```toml
 [package.metadata.spel.embedded]
 skip = ["my_extension_initialize"]
+state_type = "my_extension::MyConfig"
 
 [[package.metadata.spel.bound_args]]
 arg = "offset"
@@ -239,7 +240,7 @@ from = "offset"
 default = 0
 ```
 
-`embedded.skip` names instructions not emitted in embedded mode (typically your initializer, the consumer's own account creation replaces it). Bound args are stripped from the IDL and the transaction entirely, a caller can never supply an offset, and dedicated mode is the degenerate case offset 0 through the declared default. `from` also accepts a peer marker's kwarg (`from = "admin_authority::offset"`) so an extension can read state a peer embedded, without depending on the peer's crate. A missing marker or kwarg without a declared default is a hard compile error, never a silent zero.
+`embedded.skip` names instructions not emitted in embedded mode (typically your initializer, the consumer's own account creation replaces it). `state_type` is mandatory for embedded mode and names the Rust type that lives in your window. The framework reads the window's size through it and emits a compile-time assert per pair of extensions embedding into the same consumer account, so genuinely overlapping windows refuse to compile instead of silently corrupting each other. Discovery fails closed when an embedded extension omits it. Bound args are stripped from the IDL and the transaction entirely, a caller can never supply an offset, and dedicated mode is the degenerate case offset 0 through the declared default. `from` also accepts a peer marker's kwarg (`from = "admin_authority::offset"`) so an extension can read state a peer embedded, without depending on the peer's crate. A missing marker or kwarg without a declared default is a hard compile error, never a silent zero.
 
 **Slot field markers.** The framework derives a marker name from your role, the role name minus a `_config` suffix plus `_slot` (role `admin_config` gives `#[admin_slot]`, role `my_state` gives `#[my_state_slot]`). A consumer who puts that marker on the embedding field of an `#[account_type]` struct gets a derived `<MARKER>_OFFSET` const, an emitted layout test, and a compile-time assert that the derived offset equals the `offset = ...` declared on your marker, so a field added above the slot fails the build instead of silently moving the window. Adoption is optional (no marker, no check), and two structs carrying the same marker is a compile error. Nothing to implement on your side, the mechanism ships with `#[account_type]`, but document the marker name your role produces.
 
@@ -323,13 +324,13 @@ Build a small sample program that consumes your extension. Then:
 spel generate-idl path/to/sample/src/main.rs
 ```
 
-The IDL should contain your extension's instructions alongside the consumer's own. If they are missing, the most common causes are:
+The IDL should contain your extension's instructions alongside the consumer's own. A marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. When you hit that error, the most common causes are:
 
 - `[package.metadata.spel.extension_attr]` not declared, or value does not match the attribute name the consumer wrote.
 - The library is a transitive dependency rather than a direct one. Only the consumer's own `[dependencies]` are scanned, by design.
 - Cached macro expansion, try `cargo clean -p <sample-crate>` and rebuild. Cargo doesn't know proc-macros read external `Cargo.toml` files, so metadata changes don't always invalidate the cache.
 
-Malformed `[package.metadata.spel]` is a hard compile error, never a silent skip. And when a marker is present but its extension cannot be located because dependency resolution failed (for example `cargo metadata` failing in a constrained environment), the build refuses to compile rather than shipping a program silently missing its extension surface. When every marker matched a path dependency, the same degradation stays a warning.
+Malformed `[package.metadata.spel]` is a hard compile error too, never a silent skip. When dependency resolution itself degrades (for example `cargo metadata` failing in a constrained environment) but every marker still matched a path dependency, the degradation stays a warning and the build continues.
 
 ## Why this design
 

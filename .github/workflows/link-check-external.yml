@@ -31,7 +31,7 @@ jobs:
           args: >-
             --scheme https
             --scheme http
-            --cache
+            --no-cache
             --max-cache-age 1d
             --cache-exclude-status '429, 500..502'
             --no-progress

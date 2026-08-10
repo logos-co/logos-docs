@@ -55,7 +55,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
     ```sh
     # Run node, in terminal 1
-    just run-bedrock
+    docker compose up logos-blockchain-node-0
     ```
 
     ```sh

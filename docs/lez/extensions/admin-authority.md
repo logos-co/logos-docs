@@ -37,11 +37,18 @@ In your program's `Cargo.toml`:
 [dependencies]
 admin-authority = { git = "https://github.com/mmlado/spel-admin-authority" }
 spel-framework  = { git = "https://github.com/logos-co/spel" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
+borsh = { version = "1", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
 ```
 
-The `admin-authority-macros` sub-crate is pulled in transitively. You do not need to declare it directly. The library README's dependency table lists the framework revision each release is verified against.
+All five are needed: the reference samples use exactly this set. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing even when your own types never touch it. The `admin-authority-macros` sub-crate is pulled in transitively. You do not need to declare it directly. The library README documents the framework revision each release is verified against.
+
+After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
 
 ## Annotate the module
+
+If you started from `cargo new`, delete the default `fn main` first. The `#[lez_program]` macro generates the program's entry point, and the leftover stub collides with it as a duplicate `main`.
 
 Add `#[admin_authority]` inside your `#[lez_program]` module:
 
@@ -189,6 +196,20 @@ mod my_program {
         ProgramConfig { value: 0, padding: [0; 24], admin: AdminConfig::default() }
             .write_to(&mut config)?;
         // ...
+    }
+}
+```
+
+The `write_to` helper is yours to write, the library does not provide it. The reference sample uses this one:
+
+```rust
+impl ProgramConfig {
+    fn write_to(&self, account: &mut AccountWithMetadata) -> Result<(), SpelError> {
+        account.account.data = borsh::to_vec(self)
+            .map_err(|_| SpelError::SerializationError { message: "encoding failed".into() })?
+            .try_into()
+            .map_err(|_| SpelError::SerializationError { message: "data too large".into() })?;
+        Ok(())
     }
 }
 ```

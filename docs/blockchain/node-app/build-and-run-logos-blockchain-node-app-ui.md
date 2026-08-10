@@ -63,8 +63,7 @@ By the end of this tutorial:
 
     ![Initial screen](../assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
 2. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
-3. In the app, paste the peer set information in the **Initial peers** and click **Generate Config** on the bottom.
-4. Click **Load Config** and select the generated config file.
+3. In the app, paste the peer set information into **Initial peers (one per line)** and click the generate button at the bottom. The generated file becomes the active user config, shown as **User Config: … (Generated)**. (To use an existing config file instead, choose **Set path to config**.)
 5.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
 
     ![Running node](../assets/build-and-run-logos-blockchain-node-app-ui/03-node-running.png)

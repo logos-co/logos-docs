@@ -113,16 +113,13 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
-1.  Check the consensus state:
+1.  Check the consensus state. The `logoscore` call and the node's HTTP endpoint return the same data in slightly different shapes.
 
     ```sh
     logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
-
-    # Alternatively, send a request directly to your node port
-    curl -s http://localhost:8080/cryptarchia/info | jq .
     ```
 
-    Example response:
+    Example response (the `logoscore` call returns a flat object with a `mode` field):
 
     ```json
     {
@@ -135,7 +132,29 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     }
     ```
 
-    - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
+    Alternatively, send a request directly to your node port:
+
+    ```sh
+    curl -s http://localhost:8080/cryptarchia/info | jq .
+    ```
+
+    Example response (the HTTP endpoint nests the fields under `cryptarchia_info`, names the status field `state`, and adds a top-level `phase`):
+
+    ```json
+    {
+      "cryptarchia_info": {
+        "lib": "3d0c...4e6d",
+        "lib_slot": 0,
+        "tip": "f44d...e2f5",
+        "slot": 70899,
+        "height": 120,
+        "state": "Bootstrapping"
+      },
+      "phase": "ProlongedBootstrapPeriod"
+    }
+    ```
+
+    - The status field (`mode` from the `logoscore` call, `state` from the HTTP endpoint) starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
 
 1.  Check peer connectivity:
@@ -185,12 +204,13 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 
-:::tip
-The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
-```sh
-curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
-```
-:::
+    :::tip
+    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+
+    ```sh
+    curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+    ```
+    :::
 
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 

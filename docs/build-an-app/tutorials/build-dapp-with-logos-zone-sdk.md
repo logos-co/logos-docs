@@ -59,7 +59,7 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
    cd logos-sql-zone
    git checkout tutorial
    
-   git submodule update --init --recursive
+   git submodule update --init
    ```
 
    The complete demo is available in the `master` branch.

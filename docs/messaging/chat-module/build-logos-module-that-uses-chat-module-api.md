@@ -30,7 +30,7 @@ Before you start, make sure you have the following:
   mkdir -p ~/.config/nix
   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
   ```
-- Network access so that two instances can reach each other
+- Network access: instances join a live delivery fleet and publish their key material to the [key-package registry](https://devnet.chat-kc.logos.co) — an isolated sandbox cannot complete an exchange
 - An understanding of [Logos modules](../../core/build-modules/build-a-logos-cpp-ui-module.md)
 
 ## What to expect
@@ -101,7 +101,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    }
    ```
 
-2. In `flake.nix`, pin `chat_module` and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
+1. In `flake.nix`, pin `chat_module` and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
 
    ```nix
    inputs = {
@@ -222,7 +222,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
    // Wait for delivery_state_changed with state == "online" before creating conversations.
    ```
 
-2. Read (or set) your identity:
+1. Read (or set) your identity:
 
    ```cpp
    const QString myId = m_logos->chat_module.get_installation_name();

@@ -150,7 +150,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message, an off-chain co-signing exchange handled by the CLI's witness exchange flow.
+A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message, an off-chain co-signing exchange: export the partial transaction with the candidate named as a co-signer (`--export handover.json --co-signer <new-admin-account-id-hex>`), send the file to the candidate to run `spel sign`, then submit it. Without the second signature the sequencer drops the transaction.
 
 After the transaction lands, the previous admin can no longer call gated instructions.
 
@@ -166,7 +166,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
-The PDA must already be deployed, an undeployed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then accepts the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
+The PDA must already exist on chain as a claimed account, an unclaimed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then accepts the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
 
 ## Embedded mode, the admin slot inside your own account
 
@@ -249,9 +249,9 @@ Expected output includes:
 "admin_renounce"
 ```
 
-Plus your own instructions. If the admin trio is missing, the most common causes are:
+Plus your own instructions. A marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. When you hit that error, the most common causes are:
 
-- `admin-authority` not declared as a path or git dependency in your `Cargo.toml`.
+- `admin-authority` not declared as a direct path or git dependency in your `Cargo.toml`. Transitive dependencies are never discovered.
 - `#[admin_authority]` placed outside `#[lez_program]` rather than inside.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
 

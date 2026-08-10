@@ -360,7 +360,7 @@ Group semantics only show with three or more members. Start three instances (A, 
 1. Collect each instance's address via `get_address()`.
 1. In instance A, call `create_group_conversation("Book Club", "Weekly sci-fi picks")` and keep the returned conversation id.
 1. In instance A, call `add_group_member(groupId, addressOfB)`. The call returns immediately; B joins once the group commits the add — B receives a `conversation_created` event (`kind == "group"`, name `"Book Club"`) under the same conversation id A holds.
-1. In instance B, call `add_group_member(groupId, addressOfC)` (any member can grow the group). C joins the same way.
+1. Once B has joined (the `conversation_created` from the previous step has arrived on B), call `add_group_member(groupId, addressOfC)` from instance B — any member can grow the group. C joins the same way.
 1. In each instance, call `list_group_members(groupId)` and wait until all three addresses appear with `pending == false` on every member. Each membership change also fires `members_changed`.
 1. In instance A, call `send_message(groupId, "hello group")`. B and C each receive one `message_received` event whose `sender` is A's address.
 1. In instance C, reply. A and B receive it, attributed to C's address — the newest member reaches the founding members and vice versa.

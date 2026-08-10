@@ -15,7 +15,7 @@ sidebar_position: 1
 
 #### Get started with private 1:1 end-to-end encrypted messaging in your own Logos module.
 
-This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`, built against [logos-delivery-module](https://github.com/logos-co/logos-delivery-module) `v0.2.0`) to exchange addresses, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
 :::info
 Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity (with a new address) and an empty conversation list.
@@ -30,7 +30,7 @@ Before you start, make sure you have the following:
   mkdir -p ~/.config/nix
   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
   ```
-- Network access: instances join a live delivery fleet and publish their key material to the key-package registry (`https://devnet.chat-kc.logos.co`) — an isolated sandbox cannot complete an exchange
+- Network access: instances join a live delivery fleet and publish their key material to the [key-package registry](https://devnet.chat-kc.logos.co) — an isolated sandbox cannot complete an exchange
 - An understanding of [Logos modules](../../core/build-modules/build-a-logos-cpp-ui-module.md)
 
 ## What to expect
@@ -100,7 +100,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    }
    ```
 
-2. In `flake.nix`, pin `chat_module` and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
+1. In `flake.nix`, pin `chat_module` and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
 
    ```nix
    inputs = {
@@ -203,9 +203,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 | Field | Type | Notes |
 |---|---|---|
 | `delivery_preset` | string | The delivery network to join. Use `logos.test` to reach the Logos test network; absent or empty means `logos.dev`. Must match across all participants. |
-| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`). Read once, at `init()`; `get_log_path()` returns the log file's location. |
-
-There are no port or path parameters: each [Logos Delivery](../../get-started/glossary.md#logos-delivery) node picks its own listening ports (so instances co-exist on one host), and storage goes to the instance directory the host assigns.
+| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`) |
 
 1. Initialise the chat client:
 
@@ -223,14 +221,14 @@ There are no port or path parameters: each [Logos Delivery](../../get-started/gl
    // Wait for delivery_state_changed with state == "online" before creating conversations.
    ```
 
-2. Read (or set) your identity:
+1. Read (or set) your identity:
 
    ```cpp
    const QString myId = m_logos->chat_module.get_installation_name();
    // Optionally choose a name: m_logos->chat_module.set_installation_name("alice");
    ```
 
-3. Share your address:
+1. Share your address:
 
    ```cpp
    const QString myAddress = m_logos->chat_module.get_address();
@@ -238,20 +236,20 @@ There are no port or path parameters: each [Logos Delivery](../../get-started/gl
    ```
 
    :::info
-   During `init()`, the module publishes this instance's key material to the key-package registry (`https://devnet.chat-kc.logos.co`), so your address alone is enough for a peer to open an end-to-end encrypted conversation with you. The address is reusable — share the same one with any number of contacts.
+   During `init()`, the module publishes this instance's key material to the key-package registry ([https://devnet.chat-kc.logos.co](https://devnet.chat-kc.logos.co)), so your address alone is enough for a peer to open an end-to-end encrypted conversation with you. The address is reusable — share the same one with any number of contacts.
    :::
 
-4. Open a private conversation as the initiator, or receive one as the recipient:
+1. Open a private conversation as the initiator, or receive one as the recipient:
 
    ```cpp
    const LogosResult res = m_logos->chat_module.create_conversation(peerAddress);
    // On success a conversation_created event (is_outgoing == true) fires with the new convo_id.
    ```
 
-   - The initiator calls `create_conversation` with the peer's address (their `get_address()`). This sends the cryptographic invite; the conversation opens empty, and the first message follows via `send_message`.
+   - The initiator calls `create_conversation` with the peer's address (their `get_address()`).
    - The recipient does not call anything; a `conversation_created` push event (`is_outgoing == false`) arrives automatically once the invite lands.
 
-5. Send and receive messages:
+1. Send and receive messages:
 
    ```cpp
    m_logos->chat_module.send_message(convoId, "How are you?");
@@ -260,7 +258,7 @@ There are no port or path parameters: each [Logos Delivery](../../get-started/gl
 
    - Message content is plain text in both directions — the module handles encoding and end-to-end encryption on the wire.
 
-6. Read history and conversation state at any time (synchronous reads):
+1. Read history and conversation state at any time (synchronous reads):
 
    ```cpp
    const QVariantList convos = m_logos->chat_module.list_conversations();  // [Conversation]
@@ -272,7 +270,7 @@ There are no port or path parameters: each [Logos Delivery](../../get-started/gl
    Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
    :::
 
-7. Shut down cleanly:
+1. Shut down cleanly:
 
    ```cpp
    m_logos->chat_module.shutdown();   // disconnects and tears the client down
@@ -299,7 +297,7 @@ The module also supports end-to-end encrypted **group conversations** — `creat
 
 ## Step 6: Verify a two-instance exchange
 
-A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own instance directory — and confirm a message lands as a `message_received` event. Two instances co-exist on one host because each delivery node picks its own listening ports; per-instance isolation comes from the host's instance directory (for the `nix run` standalone preview, pass a distinct `--user-dir` to each: `nix run . -- --user-dir ~/.local/share/chat_a`).
+A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own instance directory — and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (e.g. `nix run . -- --user-dir ~/.local/share/chat_a`).
 
 1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
 1. In instance A, call `get_address()` and share the returned address out of band (copy it into instance B).
@@ -317,7 +315,7 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 
 ### Why do peers not connect or messages not propagate?
 
-The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the key-package registry (`https://devnet.chat-kc.logos.co`), where key material is published during `init()` and looked up by `create_conversation`. For delivery-level detail, check the log file named by `get_log_path()`.
+The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the [key-package registry](https://devnet.chat-kc.logos.co), where key material is published during `init()` and looked up by `create_conversation`. For delivery-level detail, check the log file named by `get_log_path()`.
 
 ### Why does a read stall the UI?
 

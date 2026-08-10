@@ -256,7 +256,7 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
    :::info
-   `.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
+   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm` — including the ones the `install-node-tools.sh` helper script downloads — only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
    :::
 
 ### Use the `nix bundle` command
@@ -445,7 +445,7 @@ Verify the target directory exists and is writable. If installing from a local `
 
 If `lgpm install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
 
-- `nix build .#lgx` produces a single variant (for example, `linux-amd64`) suitable for `logoscore` but not for a dev build of `logos-basecamp`.
+- `nix build .#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) suitable for dev builds of `logoscore`/`logos-basecamp`, but rejected by released (portable) builds of `logoscore` and `lgpm`. Use `nix build .#lgx-portable` for the portable variant those released tools install.
 - `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
 - `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
 

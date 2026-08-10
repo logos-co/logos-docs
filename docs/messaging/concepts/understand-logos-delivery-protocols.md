@@ -35,7 +35,7 @@ sidebar_position: 1
 [`Filter` protocol](https://lip.logos.co/messaging/core/draft/12/filter.html) allows [light nodes](../../get-started/glossary.md#light-node) to selectively subscribe to specific messages relayed by other peers using [content topics](./about-content-topics.md). It is designed to be a lightweight alternative for accessing the `Relay` network, particularly tailored for devices with limited bandwidth.
 
 :::info
-`Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the [content topic](../../get-started/glossary.md#content-topic) to its peers to retrieve messages.
+`Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the content topic to its peers to retrieve messages.
 :::
  
 ## Store

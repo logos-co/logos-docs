@@ -29,7 +29,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
   Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
 - Git
 - Linux or macOS
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -44,7 +44,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
 
 ## Install the module
 
-`logoscore` expects each module in its own subdirectory containing a `manifest.json`. The `lgpm` package manager handles this layout automatically when given an LGX package.
+`logoscore` expects each module in its own subdirectory containing a `manifest.json`. The `lgpm` package manager handles this layout automatically when given an [LGX](../../get-started/glossary.md#lgx) package.
 
 1. Clone the `logos-accounts-module` repository and build the LGX package:
 

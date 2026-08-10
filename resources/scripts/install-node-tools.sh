@@ -7,9 +7,9 @@
 set -eu
 
 # Pinned tool releases.
-LOGOSCORE_TAG=0.2.0
-LGPD_TAG=0.2.0
-LGPM_TAG=0.2.0
+LOGOSCORE_TAG=0.2.2
+LGPD_TAG=0.2.1
+LGPM_TAG=0.2.1
 
 os=$(uname -s | tr '[:upper:]' '[:lower:]')
 if [ "$os" = darwin ]; then os=macos; fi

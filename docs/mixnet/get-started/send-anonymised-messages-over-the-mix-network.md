@@ -1,14 +1,14 @@
 ---
 title: Send anonymised messages over the mix network
 doc_type: procedure
-product: messaging
+product: mixnet
 topics: [chat, mix]
 steps_layout: flat
 authors: chaitanyaprem, kashepavadan
 owner: logos
 doc_version: 1
 slug: send-anonymised-messages-over-the-mix-network
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Send anonymised messages over the mix network
@@ -48,8 +48,8 @@ The mix chat app can be found in the `logos-chat-ui` repository.
    ```
 
    :::info
-The first build pulls the full dependency chain through Nix and takes approximately 15–20 minutes. Subsequent launches use the cache and start in seconds.
-:::
+   The first build pulls the full dependency chain through Nix and takes approximately 15–20 minutes. Subsequent launches use the cache and start in seconds.
+   :::
 
 1. In the startup popup, pick a demo user (1–10) and click **Start**.
 

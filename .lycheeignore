@@ -19,3 +19,6 @@
 
 # LEZ public testnet
 ^https://testnet\.lez\.logos.co/
+
+# Serves a shell-install script to non-browser clients.
+^https://rustup\.rs

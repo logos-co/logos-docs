@@ -119,7 +119,7 @@ grep -aE "blend::service" <node-log> | tail
 - `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — the node is participating (as an edge or core node).
 - `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to broadcast for that epoch (no Blend privacy) — a graceful degradation, not a fault.
 
-There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so prefer the log check during sync.
+There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend Network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so prefer the log check during sync.
 
 ### Running Blend on a Basecamp node
 

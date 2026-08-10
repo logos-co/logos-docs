@@ -254,7 +254,7 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic.
 
    :::caution
-   Do not re-create a channel id you have already closed: `channelCreate` with the id of a closed channel currently crashes the delivery node process. Use a fresh channel id instead, and keep a channel open for as long as your application needs it.
+   Do not re-open a channel you have already closed: if that channel had received a message, `channelCreate` with its id currently crashes the delivery node process ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Keep a channel open for as long as your application needs it, and use a fresh channel id otherwise.
    :::
 
 1. Check whether a channel is currently open.
@@ -388,7 +388,7 @@ The node may not be connected to peers yet, or the network layer rejected the me
 
 ### The node process dies when I re-open a channel I closed?
 
-Known issue in this Developer Preview: calling `channelCreate` with the id of a channel that was closed with `channelClose` crashes the delivery node (a null dereference while re-opening the channel's persisted SDS state). The module reports the call as failed and the node is gone — every later call fails until the module is reloaded. Use a fresh channel id rather than re-opening a closed one.
+Known issue in this Developer Preview ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)): calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone — every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
 
 ### `channelCreate` returns `channel already exists`?
 

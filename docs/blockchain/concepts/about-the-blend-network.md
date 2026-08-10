@@ -63,6 +63,16 @@ To avoid the network getting congested with too much message traffic, the Blend 
 
 Participation in the Blend Network is more complex than running a [Logos node](../../get-started/glossary.md#logos-node). The protocol relies on an agreed-upon sets of active participants to ensure its correct operation, as Blend nodes must keep track of connections to other Blend nodes for message relaying. As a result, it is not possible to allow dynamic participation in the Blend Network as it exists for [Bedrock](../../get-started/glossary.md#bedrock). Participation in the Blend Network is therefore not incumbent upon a node unless it opts in.
 
+### Node roles: core, edge, and broadcast
+
+A Blend-capable node operates in one of three modes, re-selected every [epoch](../../get-started/glossary.md#epoch) from the set of active Blend declarations for that epoch:
+
+- **Core node** — a node that has opted in through the Service Declaration Protocol (below) and locked the required stake. Core nodes make up the mix network: they relay and blend messages for others, and are eligible for rewards.
+- **Edge node** — a node that has *not* declared as a core node but participates whenever there are enough core nodes in the epoch. An edge node sends its own proposals into the mix through the core nodes, gaining proposer privacy without relaying for others. This is automatic and needs no configuration or stake.
+- **Broadcast** — a fallback used when fewer than the minimum number of core nodes are active in an epoch. With no functioning mix to route through, the node broadcasts its proposal directly, without Blend privacy for that epoch. Also automatic.
+
+Only the **core** role requires operator action — an SDP declaration, a locked stake, and a publicly reachable Blend port (see [Join the Blend network as a core node](../blend/join-the-blend-network-as-a-core-node.md)). Edge and broadcast require nothing: a normal node participates as an edge node once the chain is online and enough core nodes exist, and falls back to broadcast otherwise. The minimum number of core nodes needed for edge participation is a network parameter.
+
 ### Service Declaration Protocol
 
 Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol ([SDP](../../get-started/glossary.md#sdp)). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.

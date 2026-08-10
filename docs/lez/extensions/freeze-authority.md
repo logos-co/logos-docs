@@ -55,7 +55,7 @@ Every dispatched instruction except the F3 carve-outs and admin operations is au
 ```rust
 use spel_framework::prelude::*;
 use admin_authority::admin_authority;
-use freeze_authority::{freeze_authority, freeze_exempt};
+use freeze_authority::{freeze_authority, freeze_exempt, FreezeCandidate};
 
 #[lez_program]
 #[admin_authority]
@@ -79,7 +79,7 @@ Auto-wrap is disabled; the consumer applies `#[require_not_frozen]` only to inst
 ```rust
 use spel_framework::prelude::*;
 use admin_authority::admin_authority;
-use freeze_authority::{freeze_authority, require_not_frozen};
+use freeze_authority::{freeze_authority, require_not_frozen, FreezeCandidate};
 
 #[lez_program]
 #[admin_authority]
@@ -195,7 +195,7 @@ pub enum FreezeCandidate {
     Signer,
     /// The new freeze authority is a program-owned PDA. Validated by deriving
     /// the address from (program_id, seed) and confirming the PDA exists on chain.
-    Pda { program_id: AccountId, seed: [u8; 32] },
+    Pda { program_id: ProgramId, seed: [u8; 32] },
 }
 ```
 

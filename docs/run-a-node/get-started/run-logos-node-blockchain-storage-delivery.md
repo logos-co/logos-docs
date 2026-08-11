@@ -326,8 +326,8 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
    ```
    curl http://127.0.0.1:8080/mantle/sdp/declarations | jq . 
-   # > [
-   # >   {
+   # > {
+   # >   "<DECLARATION_ID>": {
    # >     "service_type": "BN",
    # >     "provider_id": "35d60d973560b8344f83dc266a3fe89e35a3dcf9959c492d0a7a0b7a85c5d2ce",
    # >     "locked_note_id": "<BLEND_ZK_NOTE_ID>",
@@ -340,13 +340,12 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
    # >     "withdraw_at": null,
    # >     "nonce": 0
    # >   }
-   # > ]
+   # > }
    ```
 
+   - The response is a JSON object keyed by declaration id (not a list). Find your entry by its `provider_id` (your BlendSigning key) or `zk_id` (your BlendZk key).
    - `service_type: BN` identifies it as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-   - `zk_id` is your BlendZk public key
-   - `provider_id` is your BlendSigning key.
-   - `active` is 2 [epochs](../../get-started/glossary.md#epoch) in the future, when the declaration will become active.
+   - `created` is the epoch your declaration was included; it takes effect about two [epochs](../../get-started/glossary.md#epoch) later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it advances over time — equal to `created + 2` right after activation and higher on a long-running node.
 
 ## Step 6: Configure and start the storage module
 

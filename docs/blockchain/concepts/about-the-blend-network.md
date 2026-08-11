@@ -63,6 +63,16 @@ To avoid the network getting congested with too much message traffic, the Blend 
 
 Participation in the Blend Network is more complex than running a [Logos node](../../get-started/glossary.md#logos-node). The protocol relies on an agreed-upon sets of active participants to ensure its correct operation, as Blend nodes must keep track of connections to other Blend nodes for message relaying. As a result, it is not possible to allow dynamic participation in the Blend Network as it exists for [Bedrock](../../get-started/glossary.md#bedrock). Participation in the Blend Network is therefore not incumbent upon a node unless it opts in.
 
+### Node roles: core, edge, and broadcast
+
+A Blend-capable node operates in one of three modes, re-selected every [epoch](../../get-started/glossary.md#epoch) from the set of active Blend declarations for that epoch:
+
+- **Core node** — a node that has opted in through the Service Declaration Protocol (below) and locked the required stake. Core nodes carry out the message blending: they relay and blend messages for others, and are eligible for rewards.
+- **Edge node** — a node that has *not* declared as a core node but participates whenever there are enough core nodes in the epoch. An edge node sends its own proposals through the core nodes for blending, gaining proposer privacy without relaying for others. This is automatic and needs no configuration or stake.
+- **Broadcast** — a fallback used when fewer than the minimum number of core nodes are active in an epoch. With too few core nodes to blend through, the node broadcasts its proposal directly, without Blend privacy for that epoch. Also automatic.
+
+Only the **core** role requires operator action — an SDP declaration, a locked stake, and a publicly reachable Blend port (see [Join the Blend Network as a core node](../blend/join-the-blend-network-as-a-core-node.md)). Edge and broadcast require nothing: a normal node participates as an edge node once the chain is online and enough core nodes exist, and falls back to broadcast otherwise. The minimum number of core nodes needed for edge participation is a network parameter.
+
 ### Service Declaration Protocol
 
 Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol ([SDP](../../get-started/glossary.md#sdp)). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
@@ -86,3 +96,31 @@ The [Service Reward Distribution Protocol](../../get-started/glossary.md#service
 - Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
 
 The selection of nodes receiving rewards in each block follows a deterministic, pseudo-random process based on the Cryptarchia epoch randomness from the start of the epoch. This approach ensures fairness and prevents manipulation of the distribution order.
+
+### Checking whether your node is participating
+
+Two different questions have two different checks.
+
+**Did my core declaration land?** After declaring as a core node, query the on-chain SDP declarations and look for your entry:
+
+```bash
+curl -s http://localhost:8080/mantle/sdp/declarations
+```
+
+Find the entry whose `zk_id` is your BlendZk key, with `"service_type": "BN"`. It becomes active a couple of epochs after the declaring transaction is included in a block, and stays active only while the node keeps sending Active messages. This check applies to the **core** role only — edge and broadcast nodes make no declaration.
+
+**Is my node blending right now?** Check the node log for the Blend service lifecycle:
+
+```bash
+grep -aE "blend::service" <node-log> | tail
+```
+
+- `Waiting for chain to become Online mode` — not yet; the node is still bootstrapping.
+- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — the node is participating (as an edge or core node).
+- `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to broadcast for that epoch (no Blend privacy) — a graceful degradation, not a fault.
+
+There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend Network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so prefer the log check during sync.
+
+### Running Blend on a Basecamp node
+
+The [Basecamp](../get-started/run-a-logos-blockchain-node-from-basecamp.md) desktop app runs the same node under the hood, so the same three roles apply. Its Generate-Config screen exposes a **Blend port** field, which maps to the same `blend.core.backend.listening_address` a CLI node uses. Edge and broadcast participation are automatic, exactly as on a CLI node — no configuration or stake. There is **no "join as core" button**, however: to become a core node from Basecamp you still run the CLI `blend_join_as_core_node` procedure described in [Join the Blend Network as a core node](../blend/join-the-blend-network-as-a-core-node.md).

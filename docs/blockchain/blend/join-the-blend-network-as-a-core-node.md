@@ -94,8 +94,8 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
     ```bash
     curl http://<YOUR_NODE_IP>:8080/mantle/sdp/declarations | jq .
-    # > [
-    # >   {
+    # > {
+    # >   "<DECLARATION_ID>": {
     # >     "service_type": "BN",
     # >     "provider_id": "35d60d973560b8344f83dc266a3fe89e35a3dcf9959c492d0a7a0b7a85c5d2ce",
     # >     "locked_note_id": "<BLEND_ZK_NOTE_ID>",
@@ -108,12 +108,12 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
     # >     "withdraw_at": null,
     # >     "nonce": 0
     # >   }
-    # > ]
+    # > }
     ```
 
+    - The response is a JSON **object keyed by declaration id** (not a list). Find your entry by its `provider_id` (your `BlendSigning` key) or `zk_id` (your `BlendZk` key).
     - `service_type: "BN"` identifies this as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-    - `zk_id` is your `BlendZk` public key; `provider_id` is your `BlendSigning` key.
-    - `active == created + 2`: your node becomes active two epochs after the declaration is included in a block.
+    - `created` is the epoch your declaration was included; it takes effect about two epochs later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it **advances over time** — it equals `created + 2` right after activation and grows on a long-running node.
     - If your declaration is not yet listed, retry after your transaction is included in a block.
 
 1. Check the configured Blend UDP listener:

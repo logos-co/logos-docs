@@ -67,7 +67,7 @@ Participation in the Blend Network as a Blend node is more complex than running 
 
 A Logos Blockchain node operates in one of three modes in terms of its engagement with the Blend Network. These roles are refreshed every [epoch](../../get-started/glossary.md#epoch) based on the set of active Blend declarations for that epoch:
 
-- **Core node** — a node that has opted in through the [Service Declaration Protocol](#service-declaration-protocol) and locked the required stake. Core nodes carry out the message blending: they relay and blend messages for others, and are eligible for rewards.
+- **Core node** — a node that has opted in through the [Service Declaration Protocol](#service-declaration-protocol) and locked the required stake. Core nodes carry out the message blending: they relay and blend messages for others, resulting in maximum privacy for their own proposals. Core nodes receive rewards for their efforts via the [SRDP](#service-reward-distribution-protocol).
 - **Edge node** — a block proposer node that has *not* declared as a core node but participates whenever there are enough core nodes in that epoch. An edge node sends its own proposals through the core nodes for blending, gaining limited proposer privacy without relaying for others. This is automatic and needs no configuration or stake.
 - **Broadcast** — a fallback method used when fewer than the minimum number of core nodes are active in an epoch. With too few core nodes to blend through, a proposer will broadcast its proposal directly, without Blend privacy for that epoch.
 

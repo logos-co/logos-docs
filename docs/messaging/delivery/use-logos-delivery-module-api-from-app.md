@@ -139,7 +139,7 @@ Register event handlers before calling `start()` so you don't miss the first `co
        // data[0]: QString     — messageHash
        // data[1]: QString     — contentTopic
        // data[2]: QByteArray  — payload (raw bytes)
-       // data[3]: QString     — timestamp (ns since epoch)
+       // data[3]: qint64      — timestamp (ns since epoch)
    });
 
    // Register Messaging API event handlers, if your module uses it (Step 5)

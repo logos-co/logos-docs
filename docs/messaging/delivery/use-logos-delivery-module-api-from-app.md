@@ -62,7 +62,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
    git init && git add -A
    ```
 
-   The scaffold builds as it stands. It gives you `src/ui_example.rep` (the view contract), `src/ui_example_backend.{h,cpp}` (the class you write), and `src/qml/Main.qml`. Rename and edit those rather than deleting them — `CMakeLists.txt` declares `src/ui_example.rep` as its `REP_FILE`, so removing it breaks the build.
+   The scaffold builds as it stands. It gives you `src/ui_example.rep` (the view contract), `src/ui_example_backend.{h,cpp}` (the class you write), and `src/qml/Main.qml`.
 
 ## Step 2: Declare `delivery_module` as a dependency
 
@@ -253,10 +253,6 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
 
    Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic.
 
-   :::caution
-   Do not re-open a channel you have already closed: if that channel had received a message, `channelCreate` with its id currently crashes the delivery node process ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Keep a channel open for as long as your application needs it, and use a fresh channel id otherwise.
-   :::
-
 1. Check whether a channel is currently open.
 
    ```cpp
@@ -388,7 +384,7 @@ The node may not be connected to peers yet, or the network layer rejected the me
 
 ### The node process dies when I re-open a channel I closed?
 
-Known issue in this Developer Preview ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)): calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone — every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
+Known issue in this release: ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone — every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
 
 ### `channelCreate` returns `channel already exists`?
 

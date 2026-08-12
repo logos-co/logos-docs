@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklogos_docs=self.webpackChunklogos_docs||[]).push([["5397"],{3149(e){e.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Run an app","description":"Run modules inside Basecamp, through individual UI apps, or headlessly.","slug":"/run-an-app","permalink":"/run-an-app","sidebar":"runAnAppSidebar","navigation":{}}}')}}]);

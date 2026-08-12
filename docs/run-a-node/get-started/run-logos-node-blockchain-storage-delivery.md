@@ -28,6 +28,19 @@ The default paths used throughout this procedure are:
 /var/lib/logos-node
 ```
 
+:::info[Prerequisites]
+
+- Linux host with a public IPv4 address.
+- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall.
+- Root or `sudo` access to install tools and create system users.
+
+Make sure your hardware meets the following requirements for running a blockchain node:
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor.
+- Memory (RAM): Minimal (1 Gb).
+- Storage: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
+:::
+
 Before you start, make sure you have the following:
 
 - Linux host with a public IPv4 address

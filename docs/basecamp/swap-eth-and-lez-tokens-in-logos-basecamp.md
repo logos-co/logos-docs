@@ -17,7 +17,7 @@ sidebar_position: 3
 
 The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
-You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. One part still isn't as smooth: on the currently published version, creating your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account) in [Step 3](#step-3-set-up-your-accounts) needs a command-line tool. That step says so plainly, and a release that removes the need is on the way.
+You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. One part still isn't as smooth: on the currently published version, creating your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account) in [Step 2](#step-2-set-up-your-accounts) needs a command-line tool. That step says so plainly, and a release that removes the need is on the way.
 
 ## Networks and addresses
 
@@ -45,21 +45,15 @@ The mechanism is a hash time-locked contract, or HTLC. Your app invents a random
 
 The time locks make the failure case safe. Each lock carries a deadline, and yours is deliberately the longer of the two, so you always have time to react to whatever your counterparty does. If they vanish after you lock, nothing is lost. You wait for your deadline to pass and take your own funds back from the **Refund** tab. In the offer you'll take below, the LEZ side expires after 20 minutes and your Ethereum side after 40.
 
-## Before you begin
+:::info[Prerequisites]
 
-Make sure you have:
-
-- A supported platform: **macOS on Apple silicon**, **Linux x86-64**, or **Linux arm64**.
+- [Basecamp installed and running](./install-logos-basecamp.md).
 - Internet access.
-- A small amount of **Sepolia ETH**. The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. Any public Sepolia faucet works, and the [Ethereum networks documentation](https://ethereum.org/en/developers/docs/networks/) lists current options.
-- An **Ethereum wallet** such as MetaMask, used in [Step 3](#step-3-set-up-your-accounts) to create a throwaway key.
-- **Rust and `cargo`**, from [rustup](https://rustup.rs), plus a terminal. [Step 3](#step-3-set-up-your-accounts) builds the LEZ wallet CLI to create your LEZ account. A future release removes this requirement.
-
-:::info
-Intel macOS isn't supported. The app bundles zero-knowledge circuits for its LEZ side, and no `darwin-x86_64` build of that bundle is published.
+- An **Ethereum wallet** such as MetaMask, used in [Step 2](#step-2-set-up-your-accounts) to create a throwaway key.
+- A small amount of **Sepolia ETH**. The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably.
+    - You can obtain Sepolia ETH from any [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/).
+- **Rust and `cargo`**, installed from [rustup](https://rustup.rs).
 :::
-
-You don't need any LEZ to begin. You claim your opening balance from the LEZ testnet faucet in [Step 3](#step-3-set-up-your-accounts).
 
 ## What to expect
 
@@ -68,13 +62,7 @@ You don't need any LEZ to begin. You claim your opening balance from the LEZ tes
 - You can take a live offer and complete a real cross-chain swap on public test networks.
 - You can verify both legs of your swap independently on two block explorers.
 
-## Step 1: Install Logos Basecamp
-
-Follow [Install Logos Basecamp](./install-logos-basecamp.md) and take the prebuilt release for your platform. You don't need the source build.
-
-**Expected:** Basecamp opens with a sidebar down the left-hand side. The UI labels used below come from Basecamp `0.2.2`, and `0.2.3` is the current release.
-
-## Step 2: Add the catalogue and install the app
+## Step 1: Add the catalogue and install the app
 
 Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of packages, and Basecamp re-reads it whenever the index changes.
 
@@ -114,11 +102,9 @@ Basecamp arrives with the official Logos catalogue configured, and it merges tha
 The catalogue is saved in your Basecamp settings and survives restarts. You add it once.
 :::
 
-## Step 3: Set up your accounts
+## Step 2: Set up your accounts
 
-A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens.
-
-On `0.3.3` you create both outside the app, then paste them into the **Config** tab in [Step 4](#step-4-fill-in-the-config-tab).
+A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. On `0.3.3` you create both outside the app, then paste them into the **Config** tab in [Step 3](#step-3-fill-in-the-config-tab).
 
 :::warning
 This is the roughest part of the journey, and it's worth knowing why before you start. Version `0.3.3` has no in-app account setup, so you handle an Ethereum private key yourself and use a separate command-line tool for the LEZ side. Copying a raw private key between applications is a bad habit, and this app is in the process of removing the need for it. Until that lands, use a **brand-new key that holds nothing but Sepolia test funds**, and never paste in a key you also use on Ethereum mainnet.
@@ -130,7 +116,7 @@ This is the roughest part of the journey, and it's worth knowing why before you 
 
 1. Copy its address, and send Sepolia ETH to that address from a public faucet.
 
-1. Export the account's private key and keep it to hand for [Step 4](#step-4-fill-in-the-config-tab). In MetaMask this is under **Account details** → **Show private key**.
+1. Export the account's private key and keep it to hand for [Step 3](#step-3-fill-in-the-config-tab). In MetaMask this is under **Account details** → **Show private key**.
 
 **Expected:** a 64-character hex private key, and an address showing a non-zero Sepolia balance.
 
@@ -154,11 +140,7 @@ wallet pinata claim --to me
 Don't skip the initialise command. An uninitialised LEZ account is the most confusing failure in this app, because it produces no error at all. The sequencer silently discards transactions that reference an account it has never seen initialised, so the swap simply stalls rather than failing. The wallet reports `Account is Uninitialized` until you initialise it.
 :::
 
-:::tip
-Arriving in `0.3.4`: a guided **Setup** tab that replaces this whole step with three buttons, generating the Ethereum key and creating, initialising, and funding the LEZ account without a private key ever leaving the app. It's tracked in [eth-lez-atomic-swaps#95](https://github.com/logos-co/eth-lez-atomic-swaps/pull/95), which is still in draft with no release date. This page covers the `0.3.3` route until it ships.
-:::
-
-## Step 4: Fill in the Config tab
+## Step 3: Fill in the Config tab
 
 The **Config** tab holds every endpoint, address, and key the app uses, grouped under **Ethereum**, **LEZ**, and **Swap parameters**. Almost all of it is already correct. This step is a check rather than a data-entry exercise.
 
@@ -166,13 +148,13 @@ The **Config** tab holds every endpoint, address, and key the app uses, grouped 
 
 1. Under **Ethereum**, confirm **RPC URL** is `wss://ethereum-sepolia-rpc.publicnode.com` and **HTLC Contract Address** is `0x351B0EA07739FA9F6769213927D7836a790A5FAF`.
 
-1. Still under **Ethereum**, paste the private key from [Step 3](#step-3-set-up-your-accounts) into **Private Key**, and the matching address into **Recipient Address**.
+1. Still under **Ethereum**, paste the private key from [Step 2](#step-2-set-up-your-accounts) into **Private Key**, and the matching address into **Recipient Address**.
 
     **Recipient Address** is where your bought tokens' counterpart settles, so it's the address belonging to that same key.
 
 1. Under **LEZ**, confirm **Sequencer URL** is `https://testnet.lez.logos.co` and **HTLC Program ID** is `27720b5b0345135d8e684eb172c27f5fb237548cc891a3ec889d0ed340504070`.
 
-1. Still under **LEZ**, paste the private key from [Step 3](#step-3-set-up-your-accounts) into **Signing Key**, and your account ID into **Taker Account ID**.
+1. Still under **LEZ**, paste the private key from [Step 2](#step-2-set-up-your-accounts) into **Signing Key**, and your account ID into **Taker Account ID**.
 
     Leave **Wallet Home** and **Wallet Account ID** empty. The app authenticates to the LEZ either with a signing key or with a wallet directory plus account ID, and the signing key is the route that works here. **Wallet Home**'s placeholder, `.scaffold/wallet`, is a path from the app's development setup that doesn't exist on a machine that installed from the catalogue.
 
@@ -194,7 +176,7 @@ If a field is wrong, the app says so directly underneath it, with messages like 
 The contract at `0x351B0EA07739FA9F6769213927D7836a790A5FAF` is version 2 of the Ethereum HTLC. Earlier builds of this app pointed at a version 1 contract at `0x8636Fe66DFee166589a913140f14d5F57394834A`, which is still deployed and still responds. It's written out in full here so you can check character by character that you aren't on it, because the two are easy to confuse and the failure is unhelpful. Version 1 has no `INTERFACE_VERSION` function, so the app's compatibility check reverts against it and swaps don't start. If you've used this app before, replace the address with the one above.
 :::
 
-## Step 5: Take a live offer
+## Step 4: Take a live offer
 
 Logos runs a maker on this testnet. It publishes offers and waits for someone to take them, which is what lets you complete this journey without a second machine and a friend.
 
@@ -222,7 +204,7 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 Offers are live announcements, not stored listings. Nothing retains them, so the **Market** tab can only show what a maker is broadcasting at that moment. The board says as much under the tape: `Offers are advertisements — a swap completes only if the maker is live.`
 :::
 
-## Step 6: Read your receipt and verify it
+## Step 5: Read your receipt and verify it
 
 Every finished swap writes a receipt recording both legs, so you can check the trade against the two chains instead of taking the app's word for it. Receipts persist across restarts.
 
@@ -238,7 +220,7 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 
     **Expected:** the LEZ explorer shows the matching claim. The URL looks like `https://explorer.testnet.lez.logos.co/transaction/` followed by a 64-character hash with no `0x` prefix.
 
-1. Compare the **Hashlock** on the receipt with the hashlock the offer advertised in [Step 5](#step-5-take-a-live-offer).
+1. Compare the **Hashlock** on the receipt with the hashlock the offer advertised in [Step 4](#step-4-take-a-live-offer).
 
     They match, which is the point. The same hash bound both locks, and the preimage now published on the LEZ chain is what released both.
 
@@ -248,7 +230,7 @@ A Basecamp app can't open your browser for you. Logos app interfaces run inside 
 
 Two rows are deliberately copy-only, with no explorer link. **ETH swap ID (lock)** is an identifier internal to the contract rather than a transaction hash, and **LEZ HTLC program** names a [program](../get-started/glossary.md#program) rather than a transaction. Keep the swap ID anyway. It's what the **Refund** tab asks for if a later swap stalls.
 
-## Step 7: Send feedback
+## Step 6: Send feedback
 
 This app is a testnet preview, and the quickest way to improve it is to report what you hit.
 
@@ -272,7 +254,7 @@ Check **RPC URL** begins with `wss://` and not `https://`. The app opens a WebSo
 
 ### The swap does nothing and no error appears
 
-Your LEZ account is almost certainly uninitialised. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Check the account with the wallet CLI from [Step 3](#step-3-set-up-your-accounts). If it reports `Account is Uninitialized`, run the initialise step, then confirm the balance is genuinely positive before retrying.
+Your LEZ account is almost certainly uninitialised. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Check the account with the wallet CLI from [Step 2](#step-2-set-up-your-accounts). If it reports `Account is Uninitialized`, run the initialise step, then confirm the balance is genuinely positive before retrying.
 
 ### The Taker tab reports `ETH lock rejected`
 
@@ -280,7 +262,7 @@ The maker refuses a lock that doesn't leave it enough time to respond, and the E
 
 ### There isn't enough LEZ in the account
 
-Claim from the Piñata faucet again with the wallet CLI from [Step 3](#step-3-set-up-your-accounts). Each claim credits a bounded amount, so repeat it until the balance covers what you need.
+Claim from the Piñata faucet again with the wallet CLI from [Step 2](#step-2-set-up-your-accounts). Each claim credits a bounded amount, so repeat it until the balance covers what you need.
 
 ### A swap stopped halfway and the funds are still locked
 

@@ -17,17 +17,18 @@ sidebar_position: 1
 
 Joining the [Blend Network](../../get-started/glossary.md#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](../../get-started/glossary.md#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
 
-:::info
+:::note
 Joining the Blend Network as a core node via a [Basecamp](../get-started/run-a-logos-blockchain-node-from-basecamp.md) is not currently supported.
 
 Instead, follow the CLI instructions below, but navigate to your Basecamp Logos Blockchain node's **Generate-Config** screen to find the **Blend port** field. Use this value in place of `<YOUR_BLEND_PORT>`.
 :::
 
-You need:
+:::info[Prerequisites]
 
 - [A running blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
 - A publicly reachable IP and port (or DNS) combination for the node.
 - Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation.
+:::
 
 ## What to expect
 

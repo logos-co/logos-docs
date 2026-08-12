@@ -19,11 +19,19 @@ This procedure covers building a Logos [module](../../get-started/glossary.md#mo
 
 The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.0`](https://github.com/logos-co/logos-delivery-module/tree/3258cdb0132e37228aa2519e0c01c0e7429a20dd)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 
-**Before you start**, make sure you have the following:
+:::info[Prerequisites]
 
-- macOS (aarch64 or x86_64) or Linux (aarch64 or x86_64)
+- A supported OS:
+    - Linux: aarch64 or x86_64
+    - macOS: aarch64 or x86_64
 - ~1 GB of RAM
-- Nix with flakes enabled
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
+:::
 
 ## What to expect
 

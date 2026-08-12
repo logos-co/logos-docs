@@ -17,11 +17,10 @@ sidebar_position: 3
 
 This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account) — regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS — macOS requires full Xcode with the Metal toolchain for the Risc0 guest build, not just command-line tools
-- Rust toolchain, `cargo`
-- An [LEZ wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 

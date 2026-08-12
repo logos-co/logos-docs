@@ -19,10 +19,11 @@ This tutorial covers how to configure and operate a [Logos Blockchain](../../get
 
 The Zone SDK currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- An existing application using the [Zone SDK](./inscribe-data-on-chain-using-zone-sdk.md)
-- At least one `Ed25519PublicKey` generated per committee member
+- An existing application using the Zone SDK, such as an [inscription program](./inscribe-data-on-chain-using-zone-sdk.md).
+- At least one `Ed25519PublicKey` generated per committee member.
+:::
 
 ## What to expect
 

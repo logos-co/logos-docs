@@ -20,24 +20,26 @@ sidebar_position: 3
 
 This procedure stands up a small local [Mix](../concepts/mix.md) network using `logoscore`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine — four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS
+- A supported OS:
+    - Linux
+    - macOS
+- `jq` on your `PATH`.
+    - To verify, run: `jq --version`
 - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-    ```bash
-    mkdir -p ~/.config/nix
-    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-    ```
--   [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
     export PATH="$PWD/bin:$PATH"
     ```
-
-    The script installs the tools into `./bin` of the current directory: run it in the same working directory as the rest of this procedure.
-- `jq` on your `PATH` — used to read each node's identity out of the `debug` JSON. Verify: `jq --version`
+:::
 
 ## What to expect
 

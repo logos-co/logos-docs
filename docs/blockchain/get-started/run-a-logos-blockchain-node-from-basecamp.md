@@ -17,18 +17,18 @@ sidebar_position: 2
 
 The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or — as described here — from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
 
-This procedure covers Linux, Windows (via WSL), and macOS on Apple Silicon. It requires no terminal beyond a single prerequisite-install command on Linux.
+:::info[Prerequisites]
 
-## Before you start
-
-Make sure you have the following:
-
-- [Logos Basecamp](../../basecamp/install-logos-basecamp.md) installed and running.
-- A graphical desktop session on one of: **Linux** (tested on Ubuntu 24.04), **Windows 11 with WSL2** (plus WSLg for the GUI), or an **Apple Silicon Mac** (M1 or later). Basecamp is a desktop application and needs a real display.
+- [Basecamp installed and running](../../basecamp/install-logos-basecamp.md).
+- A graphical desktop session on one of:
+   - **Linux** (tested on Ubuntu 24.04)
+   - **Windows 11 with WSL2** (plus WSLg for the GUI)
+   - **Apple Silicon Mac** (M1 or later).
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+:::
 
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.
 

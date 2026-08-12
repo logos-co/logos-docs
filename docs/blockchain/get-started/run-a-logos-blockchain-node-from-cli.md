@@ -17,14 +17,18 @@ sidebar_position: 3
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
-Before you start, ensure you have:
+:::info[Prerequisites]
 
-- Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- A supported OS:
+    - Linux x86_64
+    - macOS aarch64 (recent versions)
+    - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+:::
 
 ## What to expect
 

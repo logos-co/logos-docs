@@ -15,12 +15,28 @@ sidebar_position: 2
 
 #### Scaffold, build, package, and test a core module on Logos.
 
-Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
+Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality. Logos core modules are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
-Logos core modules are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
+:::info[Prerequisites]
 
-:::info
-For other module types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+- A supported OS:
+   - Linux x86_64 or aarch64
+   - macOS arm64 or x86_64
+- At least 10 GB of disk space
+- Git
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
+   export PATH="$PWD/bin:$PATH"
+   ```
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
+- Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
 :::
 
 Before you start, make sure you have the following:

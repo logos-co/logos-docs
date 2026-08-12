@@ -19,12 +19,14 @@ This procedure covers how to create a shared [private account](../../get-started
 
 This feature is 1-of-n at the key layer: any GMS holder can derive every key and spend the account. Threshold gating must be implemented at the [program](../../get-started/glossary.md#program) layer. View-only membership is not supported — any GMS holder gets both viewing and spending capability.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS — macOS requires full Xcode with the Metal toolchain for the Risc0 guest build, not just command-line tools
-- Rust toolchain and `cargo`
-- `justfile` recipes from the [logos-execution-zone](https://github.com/logos-blockchain/logos-execution-zone) repository
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded
+- A supported OS:
+   - Linux x86_64 or aarch64
+   - macOS arm64 or x86_64 (requires full Xcode with the Metal toolchain for the Risc0 guest build)
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone).
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 

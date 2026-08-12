@@ -17,19 +17,18 @@ sidebar_position: 1
 
 The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or a standalone application.
 
-:::info
-For testnet v0.1, you must manually edit the config file and restart the node to add new keys.
-:::
+:::info[Prerequisites]
 
-Before you start, make sure you have the following:
-
-- A supported OS: Linux x86\_64 or macOS
--   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- A supported OS:
+    - Linux x86_64
+    - macOS
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
+:::
 
 ## What to expect
 

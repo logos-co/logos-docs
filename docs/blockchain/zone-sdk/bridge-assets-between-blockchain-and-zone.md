@@ -19,17 +19,18 @@ sidebar_position: 2
 
 This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the [Zone SDK](../../get-started/glossary.md#zone-sdk)'s `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel balance maps to its internal accounts, while the SDK only surfaces the on-chain events.
 
-Bridging has two directions: deposit (Blockchain to Zone), where a user funds a channel and the Zone sequencer credits the user internally (`ChannelDeposit`), and withdraw (Zone to Blockchain), where the sequencer submits a signed `ChannelWithdraw` to debit the channel and mint fresh notes on-chain.
-
-:::info
+:::note
 The Zone SDK currently supports the bundled withdrawal API only for single-sequencer Zones (`ChannelState.withdraw_threshold == 1`). Multi-sequencer Zones require building the threshold proof manually, as covered in a later step.
 :::
 
-Before you start, make sure you have:
+Bridging has two directions: deposit (Blockchain to Zone), where a user funds a channel and the Zone sequencer credits the user internally (`ChannelDeposit`), and withdraw (Zone to Blockchain), where the sequencer submits a signed `ChannelWithdraw` to debit the channel and mint fresh notes on-chain.
 
-- A running Logos Blockchain node reachable over HTTP
-- The Zone SDK (`lb_zone_sdk`) and `lb_core` crates added to your project
-- Completed the [Zone SDK inscription tutorial](./inscribe-data-on-chain-using-zone-sdk.md)
+:::info[Prerequisites]
+
+- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) reachable over HTTP.
+- The Zone SDK (`lb_zone_sdk`) and `lb_core` crates added to your project.
+- You have completed the [Zone SDK inscription tutorial](./inscribe-data-on-chain-using-zone-sdk.md).
+:::
 
 ## What to expect
 

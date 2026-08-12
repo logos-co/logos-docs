@@ -33,7 +33,10 @@ To enable flakes in nix, add `experimental-features = nix-command flakes` to `/e
 Before you start, make sure you have the following:
 
 - Internet access.
-- A supported OS: Linux x86_64 or aarch64 (tested on Ubuntu 22.04+), or macOS aarch64 (recent versions).
+- A supported OS:
+    - Linux x86_64 or aarch64 (tested on Ubuntu 22.04+)
+    - macOS aarch64 (recent versions)
+    - WSL2 Ubuntu on Windows 11 (or Windows 10 21H2+ with WSLg for GUI support) is also supported
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
 - For the source build only: [Nix](https://github.com/NixOS/nix-installer) installed with flakes enabled.
 
@@ -49,15 +52,19 @@ This tutorial is also available in video form:
 ## Install from a prebuilt release
 
 1. Go to the [latest release page](https://github.com/logos-co/logos-basecamp/releases/latest) and download the artifact for your OS:
-    - Linux: the `AppImage` files
+    - Linux, WSL: the `AppImage` files
     - macOS: the `.dmg` files
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
 - On macOS, drag the `.dmg` file into `/Applications`. Then launch Basecamp from `/Applications`.
-- On Linux, grant execute permission to the downloaded AppImage and launch it:
+- On Linux and WSL, install some prerequisites, then grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
+    # install rerequisites
+    sudo apt-get install -y libfuse2t64 libegl1 libopengl0
+    # On Ubuntu 22.04 and earlier, use libfuse2 instead of libfuse2t64
+
     chmod +x LogosBasecamp-Desktop-*.AppImage
     ./LogosBasecamp-Desktop-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
     ```
@@ -88,7 +95,9 @@ This tutorial is also available in video form:
 ### Experimental Nix feature 'nix-command' when building the AppImage
 The following error might appear while building the AppImage:
 
-> error: experimental Nix feature 'nix-command' is disabled; add '--extra-experimental-features nix-command' to enable it
+```text
+error: experimental Nix feature 'nix-command' is disabled; add '--extra-experimental-features nix-command' to enable it
+```
 
 in which case the command should be changed to enable flakes:
 

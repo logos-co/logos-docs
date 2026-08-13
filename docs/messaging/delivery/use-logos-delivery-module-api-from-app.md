@@ -216,7 +216,7 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
    }
    ```
 
-1. Send a message. On success, `getString()` returns the request ID; track it through `messageSent` → `messagePropagated` events (or `messageError`):
+1. Send a message. On success, `getString()` returns the request ID; track it through `messagePropagated` → `messageSent` events (or `messageError`):
 
    ```cpp
    // payload is a QByteArray of raw bytes, the same type messageReceived delivers.

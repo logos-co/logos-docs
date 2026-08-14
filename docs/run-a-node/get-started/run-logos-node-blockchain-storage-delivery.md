@@ -373,7 +373,6 @@ Create the storage config and start the module.
    {
      "data-dir": "./storage-data",
      "log-level": "INFO",
-     "listen-ip": "0.0.0.0",
      "listen-port": 8091,
      "disc-port": 8090,
      "network": "logos.test"
@@ -387,7 +386,6 @@ Create the storage config and start the module.
    |-------|---------|
    | `data-dir` | Storage repository path |
    | `log-level` | Log verbosity |
-   | `listen-ip` | Local TCP bind address |
    | `listen-port` | Public TCP libp2p port |
    | `disc-port` | Public UDP discovery port |
    | `network` | Storage network preset |
@@ -396,33 +394,54 @@ Create the storage config and start the module.
    - The `logos.test` preset provides the storage bootstrap settings.
 
    :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data.
-
-   The script accepts an optional storage data directory as its first argument. Without one, it uses `logos-storage-data` under the current directory.
+   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (e.g. `storage-config.sh`):
 
    ```sh
-   data_dir=${1:-"${PWD}/logos-storage-data"}
-   udp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/udp-sprs.json)
-   tcp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/tcp-sprs.json)
-   mp_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/mix-pool.json | jq -c 'tostring')
-     
-   cat <<JSON | jq .
-   {
-      "log-level": "INFO;trace:libp2p,mix",
-      "mix-enabled": true,
-      "listen-port": 8091,
-      "disc-port": 8090,
-      "bootstrap-node": $udp_spr_json,
-      "dht-mix-proxy": $tcp_spr_json,
-      "data-dir": "${data_dir}",
-      "mix-pool-json": ${mp_json}
-   }
-   JSON
-   EOF
+   #!/usr/bin/env bash
+   # Copy the contents of this file into a script named mix-config.sh
+   set -euo pipefail
 
-   chmod 755 make-mix-storage-config.sh
-   ./make-mix-storage-config.sh > config.json
+   if ! command -v jq &> /dev/null; then
+     echo "Please install jq first"
+     exit 1
+   fi
+
+   data_dir="${1:-./logos-storage-data}"
+
+   raw_data=$(curl -s -fsSL https://fleets.logos.co/logos-test/storage-network.json)
+   mp_json=$(echo $raw_data | jq -c '{
+     "version": 1,
+     "relays": map({
+       "peerId": .peerId,
+       "mixPubKey": .mixPubKey,
+       "libp2pPubKey": .libp2pPubKey,
+       "multiAddr": "/ip4/\(.address)/tcp/\(.port)"
+     })
+   } | tostring')
+
+   dht_proxy_sprs=$(echo $raw_data | jq '[.[].tcpSpr]')
+
+   cat <<EOF | jq .
+   {
+     "data-dir": "${data_dir}",
+     "log-level": "INFO",
+     "listen-port": 8091,
+     "disc-port": 8090,
+     "network": "logos.test",
+     "mix-enabled": true,
+     "dht-mix-proxy": ${dht_proxy_sprs},
+     "mix-pool-json": ${mp_json}
+   }
+   EOF
    ```
+   Then make it executable and run it:
+
+   ```sh
+   chmod +x storage-config.sh
+   ./storage-config.sh > config.json
+   ```
+
+   The script accepts an optional storage data directory as its first argument. Without one, it uses `logos-storage-data` under the current directory.
    :::
 
 1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
@@ -434,12 +453,12 @@ Create the storage config and start the module.
    logoscore call storage_module start
    ```
 
-   - If using the mix config, also enable private queries and verify with a test download:
+   _If using the mix config_, also enable private queries and verify with a test download:
 
-     ```sh
-     logoscore call storage_module togglePrivateQueries true
-     logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
-     ```
+   ```sh
+   logoscore call storage_module togglePrivateQueries true
+   logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
+   ```
 
 ## Step 7: Configure and start the delivery module
 

@@ -6,7 +6,7 @@ topics: [bridging, channels, zones, withdrawals, deposits]
 steps_layout: sectioned
 authors: youngjoon-lee, kashepavadan
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: bridge-assets-between-blockchain-and-zone
 sidebar_position: 2
 ---
@@ -55,7 +55,7 @@ A channel is created automatically the first time an operation references a prev
    let channel_id = ChannelId::from(signing_key.public_key().to_bytes());
    ```
 
-   The bridging-relevant fields on [`ChannelState`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#22b261aa09df8289a3f281de4aa8fdca) in the [Mantle](../../get-started/glossary.md#mantle) specification:
+   The bridging-relevant fields on [`ChannelState`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#message-ordering) in the [Mantle](../../get-started/glossary.md#mantle) specification:
 
     | Field                | Purpose                                                              |
     | -------------------- | -------------------------------------------------------------------- |
@@ -67,32 +67,32 @@ A channel is created automatically the first time an operation references a prev
    
 1. Initialize a `ZoneSequencer` and publish the first [inscription](../../get-started/glossary.md#inscription) inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
 
-   ```rust
-   use lb_zone_sdk::{
-       CommonHttpClient, adapter::NodeHttpClient, sequencer::ZoneSequencer,
-   };
+    ```rust
+    use lb_zone_sdk::{
+        CommonHttpClient, adapter::NodeHttpClient, sequencer::ZoneSequencer,
+    };
 
-   // Connect to the Logos Blockchain node.
-   let node = NodeHttpClient::new(
-       CommonHttpClient::new(None),
-       "http://localhost:8080".parse()?,
-   );
+    // Connect to the Logos Blockchain node.
+    let node = NodeHttpClient::new(
+        CommonHttpClient::new(None),
+        "http://localhost:8080".parse()?,
+    );
 
-   // Initialize the sequencer for this channel
-   let mut sequencer = ZoneSequencer::init(channel_id, signing_key, node, None);
+    // Initialize the sequencer for this channel
+    let mut sequencer = ZoneSequencer::init(channel_id, signing_key, node, None);
 
-   // Inside the event loop, once `Event::Ready` has fired:
-   // Publishing the first inscription creates the channel just-in-time.
-   let (result, checkpoint) = sequencer.handle().publish(genesis_zone_block)?;
-   ```
+    // Inside the event loop, once `Event::Ready` has fired:
+    // Publishing the first inscription creates the channel just-in-time.
+    let (result, checkpoint) = sequencer.handle().publish(genesis_zone_block).await?;
+    ```
 
-   `publish` returns synchronously after enqueueing the transaction into the sequencer's pending set; the post reaches the node the next time the event loop polls `next_event`. Persist the returned `PublishResult` and `SequencerCheckpoint` into your outbox.
+    `publish` returns synchronously after enqueueing the tx into the sequencer's pending set; the post hits the node the next time the drive loop polls `next_event`. The returned `PublishReceipt` carries everything you need to persist this publish into your outbox alongside the resulting checkpoint.
 
-1. (Optional) Reconfigure the channel by calling `sequencer.handle().channel_config(..)` with a [`ChannelConfig`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#f96261aa09df826a93d801db1e432a54) operation.
+1. (Optional) Reconfigure the channel by calling `sequencer.handle().channel_config(..)` with a [`ChannelConfig`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#payload-1) operation.
 
 ## Step 2: Observe deposits from Bedrock
 
-A deposit happens when a Bedrock user submits a transaction with a [`ChannelDeposit`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#80b261aa09df8353814a81efe0fbd8ed) operation naming the target `channel`, the consumed `inputs`, and opaque `metadata` that the Zone interprets, such as a recipient address.
+A deposit happens when a Bedrock user submits a transaction with a [`ChannelDeposit`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#channel_deposit) operation naming the target `channel`, the consumed `inputs`, and opaque `metadata` that the Zone interprets, such as a recipient address.
 
 1. Watch for finalized deposits inside your events loop. The Zone SDK surfaces every finalized deposit on your channel as a `FinalizedOp::Deposit(DepositInfo)` inside the `finalized` field of `Event::BlocksProcessed`.
 
@@ -125,7 +125,7 @@ The process of withdrawing funds is different for single-sequencer Zones and mul
 
 ### Option 1: Submit a single-sequencer withdrawal
 
-A withdrawal is initiated inside the zone and lands on-chain as a signed [`ChannelWithdraw`](https://app.notion.com/p/nomos-tech/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85?source=copy_link#5de261aa09df8321b05401f2e8dea08b) operation. This step applies only when `ChannelState.withdraw_threshold == 1`.
+A withdrawal is initiated inside the zone and lands on-chain as a signed [`ChannelWithdraw`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#channel_withdraw) operation. This step applies only when `ChannelState.withdraw_threshold == 1`.
 
 1. Describe the withdrawal by building a `WithdrawArg` with the recipient `Outputs`. The SDK fills in the `channel_id` and reads the current `withdraw_nonce` and accredited sequencer key.
 
@@ -265,11 +265,11 @@ A reorg can orphan the parent inscription of a withdrawal submitted via `publish
 1. Reconstruct the original `WithdrawArg`s from the orphaned bundle and re-call `publish_atomic_withdraw` with the same inscription payload; the SDK refills the inscription parent and the `withdraw_nonce` from the current on-chain state.
 
    ```rust
-   use lb_zone_sdk::sequencer::{Event, OrphanedTx, WithdrawArg};
+   use lb_zone_sdk::sequencer::{ChannelUpdateTx, Event, WithdrawArg};
 
    if let Event::BlocksProcessed { channel_update, .. } = event {
        for tx in channel_update.orphaned {
-           if let OrphanedTx::AtomicWithdraw(info) = tx {
+           if let ChannelUpdateTx::AtomicWithdraw(info) = tx {
 
                // Rebuild the withdraw args from the orphaned bundle.
                let withdraws = info
@@ -293,8 +293,6 @@ A reorg can orphan the parent inscription of a withdrawal submitted via `publish
 
 1. Keep the new `result` and `checkpoint` exactly as you did for the original publish to compare it to 
 
-## Frequently asked questions
-
-### Does the reorg recovery path work for multi-sequencer withdrawals?
-
-No. The reorg-aware recovery path described in Step 5 is not supported for multi-sig withdrawals at the moment and is planned for a future release.
+:::note
+For multi-sig bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data — whether the bundle was mined and reorged out, or never mined and shed once its parent slot was consumed by a competing entry — but the SDK cannot re-sign the tx: recovery means re-running the `prepare_tx` → collect-signatures → `submit_signed_tx` flow against the fresh parent and nonce.
+:::

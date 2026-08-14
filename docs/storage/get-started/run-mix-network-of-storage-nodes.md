@@ -24,22 +24,28 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
 - A supported OS:
     - Linux
-    - macOS
+    - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- The Logos tool suite:
+    - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) (the Logos runtime);
+    - [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1) (the Logos package downloader);
+    - [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) (the Logos package manager).
 
-   ```bash
-   mkdir -p ~/.config/nix
-   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-   ```
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+  You can obtain them by running:
 
     ```bash
+    # Export those first or the script will fetch the latest version, which might not
+    # work with this tutorial
+    export LGPM_TAG=0.2.1
+    export LGPD_TAG=0.2.1
+    export LOGOSCORE_TAG=0.2.2
+
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
     export PATH="$PWD/bin:$PATH"
     ```
 :::
+
 
 ## What to expect
 
@@ -47,32 +53,31 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 - You can set up a private Mix network and configure storage nodes to anonymize their lookups through it.
 - You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
 
-## Build and install the storage module
-
-1.  Build the module package with Nix:
+1.  Download the storage module:
 
     ```sh
-    nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
+    mkdir -p storage-lgx
+    lgpd download storage_module --version 2.1.2 -o storage-lgx
     ```
 
-    - This produces a `logos-storage_module-module-lib.lgx` package in `./storage-lgx/`.
+    This should download an `lgx` file in the `storage-lgx` folder.
 
-    :::info
-    The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds. Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts.
-    :::
-
-1.  Install the package into a local modules directory using `lgpm`. The package is a local build and is unsigned, so pass `--allow-unsigned`. All six daemons share this one modules directory:
+1.  Install the package using `lgpm`.
 
     ```sh
     mkdir -p modules
-    lgpm --modules-dir ./modules --allow-unsigned install --file storage-lgx/*.lgx
+    lgpm --modules-dir ./modules install --file storage-lgx/*.lgx
     ```
 
 1.  Confirm the module landed:
 
     ```sh
     lgpm --modules-dir ./modules list
-    # storage_module appears in the listing
+    Found 1 installed module(s):
+
+    NAME                           VERSION         TYPE       CATEGORY
+    ----------------------------------------------------------------------
+    storage_module                 (v)           core       protocol
     ```
 
 ## Launch the bootstrap Mix node (node 1)
@@ -88,6 +93,7 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
       "log-level": "DEBUG",
       "data-dir": "$(pwd)/storage-data/node-1",
       "log-file": "$(pwd)/storage-data/node-1/storage.log",
+      "nat": "extip:127.0.0.1",
       "disc-port": 9091,
       "listen-port": 8081,
       "mix-enabled": true,
@@ -134,6 +140,7 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
       "log-level": "DEBUG",
       "data-dir": "$(pwd)/storage-data/node-$id",
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
+      "nat": "extip:127.0.0.1",
       "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
       "mix-enabled": true,
@@ -167,9 +174,15 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
 
     ```sh
     for id in 1 2 3 4; do
-      logoscore --config-dir=./logoscore-$id call storage_module debug \
-        | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""'
+      started_up=$(logoscore --config-dir=./logoscore-$id call storage_module debug \
+        | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""')
+      if [ "$started_up" = "true" ]; then
+        echo "Node $id is up"
+      else
+        echo "Node $id is down"
+      fi
     done
+    # You should see "Node X is up" for all nodes from 1 to 4
     ```
 
 ## Build the Mix relay pool
@@ -227,6 +240,7 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
       "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
+      "nat": "extip:127.0.0.1",
       "mix-enabled": true,
       "bootstrap-node": ["$BOOTSTRAP"],
       "dht-mix-proxy": $PROXIES,
@@ -318,6 +332,6 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 1.  Confirm the daemons have stopped:
 
     ```sh
-    logoscore --config-dir=./logoscore-1 status
-    # reports "status":"not_running"
+    ps aux | grep logoscore | grep -v 'grep' | wc -l
+    # Should print "0"
     ```

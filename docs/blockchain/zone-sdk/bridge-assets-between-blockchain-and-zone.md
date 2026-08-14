@@ -83,7 +83,7 @@ A channel is created automatically the first time an operation references a prev
 
     // Inside the event loop, once `Event::Ready` has fired:
     // Publishing the first inscription creates the channel just-in-time.
-    let (result, checkpoint) = sequencer.handle().publish(genesis_zone_block)?;
+    let (result, checkpoint) = sequencer.handle().publish(genesis_zone_block).await?;
     ```
 
     `publish` returns synchronously after enqueueing the tx into the sequencer's pending set; the post hits the node the next time the drive loop polls `next_event`. The returned `PublishReceipt` carries everything you need to persist this publish into your outbox alongside the resulting checkpoint.

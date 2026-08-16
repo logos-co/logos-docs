@@ -25,6 +25,24 @@ Choose one of the three installation paths based on your environment:
 | **B** | Prebuilt binaries | No build, no clone required |
 | **C** | Nix | From source; most reproducible |
 
+:::info[Prerequisites]
+
+- A supported OS:
+    - Linux
+    - macOS
+- Network access so both node instances can reach each other.
+- Some prerequisites differ between paths:
+   - **Path A**: Docker with Compose
+   - **Path B** — `curl` and a shell
+   - **Path C** — **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+      ```bash
+      mkdir -p ~/.config/nix
+       echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+      ```
+
+:::
+
 Before you start, make sure you have the following:
 
 - Linux or macOS

@@ -19,22 +19,25 @@ sidebar_position: 1
 
 This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.2 who want to contribute storage capacity to the Logos network.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux (tested on Ubuntu 22.04)
+- A supported OS:
+    - Linux
+- `jq` on your `PATH`.
+    - To verify, run: `jq --version`
 - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-    ```bash
-    mkdir -p ~/.config/nix
-    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-    ```
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
     export PATH="$PWD/bin:$PATH"
     ```
-- `jq` on your `PATH` — used to pull the uploaded [CID](../../get-started/glossary.md#cid) out of the manifests JSON. Verify: `jq --version`
+:::
 
 ## What to expect
 
@@ -51,10 +54,6 @@ Before you start, make sure you have the following:
     ```
 
     - This produces a `.lgx` package in `./storage-lgx/`.
-
-    :::info
-    Use the `#lgx-portable` output: it declares the standard platform variant (e.g. `linux-amd64`) that the release build of `lgpm` accepts. The plain `#lgx` output produces a `-dev` variant that only a source-built `lgpm` can install.
-    :::
 
     :::info
     The initial Nix build takes 15–20 minutes on first run. Subsequent builds use the Nix cache and complete in seconds.

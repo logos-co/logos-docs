@@ -17,11 +17,19 @@ sidebar_position: 1
 
 This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co/logos-chat-ui/tree/feat/logos-testnetv02-mix) desktop app, connect to the testnet-0.2 [mix](../../get-started/glossary.md#mix) fleet, and exchange messages between two instances with sender unlinkability. No configuration is required — the app ships with shared testnet credentials and discovers the fleet automatically.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- macOS or Linux
-- [Nix](https://nixos.org/download) with flakes enabled — add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf` (create it if needed)
-- Outbound TCP access to the fleet on port `30304`
+- A supported OS:
+    - Linux
+    - macOS
+- Outbound TCP access to the fleet on port `30304`.
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
+:::
 
 ## What to expect
 

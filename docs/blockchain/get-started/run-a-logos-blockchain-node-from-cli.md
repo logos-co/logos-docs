@@ -17,16 +17,18 @@ sidebar_position: 3
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
-There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
+:::info[Prerequisites]
 
-Before you start, ensure you have:
-
-- Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- A supported OS:
+    - Linux x86_64
+    - macOS aarch64 (recent versions)
+    - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+:::
 
 ## What to expect
 
@@ -50,14 +52,14 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
 1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output ./
-    # writes ./blockchain_module-0.2.1.lgx
+    lgpd download blockchain_module --version 0.2.2 --output ./
+    # writes ./blockchain_module-0.2.2.lgx
     ```
 
 1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.1.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.2.lgx
     ```
 
 1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
@@ -90,24 +92,15 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
-    :::info
-    To migrate an existing version 0.1.2 blockchain config to version 0.2.1, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
-
-    ```bash
-    logoscore call blockchain_module migrate_user_config_0_1_2 \
-        user_config.yaml \
-        old_user_config.yaml \
-        my_keystore.yaml
-
-    logoscore call blockchain_module stop
-    ```
-    :::
-
 1.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
     ```
+
+    :::info
+    The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
+    :::
 
 ## Step 4: Verify that your node is running and connected to peers
 

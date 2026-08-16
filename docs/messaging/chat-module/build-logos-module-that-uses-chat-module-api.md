@@ -17,21 +17,22 @@ sidebar_position: 1
 
 This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 (or *direct*) and group conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
-:::info
 Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity (with a new address) and an empty conversation list.
-:::
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS
+- A supported OS:
+    - Linux
+    - macOS
+- Network access.
 - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-  ```bash
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-  ```
-- Network access: instances join a live delivery fleet and publish their key material to the [key-package registry](https://devnet.chat-kc.logos.co) — an isolated sandbox cannot complete an exchange
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
 - An understanding of [Logos modules](../../core/build-modules/build-a-logos-cpp-ui-module.md)
+:::
 
 ## What to expect
 

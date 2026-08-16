@@ -17,20 +17,19 @@ sidebar_position: 1
 
 The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating accounts, and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
-:::info
+:::note
 Recovery from mnemonic and withdrawals to the L1 are not yet supported.
 :::
 
-Before you begin, ensure you have:
+:::info[Prerequisites]
 
--   **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
-
-    Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
+:::
 
 ## What to expect
 

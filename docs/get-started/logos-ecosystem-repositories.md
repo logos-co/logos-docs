@@ -41,7 +41,7 @@ Logos Core is the modular runtime that ties applications together.
 
 | Repository | Description |
 |:---|:---|
-| [logos-scaffold](https://github.com/logos-co/logos-scaffold) | CLI that bootstraps Logos projects and drives the Basecamp module development loop. See [About Logos Scaffold](../scaffold/about-logos-scaffold.md). |
+| [scaffold](https://github.com/logos-co/scaffold) | CLI that bootstraps a runnable Logos application environment: LEZ program projects and the Basecamp module loop. Ships the `logos-scaffold` and `lgs` binaries. See [About Logos Scaffold](../scaffold/about-logos-scaffold.md). |
 | [logos-liblogos](https://github.com/logos-co/logos-liblogos) | The core runtime library for the Logos modular application platform. |
 | [logos-logoscore-cli](https://github.com/logos-co/logos-logoscore-cli) | The headless CLI runtime for the Logos modular application platform. |
 | [logos-logoscore-py](https://github.com/logos-co/logos-logoscore-py) | Python wrapper for the [logoscore](glossary.md#logoscore) CLI. |

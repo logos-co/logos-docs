@@ -449,6 +449,8 @@ experimental-features = nix-command flakes
 
 Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains the module binary and `manifest.json`. The `name` field in `manifest.json` must match the binary name (for example, `my_module` for `my_module_plugin.so`).
 
+Also confirm you installed the module into the base directory the running instance actually reads, and restarted it afterwards. A rebuilt package never reaches a running Basecamp on its own. See [Troubleshoot Logos module development with Basecamp](../../scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md).
+
 ### Module not discovered by `logoscore`
 
 Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains a `manifest.json` with a `main` object matching your OS and architecture.

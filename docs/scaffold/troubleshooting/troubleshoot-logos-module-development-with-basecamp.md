@@ -3,7 +3,7 @@ title: Troubleshoot Logos module development with Basecamp
 doc_type: troubleshooting
 product: core
 topics: scaffold, basecamp, modules, troubleshooting
-authors:
+authors: weboko
 owner: logos
 doc_version: 1
 slug: troubleshoot-logos-module-development-with-basecamp
@@ -24,7 +24,7 @@ The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a modu
 |:---|:---|
 | A rebuilt module behaves as if nothing changed | [Your change is not visible after a rebuild](#your-change-is-not-visible-after-a-rebuild) |
 | A module you installed is missing from Basecamp | [An installed module is missing](#an-installed-module-is-missing) |
-| `Unix socket path too long (122 >= 104)` on macOS | [Module loading aborts with a socket path error](#module-loading-aborts-with-a-socket-path-error) |
+| `Unix socket path too long (122 >= 104)` | [Module loading aborts with a socket path error](#module-loading-aborts-with-a-socket-path-error) |
 | `Invalid null URL`, or a QML singleton holding the wrong values | [A QML type or singleton resolves to the wrong module](#a-qml-type-or-singleton-resolves-to-the-wrong-module) |
 | A file you just added is absent at runtime | [A new file is missing from the built package](#a-new-file-is-missing-from-the-built-package) |
 | Two instances share identity or crash together | [Two instances collide](#two-instances-collide) |
@@ -32,6 +32,7 @@ The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a modu
 | `basecamp modules` fails on an unresolved dependency | [A dependency cannot be resolved](#a-dependency-cannot-be-resolved) |
 | A sibling sub-flake builds from the wrong source | [A sibling sub-flake override is ignored](#a-sibling-sub-flake-override-is-ignored) |
 | `basecamp doctor` reports drift | [Doctor reports drift](#doctor-reports-drift) |
+| Two macOS profiles share modules and identity despite isolation | [Profiles share state on the macOS portable stack](#profiles-share-state-on-the-macos-portable-stack) |
 | The macOS window opens but the UI never renders | [The macOS UI stays blank](#the-macos-ui-stays-blank) |
 
 ## Your change is not visible after a rebuild
@@ -101,15 +102,15 @@ Also check that the module was captured at all. `lgs basecamp modules --show` pr
 
 ## Module loading aborts with a socket path error
 
-**Symptom.** On macOS, modules fail to load and the log contains:
+**Symptom.** Modules fail to load and the log contains:
 
 ```
 [SubprocessContainer] Unix socket path too long (122 >= 104)
 ```
 
-**Cause.** Loading a module opens a Unix domain socket under the runtime directory (`XDG_RUNTIME_DIR`, otherwise `TMPDIR`). macOS caps the whole socket path at 104 bytes. A runtime root nested under a long project path, for example `~/Developer/work/logos/my-module/.scaffold/basecamp/profiles/alice/xdg-tmp`, uses up that budget before the socket name is appended.
+**Cause.** Loading a module opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the whole socket path at 104 bytes on macOS and 108 on Linux. A runtime root nested under a long project path, for example `~/Developer/work/logos/my-module/.scaffold/basecamp/profiles/alice/xdg-tmp`, uses up that budget before the socket name is appended. macOS hits this first, but the four extra bytes on Linux are not much headroom — a deep enough project root overflows there too.
 
-**Fix.** Point both `XDG_RUNTIME_DIR` and `TMPDIR` at a short path. Scaffold defaults to `/tmp/lgs-<profile>` on macOS and exports it as both variables. To set it yourself in `scaffold.toml`:
+**Fix.** Point the runtime root at a short path. Scaffold defaults to `/tmp/lgs-<profile>` on macOS and exports a resolved `runtime_dir` as both `TMPDIR` and `XDG_RUNTIME_DIR`; on Linux it defaults to the in-profile `xdg-tmp` and exports no `XDG_RUNTIME_DIR` of its own. To set it yourself in `scaffold.toml`:
 
 ```toml
 [basecamp.profiles.alice]
@@ -308,13 +309,27 @@ lgs basecamp doctor
 
 If a command tells you Basecamp is not set up in this project, run the one-time `lgs basecamp setup` first.
 
+## Profiles share state on the macOS portable stack
+
+**Symptom.** On macOS, two profiles that should be isolated show the same installed modules, the same identity, or the same history. `lgs basecamp paths <profile>` reports distinct directories, and the profile directories on disk really are separate.
+
+**Cause.** The macOS portable bundle does not honour `XDG_DATA_HOME`, so the per-profile XDG isolation `launch` sets never reaches it. It locates its data tree through an environment override instead, and without one every profile collapses onto the shared `~/Library/Application Support/Logos/LogosBasecamp/`. The override changed name between generations: Basecamp 0.1.x reads `LOGOS_DATA_DIR`, and 0.2.x reads `LOGOS_USER_DIR` (the env equivalent of `--user-dir`) and ignores the old name entirely.
+
+**Fix.** Let `launch` set them. It writes **both** keys, as absolute per-profile paths, whenever the host is macOS and `[repos.basecamp].attr` selects a portable stack (`bin-macos-app`, `bin-appimage`, `bin-bundle-dir`) — so it stays correct across both generations. Confirm what a profile resolves with:
+
+```bash
+lgs basecamp paths alice --json
+```
+
+If you declare either key yourself in `[basecamp.env]` or `[basecamp.profiles.<name>.env]`, your value wins and the two keys are resolved independently — so setting only one leaves the other at the profile default, and the two can end up pointing at different trees. Set both, or neither. On a pinned 0.2.x Basecamp, setting only `LOGOS_DATA_DIR` is the same as setting nothing.
+
 ## The macOS UI stays blank
 
 **Symptom.** On macOS, Basecamp starts and backend modules load, but the interface never renders. The log mentions a shared library that was not found.
 
-**Cause.** The `bin-macos-app` bundle predates `--user-dir` and does not use `XDG_DATA_HOME`. It reads `LOGOS_DATA_DIR` to locate modules and plugins, falling back to `~/Library/Application Support/Logos/LogosBasecamp/`. With a relative `LOGOS_DATA_DIR`, backend modules still load but the dynamically loaded UI libraries fail to resolve their paths, so the shell never appears.
+**Cause.** A relative value for the module-root override. Backend modules still load, but the dynamically loaded UI libraries fail to resolve their paths, so the shell never appears.
 
-**Fix.** Set `LOGOS_DATA_DIR` to an absolute path, or let scaffold set it. Scaffold points it at the profile's module root when it launches that stack, and rewrites a relative value from `[basecamp.env]` or `[basecamp.profiles.<name>.env]` to an absolute one.
+**Fix.** Use an absolute path, or let scaffold set it. `launch` points both `LOGOS_DATA_DIR` and `LOGOS_USER_DIR` at the profile's module root, and rewrites a relative value from `[basecamp.env]` or `[basecamp.profiles.<name>.env]` to an absolute one against the project root. An empty or whitespace-only value counts as unset and falls back to the profile default.
 
 ## Collect diagnostics
 

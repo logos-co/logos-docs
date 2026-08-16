@@ -1,7 +1,7 @@
 artifact
 [Bb]asecamp
 [Bb]edrock
-Blend Network
+Blend [Nn]etwork
 boostrapping
 Codex
 [Cc]ore
@@ -15,6 +15,7 @@ Docusaurus
 frontmatter
 indexer
 LEZ
+lez
 libp2p
 liveness
 [Ll]ogos

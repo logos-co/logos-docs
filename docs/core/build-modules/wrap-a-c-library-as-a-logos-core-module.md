@@ -19,22 +19,22 @@ This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.d
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
-You need:
+:::info[Prerequisites]
 
-- OS: Linux (x86_64 or aarch64) or macOS (x86_64 or aarch64). Tested on Ubuntu 22.04+ and recent macOS.
+- A supported OS:
+   - Linux x86_64 or aarch64
+   - macOS arm64 or x86_64
 - RAM: 4 GB minimum, 8 GB recommended.
 - Disk: ~2 GB free for the application + installed modules.
+- **A C compiler** (gcc or clang) for building the C library. Only needed if you are building the `.so`/`.dylib` yourself rather than using a pre-built library.
 - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-  ```bash
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-  ```
-
-  Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
-
-- **A C compiler** (gcc or clang) for building the C library. Only needed if you are building the `.so`/`.dylib` yourself rather than using a pre-built library.
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
 - Basic familiarity with C and C++.
+:::
 
 ## What to expect
 

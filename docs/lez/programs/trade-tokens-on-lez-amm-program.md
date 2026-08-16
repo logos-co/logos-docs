@@ -17,11 +17,13 @@ sidebar_position: 2
 
 This procedure explains how developers and node operators deploy and drive the automated market maker (AMM) [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) ([LEZ](../../get-started/glossary.md#lez)), from building the on-chain programs through swapping tokens and publishing a TWAP oracle price, all using the [SPEL CLI](https://github.com/logos-co/spel). The AMM is one of the essential launch-day applications for Logos, since it enables on-chain trading and supplies the price data that on-chain oracles rely on. Follow this procedure on LEZ testnet v0.2 whenever you need to stand up a pool from scratch, execute a swap, or publish a fresh price to the TWAP oracle.
 
-**Before you start**, make sure you have the following:
+:::info[Prerequisites]
 
-- Docker
-- [A funded LEZ wallet](../get-started/run-lez-wallet-via-cli.md)
-- [RISC0 installed](https://dev.risczero.com/api/zkvm/install)
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
+    - To install, run `rzup install rust`
+:::
 
 ## What to expect
 

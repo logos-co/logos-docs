@@ -40,9 +40,10 @@ Token program accounts fall into two types:
 Transfers are irreversible. Double-check all details before proceeding.
 :::
 
-Before you begin, ensure that you have the following:
+:::info[Prerequisites]
 
-- The [Wallet CLI installed](../get-started/run-lez-wallet-via-cli.md) on your computer
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 

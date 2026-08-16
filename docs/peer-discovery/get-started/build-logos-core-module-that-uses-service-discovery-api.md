@@ -17,22 +17,25 @@ sidebar_position: 5
 
 Applications on the Logos network need a protocol-agnostic way to find peers offering specific services — [mix](../../get-started/glossary.md#mix) nodes, relay nodes, storage providers — at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](../../get-started/glossary.md#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux (Ubuntu 22.04+) or macOS 14+
+- A supported OS:
+    - Linux: Ubuntu 22.04+
+    - macOS: 14+
+- 2 GB RAM (sufficient for a local two-module test)
 - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-  ```bash
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-  ```
-- 2 GB RAM (sufficient for a local two-module test)
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
 - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) installed. To install it, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
+:::
 
 ## What to expect
 

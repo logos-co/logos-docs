@@ -17,10 +17,11 @@ sidebar_position: 4
 
 This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). It is intended for node operators running their node via the Blockchain UI app.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- A [Logos Blockchain node running via the UI app](./build-and-run-logos-blockchain-node-app-ui.md)
+- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and running.
 - A wallet key that can receive leader reward claims
+:::
 
 ## What to expect
 

@@ -31,11 +31,12 @@ Read [**Decentralise the Log, Not the Server**](https://press.logos.co/article/d
 
 The implementation skeleton already has most of the password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained primarily in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 
-**Before you start:**
+:::info[Prerequisites]
 
+- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md).
 - [Git](https://git-scm.com/)
 - [Rust toolchain](https://www.rust-lang.org/tools/install) (stable)
-- Access to a running Logos Blockchain node (see [documentation](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md))
+:::
 
 ## What to expect
 
@@ -59,7 +60,7 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
    cd logos-sql-zone
    git checkout tutorial
    
-   git submodule update --init --recursive
+   git submodule update --init
    ```
 
    The complete demo is available in the `master` branch.

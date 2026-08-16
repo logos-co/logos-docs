@@ -17,11 +17,17 @@ sidebar_position: 4
 
 This guide covers building a [module](../../get-started/glossary.md#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
 
-**Before you start**, make sure you have the following:
+:::info[Prerequisites]
 
-- Completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) — a working `calc_module` with the shared library built in `logos-calc-module/lib/`.
-- Nix with flakes enabled.
-- Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html)
+- A [working core module](wrap-a-c-library-as-a-logos-core-module.md).
+- Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html).
+- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
+:::
 
 ## What to expect
 

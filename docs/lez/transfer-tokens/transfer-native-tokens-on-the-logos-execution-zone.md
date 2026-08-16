@@ -40,9 +40,10 @@ On LEZ, public and private accounts differ in where their state lives and how tr
 Transfers are irreversible. Double-check all details before proceeding.
 :::
 
-Before you begin, ensure that you have the following:
+:::info[Prerequisites]
 
-- The [wallet CLI installed and connected to the LEZ testnet](../get-started/run-lez-wallet-via-cli.md#install-the-wallet-and-connect-it-to-the-testnet)
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 

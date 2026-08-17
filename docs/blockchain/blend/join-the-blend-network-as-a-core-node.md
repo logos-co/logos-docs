@@ -151,7 +151,7 @@ Check the node log for the Blend service lifecycle:
 grep -aE "blend::service" <node-log> | tail
 ```
 
-- `Waiting for chain to become Online mode` — not yet; the node is still bootstrapping.
+- `Waiting for chain to become Online mode` — not yet; the node is still [bootstrapping](../../get-started/glossary.md#bootstrapping).
 - `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — proposals will be routed through Blend, whether your node is a core node or not.
 - `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
 

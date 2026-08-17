@@ -33,7 +33,8 @@ You can install Logos Basecamp in two ways:
     - macOS aarch64 (recent versions)
     - WSL2 Ubuntu on Windows 11 (or Windows 10 21H2+ with WSLg for GUI support) is also supported
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
-- For the source build only: **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- For the source build only: **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

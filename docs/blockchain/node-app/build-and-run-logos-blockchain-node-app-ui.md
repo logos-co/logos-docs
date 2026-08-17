@@ -22,7 +22,8 @@ The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the bl
 - A supported OS:
     - Linux x86_64
     - macOS
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

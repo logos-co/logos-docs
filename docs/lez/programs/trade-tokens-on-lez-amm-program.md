@@ -139,7 +139,7 @@ Use `spel` to create the two fungible tokens your pool will hold.
         --holding-target-account <HOLDING_B>
    ```
 
-   - `<DEF_A>` and `<DEF_B>` become the token-definition accounts; `<HOLDING_A>` and `<HOLDING_B>` receive the total supply of each token.
+   - `<DEF_A>` and `<DEF_B>` become the [token-definition accounts](../../get-started/glossary.md#token-definition-account); `<HOLDING_A>` and `<HOLDING_B>` receive the total supply of each token.
 
 1. Inspect a holding or definition to confirm it was created correctly.
 

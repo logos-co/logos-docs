@@ -62,7 +62,7 @@ The node will try to use a relay if it is unreachable.
 
 :::warning
 
-If you are using Mix with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
+If you are using [Mix](../../get-started/glossary.md#mix) with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
 
 :::
 

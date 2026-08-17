@@ -21,7 +21,8 @@ This guide covers building a [module](../../get-started/glossary.md#module) that
 
 - A [working core module](wrap-a-c-library-as-a-logos-core-module.md).
 - Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html).
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -100,7 +101,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
     - `"type": "ui_qml"` — tells the builder this is a QML view module.
     - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
     - `"view": "qml/Main.qml"` — the QML entry point.
-    - `"dependencies": ["calc_module"]` — [core modules](../../get-started/glossary.md#core-module) the backend calls.
+    - `"dependencies": ["calc_module"]` — core modules the backend calls.
 2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash

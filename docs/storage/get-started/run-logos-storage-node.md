@@ -198,7 +198,7 @@ We will now publish a file to the Logos storage network. We create a simple file
     The default chunk size is 65536.
     :::
 
-1.  Extract the content ID (CID) from the first `manifests` entry:
+1.  Extract the content ID ([CID](../../get-started/glossary.md#cid)) from the first `manifests` entry:
 
     ```sh
     # Wait a second for the upload to complete first

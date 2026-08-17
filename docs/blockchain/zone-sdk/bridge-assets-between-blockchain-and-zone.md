@@ -294,5 +294,5 @@ A reorg can orphan the parent inscription of a withdrawal submitted via `publish
 1. Keep the new `result` and `checkpoint` exactly as you did for the original publish to compare it to 
 
 :::note
-For multi-sig bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data — whether the bundle was mined and reorged out, or never mined and shed once its parent slot was consumed by a competing entry — but the SDK cannot re-sign the tx: recovery means re-running the `prepare_tx` → collect-signatures → `submit_signed_tx` flow against the fresh parent and nonce.
+For multi-sig bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data — whether the bundle was mined and reorged out, or never mined and shed once its parent [slot](../../get-started/glossary.md#slot) was consumed by a competing entry — but the SDK cannot re-sign the tx: recovery means re-running the `prepare_tx` → collect-signatures → `submit_signed_tx` flow against the fresh parent and nonce.
 :::

@@ -25,7 +25,8 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
     - Linux: aarch64 or x86_64
     - macOS: aarch64 or x86_64
 - ~1 GB of RAM
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

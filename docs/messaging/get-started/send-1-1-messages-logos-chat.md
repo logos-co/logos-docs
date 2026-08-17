@@ -25,7 +25,8 @@ Identity, conversations, and message history exist only while the app is running
     - Linux
     - macOS
 - Network access
-- For the local build only: **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- For the local build only: **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

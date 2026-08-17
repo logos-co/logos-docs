@@ -25,7 +25,8 @@ Chat state is **ephemeral** in this release: identity, conversations, and messag
     - Linux
     - macOS
 - Network access.
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

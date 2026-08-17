@@ -32,7 +32,7 @@ You can try out a working version of the TUI Zone used in this tutorial directly
 
 ## What to expect
 
-- You will initialise a `ZoneSequencer` that connects to your Logos node and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
+- You will initialise a `ZoneSequencer` that connects to your [Logos node](../../get-started/glossary.md#logos-node) and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
 - You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
 - You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 

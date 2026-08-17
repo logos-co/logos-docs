@@ -23,7 +23,8 @@ This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co
     - Linux
     - macOS
 - Outbound TCP access to the fleet on port `30304`.
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
    ```bash
    mkdir -p ~/.config/nix

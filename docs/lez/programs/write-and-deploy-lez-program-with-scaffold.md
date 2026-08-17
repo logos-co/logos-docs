@@ -28,7 +28,8 @@ sidebar_position: 1
 - [Docker](https://docs.docker.com/get-docker/) or Podman installed.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
     - To install, run `rzup install rust`
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

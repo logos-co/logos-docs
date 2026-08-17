@@ -86,9 +86,9 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 
 ## Complete a minimal wallet flow
 
-In this flow, you create and initialise an account, claim testnet funds, send a transfer, and confirm resulting balances.
+In this flow, you create and initialise an [account](../../get-started/glossary.md#account), claim testnet funds, send a transfer, and confirm resulting balances.
 
-In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting [account](../../get-started/glossary.md#account) state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
+In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
 
 ### Create and initialise the sender public account
 

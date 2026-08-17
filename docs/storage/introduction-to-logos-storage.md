@@ -7,7 +7,7 @@ import Figure from '@site/src/components/Figure';
 
 # Logos Storage
 
-Logos storage is a filesharing protocol that allows users of the Logos stack to publish and share files in a decentralized manner. It provides persistence guarantees that are similar to those of Bittorrent[^1]; i.e., those of an [organically replicated network](#organic-replication-and-persistence-guarantees), while padding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires [the Logos runtime and tooling](/get-started/what-is-logos) to work.
+Logos storage is a filesharing protocol that allows users of the Logos stack to publish and share files in a decentralized manner. It provides persistence guarantees that are similar to those of BitTorrent[^1]; i.e., those of an [organically replicated network](#organic-replication-and-persistence-guarantees), while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires [the Logos runtime and tooling](/get-started/what-is-logos) to work.
 
 ## What can you do with Logos storage?
 
@@ -15,7 +15,7 @@ The key functionality of Logos storage is _file sharing_: you can make files ava
 
 You can then **(4)** share this CID with other users using a third-party mechanism such as e-mail or [Logos messaging](/messaging). Once in posession of a CID, a user $q$ can then its Logos storage node to download and store the file **(5)** from the network and store it internally **(6)**. Once the file is available [^2], the user can then retrieve it from the node **(7)** and consume its contents.
 
-<Figure src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
+<Figure id="fig:1", src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
 
 ## Organic replication and persistence guarantees
 
@@ -27,7 +27,7 @@ Note that this is not an insurmountable limitation: one could set up multiple no
 
 ## Privacy
 
-A key problem with filesharing networks such as Bittorrent - and Logos storage itself - is that organic replication exposes both the party that provide content (providers) and the party that downloads it (downloaders) to censorship. Even with encrypted communications, active attackers can join the network and uncover which nodes are doing what.
+A key problem with filesharing networks such as BitTorrent - and Logos storage itself - is that organic replication exposes both the party that provide content (providers) and the party that downloads it (downloaders) to censorship. Even with encrypted communications, active attackers can join the network and uncover which nodes are doing what.
 
 Privacy in Logos storage has been focused on _unlinking_ both providers and downloaders by the use of Mix networks[^6]. This is strongly inspired by how Tribler[^6] works, but adapted to Logos' infrastructure and constraints. As of the [Logos testnet v0.2](https://roadmap.logos.co/testnets/v02), we are able to provide some level of unlinkability to content lookup queries and, by [testnet v0.3](https://roadmap.logos.co/testnets/v03), we should be able to provide unlinkable downloads; i.e., it should be possible for a downloader $q$ to download a file $F$ without revealing to neither passive nor active attackers that they are, in fact, downloading $F$.
 

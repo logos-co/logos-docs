@@ -3,7 +3,7 @@ type FigureProps = {
   caption: string;
   src: string;
   alt?: string;
-  number?: number;
+  number: number;
 }
 
 export default function Figure({id, src, alt, caption, number}: FigureProps) {

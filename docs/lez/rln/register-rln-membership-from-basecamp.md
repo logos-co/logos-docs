@@ -31,29 +31,36 @@ This procedure covers how to install the RLN Membership app in Logos Basecamp fr
 
 ## Step 1: Install the RLN Membership app
 
-Add the RLN module registry, then install the app with its dependencies from both the registry and the official catalog.
+Add the RLN module registry, then install the app with its dependencies from both the registry and the official catalogue.
 
-1. In Basecamp's **Package Manager**, click **Add repository** and paste the registry URL:
+1. In Basecamp's **Package Manager**, click **Manage Repositories** (top-right) to open **Settings › Package Repositories**.
 
-   ```text
-   https://github.com/logos-co/logos-rln-modules/releases/download/index/logos-repo.json
-   ```
+1. Under **Add a repository**, paste the registry URL and click **Add**:
 
-   - The repository lists as **Logos RLN Membership** with eight packages.
+   
 
-1. Find **RLN Membership** in the list and click **Install**, then click **Install with dependencies**.
+1. Find **RLN Membership** in the list and click **Install**. In the **Install Package?** dialog, review the listed dependency changes and click **Install** to confirm.
 
-   - **RLN Membership** appears in the sidebar once the install completes.
+   - The wallet, libp2p, and RLN modules are installed for you — `libp2p_module` resolves from the official catalogue and the rest from the registry you added.
+   - This first pass installs the dependencies only. When it finishes, click **Install** on **RLN Membership** again to install the app itself; the dialog confirms **No other packages need to change**.
+
+1. Restart Basecamp.
+
+   - **RLN Membership** appears in the sidebar after the restart. If the row shows **RETRY** before you restart, the install has still succeeded — restart and check the sidebar before retrying.
 
 ## Step 2: Register a membership
 
 Open the RLN Membership app and complete the guided wizard to register a new membership.
 
 :::info
-The **Registering** screen runs two unattended waits: a first-run chain sync (about 5–6 minutes for a fresh wallet, roughly 50,000 blocks at the measured ~143 blocks/s) and, after the faucet claim, a registration confirmation poll (about 1–3 minutes, capped at 300 seconds). Both are expected.
+The **Registering** screen runs two unattended waits: a first-run chain sync (a few minutes at most for a fresh wallet, depending on how far the testnet chain head has advanced) and, after the faucet claim, a registration confirmation poll (about 1–3 minutes, capped at 300 seconds). Both are expected.
 :::
 
 1. In the sidebar, click **RLN Membership**, then click **Get started** on the welcome screen.
+
+1. On **Choose a password**, enter a password in both fields and click **Continue**.
+
+   - The password protects the auto-provisioned wallet on this device. **Continue** stays disabled until both entries match.
 
 1. Watch the progress bar advance through **Syncing**, **Claiming**, and **Registering**.
 
@@ -82,7 +89,7 @@ The sequencer was briefly unreachable when the wizard checked for the chain head
 
 ### Why does the Registering screen take several minutes?
 
-A fresh wallet needs a first-run chain sync, measured at roughly 143 blocks per second over about 50,000 blocks, which takes 5–6 minutes. After the faucet claim, the app polls for registration confirmation for up to 300 seconds. Both waits are expected and the progress bar advances as they proceed.
+A fresh wallet needs a first-run chain sync, which takes anywhere from under a minute to a few minutes depending on how far the testnet chain head has advanced. After the faucet claim, the app polls for registration confirmation for up to 300 seconds. Both waits are expected and the progress bar advances as they proceed.
 
 ### Why does "Get more tokens" appear during the wizard?
 

@@ -16,11 +16,12 @@ slug: register-rln-membership-from-basecamp
 
 This procedure covers how to install the RLN Membership app in Logos Basecamp from released binaries and use its guided wizard to register a membership on the LEZ testnet. It is intended for anyone who wants to try acquiring an RLN membership for participating in DoS-protected networks on the Logos stack, using an auto-provisioned, faucet-funded wallet.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- [Logos Basecamp installed](../../basecamp/install-logos-basecamp.md)
-- Network access to the testnet sequencer `https://testnet.lez.logos.co/`
-- Approximately 1 GB free disk for the Basecamp app and the downloaded module bundles
+- [Logos Basecamp installed](../../basecamp/install-logos-basecamp.md).
+- Network access to the testnet sequencer [`https://testnet.lez.logos.co/`](https://testnet.lez.logos.co/).
+- Approximately 1 GB free disk for the Basecamp app and the downloaded module bundles.
+:::
 
 ## What to expect
 
@@ -35,16 +36,14 @@ Add the RLN module registry, then install the app with its dependencies from bot
 1. In Basecamp's **Package Manager**, click **Add repository** and paste the registry URL:
 
    ```text
-   https://github.com/logos-co/logos-lez-rln/releases/download/index/logos-repo.json
+   https://github.com/logos-co/logos-rln-modules/releases/download/index/logos-repo.json
    ```
 
-   - The repository lists as **Logos RLN Membership** with seven packages.
+   - The repository lists as **Logos RLN Membership** with eight packages.
 
 1. Find **RLN Membership** in the list and click **Install**, then click **Install with dependencies**.
 
-   - The wallet and libp2p resolve from the official catalog; the RLN modules resolve from the registry you just added.
-
-   **RLN Membership** appears in the sidebar once the install completes.
+   - **RLN Membership** appears in the sidebar once the install completes.
 
 ## Step 2: Register a membership
 
@@ -61,7 +60,7 @@ The **Registering** screen runs two unattended waits: a first-run chain sync (ab
    - If the wizard stalls at the start of **Syncing**, or shows "Cannot discover the chain head — is the sequencer reachable?", retry — relaunch the app if needed. The wizard resumes where it left off, and the second attempt typically proceeds.
    - If **Get more tokens** appears, the faucet claim timed out after its 180-second budget. Click the offered button to retry.
 
-   The app lands on **"You're in!"** with your new membership shown below once registration completes.
+   - The app lands on **"You're in!"** with your new membership shown below once registration completes.
 
 ## Step 3: Verify the membership
 

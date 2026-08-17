@@ -23,13 +23,15 @@ Applications on the Logos network need a protocol-agnostic way to find peers off
     - Linux: Ubuntu 22.04+
     - macOS: 14+
 - 2 GB RAM (sufficient for a local two-module test)
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
    ```bash
    mkdir -p ~/.config/nix
    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
    ```
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) installed. To install it, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) installed.
+   - To install it, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh

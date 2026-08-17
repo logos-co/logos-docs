@@ -27,7 +27,8 @@ For an example used in production, refer to [logos-lib2p2-module](https://github
 - RAM: 4 GB minimum, 8 GB recommended.
 - Disk: ~2 GB free for the application + installed modules.
 - **A C compiler** (gcc or clang) for building the C library. Only needed if you are building the `.so`/`.dylib` yourself rather than using a pre-built library.
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

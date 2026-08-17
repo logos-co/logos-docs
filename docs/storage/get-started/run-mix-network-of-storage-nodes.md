@@ -27,13 +27,15 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
     - macOS
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-   ```bash
-   mkdir -p ~/.config/nix
-   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-   ```
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed.
+    - To install these tools, use the `install-node-tools.sh` helper script:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh

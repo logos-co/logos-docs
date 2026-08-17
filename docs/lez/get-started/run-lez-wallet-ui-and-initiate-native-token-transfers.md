@@ -23,7 +23,8 @@ Recovery from mnemonic and withdrawals to the L1 are not yet supported.
 
 :::info[Prerequisites]
 
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

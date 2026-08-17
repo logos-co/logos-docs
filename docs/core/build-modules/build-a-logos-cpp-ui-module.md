@@ -21,7 +21,8 @@ This guide covers building a [module](../../get-started/glossary.md#module) that
 
 - A [working core module](wrap-a-c-library-as-a-logos-core-module.md).
 - Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html).
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

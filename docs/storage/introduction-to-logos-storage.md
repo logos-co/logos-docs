@@ -11,7 +11,7 @@ Logos storage is a filesharing protocol that allows users of the Logos stack to 
 
 ## What can you do with Logos storage?
 
-The key functionality of Logos storage is _file sharing_: you can make files avaiable on the network which other people can then download. This is, in some ways, similar to how Google Drive[^3] works (Figure 1): you start by **(1)** [uploading a file to your own node](./get-started/run-logos-storage-node#publish-a-file) which will **(2)** store the file internally and **(3)** produce a file **Content IDentifier** (CID), which uniquely identifies your file and works very much like a "share link".
+The key functionality of Logos storage is _file sharing_: you can make files avaiable on the network which other people can then download. This is, in some ways, similar to how Google Drive[^3] works (Figure 1): you start by **(1)** [uploading a file to your own node](./get-started/run-logos-storage-node.md#publish-a-file) which will **(2)** store the file internally and **(3)** produce a file **Content IDentifier** (CID), which uniquely identifies your file and works very much like a "share link".
 
 You can then **(4)** share this CID with other users using a third-party mechanism such as e-mail or [Logos messaging](/messaging). Once in posession of a CID, a user $q$ can then its Logos storage node to download and store the file **(5)** from the network and store it internally **(6)**. Once the file is available [^2], the user can then retrieve it from the node **(7)** and consume its contents.
 

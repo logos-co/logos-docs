@@ -16,14 +16,14 @@ slug: create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone
 
 This procedure covers the AMM [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#lez), which manages liquidity pools and enables swaps between custom tokens. It walks through creating a liquidity pool for a token pair, swapping tokens, withdrawing liquidity, and adding liquidity back to the pool.
 
-:::info
+:::note
 The AMM does not currently charge swap fees or distribute rewards to liquidity providers. LP tokens represent only a proportional share of the pool reserves. Fee support will be added in future versions.
 :::
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- The `wallet` CLI installed and configured against a LEZ sequencer
 - Two existing [custom tokens](../../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) (Token A and Token B) with funded holding accounts
+:::
 
 ## What to expect
 

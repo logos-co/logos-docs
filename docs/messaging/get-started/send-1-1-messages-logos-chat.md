@@ -17,15 +17,22 @@ sidebar_position: 2
 
 This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
-:::info
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+
+:::info[Prerequisites]
+
+- A supported OS:
+    - Linux
+    - macOS
+- Network access
+- For the local build only: **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
 :::
-
-You need the following to complete this procedure:
-
-- Linux or macOS
-- Network access so both instances can reach each other
-- Two running instances of the app — on two separate machines, or in two terminals on the same machine
 
 ## What to expect
 
@@ -44,14 +51,14 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 ### Option A — Run in Logos Basecamp
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
-2.  In the left bar, select **Package Manager**.
+1.  In the left bar, select **Package Manager**.
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-3.  Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
+1.  Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
 
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
-4. Wait until a green **Installed** label appears next to both modules.
-5. In the left bar, select **chat** to launch the Logos Chat app.
+1. Wait until a green **Installed** label appears next to both modules.
+1. In the left bar, select **chat** to launch the Logos Chat app.
 
 ### Option B — Build and run locally with Nix
 
@@ -62,7 +69,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
     cd logos-chatsdk-ui
     git checkout v0.1.0
     ```
-2.  Run the standalone app:
+1.  Run the standalone app:
 
     ```bash
     # Nix fetches all dependencies automatically
@@ -80,8 +87,8 @@ The app auto-initialises on launch and displays your identity ID in the bottom s
 1.  Click **Get Intro Bundle**, then click **Copy to Clipboard**.
 
     The bundle is a string starting with `logos_chatintro…`.
-2. Send the copied bundle to instance B through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
-3. Close the **My Bundle** popup.
+1. Send the copied bundle to instance B through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
+1. Close the **My Bundle** popup.
 
 **On instance B:**
 

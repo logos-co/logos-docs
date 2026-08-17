@@ -40,9 +40,10 @@ Token program accounts fall into two types:
 Transfers are irreversible. Double-check all details before proceeding.
 :::
 
-Before you begin, ensure that you have the following:
+:::info[Prerequisites]
 
-- The [Wallet CLI installed](../get-started/run-lez-wallet-via-cli.md) on your computer
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 
@@ -58,7 +59,7 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 1.  Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
-    - [Public account](../../get-started/glossary.md#public-account):
+    - Public account:
 
     ```sh
     wallet account new public

@@ -47,7 +47,7 @@ Logos Core is the modular runtime that ties applications together.
 | [logos-logoscore-py](https://github.com/logos-co/logos-logoscore-py) | Python wrapper for the [logoscore](glossary.md#logoscore) CLI. |
 | [logos-package-manager](https://github.com/logos-co/logos-package-manager) | C++ library and CLI for local Logos package management. |
 | [logos-package-downloader](https://github.com/logos-co/logos-package-downloader) | [Module](glossary.md#module) download tooling. No official description; purpose inferred. |
-| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | C++ library and CLI ([lgpd](glossary.md#lgpd)) for fetching Logos module [catalogs](glossary.md#catalogue) and downloading `.lgx` packages. |
+| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | Nix and CMake scaffolding library for building Logos [modules](glossary.md#module): project templates, the `logos_module()` CMake helper, and the `mkLogosModule` Nix builder. |
 | [logos-app-builder](https://github.com/logos-co/logos-app-builder) | Shared Nix library for building Logos UI applications. |
 | [Overwatch](https://github.com/logos-co/Overwatch) | Self-contained services application framework. |
  
@@ -84,8 +84,8 @@ The Logos Execution Zone ([LEZ](glossary.md#lez)) is the primary execution layer
 | Repository | Description |
 |:---|:---|
 | [logos-execution-zone](https://github.com/logos-blockchain/logos-execution-zone) | The LEZ  repository. |
-| [lez-programs](https://github.com/logos-blockchain/lez-programs) | Essential Logos Execution Zone programs built by Logos. |
-| [lez-multisig](https://github.com/logos-co/lez-multisig) | Multisig built with the lez-framework [program](glossary.md#program) macro. |
+| [lez-programs](https://github.com/logos-blockchain/lez-programs) | Essential Logos Execution Zone [programs](glossary.md#program) built by Logos. |
+| [lez-multisig](https://github.com/logos-co/lez-multisig) | Multisig built with the lez-framework program macro. |
 | [logos-lez-rln](https://github.com/logos-co/logos-lez-rln) | Logos Execution Zone program for RLN registration. |
 | [logos-sql-zone](https://github.com/logos-blockchain/logos-sql-zone) | Password-manager demo built with the [Zone SDK](glossary.md#zone-sdk). |
 | [lez-fuzzing](https://github.com/logos-blockchain/lez-fuzzing) | Adversarial testing and fuzzing infrastructure for LEZ. |

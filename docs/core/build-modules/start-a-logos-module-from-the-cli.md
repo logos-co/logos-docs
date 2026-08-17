@@ -17,24 +17,28 @@ sidebar_position: 1
 
 This guide covers how to build and install a Logos [module](../../get-started/glossary.md#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
 
-**Before you start**, make sure you have the following:
+:::info[Prerequisites]
 
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
-
-  ```bash
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-  ```
-
-  Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
+- A supported OS:
+   - Linux x86_64 or aarch64
+   - macOS arm64 or x86_64
 - Git
-- Linux or macOS
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed.
+   - To install these tools, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
+- Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
+:::
 
 ## What to expect
 

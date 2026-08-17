@@ -51,3 +51,9 @@ When Mix is configured (`mix-enabled` true and at least one `dht-mix-proxy` set)
 :::info
 `togglePrivateQueries` is a temporary API and will likely be removed before mainnet.
 :::
+
+:::warning
+
+When using `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries. See [Connectivity](./connectivity.md) for details.
+
+:::

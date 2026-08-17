@@ -17,15 +17,18 @@ sidebar_position: 1
 
 The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the finalized LEZ state from the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](../../get-started/glossary.md#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS operating system
-- [Docker](https://docs.docker.com/get-docker/) installed
-- Rust 1.94.0 and `cargo` installed
-- [`just`](https://github.com/casey/just) installed
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/run-lez-wallet-via-cli.md) set up
-- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally)
-- Port `8779` free on your machine
+- A supported OS:
+   - Linux
+   - macOS
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone).
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+- [`just`](https://github.com/casey/just) installed.
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally).
+- Port `8779` free on your machine.
+:::
 
 ## What to expect
 
@@ -55,7 +58,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
     ```sh
     # Run node, in terminal 1
-    just run-bedrock
+    docker compose up logos-blockchain-node-0
     ```
 
     ```sh

@@ -17,16 +17,18 @@ sidebar_position: 3
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
-There is currently no dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
+:::info[Prerequisites]
 
-Before you start, ensure you have:
-
-- Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
+- A supported OS:
+    - Linux x86_64
+    - macOS aarch64 (recent versions)
+    - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+:::
 
 ## What to expect
 
@@ -50,14 +52,14 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
 1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output ./
-    # writes ./blockchain_module-0.2.1.lgx
+    lgpd download blockchain_module --version 0.2.2 --output ./
+    # writes ./blockchain_module-0.2.2.lgx
     ```
 
 1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.1.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.2.lgx
     ```
 
 1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
@@ -90,39 +92,27 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
-    :::info
-    To migrate an existing version 0.1.2 blockchain config to version 0.2.1, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
-
-    ```bash
-    logoscore call blockchain_module migrate_user_config_0_1_2 \
-        user_config.yaml \
-        old_user_config.yaml \
-        my_keystore.yaml
-
-    logoscore call blockchain_module stop
-    ```
-    :::
-
 1.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
     ```
 
+    :::info
+    The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
+    :::
+
 ## Step 4: Verify that your node is running and connected to peers
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
-1.  Check the consensus state:
+1.  Check the consensus state. The `logoscore` call and the node's HTTP endpoint return the same data in slightly different shapes.
 
     ```sh
     logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
-
-    # Alternatively, send a request directly to your node port
-    curl -s http://localhost:8080/cryptarchia/info | jq .
     ```
 
-    Example response:
+    Example response (the `logoscore` call returns a flat object with a `mode` field):
 
     ```json
     {
@@ -135,7 +125,29 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     }
     ```
 
-    - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
+    Alternatively, send a request directly to your node port:
+
+    ```sh
+    curl -s http://localhost:8080/cryptarchia/info | jq .
+    ```
+
+    Example response (the HTTP endpoint nests the fields under `cryptarchia_info`, names the status field `state`, and adds a top-level `phase`):
+
+    ```json
+    {
+      "cryptarchia_info": {
+        "lib": "3d0c...4e6d",
+        "lib_slot": 0,
+        "tip": "f44d...e2f5",
+        "slot": 70899,
+        "height": 120,
+        "state": "Bootstrapping"
+      },
+      "phase": "ProlongedBootstrapPeriod"
+    }
+    ```
+
+    - The status field (`mode` from the `logoscore` call, `state` from the HTTP endpoint) starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
 
 1.  Check peer connectivity:
@@ -184,6 +196,14 @@ A faucet distributes free tokens on test networks so you can experiment without 
 1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
+
+    :::tip
+    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+
+    ```sh
+    curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+    ```
+    :::
 
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 

@@ -53,6 +53,8 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 - You can set up a private Mix network and configure storage nodes to anonymize their lookups through it.
 - You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
 
+## Download and install the storage module
+
 1.  Download the storage module:
 
     ```sh

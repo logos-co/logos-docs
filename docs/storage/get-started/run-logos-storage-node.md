@@ -214,7 +214,7 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
 
     ```sh
     CID="zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ"
-    logoscore call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" true 65536
+    logoscore call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536
     ``
 
     :::tip

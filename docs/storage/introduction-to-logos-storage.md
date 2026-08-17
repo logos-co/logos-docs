@@ -35,7 +35,7 @@ The ultimate goal is _fully anonynous filesharing_; i.e., a system in which neit
 
 ## What's next
 
-The [Storage UI App](./get-started/set-up-and-use-logos-storage-ui.md) is probably the fastest and simplest way to give Logos storage a go. For people considering running a node on a more permanent basis or building on Logos storage, exploring [how to run a storage node](./get-started/run-logos-storage-node.md) is probably a good idea.
+The [Storage UI App](./get-started/set-up-and-use-logos-storage-ui.md) is probably the fastest and simplest way to give Logos storage a go. For people considering running a node on a more permanent basis or building on Logos storage, you should look into [how to run a storage node](./get-started/run-logos-storage-node.md), as well as the [Storage module API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html).
 
 [^1]: B. Cohen. _The BitTorrent Protocol Specification,_ Jan. 2008. Available: https://www.bittorrent.org/beps/bep_0003.html
 [^2]: Or partially available, as when using streaming downloads.

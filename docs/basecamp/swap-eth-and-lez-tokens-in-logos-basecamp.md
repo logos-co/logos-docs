@@ -262,7 +262,7 @@ This is the case the time locks exist for, and no funds are at risk. Copy **ETH 
 
 ## Next steps
 
-- [Install and load a module in Logos Basecamp](./install-and-load-a-module-in-logos-basecamp.md) explains how Basecamp packages, installs, and loads the modules this app is built from.
+- [Install and load a module in Logos Basecamp](./install-and-load-a-module-in-logos-basecamp.md) explains how Basecamp packages, installs, and loads the [modules](../get-started/glossary.md#module) this app is built from.
 - [Initiate native token transfers on the LEZ with the wallet UI](../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md) covers moving the LEZ tokens you just received.
 
 To build the app from source, or run a swap headlessly from the command line, see the [eth-lez-atomic-swaps README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md).

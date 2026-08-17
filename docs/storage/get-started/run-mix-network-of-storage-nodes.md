@@ -49,7 +49,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
 ## Build and install the storage module
 
-1.  Build the module package with Nix:
+1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx

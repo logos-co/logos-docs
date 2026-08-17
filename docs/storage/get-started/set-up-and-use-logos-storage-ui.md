@@ -38,7 +38,7 @@ You can install the application through Logos Basecamp (Option A), or build it f
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
 1. In the left bar, select **Package Manager**.
 1. Select `Storage` in `Categories` then click **Install**.
-1. Wait until a green **Installed** label appears next to both modules.
+1. Wait until a green **Installed** label appears next to both [modules](../../get-started/glossary.md#module).
 1. In the left bar, select **storage** to launch the Logos Storage UI.
 
 ### Option B — Build and run locally with Nix

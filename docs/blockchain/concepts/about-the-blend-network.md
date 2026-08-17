@@ -20,7 +20,7 @@ The [Blend Network](../../get-started/glossary.md#blend-network) adds a layer of
 
 - The Blend Network adds anonymity for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
 - Proposals are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
-- Nodes must explicitly opt in through the [Service Declaration Protocol](../../get-started/glossary.md#service-declaration-protocol) and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake.
+- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake.
 
 ## Objectives
 
@@ -75,7 +75,7 @@ Only the **core** role requires operator action — an SDP declaration, a locked
 
 ### Service Declaration Protocol
 
-Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol ([SDP](../../get-started/glossary.md#sdp)). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
+Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol (SDP). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
 
 The SDP provides a standardised mechanism for Logos nodes to declare their participation, demonstrate activity, and withdraw when desired. It operates around a schedule measured by consensus epochs. This protocol creates a single repository of identifiers used to establish secure communication between nodes and manage service participation.
 
@@ -89,7 +89,7 @@ To submit a service declaration, a node must prove that it owns a note with a se
 
 ### Service Reward Distribution Protocol
 
-The [Service Reward Distribution Protocol](../../get-started/glossary.md#service-reward-distribution-protocol) ([SRDP](../../get-started/glossary.md#srdp)) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
+The Service Reward Distribution Protocol (SRDP) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
 
 - Activity tracking: Nodes participating in services submit active messages to attest to their participation in the previous [epoch](../../get-started/glossary.md#epoch).
 - Reward calculation: At the end of the epoch, the system calculates rewards for nodes that participated in the previous epoch.

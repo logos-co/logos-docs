@@ -59,7 +59,7 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 1.  Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
-    - [Public account](../../get-started/glossary.md#public-account):
+    - Public account:
 
     ```sh
     wallet account new public

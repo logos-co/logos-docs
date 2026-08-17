@@ -84,8 +84,8 @@ The Logos Execution Zone ([LEZ](glossary.md#lez)) is the primary execution layer
 | Repository | Description |
 |:---|:---|
 | [logos-execution-zone](https://github.com/logos-blockchain/logos-execution-zone) | The LEZ  repository. |
-| [lez-programs](https://github.com/logos-blockchain/lez-programs) | Essential Logos Execution Zone programs built by Logos. |
-| [lez-multisig](https://github.com/logos-co/lez-multisig) | Multisig built with the lez-framework [program](glossary.md#program) macro. |
+| [lez-programs](https://github.com/logos-blockchain/lez-programs) | Essential Logos Execution Zone [programs](glossary.md#program) built by Logos. |
+| [lez-multisig](https://github.com/logos-co/lez-multisig) | Multisig built with the lez-framework program macro. |
 | [logos-lez-rln](https://github.com/logos-co/logos-lez-rln) | Logos Execution Zone program for RLN registration. |
 | [logos-sql-zone](https://github.com/logos-blockchain/logos-sql-zone) | Password-manager demo built with the [Zone SDK](glossary.md#zone-sdk). |
 | [lez-fuzzing](https://github.com/logos-blockchain/lez-fuzzing) | Adversarial testing and fuzzing infrastructure for LEZ. |

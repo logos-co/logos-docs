@@ -47,7 +47,7 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 
 ## Build and install the storage module
 
-1.  Build the module package with Nix:
+1.  Build the [module](../../get-started/glossary.md#module) package with Nix:
 
     ```sh
     nix build 'github:logos-co/logos-storage-module/v2.1.0#lgx-portable' -o storage-lgx
@@ -75,7 +75,7 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 
 ## Start the daemon and load the storage module
 
-Run `logoscore` with the modules directory, then load and initialise the storage module against the testnet config.
+Run `logoscore` with the modules directory, then load and initialise the [storage module](../../get-started/glossary.md#storage-module) against the testnet config.
 
 Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logoscore call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
@@ -197,7 +197,7 @@ Once the node is running and connected to the testnet, publish a file and verify
     The default chunk size is 65536.
     :::
 
-1.  Extract the content ID (CID) from the first `manifests` entry:
+1.  Extract the content ID ([CID](../../get-started/glossary.md#cid)) from the first `manifests` entry:
 
     ```sh
     # Wait a second for the upload to complete first

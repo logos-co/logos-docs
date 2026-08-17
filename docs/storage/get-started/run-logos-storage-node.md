@@ -215,7 +215,7 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
     ```sh
     CID="zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ"
     logoscore call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536
-    ``
+    ```
 
     :::tip
     The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
@@ -224,7 +224,7 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
 1.  Wait for a while for the file to download. After a few seconds, check if the downloaded file is present at the destination path. You should try to open the pdf, and it should contain the whole book.
 
     ```sh
-    sha1sum "$(pwd)/farewell-to-westphalia.pdf"
+    shasum "$(pwd)/farewell-to-westphalia.pdf"
     # 2c6b4dc8e8e4dae336b87b9922c38f3c94217872  farewell-to-westphalia.pdf
     ```
 

@@ -15,6 +15,10 @@ sidebar_position: 2
 
 #### Move tokens between Logos Blockchain and a Zone using channels and the Zone SDK.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 [Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones, with the Zone's associated [channel](../../get-started/glossary.md#channel) maintaining a token balance that keeps track of the total token value stored in the Zone. 
 
 This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the [Zone SDK](../../get-started/glossary.md#zone-sdk)'s `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel balance maps to its internal accounts, while the SDK only surfaces the on-chain events.

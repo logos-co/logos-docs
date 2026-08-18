@@ -15,6 +15,10 @@ sidebar_position: 3
 
 #### Get started with private transfers to accounts you don't control, using a recipient-published keypair.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account) — regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
 
 :::info[Prerequisites]

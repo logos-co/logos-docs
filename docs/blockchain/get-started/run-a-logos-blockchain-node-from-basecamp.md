@@ -15,6 +15,10 @@ sidebar_position: 2
 
 #### Install the blockchain modules and run a syncing testnet node from the Basecamp desktop app.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or — as described here — from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
 
 :::info[Prerequisites]

@@ -15,6 +15,10 @@ sidebar_position: 3
 
 #### Install the atomic swap app from a catalogue URL and trade Sepolia ETH for LEZ testnet tokens with a counterparty you never have to trust.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
 You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. Version `0.4.3` also sets up both of your accounts inside the app: a guided **Setup** tab generates your Ethereum key, then creates, initialises, and funds your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account) in [Step 2](#step-2-set-up-your-accounts). Nothing in this journey needs a command line.

@@ -15,12 +15,17 @@ sidebar_position: 4
 
 #### Learn how to get rewarded for having your Logos Blockchain node propose blocks
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). It is intended for node operators running their node via the Blockchain UI app.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- A [Logos Blockchain node running via the UI app](./build-and-run-logos-blockchain-node-app-ui.md)
+- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and running.
 - A wallet key that can receive leader reward claims
+:::
 
 ## What to expect
 
@@ -44,8 +49,8 @@ Check the account balance before claiming, submit a claim, then confirm the tran
    - The panel shows the number of available claimable vouchers, the tip used for the query, and voucher details including `cm` and `nf` values.
 
    :::info
-If the voucher count shows `0`, wait for more blocks and refresh the **Leader Rewards** panel before proceeding.
-:::
+   If the voucher count shows `0`, wait for more blocks and refresh the **Leader Rewards** panel before proceeding.
+   :::
 
 1. Click **Claim**.
 

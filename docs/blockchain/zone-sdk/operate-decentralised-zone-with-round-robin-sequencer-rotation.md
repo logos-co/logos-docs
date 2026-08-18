@@ -6,7 +6,7 @@ topics: zone-sdk
 steps_layout: sectioned
 authors: pradovic, hansieodendaal, kashepavadan
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: operate-decentralised-zone-with-round-robin-sequencer-rotation
 sidebar_position: 3
 ---
@@ -15,14 +15,19 @@ sidebar_position: 3
 
 #### Get started with multi-sequencer channels using the Zone SDK and round-robin slot windows.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This tutorial covers how to configure and operate a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [channel](../../get-started/glossary.md#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](../../get-started/glossary.md#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) who need to move from a single-sequencer setup to a decentralized one.
 
 The Zone SDK currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- An existing application using the [Zone SDK](./inscribe-data-on-chain-using-zone-sdk.md)
-- At least one `Ed25519PublicKey` generated per committee member
+- An existing application using the Zone SDK, such as an [inscription program](./inscribe-data-on-chain-using-zone-sdk.md).
+- At least one `Ed25519PublicKey` generated per committee member.
+:::
 
 ## What to expect
 
@@ -32,10 +37,10 @@ Before you start, make sure you have the following:
 
 ## Step 1: Size the rotation parameters
 
-Choose values for `posting_timeframe` and `posting_timeout` before creating or reconfiguring the channel. These fields on [`ChannelState`](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85#e9c261aa09df839b8f1d81a357aaf616) control the rotation cadence and inactive-sequencer skip behavior.
+Choose values for `posting_timeframe` and `posting_timeout` before creating or reconfiguring the channel. These fields on [`ChannelState`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#message-ordering) control the rotation cadence and inactive-sequencer skip behavior.
 
 :::info
-The [Mantle specification](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa09df8051b0d0cd4d5ddade85#5d6261aa09df836f9638814e35f5fe81) is the source of truth for the exact rotation algorithm. The guidance below is a practical summary.
+The [Mantle specification](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html) is the source of truth for the exact rotation algorithm. The guidance below is a practical summary.
 ::: 
 
 1. Set `posting_timeframe` - the length of each sequencer's turn under normal circumstances - to at least the average slots-per-block of the Logos Blockchain.
@@ -59,14 +64,14 @@ The [Mantle specification](https://nomos-tech.notion.site/1-5-0-Mantle-33d261aa0
    ...
    ```
 
-    :::info
-The Zone SDK exposes the current rotation state to your sequencer in two forms:
-   
+   :::info
+   The Zone SDK exposes the current rotation state to your sequencer in two forms:
+
    - The full `SequencerChannelView` (`subscribe_channel_view`) — a `tokio::sync::watch` receiver carrying `authorized_key_index`, `own_key_index`, `our_turn_to_write`, the current [slot](../../get-started/glossary.md#slot), and the turn window's `turn_to_write_slots`.
    - A focused `TurnNotification` (`subscribe_turn_to_write`) plus `Event::TurnNotification` — emitted only when the turn boundary actually changes.
-   
+
    `our_turn_to_write` is the boolean a sequencer reads to decide whether it is currently authorised.
-:::
+   :::
 
 ## Step 2: Publish inscriptions and monitor turn state
 
@@ -132,11 +137,11 @@ Two sequencers can race on the same parent slot during rotation transitions or a
 ::: 
 
    ```rust
-   use lb_zone_sdk::sequencer::{Event, OrphanedTx};
+   use lb_zone_sdk::sequencer::{ChannelUpdateTx, Event};
 
    if let Event::BlocksProcessed { channel_update, .. } = event {
        for entry in channel_update.orphaned {
-           if let OrphanedTx::Inscription(info) = entry {
+           if let ChannelUpdateTx::Inscription(info) = entry {
                let (result, checkpoint) = sequencer.handle().publish(info.payload)?;
                // Persist `result` + `checkpoint` exactly as on the original publish.
            }
@@ -146,6 +151,12 @@ Two sequencers can race on the same parent slot during rotation transitions or a
 
    - See `OrphanRepublishPolicy` in `tests/src/cucumber/steps/manual_zone/support.rs` for the reference policy used in integration tests.
    - If the orphan was caused by an application-level conflict rather than a race, you can choose to drop the payload or deduplicate it against a higher-level transaction stream, or apply any other custom rule instead of republishing.
+
+   :::note
+   Channel transactions built outside the publish API are classified by shape, not by how they were submitted: a tx that looks like publish output (a single inscription, optionally with withdraws and one funding transfer) surfaces as `ChannelUpdateTx::Inscription` / `ChannelUpdateTx::AtomicWithdraw`; anything else surfaces as `ChannelUpdateTx::Custom(SignedMantleTx)`.
+   
+   The SDK hands back the whole transaction and it is up to the consumer to parse it (the `channel_inscriptions` helper extracts its inscriptions) and decide how to recover it. The main API is `publish` and `publish_atomic_withdraw`.
+   :::
 
 ## Step 3: Update the committee with a channel config op
 

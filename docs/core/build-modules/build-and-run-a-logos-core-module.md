@@ -15,27 +15,35 @@ sidebar_position: 2
 
 #### Scaffold, build, package, and test a core module on Logos.
 
-Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality.
-
-Logos [core modules](../../get-started/glossary.md#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
-
-:::info
-For other [module](../../get-started/glossary.md#module) types, check out [Wrap a C Library as a Logos core module](./wrap-a-c-library-as-a-logos-core-module.md) and [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md). These guides — along with the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) and the [Logos CLI Reference](../reference/logos-cli-reference.md) — are still being written; the linked pages are placeholders for now.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
 :::
 
-Before you start, make sure you have the following:
+Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality. Logos [core modules](../../get-started/glossary.md#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
-- Linux (x86_64 or aarch64) or macOS (arm64 or x86_64)
+:::info[Prerequisites]
+
+- A supported OS:
+   - Linux x86_64 or aarch64
+   - macOS arm64 or x86_64
 - At least 10 GB of disk space
-- [Nix](https://nixos.org/download.html) with flakes enabled
 - Git
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) installed. To install these tools, use the `install-node-tools.sh` helper script:
+- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed.
+   - To install these tools, use the `install-node-tools.sh` helper script:
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
    export PATH="$PWD/bin:$PATH"
    ```
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
 - Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
+:::
 
 ## What to expect
 
@@ -70,8 +78,8 @@ The `logos-module-builder` provides four scaffolding templates for different mod
    The template uses `minimal` as a placeholder in the source filenames, class names, and identifiers. You replace these placeholders with your module's name in Step 2.
 
    :::info
-The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
-:::
+   The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details.
+   :::
 
 ## Step 2: Adapt the template for your module
 
@@ -256,8 +264,8 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
    :::info
-`.#lgx` produces a single variant (for example, `linux-amd64`) and `.#lgx-portable` produces a single portable variant. Neither produces the `-dev` variant that `logos-basecamp` dev builds expect. If you need the dev variant for use with `logos-basecamp`, use the `#dual` bundler described in the next section.
-:::
+   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm` — including the ones the `install-node-tools.sh` helper script downloads — only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
+   :::
 
 ### Use the `nix bundle` command
 
@@ -316,8 +324,8 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    ```
 
    :::tip
-Use `lgpd list` to browse all available packages.
-:::
+   Use `lgpd list` to browse all available packages.
+   :::
 
 1. Download the LGX package to a local directory.
 
@@ -334,7 +342,7 @@ Use `lgpd list` to browse all available packages.
    lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
    ```
 
-   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing [UI modules](../../get-started/glossary.md#ui-module).
+   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
 
 ## Step 7: Run the module 
 
@@ -405,6 +413,10 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
    lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
    ```
 
+:::tip
+Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-logos-storage-node.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the full list of [Logos modules](https://github.com/logos-co/logos-modules#modules).
+:::
+
 ## Troubleshooting
 
 ### Known constraints
@@ -441,7 +453,7 @@ Verify the target directory exists and is writable. If installing from a local `
 
 If `lgpm install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
 
-- `nix build .#lgx` produces a single variant (for example, `linux-amd64`) suitable for `logoscore` but not for a dev build of `logos-basecamp`.
+- `nix build .#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) suitable for dev builds of `logoscore`/`logos-basecamp`, but rejected by released (portable) builds of `logoscore` and `lgpm`. Use `nix build .#lgx-portable` for the portable variant those released tools install.
 - `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
 - `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
 

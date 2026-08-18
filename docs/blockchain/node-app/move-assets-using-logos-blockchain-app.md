@@ -15,13 +15,18 @@ sidebar_position: 2
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to send funds from one of your wallet addresses to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the Logos Blockchain dashboard. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- A built [Blockchain node app](./build-and-run-logos-blockchain-node-app-ui.md)
-- At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/)
-- The recipient's 64-hex-character public key
+- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and running.
+- At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/).
+- The recipient's 64-hex-character public key.
+:::
 
 ## What to expect
 
@@ -53,8 +58,8 @@ The **Operations** tab is disabled until the node is running and synced. Start t
 1. Click **Send**.
 
    :::warning
-Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
-:::
+   Transfers are irreversible; double-check the 64-hex recipient key and the amount before pressing **Send**.
+   :::
 
 ## Read the transfer result
 

@@ -17,21 +17,26 @@ sidebar_position: 1
 
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
-Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A [Zone](../../get-started/glossary.md#zone) could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or it could be a simple, standalone Zone tracking the state of just one application.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
+Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
 The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
 
-:::info
+:::tip
 You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
 :::
 
-Before you begin, you will need:
+:::info[Prerequisites]
 
-- A running [Logos node](../get-started/run-a-logos-blockchain-node-from-cli.md)
+- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
+:::
 
 ## What to expect
 
-- You will initialise a `ZoneSequencer` that connects to your Logos node and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
+- You will initialise a `ZoneSequencer` that connects to your [Logos node](../../get-started/glossary.md#logos-node) and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
 - You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
 - You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 
@@ -166,7 +171,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
 
         // Move our finalised publishes out of `published` and into `finalized`.
-        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+        pub fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
             for info in inscriptions {
                 if let Some(i) = self
                     .published

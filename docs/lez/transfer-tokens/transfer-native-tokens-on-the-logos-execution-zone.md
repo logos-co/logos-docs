@@ -15,16 +15,11 @@ sidebar_position: 1
 
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
-:::warning
-This page should be accurate for the specific version referenced in this doc, but it may not have been run end-to-end as written. Expect minor gaps (for example, missing environment details) and be prepared to troubleshoot. We are actively working to complete and verify this content.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
 :::
 
-:::info
-- **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
-:::
-
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
+The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
 
 On LEZ, public and private accounts differ in where their state lives and how transfers update that state.
 
@@ -49,10 +44,10 @@ On LEZ, public and private accounts differ in where their state lives and how tr
 Transfers are irreversible. Double-check all details before proceeding.
 :::
 
-Before you begin, ensure that you have the following:
+:::info[Prerequisites]
 
-- The [LEZ sequencer running in standalone mode](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-- The [Wallet CLI installed](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 
@@ -80,7 +75,7 @@ Before you begin, ensure that you have the following:
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
 :::info
-Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
+Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
 :::
 
 2.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
@@ -120,7 +115,7 @@ The only exception is native token credits: any program can credit native tokens
     The output looks like this:
 
     ```
-    Account owned by authenticated-transfer program
+    Account owned by authenticated transfer program
     {..."balance":150...}
     ```
 
@@ -222,7 +217,7 @@ The output looks like this:
 
 ````
 ```text
-Account owned by authenticated-transfer program
+Account owned by authenticated transfer program
 {..."balance":BALANCE-AMOUNT...}
 ```
 ````
@@ -244,7 +239,7 @@ The wallet command panics and fails during proof generation with an assertion er
 The error message looks like this:
 
 ```
-thread 'main' panicked at .../privacy_preserving_circuit.rs:394:13:
+thread 'main' panicked at .../privacy_preserving_circuit/src/output.rs:58:17:
 assertion `left == right` failed: Found new private account with non default values
   left: Account { ... }
   right: Account { ... }

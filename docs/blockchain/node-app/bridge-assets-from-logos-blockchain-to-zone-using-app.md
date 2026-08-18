@@ -15,12 +15,15 @@ sidebar_position: 3
 
 #### Get started locking wallet notes into a Logos Zone, including the LEZ, using the Logos Blockchain UI app.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to lock one or more of your wallet [notes](../../get-started/glossary.md#note) (UTXOs) into a Logos [Zone](../../get-started/glossary.md#zone) (such as the [LEZ](../../get-started/glossary.md#lez)) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on testnet v0.2 who need to fund a [channel](../../get-started/glossary.md#channel) for off-chain or on-chain channel operations without hand-assembling note IDs, keys, and fees on a CLI.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- The [Logos Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and able to launch
-- A [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node user config selected or generated on the first screen, with an associated keystore (`user_config.yaml`, optional `deployment-settings.yaml`, `keystore.yaml`)
+- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and running.
 - At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/)
 - The target Zone's channel ID you are depositing into. You can get the channel ID of the public LEZ instance by running:
 
@@ -34,34 +37,14 @@ Before you start, make sure you have the following:
         \"id\": 1 \
     }"
    ```
-- Public keys for change (receives leftover value) and funding (to pay for gas). This is typically your own wallet address
+- Public keys for change (receives leftover value) and funding (to pay for gas). This is typically your own wallet address.
+:::
 
 ## What to expect
 
 - You can select one or more wallet notes and lock their full value into a channel through a guided four-step wizard.
 - You can review the exact deposit payload — channel ID, notes, keys, fee, and metadata — before submitting.
 - You can confirm the deposit succeeded by copying the returned transaction hash and finding it in a new block under opcode `18` (Channel Deposit).
-
-## Launch the app and start the node
-
-The **Operations** tab is disabled until the node is running. Notes and balances are unavailable until the node is also synced.
-
-1. Launch the app and, on the config screen, select or generate a user config and deployment config. The default deployment will connect to the testnet:
-
-   ```sh
-   nix run
-   ```
-
-   - This lands you on the main view.
-
-1. In the **Node** tab, click **Start Node**.
-
-   - Status turns **Running** (green), the consensus card appears and progresses toward **Online**, and blocks begin streaming in the **Blocks** list.
-   - The **Operations** tab becomes enabled.
-
-1. Wait for the consensus card to reach **Online** before proceeding.
-
-   - Notes and balances will not load until the node reaches this state.
 
 ## Submit a deposit
 
@@ -91,8 +74,8 @@ The UI collects the deposit payload across three input steps, then submits it on
 1. On **Step 3 – Confirm**, review the exact payload — channel ID, notes and total amount, change and funding keys, max fee, metadata, and tip — then click **Confirm & deposit**.
 
    :::warning
-Review the information carefully. Deposits are irreversible once included in a block.
-:::
+   Review the information carefully. Deposits are irreversible once included in a block.
+   :::
 
 ## Read the deposit result
 

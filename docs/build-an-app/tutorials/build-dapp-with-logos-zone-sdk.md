@@ -14,7 +14,11 @@ slug: build-dapp-with-logos-zone-sdk
 
 #### Learn how to use the Zone SDK to implement a decentralised password manager application.
 
-This tutorial covers building a Logos [Zone](../../get-started/glossary.md#zone) from scratch using the [Zone SDK](../../get-started/glossary.md#zone-sdk). Zones are execution environments built on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/get-started/quickstart-for-the-logos-execution-zone-wallet.md), or a simple standalone Zone tracking the state of a single application.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.0**.
+:::
+
+This tutorial covers building a Logos [Zone](../../get-started/glossary.md#zone) from scratch using the [Zone SDK](../../get-started/glossary.md#zone-sdk). Zones are execution environments built on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or a simple standalone Zone tracking the state of a single application.
 
 The Zone SDK provides a ready-to-use toolbox for basic interactions with a Logos Zone. Every Zone is operated by one or more **sequencers**, which collect transactions, batch them, and publish them as inscriptions on the Logos Blockchain. **Indexers** are nodes that follow a Zone's updates on-chain, re-executing them locally to maintain an up-to-date copy of the Zone state. The Zone SDK supports building both.
 
@@ -31,11 +35,12 @@ Read [**Decentralise the Log, Not the Server**](https://press.logos.co/article/d
 
 The implementation skeleton already has most of the password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained primarily in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 
-**Before you start:**
+:::info[Prerequisites]
 
+- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md).
 - [Git](https://git-scm.com/)
 - [Rust toolchain](https://www.rust-lang.org/tools/install) (stable)
-- Access to a running Logos Blockchain node (see [documentation](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md))
+:::
 
 ## What to expect
 
@@ -59,7 +64,7 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
    cd logos-sql-zone
    git checkout tutorial
    
-   git submodule update --init --recursive
+   git submodule update --init
    ```
 
    The complete demo is available in the `master` branch.

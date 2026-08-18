@@ -15,6 +15,10 @@ sidebar_position: 2
 
 #### Use the Logos Delivery module to run a Logos delivery node
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.2). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available — Docker, prebuilt binaries, and Nix — so you can choose the one that fits your environment.
 
 Choose one of the three installation paths based on your environment:
@@ -25,12 +29,24 @@ Choose one of the three installation paths based on your environment:
 | **B** | Prebuilt binaries | No build, no clone required |
 | **C** | Nix | From source; most reproducible |
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS
-- Network access so both node instances can reach each other
-- `jq` installed (required for the verify step)
-- Per path: **A** — Docker with Compose; **B** — `curl` and a shell; **C** — [Nix with flakes enabled](https://nixos.org/download)
+- A supported OS:
+    - Linux
+    - macOS
+- Network access so both node instances can reach each other.
+- Some prerequisites differ between paths:
+   - **Path A**: Docker with Compose
+   - **Path B** — `curl` and a shell
+   - **Path C** — **Nix** with flakes enabled.
+      - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+      ```bash
+      mkdir -p ~/.config/nix
+       echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+      ```
+
+:::
 
 ## What to expect
 
@@ -53,8 +69,8 @@ Follow the instructions for your chosen path.
    ```
 
    :::info
-The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-:::
+   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
+   :::
 
 **Path B — Prebuilt binaries**
 
@@ -65,11 +81,11 @@ The first Docker build runs Nix and downloads release packages. It can take 30�
    export PATH="$PWD/bin:$PATH"
    ```
 
-1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
+1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module). The root hash selects the exact published package identity for the pinned version:
 
    ```bash
    mkdir -p packages modules
-   lgpd download delivery_module --output ./packages
+   lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output ./packages
    lgpm install --dir ./packages --modules-dir ./modules
    ```
 
@@ -78,13 +94,16 @@ The first Docker build runs Nix and downloads release packages. It can take 30�
    ```bash
    cat > logos-test.json <<EOF
    {
-      "preset": "logos.test",
-      "mode": "Core",
-      "logLevel": "INFO",
-      "tcpPort": 30303,
-      "discv5UdpPort": 9000,
-      "discv5Discovery": true,
-      "nat": "extip:<public-ip>"
+      "entryLayer": "kernel",
+      "kernelConf": {
+         "preset": "logos.test",
+         "relay": true,
+         "logLevel": "INFO",
+         "tcpPort": 30303,
+         "discv5UdpPort": 9000,
+         "discv5Discovery": true,
+         "nat": "extip:<public-ip>"
+      }
    }
    EOF
 

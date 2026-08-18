@@ -29,6 +29,14 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    {
+      tagName: 'script',
+      attributes: {
+        src: 'https://umami.bi.status.im/script.js',
+        defer: true,
+        'data-website-id': '0f95ea33-c693-4fe7-91dc-8effe9645fa8',
+      },
+    },
   ],
 
   future: {
@@ -115,12 +123,12 @@ const config: Config = {
             to: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
           },
           {
-            from: '/run-an-app/lez-wallet-ui/initiate-native-token-transfers-on-lez-with-wallet-ui',
-            to: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+            from: '/run-an-app/lez-wallet-ui/run-lez-wallet-ui-and-initiate-native-token-transfers',
+            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
           },
           {
             from: '/run-an-app/lez-wallet-ui/readme',
-            to: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
           },
           // run-a-node (-> blockchain / messaging / storage)
           {
@@ -164,7 +172,7 @@ const config: Config = {
           },
           {
             from: '/build-an-app/build-modules/install-and-load-a-module-in-logos-basecamp',
-            to: '/core/build-modules/install-and-load-a-module-in-logos-basecamp',
+            to: '/basecamp/install-and-load-a-module-in-logos-basecamp',
           },
           {
             from: '/build-an-app/build-modules/readme',
@@ -186,7 +194,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/social-card.jpg',
+    image: 'img/social-card-v2.jpg',
     colorMode: {
       respectPrefersColorScheme: true,
     },
@@ -279,6 +287,15 @@ const config: Config = {
             {
               label: 'GitHub',
               href: 'https://github.com/logos-co/logos-docs',
+            },
+          ],
+        },
+        {
+          title: 'Legal',
+          items: [
+            {
+              label: 'Terms and Conditions',
+              href: 'https://logos.co/terms-and-conditions',
             },
           ],
         },

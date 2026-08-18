@@ -68,17 +68,17 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Storage',
     description: 'Decentralised, content-addressed file storage and retrieval',
-    to: '/storage/get-started/run-logos-storage-node',
+    to: '/storage',
   },
   {
     title: 'λ Mixnet',
     description: 'Traffic mixing that hides communication patterns from network observers',
-    to: '/mixnet/get-started/discover-nodes-and-send-messages-via-the-anoncomms-mixnet-demo-app',
+    to: '/mixnet/get-started/send-anonymised-messages-over-the-mix-network',
   },
   {
     title: 'λ Peer discovery',
     description: 'Peer discovery and connection management without central registries',
-    to: '/peer-discovery/welcome',
+    to: '/peer-discovery/get-started/build-logos-core-module-that-uses-service-discovery-api',
   },
 ];
 

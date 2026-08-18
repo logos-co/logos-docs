@@ -15,16 +15,11 @@ sidebar_position: 2
 
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
-:::warning
-This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
 :::
 
-:::info
-- **Permissions**: No special permissions required.
-- **Product**: [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) wallet CLI.
-:::
-
-The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the [Logos project](https://github.com/logos-co/logos-docs/blob/main/README.md). You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
+The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
 
 The token program is a built-in LEZ [program](../../get-started/glossary.md#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.
 
@@ -49,16 +44,16 @@ Token program accounts fall into two types:
 Transfers are irreversible. Double-check all details before proceeding.
 :::
 
-Before you begin, ensure that you have the following:
+:::info[Prerequisites]
 
-- The [LEZ sequencer running in standalone mode](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#step-2-start-the-lez-sequencer-in-standalone-mode) on your computer
-- The [Wallet CLI installed](../get-started/quickstart-for-the-logos-execution-zone-wallet.md#set-up-the-wallet-binary-prerequisites-and-build-the-wallet) on your computer
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 
 - The token program can move balances between token holding accounts.
 - If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
-- You can transfer custom tokens to any uninitialised public or [private account](../../get-started/glossary.md#private-account). Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
+- You can transfer custom tokens to any uninitialised public or private account. Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 :::info
 Currently, it's impossible to change the token name or total supply after you create the token.
@@ -68,7 +63,7 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 1.  Create two new, uninitialised accounts: one token definition account and one token holding account to receive the total supply. Both accounts can be public or private, depending on your needs.
 
-    - [Public account](../../get-started/glossary.md#public-account):
+    - Public account:
 
     ```sh
     wallet account new public
@@ -83,7 +78,7 @@ Currently, it's impossible to change the token name or total supply after you cr
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, [nullifier public key](../../get-started/glossary.md#nullifier-public-key) (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
 :::info
-Your account keys and data are stored in the local file `$HOME/.nssa/wallet/storage.json`.
+Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
 :::
 
 1.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.

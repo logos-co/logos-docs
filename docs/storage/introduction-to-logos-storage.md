@@ -16,25 +16,25 @@ import Figure from '@site/src/components/Figure';
 
 #### Learn how Logos provides resilient, censorship-resistant file sharing for decentralised applications.
 
-Logos storage is a filesharing protocol that allows users of the Logos stack to publish and share files in a decentralized manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires the Logos runtime and tooling to work.
+[Logos storage](../get-started/glossary.md#logos-storage) is a filesharing protocol that allows users of the Logos stack to publish and share files in a decentralized manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires the Logos runtime and tooling to work.
 
 ## The basics
 
 - Logos Storage allows users to share files over a decentralised, private network of nodes.
-- Files are stored locally by each node, with each file assigned a unique identifier known as a CID.
+- Files are stored locally by each node, with each file assigned a unique identifier known as a [CID](../get-started/glossary.md#cid).
 - Anybody with a CID can download the associated file from the network. Nodes that download a file replicate it on their machine and make it available for others, with more downloads resulting in more peers to download from.
 - Neither providers nor dowloaders can be linked to the content they interact with.
 
 ## How Logos Storage works
 
-The key functionality of Logos Storage is _file sharing_: you can make files avaiable on the network which other people can then download. The basic process is illustrated in Figure 1:
+The key functionality of Logos Storage is _file sharing_: you can make files available on the network which other people can then download. The basic process is illustrated in Figure 1:
 
 <Figure id="fig:1" src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
 
 1. A user [uploads a file to their Logos Storage node `p`](./get-started/run-logos-storage-node.md#publish-a-file).
 1. Node `p` stores the file internally.
 1. Node `p` produces a *Content Identifier* (CID for short) that uniquely identifies the file. The CID functions very much like a "file share link".
-1. The user shares the CID with other users via a third-party communication mechanism (such as [Logos Messaging](/messaging)).
+1. The user shares the CID with other users via a third-party communication mechanism (such as [Logos Messaging](../messaging/introduction-to-logos-messaging.md)).
 1. Another user that received the CID uses their own Logos Storage node `q` to download the file.
 1. Node `q` that downloaded the file stores it internally.
 1. Once the file is made available on node `q` (including partial availability, such as for streaming), the user can retrieve it and consume its contents.

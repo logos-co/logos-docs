@@ -15,10 +15,6 @@ sidebar_position: 2
 
 #### Get a clear view of on-chain activity including blocks, transactions, and accounts.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 The [LEZ](../../get-started/glossary.md#lez) Explorer lets you inspect the state of the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) in real time. This procedure walks you through starting all required services locally and using the Explorer UI to browse blocks, search transactions, and look up [account](../../get-started/glossary.md#account) balances. It is intended for developers working on testnet v0.2 who want to verify on-chain state or test wallet interactions.
 
 If you don't want to run your own LEZ explorer instance, navigate instead to the [public LEZ explorer](https://explorer.testnet.lez.logos.co/).

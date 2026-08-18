@@ -15,10 +15,6 @@ sidebar_position: 1
 
 #### Connect your blockchain node to Blend to contribute to proposer privacy.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 Joining the [Blend Network](../../get-started/glossary.md#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](../../get-started/glossary.md#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
 
 :::note

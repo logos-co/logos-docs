@@ -15,10 +15,6 @@ sidebar_position: 1
 
 #### Get started integrating Logos messaging into a C++ module.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) (tag `v0.2.0`).
 
 The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.0`](https://github.com/logos-co/logos-delivery-module/tree/3258cdb0132e37228aa2519e0c01c0e7429a20dd)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.

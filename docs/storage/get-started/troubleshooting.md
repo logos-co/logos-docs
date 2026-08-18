@@ -13,10 +13,6 @@ slug: faq
 
 #### Fix the most common connectivity problems of a storage node.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 [Logos Storage](../../get-started/glossary.md#logos-storage) requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
 
 - **Discovery port**: UDP, defaults to `8090`. Used for discovery and DHT operations.

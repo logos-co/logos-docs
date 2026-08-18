@@ -15,10 +15,6 @@ sidebar_position: 2
 
 #### Use the wallet CLI to create custom tokens and transfer them between public and private accounts.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's [token program](../../get-started/glossary.md#token-program) to create and transfer custom tokens between [public and private accounts](transfer-native-tokens-on-the-logos-execution-zone.md) on LEZ.
 
 The token program is a built-in LEZ [program](../../get-started/glossary.md#program) that provides standard token functionality, including defining new token assets and transferring balances. It uses a single shared program rather than requiring a separate contract deployment for each token. The token program is privacy-agnostic. You use the same instructions whether execution is public (on-chain) or privacy-preserving (off-chain with a zero-knowledge proof). The protocol decides the execution mode, and the token logic is unchanged.

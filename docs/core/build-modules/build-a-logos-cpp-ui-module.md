@@ -15,10 +15,6 @@ sidebar_position: 4
 
 #### Get started building a ui\_qml module with a C++ backend that runs in a separate process.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 This guide covers building a [module](../../get-started/glossary.md#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
 
 :::info[Prerequisites]

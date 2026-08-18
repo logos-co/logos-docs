@@ -15,10 +15,6 @@ sidebar_position: 2
 
 #### Try out end-to-end encrypted private messaging over the Logos network.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.

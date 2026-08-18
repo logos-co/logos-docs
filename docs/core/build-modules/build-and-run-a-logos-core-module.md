@@ -15,10 +15,6 @@ sidebar_position: 2
 
 #### Scaffold, build, package, and test a core module on Logos.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules (Qt plugins) that provide features and functionality. Logos [core modules](../../get-started/glossary.md#core-module) are non-UI modules that provide backend functionality. Core modules run in isolated `logos_host` processes and communicate via Qt Remote Objects.
 
 :::info[Prerequisites]

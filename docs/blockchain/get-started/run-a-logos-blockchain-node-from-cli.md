@@ -15,10 +15,6 @@ sidebar_position: 3
 
 #### Start a node and verify runtime and consensus signals.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 :::info[Prerequisites]

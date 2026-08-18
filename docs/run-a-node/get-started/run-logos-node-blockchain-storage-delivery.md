@@ -15,10 +15,6 @@ sidebar_position: 1
 
 #### Get started running a full Logos node with all three core modules on testnet v0.2.1.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 The default paths used throughout this procedure are:

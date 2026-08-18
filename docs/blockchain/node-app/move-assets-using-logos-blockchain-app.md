@@ -15,10 +15,6 @@ sidebar_position: 2
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 This procedure covers how to send funds from one of your wallet addresses to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the Logos Blockchain dashboard. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
 :::info[Prerequisites]

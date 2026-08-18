@@ -15,7 +15,7 @@ The key functionality of Logos storage is _file sharing_: you can make files ava
 
 You can then **(4)** share this CID with other users using a third-party mechanism such as e-mail or [Logos messaging](/messaging). Once in posession of a CID, a user $q$ can then its Logos storage node to download and store the file **(5)** from the network and store it internally **(6)**. Once the file is available [^2], the user can then retrieve it from the node **(7)** and consume its contents.
 
-<Figure id="fig:1", src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
+<Figure id="fig:1" src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
 
 ## Organic replication and persistence guarantees
 

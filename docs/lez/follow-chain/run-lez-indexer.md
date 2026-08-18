@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Get started with the LEZ Indexer and query finalized LEZ state over HTTP RPC.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the finalized LEZ state from the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](../../get-started/glossary.md#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
 
 :::info[Prerequisites]

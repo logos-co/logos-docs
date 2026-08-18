@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Explore how to load and call a Logos module from the command line using `logoscore`.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This guide covers how to build and install a Logos [module](../../get-started/glossary.md#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
 
 :::info[Prerequisites]

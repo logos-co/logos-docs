@@ -15,6 +15,10 @@ sidebar_position: 3
 
 #### Get started with multi-sequencer channels using the Zone SDK and round-robin slot windows.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This tutorial covers how to configure and operate a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [channel](../../get-started/glossary.md#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](../../get-started/glossary.md#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) who need to move from a single-sequencer setup to a decentralized one.
 
 The Zone SDK currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.

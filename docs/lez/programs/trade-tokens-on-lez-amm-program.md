@@ -15,6 +15,10 @@ sidebar_position: 2
 
 #### Use the SPEL CLI to deploy an AMM, create a pool, swap tokens, and publish a TWAP price on LEZ testnet v0.2.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure explains how developers and node operators deploy and drive the automated market maker (AMM) [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) ([LEZ](../../get-started/glossary.md#lez)), from building the on-chain programs through swapping tokens and publishing a TWAP oracle price, all using the [SPEL CLI](https://github.com/logos-co/spel). The AMM is one of the essential launch-day applications for Logos, since it enables on-chain trading and supplies the price data that on-chain oracles rely on. Follow this procedure on LEZ testnet v0.2 whenever you need to stand up a pool from scratch, execute a swap, or publish a fresh price to the TWAP oracle.
 
 :::info[Prerequisites]

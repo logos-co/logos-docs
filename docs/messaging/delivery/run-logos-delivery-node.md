@@ -48,13 +48,6 @@ Choose one of the three installation paths based on your environment:
 
 :::
 
-Before you start, make sure you have the following:
-
-- Linux or macOS
-- Network access so both node instances can reach each other
-- `jq` installed (required for the verify step)
-- Per path: **A** — Docker with Compose; **B** — `curl` and a shell; **C** — [Nix with flakes enabled](https://nixos.org/download)
-
 ## What to expect
 
 - You can start a `delivery_module` node connected to the Logos Network.

@@ -43,22 +43,10 @@ Make sure your hardware meets the following requirements for running a blockchai
 - Memory (RAM): Minimal (1 Gb).
 - Storage: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
-:::
 
-Before you start, make sure you have the following:
-
-- Linux host with a public IPv4 address
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall
-- Root or `sudo` access to install tools and create system users
-
-Make sure your hardware meets the following requirements for running a blockchain node:
-- CPU: 2 Cores, 2Ghz. Modern multi-core processor.
-- Memory (RAM): Minimal (1 Gb).
-- Storage: SSD with 100+ GB free with ability to expand storage on demand.
-- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
-
-:::info
-If you wish to run a Blend node, make sure you have a stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation. Stable and accessible external IP is mandatory.
+To run a Blend node, make sure you have:
+- A stable and accessible external IP.
+- A stable, low-latency connection (10 Mbps+ recommended) to handle multiple concurrent connections (recommended). This is beneficial for effective message blending and timing obfuscation.
 :::
 
 ## What to expect

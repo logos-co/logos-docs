@@ -45,20 +45,6 @@ Logos is a modular application framework built on Qt 6. Applications are compose
 - Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
 :::
 
-Before you start, make sure you have the following:
-
-- Linux (x86_64 or aarch64) or macOS (arm64 or x86_64)
-- At least 10 GB of disk space
-- [Nix](https://nixos.org/download.html) with flakes enabled
-- Git
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed. To install these tools, use the `install-node-tools.sh` helper script:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
-- Basic familiarity with C++ (C++17), Qt 6 (`QObject`, `Q_INVOKABLE`, signals/slots), CMake, and Nix concepts
-
 ## What to expect
 
 - You can scaffold, configure, and build a Logos core module using the templates provided by `logos-module-builder`.

@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Get started with group-owned private accounts where every member independently derives the same keys.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to create a shared [private account](../../get-started/glossary.md#private-account) (regular or [PDA](../../get-started/glossary.md#pda)) on the [LEZ](../../get-started/glossary.md#lez) that is jointly controlled by multiple members. From one 32-byte [Group Master Secret](../../get-started/glossary.md#group-master-secret) ([GMS](../../get-started/glossary.md#gms)), every member independently derives the same [account](../../get-started/glossary.md#account) keys ([NSK](../../get-started/glossary.md#nsk), [VSK](../../get-started/glossary.md#vsk), [NPK](../../get-started/glossary.md#npk), [VPK](../../get-started/glossary.md#vpk)), so any member can view and spend the shared balance without an interactive key exchange at spend time. It is intended for developers on testnet v0.2 who need multi-party custody of a private balance or a private PDA.
 
 This feature is 1-of-n at the key layer: any GMS holder can derive every key and spend the account. Threshold gating must be implemented at the [program](../../get-started/glossary.md#program) layer. View-only membership is not supported — any GMS holder gets both viewing and spending capability.

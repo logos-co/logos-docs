@@ -15,6 +15,10 @@ sidebar_position: 2
 
 #### Get started sharing and downloading files on the Logos Storage network
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
 
 :::info[Prerequisites]

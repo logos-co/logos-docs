@@ -244,7 +244,7 @@ An old name for the Logos Execution Environment. See [Introduction to the Logos 
 
 ### Mantle
 
-The execution layer of Bedrock, enabling participation in the Blend Network and facilitating interactions wth Zones. See [About Mantle](../blockchain/concepts/about-mantle.md).
+The execution layer of Bedrock, enabling participation in the Blend Network and facilitating interactions with Zones. See [About Mantle](../blockchain/concepts/about-mantle.md).
 
 ### Message
 
@@ -256,7 +256,7 @@ Traffic obfuscation used to improve privacy guarantees.
 
 ### Module
 
-A self-contained, resuable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application.
+A self-contained, reusable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application.
 
 ### Module repo
 

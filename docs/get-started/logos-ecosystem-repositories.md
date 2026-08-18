@@ -59,8 +59,8 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
 |:---|:---|
 | [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos [Core module](glossary.md#core-module) that exposes [Logos Chat](glossary.md#logos-chat). |
 | [logos-chat-ui](https://github.com/logos-co/logos-chat-ui) | UI application for the Logos Chat SDK proof of concept. |
-| [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early-stage wallet module built on go-wallet-sdk. |
-| [logos-accounts-module](https://github.com/logos-co/logos-accounts-module) | Early-stage [account](glossary.md#account)-management module built on go-wallet-sdk. |
+| [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early stage wallet module built on go-wallet-sdk. |
+| [logos-accounts-module](https://github.com/logos-co/logos-accounts-module) | Early stage [account](glossary.md#account)-management module built on go-wallet-sdk. |
 | [logos-blockchain-module](https://github.com/logos-blockchain/logos-blockchain-module) | Core module wrapping logos-blockchain-c. |
 | [logos-blockchain-ui](https://github.com/logos-blockchain/logos-blockchain-ui) | Blockchain UI application for Logos Core. |
 | [logos-execution-zone-module](https://github.com/logos-blockchain/logos-execution-zone-module) | [Logos Execution Zone](glossary.md#logos-execution-zone) module for Logos Core. No official description; purpose inferred. |

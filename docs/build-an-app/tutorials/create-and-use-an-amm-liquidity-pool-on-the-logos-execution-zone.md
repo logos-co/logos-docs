@@ -92,7 +92,7 @@ Use `wallet amm swap-exact-input` to swap a fixed input amount of one token for 
 
    - `--amount-in`: the amount of tokens to swap
    - `--min-amount-out`: the minimum number of tokens expected in return
-   - `--token-definition`: the definition ID of the token you are providing. Here we swap TOKENA → TOKENB, so this is TOKENA's definition ID. Pass the raw base58 definition ID with no Public/ prefix — a prefixed value is rejected with invalid base58.
+   - `--token-definition`: the definition ID of the token you are providing. Here we swap TOKENA → TOKENB, so this is TOKENA's definition ID. Pass the raw base58 definition ID with no Public/ prefix—a prefixed value is rejected with invalid base58.
 
    - Once executed, 5 tokens are deducted from the Token A holding account and the corresponding amount, computed by the pool's pricing function, is credited to the Token B holding account.
 

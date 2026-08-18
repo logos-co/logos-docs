@@ -31,7 +31,7 @@ This procedure explains how developers and node operators deploy and drive the a
 
 ## What to expect
 
-- You can build, deploy, and initialize the AMM, TWAP oracle, and [token programs](../../get-started/glossary.md#token-program) on LEZ testnet.
+- You can build, deploy, and initialise the AMM, TWAP oracle, and [token programs](../../get-started/glossary.md#token-program) on LEZ testnet.
 - You can create a liquidity pool and swap between two tokens using the SPEL CLI.
 - You can publish a TWAP price that on-chain oracles can consume.
 
@@ -65,10 +65,10 @@ This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-ex
 
 ## Step 3: Build and deploy the AMM programs
 
-Build and deploy the `token`, `twap_oracle`, and `amm` programs from the [lez-programs](https://github.com/logos-blockchain/lez-programs/tree/main) repository, then record each program's ProgramId; you need all three before you can initialize the AMM.
+Build and deploy the `token`, `twap_oracle`, and `amm` programs from the [lez-programs](https://github.com/logos-blockchain/lez-programs/tree/main) repository, then record each program's ProgramId; you need all three before you can initialise the AMM.
 
 :::warning
-Recompiling a guest changes its ProgramId, and every [PDA](../../get-started/glossary.md#pda) derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize` — never reuse old values.
+Recompiling a guest changes its ProgramId, and every [PDA](../../get-started/glossary.md#pda) derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize`—never reuse old values.
 :::
 
 1. Clone the lez-programs repository and navigate to it.
@@ -166,7 +166,7 @@ AMM PDAs use a SHA-256 seed scheme, so derive them with the program's own `*_pda
 
    - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, and `<CURRENT_TICK_PDA>`.
 
-1. Select any of your accounts to be `<AUTHORITY>` — the admin who can later call `update_config`.
+1. Select any of your accounts to be `<AUTHORITY>`—the admin who can later call `update_config`.
 
 1. Initialise the AMM using the config PDA and the token/TWAP ProgramIds from [Step 3](#step-3-build-and-deploy-the-amm-programs).
 
@@ -248,8 +248,8 @@ Initiate a swap between your two tokens, then feed the resulting price tick into
         --window-duration <WINDOW_DURATION>
    ```
 
-   - This instruction is permissionless — no signers needed.
-   - `window_duration` is in milliseconds (24h = `86400000`); each window gets its own account.
+   - This instruction is permissionless—no signers needed.
+   - `window_duration` is in milliseconds (24 h = `86400000`); each window gets its own account.
 
    :::info
    To verify, run the following:
@@ -355,7 +355,7 @@ Create the oracle's price account once, then publish the TWAP so downstream cons
 
 ### PDAs stop matching after a rebuild
 
-Recompiling any program changes its ProgramId, and every PDA derived from that ProgramId changes with it (config, pool, vaults, LP definition, LP lock, current tick). After any AMM rebuild, redo the PDA-derivation, initialization, and pool-creation steps rather than reusing old values.
+Recompiling any program changes its ProgramId, and every PDA derived from that ProgramId changes with it (config, pool, vaults, LP definition, LP lock, current tick). After any AMM rebuild, redo the PDA-derivation, initialisation, and pool-creation steps rather than reusing old values.
 
 ### `spel` rejects an `account_id` argument
 
@@ -371,7 +371,7 @@ Recompiling any program changes its ProgramId, and every PDA derived from that P
 
 ### A swap fails because a holding isn't signed
 
-`swap-exact-input` and `swap-exact-output` mark both `user-holding-a` and `user-holding-b` as signers, even though only the input side is debited — the input side is chosen at runtime, so both must be signed.
+`swap-exact-input` and `swap-exact-output` mark both `user-holding-a` and `user-holding-b` as signers, even though only the input side is debited—the input side is chosen at runtime, so both must be signed.
 
 ### `spel` and `wallet` point at different networks
 

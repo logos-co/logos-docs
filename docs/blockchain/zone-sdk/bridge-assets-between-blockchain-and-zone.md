@@ -38,9 +38,9 @@ Bridging has two directions: deposit (Blockchain to Zone), where a user funds a 
 
 ## What to expect
 
-- You can create a channel and have it recognized on-chain without a separate deployment transaction.
-- You can observe finalized deposits on your channel as they are credited inside the zone.
-- You can submit single- or multi-signature withdrawals and confirm them once finalized, including after a reorg.
+- You can create a channel and have it recognised on-chain without a separate deployment transaction.
+- You can observe finalised deposits on your channel as they are credited inside the zone.
+- You can submit single- or multi-signature withdrawals and confirm them once finalised, including after a reorg.
 
 ## Step 1: Create a channel
 
@@ -65,11 +65,11 @@ A channel is created automatically the first time an operation references a prev
     | -------------------- | -------------------------------------------------------------------- |
     | `balance`            | On-chain TokenValue held by the channel. Deposits add, withdrawals subtract. Defaults to 0. |
     | `withdrawal_nonce`   | Increments by 1 on every successful withdraw. Provides replay protection. |
-    | `withdraw_threshold` | Minimum number of accredited-key signatures needed to authorize a withdrawal. Defaults to 0. |
+    | `withdraw_threshold` | Minimum number of accredited-key signatures needed to authorise a withdrawal. Defaults to 0. |
     | `accredited_keys`    | The committee that may sign withdrawals. |
 
    
-1. Initialize a `ZoneSequencer` and publish the first [inscription](../../get-started/glossary.md#inscription) inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
+1. Initialise a `ZoneSequencer` and publish the first [inscription](../../get-started/glossary.md#inscription) inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
 
     ```rust
     use lb_zone_sdk::{
@@ -98,7 +98,7 @@ A channel is created automatically the first time an operation references a prev
 
 A deposit happens when a Bedrock user submits a transaction with a [`ChannelDeposit`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#channel_deposit) operation naming the target `channel`, the consumed `inputs`, and opaque `metadata` that the Zone interprets, such as a recipient address.
 
-1. Watch for finalized deposits inside your events loop. The Zone SDK surfaces every finalized deposit on your channel as a `FinalizedOp::Deposit(DepositInfo)` inside the `finalized` field of `Event::BlocksProcessed`.
+1. Watch for finalised deposits inside your events loop. The Zone SDK surfaces every finalised deposit on your channel as a `FinalizedOp::Deposit(DepositInfo)` inside the `finalized` field of `Event::BlocksProcessed`.
 
    ```rust
    use lb_zone_sdk::sequencer::{Event, FinalizedOp};
@@ -119,7 +119,7 @@ A deposit happens when a Bedrock user submits a transaction with a [`ChannelDepo
    }
    ```
 
-   `Event::BlocksProcessed` fires once per ingested block, whether live or backfilled, and only carries finalized items at or below LIB, so deposits surfaced here cannot be re-orged off the chain.
+   `Event::BlocksProcessed` fires once per ingested block, whether live or backfilled, and only carries finalised items at or below LIB, so deposits surfaced here cannot be re-orged off the chain.
 
 1. Credit the user inside the Zone according to the Zone's internal state transition function rules.
 
@@ -153,13 +153,13 @@ A withdrawal is initiated inside the zone and lands on-chain as a signed [`Chann
    )?;
    ```
 
-   Because the inscription and the withdrawal share one transaction, they become adopted, orphaned, or finalized as a unit, so the Zone block recording the withdrawal and the on-chain debit cannot drift apart.
+   Because the inscription and the withdrawal share one transaction, they become adopted, orphaned, or finalised as a unit, so the Zone block recording the withdrawal and the on-chain debit cannot drift apart.
 
    :::info
    `publish_atomic_withdraw` returns the `PublishResult` synchronously. For a single-signature bundle, `PublishResult.tx` is a `PendingTx::AtomicWithdraw(AtomicWithdrawInfo)` carrying the inscription and the bundled withdraw operations.
    :::
 
-1. Check the finalized transactions in `Event::BlocksProcessed.finalized` against the pending transaction's `AtomicWithdrawInfo.tx_hash`. Because it is a bundle, both the inscription and the withdrawal will appear in the same `tx.ops` once the withdrawal is finalized.
+1. Check the finalised transactions in `Event::BlocksProcessed.finalized` against the pending transaction's `AtomicWithdrawInfo.tx_hash`. Because it is a bundle, both the inscription and the withdrawal will appear in the same `tx.ops` once the withdrawal is finalised.
 
    ```rust
    use lb_zone_sdk::sequencer::{Event, FinalizedOp};
@@ -187,7 +187,7 @@ A withdrawal is initiated inside the zone and lands on-chain as a signed [`Chann
 
 ### Option 2: Submit a multi-sequencer withdrawal
 
-When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal alone. The proposing sequencer builds the `ChannelWithdrawOp` directly, because it must commit to a specific `withdraw_nonce` before sharing the unsigned transaction with the rest of the committee.
+When `withdraw_threshold > 1`, no single sequencer can authorise a withdrawal alone. The proposing sequencer builds the `ChannelWithdrawOp` directly, because it must commit to a specific `withdraw_nonce` before sharing the unsigned transaction with the rest of the committee.
 
 1. Read the current `withdraw_nonce` and this sequencer's accredited-key index from the channel view.
 
@@ -258,7 +258,7 @@ When `withdraw_threshold > 1`, no single sequencer can authorize a withdrawal al
 
    Keep the result and use the returned `tx_hash` to identify the bundle. Unlike the single-sig flow, the SDK treats the caller-built transaction as opaque, so `PublishResult.tx` is `PendingTx::Inscription(InscriptionInfo)` regardless of the underlying ops.
 
-1. Match the finalized transaction by `tx_hash` once it appears in `Event::BlocksProcessed.finalized`, the same way as in the single-signature flow in Option 1.
+1. Match the finalised transaction by `tx_hash` once it appears in `Event::BlocksProcessed.finalized`, the same way as in the single-signature flow in Option 1.
 
 ## Step 4: Recover from a reorg
 
@@ -298,5 +298,5 @@ A reorg can orphan the parent inscription of a withdrawal submitted via `publish
 1. Keep the new `result` and `checkpoint` exactly as you did for the original publish to compare it to 
 
 :::note
-For multi-sig bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data — whether the bundle was mined and reorged out, or never mined and shed once its parent [slot](../../get-started/glossary.md#slot) was consumed by a competing entry — but the SDK cannot re-sign the tx: recovery means re-running the `prepare_tx` → collect-signatures → `submit_signed_tx` flow against the fresh parent and nonce.
+For multi-sig bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data—whether the bundle was mined and reorged out, or never mined and shed once its parent [slot](../../get-started/glossary.md#slot) was consumed by a competing entry—but the SDK cannot re-sign the tx: recovery means re-running the `prepare_tx` → collect-signatures → `submit_signed_tx` flow against the fresh parent and nonce.
 :::

@@ -44,7 +44,7 @@ Chat state is **ephemeral** in this release: identity, conversations, and messag
 - You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
 - You can open a private 1:1 conversation by exchanging addresses [out of band](../../get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
 - You can create a group conversation with `create_group_conversation`, grow it with `add_group_member`, and exchange messages with all group members.
-- You can integrate the full chat lifecycle — init, subscribe to events, share your address, open conversations, send, shut down — into any Logos C++ module.
+- You can integrate the full chat lifecycle—init, subscribe to events, share your address, open conversations, send, shut down—into any Logos C++ module.
 
 ## Step 1: Scaffold a new Logos module
 
@@ -68,19 +68,19 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
    git init && git add -A
    ```
 
-1. Keep the generated files — you build on them, you don't delete them. The template is a working `ui_example` module. Its main files are:
+1. Keep the generated files—you build on them, you don't delete them. The template is a working `ui_example` module. Its main files are:
 
    | File | What it is | Can you edit it? |
    |---|---|---|
-   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes — your chat code goes here (Steps 3–7) |
+   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes—your chat code goes here (Steps 3–7) |
    | `src/ui_example.rep`, `src/ui_example_interface.h` | The module's interface | No |
-   | `src/qml/Main.qml` | The example view | Later — replace with your own UI |
+   | `src/qml/Main.qml` | The example view | Later—replace with your own UI |
    | `metadata.json`, `CMakeLists.txt` | Build config | Step 2 only |
 
    You add your chat code in `UiExamplePlugin::initLogos()`. Leave the example `status` / `add` UI as is for now.
 
 :::info
-Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`) — they must all match, or `nix build` fails. To use a different name, change it in every one of these.
+Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`)—they must all match, or `nix build` fails. To use a different name, change it in every one of these.
 :::
 
 ## Step 2: Declare `chat_module` as a dependency
@@ -117,7 +117,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
      # Pin chat_module to the released tag so its API can't shift under `nix flake update`.
      chat_module.url = "github:logos-co/logos-chat-module/v0.2.2";
      # chat_module reaches delivery over IPC, but the builder still needs delivery's
-     # runtime build from a matching flake input. Pin the v0.2.0 tag — the exact
+     # runtime build from a matching flake input. Pin the v0.2.0 tag—the exact
      # rev chat_module v0.2.2 is built against.
      logos-delivery-module.url = "github:logos-co/logos-delivery-module/v0.2.0";
    };
@@ -132,7 +132,7 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    ```
 
 :::info
-The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation — it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/flake.nix) wires the two modules together.
+The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation—it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/flake.nix) wires the two modules together.
 :::
 
 ## Step 3: Initialise `LogosModules` and subscribe to events
@@ -141,16 +141,16 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
 
 1. Add the `LogosModules` member, then construct it in `initLogos()`.
 
-   In the header `src/ui_example_plugin.h` — add the include and the member:
+   In the header `src/ui_example_plugin.h`—add the include and the member:
 
    ```cpp
-   #include "logos_sdk.h"   // generated umbrella — exposes LogosModules
+   #include "logos_sdk.h"   // generated umbrella—exposes LogosModules
 
    // inside the UiExamplePlugin class:
    LogosModules* m_logos = nullptr;
    ```
 
-   In `src/ui_example_plugin.cpp` — construct it:
+   In `src/ui_example_plugin.cpp`—construct it:
 
    ```cpp
    void UiExamplePlugin::initLogos(LogosAPI* api) {
@@ -175,7 +175,7 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    chat.on("message_sent", [](const QVariantList& a) {
        // a[0]: convo_id, a[1]: content, a[2]: timestamp_ms
    });
-   // A conversation was created — incoming from a peer, or your own outgoing one.
+   // A conversation was created—incoming from a peer, or your own outgoing one.
    chat.on("conversation_created", [](const QVariantList& a) {
        // a[0]: QString convo_id, a[1]: bool is_outgoing, a[2]: QString peer_label,
        // a[3]: QString kind ("direct" | "group"), a[4]: QString name, a[5]: QString desc
@@ -184,7 +184,7 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    chat.on("conversation_updated", [](const QVariantList& a) { /* a[0]: convo_id */ });
    chat.on("members_changed",      [](const QVariantList& a) { /* a[0]: convo_id */ });
    chat.on("conversation_deleted", [](const QVariantList& a) { /* a[0]: convo_id */ });
-   // Delivery/connection state changed — drives your "connected" indicator.
+   // Delivery/connection state changed—drives your "connected" indicator.
    chat.on("delivery_state_changed", [](const QVariantList& a) {
        // a[0]: QString delivery_state ("initialising" | "online" | "stopped" | "error")
        // a[1]: QString detail
@@ -200,13 +200,13 @@ Status-bearing methods return their result **synchronously** as a `LogosResult`.
 - `res.getError<QString>()` carries the failure reason;
 - `res.getValue<QString>()` carries the returned value (for example, the new conversation's id).
 
-Ongoing activity — incoming messages, new conversations, delivery-state changes — arrives **asynchronously** through the push events you subscribed to in Step 3.
+Ongoing activity—incoming messages, new conversations, delivery-state changes—arrives **asynchronously** through the push events you subscribed to in Step 3.
 
 :::info
 `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
 :::
 
-`init()` takes a single `ChatConfig` record, passed from C++ as a `QVariantMap` (records in parameter position have no generated struct — the wire shape is the contract). Both fields are optional:
+`init()` takes a single `ChatConfig` record, passed from C++ as a `QVariantMap` (records in parameter position have no generated struct—the wire shape is the contract). Both fields are optional:
 
 | Field | Type | Notes |
 |---|---|---|
@@ -240,7 +240,7 @@ Ongoing activity — incoming messages, new conversations, delivery-state change
 
    ```cpp
    const QString myAddress = m_logos->chat_module.get_address();
-   // share `myAddress` out of band (the peer pastes it — see Steps 9 and 10)
+   // share `myAddress` out of band (the peer pastes it—see Steps 9 and 10)
    ```
 
 ## Step 5: Direct conversations
@@ -268,7 +268,7 @@ To create a group conversation, skip this step and proceed to [Step 6](#step-6-g
    // On success a message_sent event fires locally; the peer receives a message_received event.
    ```
 
-   - Message content is plain text in both directions — the module handles encoding and end-to-end encryption on the wire.
+   - Message content is plain text in both directions—the module handles encoding and end-to-end encryption on the wire.
 
 1. Receive messages through the `message_received` event.
 
@@ -318,14 +318,14 @@ A group conversation starts with its creator as the only member and grows one pe
    ```
 
    :::warning
-   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler — it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
+   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler—it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
    :::
 
 1. Read a group conversation roster at any time:
 
    ```cpp
    const QVariantList members = m_logos->chat_module.list_group_members(groupId);  // [GroupMember]
-   // Each element: { address, pending } — committed members first, then invites
+   // Each element: { address, pending }—committed members first, then invites
    // this instance sent that the group has not committed yet (pending == true).
    ```
 
@@ -354,7 +354,7 @@ A group conversation starts with its creator as the only member and grows one pe
 
 ## Step 9: Verify a two-instance direct exchange
 
-A chat is only proven end to end when a message travels between two running instances. Start two copies of your module — each with its own instance directory — and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (e.g. `nix run . -- --user-dir ~/.local/share/chat_a`).
+A chat is only proven end to end when a message travels between two running instances. Start two copies of your module—each with its own instance directory—and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (for example `nix run . -- --user-dir ~/.local/share/chat_a`).
 
 1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
 1. **In instance A**: call `get_address()` and share the returned address out of band (copy it into instance B).
@@ -369,19 +369,19 @@ Seeing the `message_received` events on both sides confirms the full round trip:
 
 ## Step 10: Verify a three-instance group conversation
 
-Group semantics only show with three or more members. Start three instances (A, B, and C) by following the instructions in [Step 9](#step-9-verify-a-two-instance-direct-exchange) and wait for all three to report `online`. Group joins land asynchronously (see [Step 6](#step-6-group-conversations)) — budget minutes per membership change.
+Group semantics only show with three or more members. Start three instances (A, B, and C) by following the instructions in [Step 9](#step-9-verify-a-two-instance-direct-exchange) and wait for all three to report `online`. Group joins land asynchronously (see [Step 6](#step-6-group-conversations))—budget minutes per membership change.
 
 1. Collect each instance's address via `get_address()`.
 1. **In instance A**: call `create_group_conversation("Book Club", "Weekly sci-fi picks")` and keep the returned conversation id.
 1. **In instance A**: call `add_group_member(groupId, addressOfB)`.
-   - The call returns immediately; B joins once the group commits the add — B receives a `conversation_created` event (`kind == "group"`, `name == "Book Club"`) under the same conversation id A holds.
+   - The call returns immediately; B joins once the group commits the add—B receives a `conversation_created` event (`kind == "group"`, `name == "Book Club"`) under the same conversation id A holds.
 1. **In instance B**: Once B has joined, call `add_group_member(groupId, addressOfC)`.
    - C can join the same way.
 1. In each instance, call `list_group_members(groupId)` and wait until all three addresses appear with `pending == false` on every member. Each membership change also fires `members_changed`.
 1. **In instance A**: call `send_message(groupId, "hello group")`.
    - B and C each receive one `message_received` event whose `sender` is A's address.
 1. **In instance C**: post a reply.
-   - A and B should receive it, attributed to C's address — the newest member reaches the founding members and vice versa.
+   - A and B should receive it, attributed to C's address—the newest member reaches the founding members and vice versa.
 
 ## Troubleshooting the Logos Chat module
 
@@ -395,7 +395,7 @@ The `delivery_preset` differs across instances, or delivery has not reached `onl
 
 ### Why hasn't an invited member joined the group yet?
 
-This is the designed behaviour, not a hang. An `add_group_member` call only *proposes* the add: the group agrees on it, the group's steward batches it into an MLS commit after a commit-inactivity window (60 seconds by default), and the welcome only travels after that commit — so a join lands minutes after the call over the live network. Until the commit, the invite shows in the proposer's `list_group_members` with `pending == true`. Poll `list_conversations` on the invited instance (or wait for its `conversation_created` event) rather than assuming failure. An invite the group never commits stays pending for the life of the conversation.
+This is the designed behaviour, not a hang. An `add_group_member` call only *proposes* the add: the group agrees on it, the group's steward batches it into an MLS commit after a commit-inactivity window (60 seconds by default), and the welcome only travels after that commit—so a join lands minutes after the call over the live network. Until the commit, the invite shows in the proposer's `list_group_members` with `pending == true`. Poll `list_conversations` on the invited instance (or wait for its `conversation_created` event) rather than assuming failure. An invite the group never commits stays pending for the life of the conversation.
 
 ### Why is `send_message` rejected right after a membership change?
 

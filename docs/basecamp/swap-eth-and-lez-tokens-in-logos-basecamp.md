@@ -108,7 +108,7 @@ The catalogue is saved in your Basecamp settings and survives restarts. You add 
 
 ## Step 2: Set up your accounts
 
-A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. Version `0.4.3` builds both for you in the **Setup** tab — no command line, and no copying a raw private key between apps. Every field the tab fills is an ordinary **Config** field underneath, so nothing here is hidden from you.
+A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. Version `0.4.3` builds both for you in the **Setup** tab—no command line, and no copying a raw private key between apps. Every field the tab fills is an ordinary **Config** field underneath, so nothing here is hidden from you.
 
 On a fresh install the app opens on the **Setup** tab automatically. You can also reach it any time from the **Setup** tab at the right-hand end of the tab row.
 
@@ -118,7 +118,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
 1. Open the **Setup** tab.
 
-    **Expected:** a page headed **Get set up** with three numbered cards — **1. Ethereum key**, **2. LEZ account**, and **3. Fund it**. Each card's border turns green as you complete it, and a **4. Done** card appears once funding finishes.
+    **Expected:** a page headed **Get set up** with three numbered cards—**1. Ethereum key**, **2. LEZ account**, and **3. Fund it**. Each card's border turns green as you complete it, and a **4. Done** card appears once funding finishes.
 
 1. Under **1. Ethereum key**, click **Generate new key**.
 
@@ -134,11 +134,11 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
 1. Under **2. LEZ account**, click **Create LEZ account**.
 
-    **Expected:** the card shows `done` and displays **Account:** followed by your new [account](../get-started/glossary.md#account) ID. Nothing is on-chain yet — creating the account is local, and the next card is what puts it on-chain.
+    **Expected:** the card shows `done` and displays **Account:** followed by your new [account](../get-started/glossary.md#account) ID. Nothing is on-chain yet—creating the account is local, and the next card is what puts it on-chain.
 
 1. Under **3. Fund it**, click **Fund my account**.
 
-    **Expected:** the button changes to **Setting up…** and a status line appears with a live seconds counter. It initialises your account on-chain, then claims `150` LEZ from the [Piñata](../get-started/glossary.md#piñata) faucet — each phase needs a proof-of-work solve and an on-chain commit, and testnet blocks can be a minute or more apart, so the counter keeps moving to show it isn't stuck. When it finishes, the card shows `done`, the status reads **Funded and ready**, and a **4. Done** card appears with a **Go to Market** button.
+    **Expected:** the button changes to **Setting up…** and a status line appears with a live seconds counter. It initialises your account on-chain, then claims `150` LEZ from the [Piñata](../get-started/glossary.md#piñata) faucet—each phase needs a proof-of-work solve and an on-chain commit, and testnet blocks can be a minute or more apart, so the counter keeps moving to show it isn't stuck. When it finishes, the card shows `done`, the status reads **Funded and ready**, and a **4. Done** card appears with a **Go to Market** button.
 
 :::info
 The **Fund my account** button initialises the account for you, so you can't forget to. That matters because an uninitialised LEZ account is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. If a swap ever does nothing at all, re-running **Fund my account** re-checks the initialisation.
@@ -158,7 +158,7 @@ The **Config** tab holds every endpoint, address, and key the app uses, grouped 
 
 1. Still under **LEZ**, confirm **Signing Key** is populated. **Setup** filled it from the LEZ account it created in [Step 2](#step-2-set-up-your-accounts).
 
-    Leave **Wallet Home**, **Wallet Account ID**, and **Taker Account ID** empty. The app authenticates to the LEZ with the signing key, so the wallet fields aren't needed. **Taker Account ID** is an optional maker-side setting — a list of counterparties you'd allow to take your offers — and taking an offer doesn't need it. **Wallet Home**'s placeholder, `.scaffold/wallet`, is a path from the app's development setup that doesn't exist on a machine that installed from the catalogue.
+    Leave **Wallet Home**, **Wallet Account ID**, and **Taker Account ID** empty. The app authenticates to the LEZ with the signing key, so the wallet fields aren't needed. **Taker Account ID** is an optional maker-side setting—a list of counterparties you'd allow to take your offers—and taking an offer doesn't need it. **Wallet Home**'s placeholder, `.scaffold/wallet`, is a path from the app's development setup that doesn't exist on a machine that installed from the catalogue.
 
 1. Leave **Swap parameters** alone.
 
@@ -186,7 +186,7 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
     **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, listing the maker's addresses, the hashlock, and both HTLC identifiers. You're buying the LEZ and paying the ETH.
 
-1. Click **Accept — buy 10 LEZ**.
+1. Click **Accept—buy 10 LEZ**.
 
     If the button is disabled, the app shows why immediately beneath it, such as `Complete configuration first → Config` or `This offer has expired`.
 
@@ -250,7 +250,7 @@ Check **RPC URL** begins with `wss://` and not `https://`. The app opens a WebSo
 
 ### The swap does nothing and no error appears
 
-Your LEZ account is almost certainly uninitialised. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Open the **Setup** tab from [Step 2](#step-2-set-up-your-accounts) and click **Fund my account** again — it re-checks the on-chain initialisation and tops the balance back up. Confirm the balance is genuinely positive before retrying.
+Your LEZ account is almost certainly uninitialised. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Open the **Setup** tab from [Step 2](#step-2-set-up-your-accounts) and click **Fund my account** again—it re-checks the on-chain initialisation and tops the balance back up. Confirm the balance is genuinely positive before retrying.
 
 ### The Taker tab reports `ETH lock rejected`
 

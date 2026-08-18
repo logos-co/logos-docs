@@ -19,7 +19,7 @@ sidebar_position: 3
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class—no Qt, no plugin boilerplate—and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -69,7 +69,7 @@ Before writing any C code, scaffold the Logos module project using the official 
     As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
     :::
 
-1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files — this tutorial supplies its own pure-C++ `src/` files:
+1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files—this tutorial supplies its own pure-C++ `src/` files:
 
    ```bash
    rm -f src/external_lib_interface.h src/external_lib_plugin.h src/external_lib_plugin.cpp
@@ -117,7 +117,7 @@ Create the C library that your module will wrap. Place the header and implementa
    #endif /* LIBCALC_H */
    ```
 
-   The `extern "C"` block is essential — it prevents C++ name mangling so the Logos module can find the symbols.
+   The `extern "C"` block is essential—it prevents C++ name mangling so the Logos module can find the symbols.
 
 1. Create `lib/libcalc.c`:
 
@@ -200,12 +200,12 @@ Create the C library that your module will wrap. Place the header and implementa
    ```
 
    :::info
-   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
+   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code—just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
    :::
 
 ## Step 3: Configure the Logos module
 
-Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class — `metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesises the Qt plugin wrapper.
+Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class—`metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesises the Qt plugin wrapper.
 
 After this step, your project will look like this:
 
@@ -262,7 +262,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
 
    | Field                          | What it does                                                                                                                                                                                                       |
    | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-   | `name`                         | Module name — must be a valid C identifier (used in filenames, method calls)                                                                                                                                       |
+   | `name`                         | Module name—must be a valid C identifier (used in filenames, method calls)                                                                                                                                       |
    | `main`                         | The generated plugin's name, `<name>_plugin`. You don't write this file; the builder produces `calc_module_plugin.so` / `.dylib`                                                                                   |
    | `interface`                    | `"universal"` selects the pure-C++ pattern. The builder runs `logos-cpp-generator --from-header` over `src/calc_module_impl.h` and emits the Qt plugin, so you never touch Qt directly                        |
    | `nix.external_libraries`       | Declares C/C++ libraries vendored in the repo. Each entry has a `name` (the CMake target) and `vendor_path` (directory with the source/binary). The build compiles the library and links it into the plugin        |
@@ -299,11 +299,11 @@ To fetch and build external libraries from source, add `"build_command": "make s
 
    Keep these three fields in sync with `metadata.json`:
 
-   - **`NAME`** — your module name (must match `name` in `metadata.json`, e.g., `calc_module`)
-   - **`SOURCES`** — your implementation files (`src/calc_module_impl.h`, `src/calc_module_impl.cpp`)
-   - **`EXTERNAL_LIBS`** — external libraries to link (must match `nix.external_libraries[].name` in `metadata.json`)
+   - **`NAME`**—your module name (must match `name` in `metadata.json`, for example, `calc_module`)
+   - **`SOURCES`**—your implementation files (`src/calc_module_impl.h`, `src/calc_module_impl.cpp`)
+   - **`EXTERNAL_LIBS`**—external libraries to link (must match `nix.external_libraries[].name` in `metadata.json`)
 
-   The `if/elseif/else` block is boilerplate — don't change it.
+   The `if/elseif/else` block is boilerplate—don't change it.
 
 1. Create `flake.nix` and change `description`. External libraries can be added in `inputs`, allowing `nix` to fetch and build them from source.
 
@@ -390,9 +390,9 @@ To fetch and build external libraries from source, add `"build_command": "make s
      | `std::vector<std::string>`  | `QStringList`                                                      |
      | `std::vector<uint8_t>`      | `QByteArray`                                                       |
      | `LogosMap` / `LogosList`    | `QVariantMap` / `QVariantList` (from `<logos_json.h>`)             |
-     | `StdLogosResult`            | `LogosResult` (from `<logos_result.h>`) — `{ success, value, error }` |
+     | `StdLogosResult`            | `LogosResult` (from `<logos_result.h>`)—`{ success, value, error }` |
 
-1. Create `src/calc_module_impl.cpp`. Each method calls the corresponding C function and converts the result. No Qt types appear anywhere — you work in plain C++ and the generated glue handles the conversion.
+1. Create `src/calc_module_impl.cpp`. Each method calls the corresponding C function and converts the result. No Qt types appear anywhere—you work in plain C++ and the generated glue handles the conversion.
 
    ```cpp
    #include "calc_module_impl.h"
@@ -810,7 +810,7 @@ Some shells (notably zsh) treat `#` as a comment character. Always put the flake
 
 ### First build is slow
 
-The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and other dependencies. This is a one-time cost — subsequent builds use the Nix cache and are fast (usually under 30 seconds).
+The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and other dependencies. This is a one-time cost—subsequent builds use the Nix cache and are fast (usually under 30 seconds).
 
 ### Symbol not found errors
 

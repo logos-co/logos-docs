@@ -32,7 +32,7 @@ The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sh
 
 You can install the application through Logos Basecamp (Option A), or build it from source with Nix (Option B).
 
-### Option A — Run in Logos Basecamp
+### Option A—Run in Logos Basecamp
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
 1. In the left bar, select **Package Manager**.
@@ -40,7 +40,7 @@ You can install the application through Logos Basecamp (Option A), or build it f
 1. Wait until a green **Installed** label appears next to both [modules](../../get-started/glossary.md#module).
 1. In the left bar, select **storage** to launch the Logos Storage UI.
 
-### Option B — Build and run locally with Nix
+### Option B—Build and run locally with Nix
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries. You need:
 
@@ -196,7 +196,7 @@ When the file is downloaded, the download icon will turn green indicating that t
 The **Mix** switch in the **Node** panel controls private queries. When enabled, the node forwards its content lookups over the Logos mix network, which makes them much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
 
 - The switch is on by default when your configuration includes the Mix options (which, by default, it does).
-- Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off — observers will then be able to link you to your queries.
+- Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off—observers will then be able to link you to your queries.
 
 :::warning
 
@@ -241,7 +241,7 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
    - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
 
-1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilized**: the blocks are actually removed from disk.
+1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
 
 ## Troubleshooting Logos Storage
 

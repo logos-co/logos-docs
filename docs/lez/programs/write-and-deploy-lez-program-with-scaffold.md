@@ -21,7 +21,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program) — from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
+[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
 
 :::info[Prerequisites]
 
@@ -145,7 +145,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id` — a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id`—a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
 
 1. To deploy a specific program by name:
 

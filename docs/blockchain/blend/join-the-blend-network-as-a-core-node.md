@@ -79,7 +79,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     # > ]
     ```
 
-    - Note the `id` of a note held by the `BlendZk` key — you need it in the next step.
+    - Note the `id` of a note held by the `BlendZk` key—you need it in the next step.
 
 1.  Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
@@ -124,7 +124,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
     - The response is a JSON **object keyed by declaration id** (not a list). Find your entry by its `provider_id` (your `BlendSigning` key) or `zk_id` (your `BlendZk` key).
     - `service_type: "BN"` identifies this as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-    - `created` is the epoch your declaration was included; it takes effect about two epochs later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it **advances over time** — it equals `created + 2` right after activation and grows on a long-running node.
+    - `created` is the epoch your declaration was included; it takes effect about two epochs later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it **advances over time**—it equals `created + 2` right after activation and grows on a long-running node.
     - If your declaration is not yet listed, retry after your transaction is included in a block.
 
 1. Check the configured Blend UDP listener:
@@ -155,8 +155,8 @@ Check the node log for the Blend service lifecycle:
 grep -aE "blend::service" <node-log> | tail
 ```
 
-- `Waiting for chain to become Online mode` — not yet; the node is still [bootstrapping](../../get-started/glossary.md#bootstrapping).
-- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — proposals will be routed through Blend, whether your node is a core node or not.
-- `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
+- `Waiting for chain to become Online mode`—not yet; the node is still [bootstrapping](../../get-started/glossary.md#bootstrapping).
+- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …`—proposals will be routed through Blend, whether your node is a core node or not.
+- `current membership is ready members=N`—the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
 
 There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend Network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so it is better to use the log check during sync.

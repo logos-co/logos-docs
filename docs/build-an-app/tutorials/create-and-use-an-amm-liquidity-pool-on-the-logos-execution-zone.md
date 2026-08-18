@@ -14,6 +14,10 @@ slug: create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone
 
 #### Get started creating a token pair pool, swapping, and managing liquidity on LEZ.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers the AMM [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#lez), which manages liquidity pools and enables swaps between custom tokens. It walks through creating a liquidity pool for a token pair, swapping tokens, withdrawing liquidity, and adding liquidity back to the pool.
 
 :::note

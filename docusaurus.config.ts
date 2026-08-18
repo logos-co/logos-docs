@@ -29,6 +29,14 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    {
+      tagName: 'script',
+      attributes: {
+        src: 'https://umami.bi.status.im/script.js',
+        defer: true,
+        'data-website-id': '0f95ea33-c693-4fe7-91dc-8effe9645fa8',
+      },
+    },
   ],
 
   future: {

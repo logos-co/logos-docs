@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI on your machine, syncing it with the public LEZ testnet, creating [accounts](../../get-started/glossary.md#account), and executing all combinations of public, private, shielded, and deshielded native token transfers. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
 :::note

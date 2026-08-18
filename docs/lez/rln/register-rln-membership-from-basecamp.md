@@ -41,12 +41,12 @@ Add the RLN module registry, then install the app with its dependencies from bot
 
 1. Find **RLN Membership** in the list and click **Install**. In the **Install Package?** dialog, review the listed dependency changes and click **Install** to confirm.
 
-   - The wallet, libp2p, and RLN modules are installed for you — `libp2p_module` resolves from the official catalogue and the rest from the registry you added.
-   - This first pass installs the dependencies only. When it finishes, click **Install** on **RLN Membership** again to install the app itself; the dialog confirms **No other packages need to change**.
+   - Six dependencies are installed for you — `libp2p_module` resolves from the official catalogue, and `lez_core`, `liblogos_lez_rln_module`, `liblogos_rln_module`, `rln_gifter_module`, and `keycard_capture_module` from the registry you added.
+   - The single confirmation installs the dependencies and the app itself, downloading about 300 MB. Wait for the **RLN Membership** row to read **INSTALLED** before moving on; if it still offers **INSTALL**, click it once more.
 
-1. Restart Basecamp.
+1. Open **RLN Membership** from the sidebar, restarting Basecamp first if it isn't there yet.
 
-   - **RLN Membership** appears in the sidebar after the restart. If the row shows **RETRY** before you restart, the install has still succeeded — restart and check the sidebar before retrying.
+   - If the row shows **RETRY**, the install has still succeeded — restart and check the sidebar before retrying.
 
 ## Step 2: Register a membership
 
@@ -77,9 +77,10 @@ Open the membership's detail view to confirm its state, then look up the registr
 
    Expect to see state **Active**, a leaf index, your copyable membership id, and the registration transaction.
 
-1. Copy the transaction hash and look it up at [the testnet explorer](https://explorer.testnet.lez.logos.co/).
+1. Copy the transaction hash and look it up at [the testnet explorer](https://explorer.testnet.lez.logos.co/), whose transaction route is `https://explorer.testnet.lez.logos.co/transaction/<hash>`.
 
-   - Indexing may take some time. Expect membership state **Active**, a leaf index assigned, and rate limit `300`, with the registration transaction visible in the detail view.
+   - Paste the hash exactly as **Copy** returns it. The explorer expects the bare hash; a `0x` prefix returns `Invalid transaction hash`.
+   - The explorer's indexer runs well behind the chain head, so a just-registered transaction can return `Transaction not found` for hours. Your registration is already confirmed in the app, so treat this lookup as optional later confirmation rather than a step to wait on. In the app's detail view, expect membership state **Active**, a leaf index assigned, and rate limit `300`.
 
 ## Frequently asked questions
 

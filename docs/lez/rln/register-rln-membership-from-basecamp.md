@@ -37,11 +37,13 @@ Add the RLN module registry, then install the app with its dependencies from bot
 
 1. Under **Add a repository**, paste the registry URL and click **Add**:
 
-   
+   ```text
+   https://github.com/logos-co/logos-rln-modules/releases/download/index/logos-repo.json
+   ```
+   - The repository lists as **Logos RLN Membership** with eight packages.
 
 1. Find **RLN Membership** in the list and click **Install**. In the **Install Package?** dialog, review the listed dependency changes and click **Install** to confirm.
 
-   - Six dependencies are installed for you — `libp2p_module` resolves from the official catalogue, and `lez_core`, `liblogos_lez_rln_module`, `liblogos_rln_module`, `rln_gifter_module`, and `keycard_capture_module` from the registry you added.
    - The single confirmation installs the dependencies and the app itself, downloading about 300 MB. Wait for the **RLN Membership** row to read **INSTALLED** before moving on; if it still offers **INSTALL**, click it once more.
 
 1. Open **RLN Membership** from the sidebar, restarting Basecamp first if it isn't there yet.
@@ -75,12 +77,13 @@ Open the membership's detail view to confirm its state, then look up the registr
 
 1. Tap the membership pill to open its detail view.
 
-   Expect to see state **Active**, a leaf index, your copyable membership id, and the registration transaction.
+   - Expect to see state **Active**, a leaf index, your copyable membership id, and the registration transaction.
 
 1. Copy the transaction hash and look it up at [the testnet explorer](https://explorer.testnet.lez.logos.co/), whose transaction route is `https://explorer.testnet.lez.logos.co/transaction/<hash>`.
 
    - Paste the hash exactly as **Copy** returns it. The explorer expects the bare hash; a `0x` prefix returns `Invalid transaction hash`.
-   - The explorer's indexer runs well behind the chain head, so a just-registered transaction can return `Transaction not found` for hours. Your registration is already confirmed in the app, so treat this lookup as optional later confirmation rather than a step to wait on. In the app's detail view, expect membership state **Active**, a leaf index assigned, and rate limit `300`.
+   - The explorer's indexer runs well behind the chain head, so a just-registered transaction can return `Transaction not found` for hours. Your registration is already confirmed in the app, so treat this lookup as optional later confirmation rather than a step to wait on.
+   - In the app's detail view, expect membership state **Active**, a leaf index assigned, and rate limit `300`.
 
 ## Frequently asked questions
 

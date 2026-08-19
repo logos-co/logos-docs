@@ -350,7 +350,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
    - The response is a JSON object keyed by declaration id (not a list). Find your entry by its `provider_id` (your BlendSigning key) or `zk_id` (your BlendZk key).
    - `service_type: BN` identifies it as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-   - `created` is the epoch your declaration was included; it takes effect about two [epochs](../../get-started/glossary.md#epoch) later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it advances over time — equal to `created + 2` right after activation and higher on a long-running node.
+   - `created` is the epoch your declaration was included; it takes effect about two [epochs](../../get-started/glossary.md#epoch) later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it advances over time—equal to `created + 2` right after activation and higher on a long-running node.
 
 ## Step 6: Configure and start the storage module
 
@@ -386,7 +386,7 @@ Create the storage config and start the module.
    - The `logos.test` preset provides the storage bootstrap settings.
 
    :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (e.g. `storage-config.sh`):
+   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (for example `storage-config.sh`):
 
    ```sh
    #!/usr/bin/env bash
@@ -563,7 +563,7 @@ Run health checks against the daemon and all three modules to confirm the node i
 
 ### Optional: Run the node unattended with systemd
 
-Use a dedicated service for `logoscore` and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in the `logoscore` service — slow or failing module starts may cause systemd to kill the daemon.
+Use a dedicated service for `logoscore` and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in the `logoscore` service—slow or failing module starts may cause systemd to kill the daemon.
 
 Daemon service unit:
 

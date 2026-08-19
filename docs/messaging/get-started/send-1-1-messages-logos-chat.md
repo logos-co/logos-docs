@@ -49,10 +49,10 @@ Identity, conversations, and message history exist only while the app is running
 You need two running instances to complete this procedure. Each instance can use either of the options below independently.
 
 :::info
-When using Nix, all build dependencies — including Qt6, `logos-chat-module`, and `liblogoschat` — are fetched automatically.
+When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and `liblogoschat`—are fetched automatically.
 :::
 
-### Option A — Run in Logos Basecamp
+### Option A—Run in Logos Basecamp
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 1.  In the left bar, select **Package Manager**.
@@ -64,7 +64,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 1. Wait until a green **Installed** label appears next to both modules.
 1. In the left bar, select **chat** to launch the Logos Chat app.
 
-### Option B — Build and run locally with Nix
+### Option B—Build and run locally with Nix
 
 1.  Clone the repository and check out the target release:
 
@@ -82,7 +82,7 @@ When using Nix, all build dependencies — including Qt6, `logos-chat-module`, a
 
 ## Step 2: Exchange intro bundles
 
-The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances — referred to here as **A** and **B**.
+The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances—referred to here as **A** and **B**.
 
 ![Logos Chat App UI screenshot](../assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
 

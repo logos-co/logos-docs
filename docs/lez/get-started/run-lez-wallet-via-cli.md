@@ -23,7 +23,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 
 :::info[Prerequisites]
 
-- **Rust and `cargo`** — install with [`rustup`](https://rustup.rs).
+- **Rust and `cargo`**—install with [`rustup`](https://rustup.rs).
    - The wallet pins its toolchain via `rust-toolchain.toml`, so the correct version is selected automatically.
 - **System build dependencies** for compiling the wallet from source:
 

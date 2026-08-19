@@ -19,7 +19,7 @@ sidebar_position: 5
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-Applications on the Logos network need a protocol-agnostic way to find peers offering specific services — [mix](../../get-started/glossary.md#mix) nodes, relay nodes, storage providers — at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](../../get-started/glossary.md#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
+Applications on the Logos network need a protocol-agnostic way to find peers offering specific services—[mix](../../get-started/glossary.md#mix) nodes, relay nodes, storage providers—at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](../../get-started/glossary.md#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
 
 :::info[Prerequisites]
 
@@ -108,7 +108,7 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    - [Peer IDs](../../get-started/glossary.md#peer-id) are non-deterministic across runs.
 
    :::info
-   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT — a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
+   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
    :::
 
 ## Step 2: Scaffold the new Logos Core module
@@ -229,7 +229,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
 The `.#install` target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
 
-1. In `logos-my-service-module`, initialize a Git repository and run the install build:
+1. In `logos-my-service-module`, initialise a Git repository and run the install build:
 
    ```sh
    git init && git add -A
@@ -317,7 +317,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 
 ## Step 5: Run three-node local discovery
 
-Run three `logoscore` daemon instances on one machine to see the Service Discovery API work: a bootstrap node, an advertiser, and a discoverer. The advertiser and discoverer are configured only with the bootstrap node as their bootstrap node — when the discoverer's lookup returns the advertiser's peer record, the advertisement provably travelled through the DHT, not over a direct A↔B link.
+Run three `logoscore` daemon instances on one machine to see the Service Discovery API work: a bootstrap node, an advertiser, and a discoverer. The advertiser and discoverer are configured only with the bootstrap node as their bootstrap node—when the discoverer's lookup returns the advertiser's peer record, the advertisement provably travelled through the DHT, not over a direct A↔B link.
 
 Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a distinct listen port. Run each block in a separate terminal window.
 

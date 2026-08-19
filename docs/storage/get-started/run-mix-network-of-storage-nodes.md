@@ -16,13 +16,13 @@ sidebar_position: 3
 
 # Run a Mix network of storage nodes
 
-#### Stand up a local Mix network and download a file through it, with the content lookup anonymized.
+#### Stand up a local Mix network and download a file through it, with the content lookup anonymised.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure stands up a small local [Mix](../concepts/mix.md) network using `logoscore`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine — four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
+This procedure stands up a small local [Mix](../concepts/mix.md) network using `logoscore`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
 
 :::info[Prerequisites]
 
@@ -54,7 +54,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 ## What to expect
 
 - You can run several `logoscore` daemons side by side with separate `--config-dir`s.
-- You can set up a private Mix network and configure storage nodes to anonymize their lookups through it.
+- You can set up a private Mix network and configure storage nodes to anonymise their lookups through it.
 - You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
 
 ## Download and install the storage module
@@ -287,7 +287,7 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
 
 ## Upload from one node, download through Mix
 
-Node 5 seeds a file, and node 6 downloads it with `local=false` to force a network lookup — the lookup that Mix hides.
+Node 5 seeds a file, and node 6 downloads it with `local=false` to force a network lookup—the lookup that Mix hides.
 
 1.  Create a small file and upload it through node 5:
 

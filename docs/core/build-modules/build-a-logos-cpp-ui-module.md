@@ -81,7 +81,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
       "version": "1.0.0",
       "type": "ui_qml",
       "category": "tools",
-      "description": "Calculator C++ UI — QML view with process-isolated backend for calc_module",
+      "description": "Calculator C++ UI—QML view with process-isolated backend for calc_module",
       "main": "calc_ui_cpp_plugin",
       "view": "qml/Main.qml",
       "icon": "icons/calc.png",
@@ -102,10 +102,10 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
 
     Key fields:
 
-    - `"type": "ui_qml"` — tells the builder this is a QML view module.
-    - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
-    - `"view": "qml/Main.qml"` — the QML entry point.
-    - `"dependencies": ["calc_module"]` — core modules the backend calls.
+    - `"type": "ui_qml"`—tells the builder this is a QML view module.
+    - `"main": "calc_ui_cpp_plugin"`—the backend Qt plugin library name (without extension).
+    - `"view": "qml/Main.qml"`—the QML entry point.
+    - `"dependencies": ["calc_module"]`—core modules the backend calls.
 2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash
@@ -133,8 +133,8 @@ The `.rep` file is the single source of truth for the interface between the QML 
 
     `repc` generates two headers from this file:
 
-    - `rep_calc_ui_cpp_source.h` — `CalcUiCppSimpleSource` with virtual slots the backend overrides.
-    - `rep_calc_ui_cpp_replica.h` — `CalcUiCppReplica` with typed methods the QML view calls.
+    - `rep_calc_ui_cpp_source.h`:`CalcUiCppSimpleSource` with virtual slots the backend overrides.
+    - `rep_calc_ui_cpp_replica.h`:`CalcUiCppReplica` with typed methods the QML view calls.
 
 ## Step 4: Write the interface header
 
@@ -190,9 +190,9 @@ logos_module(
 
 The backend plugin inherits three base classes:
 
-- `CalcUiCppSimpleSource` — generated from `.rep`, provides the typed source for Qt Remote Objects.
-- `CalcUiCppInterface` — standard Logos plugin interface (`name()`, `version()`).
-- `CalcUiCppViewPluginBase` — generated, provides `setBackend()` and `enableRemoting()`.
+- `CalcUiCppSimpleSource`—generated from `.rep`, provides the typed source for Qt Remote Objects.
+- `CalcUiCppInterface`—standard Logos plugin interface (`name()`, `version()`).
+- `CalcUiCppViewPluginBase`—generated, provides `setBackend()` and `enableRemoting()`.
 
 1.  Create `src/calc_ui_cpp_plugin.h`:
 
@@ -226,7 +226,7 @@ The backend plugin inherits three base classes:
 
         Q_INVOKABLE void initLogos(LogosAPI* api);
         
-        // Slots from calc_ui_cpp.rep — return values directly. The QML replica
+        // Slots from calc_ui_cpp.rep—return values directly. The QML replica
         // receives QRemoteObjectPendingReply; use logos.watch() in QML to get the value.
         int add(int a, int b) override;
         int multiply(int a, int b) override;
@@ -301,7 +301,7 @@ The backend plugin inherits three base classes:
         // The ui-host backend connects asynchronously, so the replica isn't
         // immediately usable. Track readiness reactively: isViewModuleReady()
         // is a Q_INVOKABLE (not a property), so we re-check it on the
-        // onViewModuleReadyChanged signal and once at startup — never via a
+        // onViewModuleReadyChanged signal and once at startup—never via a
         // plain property binding, which would not re-evaluate.
         property bool ready: false
 
@@ -400,9 +400,9 @@ The backend plugin inherits three base classes:
 
     Key patterns:
 
-    - `logos.module("calc_ui_cpp")` — gets the typed replica, with auto-synced properties.
-    - `logos.watch(backend.add(1, 2), ...)` — delivers a `SLOT` return value as a JS Promise.
-    - The `logos` object is injected by the host at runtime — no `QtRemoteObjects` import is needed.
+    - `logos.module("calc_ui_cpp")`—gets the typed replica, with auto-synced properties.
+    - `logos.watch(backend.add(1, 2), ...)`—delivers a `SLOT` return value as a JS Promise.
+    - The `logos` object is injected by the host at runtime—no `QtRemoteObjects` import is needed.
 
 ### Step 7.5: Use the Logos Design System in your QML (Optional)
 
@@ -450,15 +450,15 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
 
     The sidebar splits components into:
 
-    - **Controls** — designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
-    - **Controls (not designed)** — placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
+    - **Controls**—designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
+    - **Controls (not designed)**—placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
 
     **Theme tokens** (use these instead of hex literals or manual font sizes):
 
-    - `Theme.palette.-` — `background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
-    - `Theme.spacing.*` — `tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
-    - `Theme.typography.*` — `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
-    - `Logos.Icons.LogosIcons.*` — `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
+    - `Theme.palette.-`:`background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
+    - `Theme.spacing.*`:`tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
+    - `Theme.typography.*`: `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
+    - `Logos.Icons.LogosIcons.*`:`arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
 
 ## Step 8: Configure the Nix flake
 
@@ -582,7 +582,7 @@ Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logo
 
     ```bash
     nix build .#test-framework -o result-mcp
-    nix run .                    # terminal 1 — app with inspector on :3768
+    nix run .                    # terminal 1—app with inspector on :3768
     node tests/ui-tests.mjs      # terminal 2
     ```
 
@@ -598,4 +598,4 @@ Confirm `../logos-calc-module/lib/libcalc.so` for Linux (or `.dylib` on macOS) e
 
 ### `DEV_QML_PATH` does not seem to take effect
 
-Confirm the path points at the directory containing `Main.qml` directly — not a parent directory. The host looks for the basename from `"view"` in `metadata.json` inside the directory you provide.
+Confirm the path points at the directory containing `Main.qml` directly—not a parent directory. The host looks for the basename from `"view"` in `metadata.json` inside the directory you provide.

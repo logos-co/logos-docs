@@ -264,7 +264,7 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
    :::info
-   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm` — including the ones the `install-node-tools.sh` helper script downloads — only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
+   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm`—including the ones the `install-node-tools.sh` helper script downloads—only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
    :::
 
 ### Use the `nix bundle` command
@@ -447,7 +447,7 @@ Confirm the module is in a subdirectory of the `modules/` directory (for example
 
 ### `lgpm` fails to install a module
 
-Verify the target directory exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the registry, check your internet connection — `lgpd` fetches packages from GitHub Releases. To pin a specific release version, pass `--release <tag>` to `lgpd` (not `lgpm`) when downloading.
+Verify the target directory exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the registry, check your internet connection—`lgpd` fetches packages from GitHub Releases. To pin a specific release version, pass `--release <tag>` to `lgpd` (not `lgpm`) when downloading.
 
 ### LGX variant mismatch
 

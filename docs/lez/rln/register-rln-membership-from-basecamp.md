@@ -52,7 +52,7 @@ Add the RLN module registry, then install the app with its dependencies from bot
 
 1. Open **RLN Membership** from the sidebar, restarting Basecamp first if it isn't there yet.
 
-   - If the row shows **RETRY**, the install has still succeeded — restart and check the sidebar before retrying.
+   - If the row shows **RETRY**, the install has still succeeded—restart and check the sidebar before retrying.
 
 ## Step 2: Register a membership
 
@@ -70,7 +70,7 @@ The **Registering** screen runs two unattended waits: a first-run chain sync (a 
 
 1. Watch the progress bar advance through **Syncing**, **Claiming**, and **Registering**.
 
-   - If the wizard stalls at the start of **Syncing**, or shows "Cannot discover the chain head — is the sequencer reachable?", retry — relaunch the app if needed. The wizard resumes where it left off, and the second attempt typically proceeds.
+   - If the wizard stalls at the start of **Syncing**, or shows `Cannot discover the chain head—is the sequencer reachable?`, retry—relaunch the app if needed. The wizard resumes where it left off, and the second attempt typically proceeds.
    - If **Get more tokens** appears, the faucet claim timed out after its 180-second budget. Click the offered button to retry.
 
    - The app lands on **"You're in!"** with your new membership shown below once registration completes.
@@ -93,7 +93,7 @@ Open the membership's detail view to confirm its state, then look up the registr
 
 ### Why does the wizard stall at the start of Syncing?
 
-The sequencer was briefly unreachable when the wizard checked for the chain head. Retry, relaunching the app if needed — the wizard resumes from where it left off, and the second attempt typically succeeds.
+The sequencer was briefly unreachable when the wizard checked for the chain head. Retry, relaunching the app if needed—the wizard resumes from where it left off, and the second attempt typically succeeds.
 
 ### Why does the Registering screen take several minutes?
 

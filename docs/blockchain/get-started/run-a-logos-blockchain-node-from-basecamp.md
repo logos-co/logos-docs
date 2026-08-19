@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or — as described here — from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or—as described here—from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
 
 :::info[Prerequisites]
 
@@ -111,7 +111,7 @@ In the consensus tab, you will see the consensus status of your node. A syncing 
 
 ## Step 5: Fund your node and propose blocks
 
-A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For conensus leadership, your wallet's notes participate automatically — there is no separate staking step.
+A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For consensus leadership, your wallet's notes participate automatically—there is no separate staking step.
 
 1. In the node view, open **Operations → Accounts** and copy one of your wallet keys.
 
@@ -143,19 +143,19 @@ Participating in the [Blend network](../../get-started/glossary.md#blend-network
 
 ## Step 6: Keeping your node running
 
-The node runs only while Basecamp is open, and it does not resume automatically after a restart — reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-a-logos-blockchain-node-from-cli.md) with a service manager instead.
+The node runs only while Basecamp is open, and it does not resume automatically after a restart—reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-a-logos-blockchain-node-from-cli.md) with a service manager instead.
 
 ## Troubleshooting
 
-### The node is Online but Consensus shows "Call failed", or Accounts won't load
+### The node is Online but Consensus shows `Call failed`, or Accounts won't load
 
-This is a UI-side issue, not a node fault — the core is healthy but the UI cannot render the call. Recover least-destructively first:
+This is a UI-side issue, not a node fault—the core is healthy but the UI cannot render the call. Recover least-destructively first:
 
 1. **Fully quit Basecamp and relaunch** (Quit, not just close the window), then reopen the node. This clears most cases with no data loss.
-2. **Check that the module versions match** — `Blockchain Module` should be `0.2.2` and `Blockchain` should be `0.2.1`. A version mismatch is a common cause.
-3. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder — that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
+2. **Check that the module versions match**: `Blockchain Module` should be `0.2.2` and `Blockchain` should be `0.2.1`. A version mismatch is a common cause.
+3. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder—that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
 
-If the consensus info on the **Node** page shows an advancing height, the node is syncing and a restart is enough — do not wipe a working node.
+If the consensus info on the **Node** page shows an advancing height, the node is syncing and a restart is enough—do not wipe a working node.
 
 ### Height stays at 0
 

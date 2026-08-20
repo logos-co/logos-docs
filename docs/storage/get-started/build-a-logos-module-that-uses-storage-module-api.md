@@ -7,7 +7,7 @@ authors: giuliano
 owner: logos
 doc_version: 1
 slug: building-a-simple-logos-app-on-the-storage-module-api
-sidebar_position: 1
+sidebar_position: 4
 ---
 
 # Building a CLI app on the Storage API
@@ -71,7 +71,7 @@ cd ./storage_cli
 nix flake init -t github:logos-co/logos-module-builder/0.2.0
 ```
 
-## Step 2: Modify the `metadata.json` and CMake configuration
+## Step 2: Modify the `metadata.json`, `flake.nix`, and CMake configurations
 
 ```json showLineNumbers
 {
@@ -81,7 +81,7 @@ nix flake init -t github:logos-co/logos-module-builder/0.2.0
   "type": "core",
   "interface": "universal",
   "category": "example",
-  "description": "A simple CLI frontend module to Logos module",
+  "description": "A simple CLI frontend module to Logos Storage",
   "main": "storage_cli_plugin",
   "dependencies": ["storage_module"],
   "concurrency": "multi",
@@ -109,7 +109,21 @@ You should also delete the generated `src/minimal_impl.{h,cpp}` as we will be ro
 rm src/minimal_impl.{h,cpp}
 ```
 
-and, finally, you should update your CMakeLists.txt file to include the correct file names. You should edit your `CMakeLists.txt` file and replace the part that contains:
+Next, you will need to modify your generated `flakes.nix` to include the storage module as an input:
+
+```nix
+  inputs = {
+    # Replace the line:
+    #   logos-module-builder.url = "github:logos-co/logos-module-builder";
+    # with:
+    logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
+    # and add this:
+    storage_module.url = "github:logos-co/logos-storage-module/v2.1.2";
+  };
+```
+
+
+Finally, you should update your CMakeLists.txt file to include the correct file names. You should edit your `CMakeLists.txt` file and replace the part that contains:
 
 ```cmake
 # Define the module. The generated glue is compiled automatically.
@@ -193,9 +207,9 @@ using nlohmann::json;
 
 ```
 
-Note that `nlohmann/json` (included in line 9) ships with the Logos SDK, so we don't need to install it separately. Next, we open our namespace and define some constants - namely, the configuration we will be using for our node and the chunk size for transfer operations.
+Note that `nlohmann/json` (included in line 13) ships with the Logos SDK, so we don't need to install it separately. Next, we open our namespace and define some constants - namely, the configuration we will be using for our node and the chunk size for transfer operations.
 
-```cpp showLineNumbers=12
+```cpp showLineNumbers=17
 namespace {
 
 constexpr const char *kNodeConfig = R"({
@@ -211,14 +225,14 @@ constexpr int64_t kChunkSize = 65536;
 
 The Storage module exposes mostly asynchronous API calls, and those are not convenient for CLIs in which the user expects the operation to be complete once control returns to the terminal. Our plan, therefore, is to make both `publish` and `download` fully synchronous. We will rely on standard C++ [promises](https://en.cppreference.com/cpp/thread/promise) to do that. We will also use a [mutex](https://en.cppreference.com/cpp/thread/mutex) to serialise `publish/download` operations and keep our bookkeeping simple:
 
-```cpp showLineNumbers=23
+```cpp showLineNumbers=28
 // We'll use two promises: one for synchronizing node startup, and another for
 // upload/download operation results.
 std::promise<bool> gStarted;
 // The start future is potentially called by several different threads, so we
 // need a shared future.
 std::shared_future<bool> gStartedFut = gStarted.get_future().share();
-// gResult is initialized during an asynchronous operation dispatch, set in
+// gResult is initialised during an asynchronous operation dispatch, set in
 // the callback once, and consumed by the dispatcher exactly once, so we can
 // use a regular future.
 std::promise<std::string> gResult;
@@ -232,9 +246,9 @@ int64_t gTransferTotal = 0;
 
 We'll use `gTransferTotal` and `gTransferBytes` to keep track of the progress of the (single) `publish`/`download` operations we allow to run at a time. Next, we define helpers for printing `publish`/`download` progress, and for parsing the JSON payloads we get from the Storage module:
 
-```cpp showLineNumbers=39
+```cpp showLineNumbers=44
 void echo(const std::string &line, bool endline = true) {
-  std::cout << "[storage_cli] " << line;
+  std::cout << line;
   if (endline) {
     std::cout << '\n';
   }
@@ -263,9 +277,9 @@ json parsePayload(const std::string &payload) {
 
 ```
 
-We also define `onDone` and `onProgress` callbacks, which will be invoked by the Storage module's [uploadUrl](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_t) and [downloadToUrl](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_t) operations as they complete or make progress, respectively:
+We also define `onDone` and `onProgress` callbacks, which will be invoked by the Storage module's [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_t) and [downloadToUrl](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_t) operations as they complete or make progress, respectively:
 
-```cpp showLineNumbers=67
+```cpp showLineNumbers=72
 void onProgress(const std::string &payload) {
   gTransferBytes += parsePayload(payload).value("bytes", int64_t{0});
   printProgress();
@@ -277,7 +291,7 @@ void onDone(const std::string &payload) { gResult.set_value(payload); }
 
 Next, comes the implementation of our "transfer helper" - a function that handles the common logic for both publish and download operations, and is perhaps the most important part of our module:
 
-```cpp  showLineNumbers=74
+```cpp showLineNumbers=79
 StdLogosResult syncTransferOp(const std::string &what, int64_t total,
                               const std::function<StdLogosResult()> &op) {
   echo("Waiting for node to start.");
@@ -301,22 +315,22 @@ StdLogosResult syncTransferOp(const std::string &what, int64_t total,
     return started;
   }
 
-  // Storage has its own internal op timeout so I don't need one here.
   const std::string result = gResult.get_future().get();
   const json payload = parsePayload(result);
   return StdLogosResult{.success = payload.value("success", false),
                         .value = payload,
                         .error = ""};
 }
+} // namespace
 ```
 
-It is worth analysing what it does: lines 76-80 wait on the `gStarted` promise, which is set when the node starts. Line 85 acquires the operation lock and effectively blocks two `syncTransferOp` calls from running concurrently beyond that point. Lines 87-89 set up the state for the operations by clearing the completion counters and resetting the result promise.
+It is worth analysing what it does: lines 81-85 wait on the `gStarted` promise, which is set when the node starts. Line 90 acquires the operation lock and effectively blocks two `syncTransferOp` calls from running concurrently beyond that point. Lines 92-94 set up the state for the operations by clearing the completion counters and resetting the result promise.
 
-Line 92 actually sends the operation to the Storage module and, if the operation dispatches successfully (line 93), it proceeds to wait on the promise that will be set by the `onDone` callback shown in the previous listing when the operation completes. Finally, once the operation completes, Lines 99-102 extract the result and return it.
+Line 97 actually sends the operation to the Storage module and, if the operation dispatches successfully (line 98), it proceeds to wait on the promise that will be set by the `onDone` callback shown in the previous listing when the operation completes. Finally, once the operation completes, Lines 103-106 extract the result and return it.
 
 The final part of our implementation contains the operations themselves (which invoke the `syncTransferOp` helper above), the missing callbacks, and the implementation for the `onContextReady` hook:
 
-```cpp showLineNumbers=104
+```cpp showLineNumbers=111
 void StorageCliImpl::onContextReady() {
   StorageModule &storage = modules().storage_module;
 
@@ -335,8 +349,8 @@ void StorageCliImpl::onContextReady() {
        "logos.test)...");
 
   if (!storage.init(kNodeConfig)) {
-    echo("failed to initialize storage module. We'll assume it has already "
-         "been initialized.");
+    echo("failed to initialise storage module. We'll assume it has already "
+         "been initialised.");
     gStarted.set_value(true);
     return;
   }
@@ -381,9 +395,9 @@ StdLogosResult StorageCliImpl::download(const std::string &cid,
 }
 ```
 
-The implementation is mostly straightforward: we use `onContextReady` to initialize the Storage module if not already, and the download and upload operations are thin wrappers on `syncTransferOp` that invoke the appropriate Storage module API and deal with input and output files.
+The implementation is mostly straightforward: we use `onContextReady` to initialise the Storage module if not already, and the download and upload operations are thin wrappers on `syncTransferOp` that invoke the appropriate Storage module API and deal with input and output files.
 
-Note that we assume, in lines 121-130, that failures in dispatching `init` or `start` mean that the module has already been initialized/started. The reality is that we do not know and have no simple API to query that, so we cannot distinguish between "already initialized/started" and "failed to initialize/started". The safest approach is to not reload this module, or to reinitialize the whole node in case you do.
+Note that we assume, in lines 128-137, that failures in dispatching `init` or `start` mean that the module has already been initialised/started. The reality is that we do not know and have no simple API to query that, so we cannot distinguish between "already initialised/started" and "failed to initialise/started". The safest approach is to not reload this module, or to reinitialise the whole node in case you do.
 
 ## Step 5: Building your module
 

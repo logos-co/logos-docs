@@ -306,7 +306,7 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
       // see https://github.com/facebook/docusaurus/issues/3559
-      additionalLanguages: ['bash', 'cmake'],
+      additionalLanguages: ['bash', 'cmake', 'nix'],
     },
   } satisfies Preset.ThemeConfig,
 };

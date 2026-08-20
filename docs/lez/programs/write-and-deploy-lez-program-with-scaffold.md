@@ -29,7 +29,7 @@ This document is accurate for **Testnet v0.2.1**.
     - Linux: x86_64
     - macOS
 - An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
-- [Docker](https://docs.docker.com/get-docker/) or Podman installed.
+- [Docker](https://docs.docker.com/get-docker/) or Podman, if you build guest programs in reproducible mode. The default `logos-scaffold` flow in this document does not need a container runtime.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
     - To install, run `rzup install rust`
 - **Nix** with flakes enabled.

@@ -53,8 +53,13 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.1
+   git checkout v0.2.4
    ```
+
+   - The tag must match the programs deployed on the public testnet. An older tag builds a wallet
+     whose local program IDs no longer match the sequencer, and `wallet check-health` then fails
+     with `Local ID for authenticated transfer program is different from remote`. If you hit that,
+     check out the latest tag and reinstall.
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
@@ -73,6 +78,9 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    wallet change-network testnet
    ```
+
+   - On a fresh machine this also runs first-time setup: it prompts for a password and prints a
+     24-word recovery phrase. Write the phrase down before continuing.
 
 ## Verify the connection
 
@@ -128,6 +136,12 @@ In this task, wallet account and transfer commands interact with the authenticat
 
    In the output, you should see the transaction hash printed as `Transaction hash is <hash>`.
 
+   :::info
+   The wallet often stops polling before the transaction lands and prints `Error: All pollers
+   failed` after the hash. The transaction is still in flight—wait a minute or two and re-run
+   `wallet account get`, or check it with `wallet chain-info transaction --hash <hash>`.
+   :::
+
 1. Check the account updated state:
 
    ```bash
@@ -162,6 +176,19 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```bash
    wallet account new public
    ```
+
+1. Initialise the recipient account under the authenticated-transfer program:
+
+   ```bash
+   wallet auth-transfer init --account-id <recipient_public_account_id>
+   ```
+
+   :::warning
+   Do not skip this. A transfer whose recipient has never been initialised is discarded by the
+   sequencer without an error: `wallet chain-info transaction --hash <hash>` reports
+   `Transaction is None`, the sender's balance does not change, and the recipient stays
+   `Uninitialized`.
+   :::
 
 1. Send 37 tokens from sender to recipient:
 

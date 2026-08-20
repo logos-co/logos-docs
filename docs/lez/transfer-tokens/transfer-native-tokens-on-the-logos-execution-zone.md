@@ -52,9 +52,17 @@ Transfers are irreversible. Double-check all details before proceeding.
 ## What to expect
 
 - The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
-- You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
+- You initialise an account with `wallet auth-transfer init` before it can take part in a transfer. Both the sender **and** the recipient must be initialised first.
 - You can transfer native tokens to public accounts and verify balances on-chain.
 - Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.
+
+:::warning
+Initialise the recipient too. A native-token transfer whose recipient has never been initialised is
+discarded by the sequencer with no error returned: `wallet chain-info transaction --hash <hash>`
+reports `Transaction is None`, the sender's balance is unchanged and the recipient stays
+`Uninitialized`. Run `wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID` against the
+recipient before sending.
+:::
 
 ## Step 1: Create and fund a sender account
 
@@ -152,25 +160,21 @@ Currently, only uninitialised private accounts can be modified without authorisa
 
 Use the `wallet auth-transfer send` to transfer tokens. Replace `ACCOUNT-TYPE` with the type of the account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
-````
 ```sh
 wallet auth-transfer send \
     --from ACCOUNT-TYPE/SENDER-ACCOUNT-ID \
     --to ACCOUNT-TYPE/RECIPIENT-ACCOUNT-ID \
     --amount TOKEN-AMOUNT
 ```
-````
 
 For example, to transfer 17 tokens from the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS` to the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-````
 ```sh
 wallet auth-transfer send \
     --from Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS \
     --to Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL \
     --amount 17
 ```
-````
 
 ### Method 2: Transfer tokens using the recipient account `npk` and `vpk`
 
@@ -199,28 +203,22 @@ Check your account `npk` and `vpk` using the `wallet account get --account-id AC
 
 Confirm the transfer by checking the balances of both accounts using the `wallet account get` command.
 
-````
 ```sh
 wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
 ```
-````
 
 For example, to check the balance of the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-````
 ```sh
 wallet account get --account-id Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL
 ```
-````
 
 The output looks like this:
 
-````
 ```text
 Account owned by authenticated transfer program
 {..."balance":BALANCE-AMOUNT...}
 ```
-````
 
 :::tip
 When checking the balance of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.

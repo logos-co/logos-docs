@@ -2,7 +2,6 @@ artifact
 [Bb]asecamp
 [Bb]edrock
 Blend [Nn]etwork
-boostrapping
 Codex
 [Cc]ore
 Cryptarchia

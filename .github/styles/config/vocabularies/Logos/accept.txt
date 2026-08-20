@@ -2,7 +2,6 @@ artifact
 [Bb]asecamp
 [Bb]edrock
 Blend [Nn]etwork
-boostrapping
 Codex
 [Cc]ore
 Cryptarchia
@@ -26,8 +25,10 @@ mempool
 Mix
 Mixnet
 multisig
+mutex
 Mantle
 MDX
+namespace
 Nomos
 Nim
 Nimbus

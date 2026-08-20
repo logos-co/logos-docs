@@ -397,7 +397,7 @@ StdLogosResult StorageCliImpl::download(const std::string &cid,
 
 The implementation is mostly straightforward: we use `onContextReady` to initialise the Storage module if not already, and the download and upload operations are thin wrappers on `syncTransferOp` that invoke the appropriate Storage module API and deal with input and output files.
 
-Note that we assume, in lines 128-137, that failures in dispatching `init` or `start` mean that the module has already been initialised/started. The reality is that we do not know and have no simple API to query that, so we cannot distinguish between "already initialised/started" and "failed to initialise/started". The safest approach is to not reload this module, or to reinitialise the whole node in case you do.
+Note that we assume, in lines 128-137, that failures in dispatching `init` or `start` mean that the module has already been initialised/started. The reality is that we do not know and have no simple API to query that, so we cannot distinguish between "already initialised/started" and "failed to initialise/started." The safest approach is to not reload this module, or to reinitialise the whole node in case you do.
 
 ## Step 5: Building your module
 

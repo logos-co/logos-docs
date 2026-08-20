@@ -133,12 +133,12 @@ logos_module(
 )
 ```
 
-### Step 3: Define the interface
+## Step 3: Define the interface
 
-Next, we will define our module's interface. Create a file named `src/storage_cli_plugin.h` with the following in it:
+Next, we will define our module's interface. Create a file named `src/storage_cli_impl.h` with the following in it:
 
 ```cpp showLineNumbers
-// storage_cli_plugin.h
+// storage_cli_impl.h
 #pragma once
 
 #include <logos_module_context.h>
@@ -151,13 +151,11 @@ Next, we will define our module's interface. Create a file named `src/storage_cl
 class StorageCliImpl : public LogosModuleContext {
 public:
   /**
-   * Uploads a file to the local node. Returns `true` if upload succeeded,
-   * false otherwise.
+   * Uploads a file to the local node.
    */
   StdLogosResult publish(const std::string &input);
   /**
    * Downloads a file from the network onto the specified local path.
-   * Returns `true` if download succeeded, false otherwise.
    */
   StdLogosResult download(const std::string &cid, const std::string &output);
 
@@ -174,16 +172,21 @@ This has the two simple operations we want to have: `publish` which publishes a 
 
 ## Step 4: Main implementation
 
-The implementation should go on a file named `src/storage_cli_plugin.cpp`. At the beginning, we should include the header we defined before, as well as other headers we'll need:
+The implementation should go in a file named `src/storage_cli_impl.cpp`. At the beginning, include the header we defined before, as well as other headers we need:
 
 ```cpp showLineNumbers
-// storage_cli_plugin.cpp
+// storage_cli_impl.cpp
 #include "storage_cli_impl.h"
 #include "logos_sdk.h"
 
+#include <algorithm>
+#include <cstdint>
+#include <filesystem>
+#include <functional>
 #include <future>
 #include <iostream>
 #include <mutex>
+#include <system_error>
 #include <nlohmann/json.hpp>
 
 using nlohmann::json;
@@ -211,23 +214,23 @@ The Storage module exposes mostly asynchronous API calls, and those are not conv
 ```cpp showLineNumbers=23
 // We'll use two promises: one for synchronizing node startup, and another for
 // upload/download operation results.
-std::promise<bool> g_started;
+std::promise<bool> gStarted;
 // The start future is potentially called by several different threads, so we
 // need a shared future.
-std::shared_future<bool> g_started_fut = g_started.get_future().share();
-// g_result is initialized during an asynchronous operation dispatch, set in
+std::shared_future<bool> gStartedFut = gStarted.get_future().share();
+// gResult is initialized during an asynchronous operation dispatch, set in
 // the callback once, and consumed by the dispatcher exactly once, so we can
 // use a regular future.
-std::promise<std::string> g_result;
+std::promise<std::string> gResult;
 // Serializes upload/download operations.
-std::mutex g_opLock;
+std::mutex gOpLock;
 
-int64_t g_transferBytes = 0;
-int64_t g_transferTotal = 0;
+int64_t gTransferBytes = 0;
+int64_t gTransferTotal = 0;
 
 ```
 
-We'll use `g_transferTotal` and `g_transferBytes` to keep track of the progress of the (single) `publish`/`download` operations we allow to run at a time. Next, we define helpers for printing `publish`/`download` progress, and for parsing the JSON payloads we get from the Storage module:
+We'll use `gTransferTotal` and `gTransferBytes` to keep track of the progress of the (single) `publish`/`download` operations we allow to run at a time. Next, we define helpers for printing `publish`/`download` progress, and for parsing the JSON payloads we get from the Storage module:
 
 ```cpp showLineNumbers=39
 void echo(const std::string &line, bool endline = true) {
@@ -239,13 +242,13 @@ void echo(const std::string &line, bool endline = true) {
 }
 
 void printProgress() {
-  if (g_transferTotal == 0) {
-    echo(" " + std::to_string(g_transferBytes) + " bytes");
+  if (gTransferTotal == 0) {
+    echo(" " + std::to_string(gTransferBytes) + " bytes");
     return;
   }
-  int64_t completed = std::min(g_transferBytes, g_transferTotal);
-  echo("  " + std::to_string(completed * 100 / g_transferTotal) + "% (" +
-       std::to_string(completed) + " of " + std::to_string(g_transferTotal) +
+  int64_t completed = std::min(gTransferBytes, gTransferTotal);
+  echo("  " + std::to_string(completed * 100 / gTransferTotal) + "% (" +
+       std::to_string(completed) + " of " + std::to_string(gTransferTotal) +
        " bytes)");
 }
 
@@ -264,11 +267,11 @@ We also define `onDone` and `onProgress` callbacks, which will be invoked by the
 
 ```cpp showLineNumbers=67
 void onProgress(const std::string &payload) {
-  g_transferBytes += parsePayload(payload).value("bytes", int64_t{0});
+  gTransferBytes += parsePayload(payload).value("bytes", int64_t{0});
   printProgress();
 }
 
-void onDone(const std::string &payload) { g_result.set_value(payload); }
+void onDone(const std::string &payload) { gResult.set_value(payload); }
 
 ```
 
@@ -278,7 +281,7 @@ Next, comes the implementation of our "transfer helper" - a function that handle
 StdLogosResult syncTransferOp(const std::string &what, int64_t total,
                               const std::function<StdLogosResult()> &op) {
   echo("Waiting for node to start.");
-  if (!g_started_fut.get()) {
+  if (!gStartedFut.get()) {
     return StdLogosResult{
         .success = false, .value = {}, .error = "Node start failed"};
   }
@@ -286,11 +289,11 @@ StdLogosResult syncTransferOp(const std::string &what, int64_t total,
 
   // This will block attempts to run multiple operations at once.
   // This is not a limitation in storage but of our state tracking.
-  std::scoped_lock lock(g_opLock);
+  std::scoped_lock lock(gOpLock);
 
-  g_result = std::promise<std::string>();
-  g_transferBytes = 0;
-  g_transferTotal = total;
+  gResult = std::promise<std::string>();
+  gTransferBytes = 0;
+  gTransferTotal = total;
 
   // Actually sends the operation to Storage.
   StdLogosResult started = op();
@@ -299,7 +302,7 @@ StdLogosResult syncTransferOp(const std::string &what, int64_t total,
   }
 
   // Storage has its own internal op timeout so I don't need one here.
-  const std::string result = g_result.get_future().get();
+  const std::string result = gResult.get_future().get();
   const json payload = parsePayload(result);
   return StdLogosResult{.success = payload.value("success", false),
                         .value = payload,
@@ -307,7 +310,7 @@ StdLogosResult syncTransferOp(const std::string &what, int64_t total,
 }
 ```
 
-It is worth analysing what it does: lines 76-80 wait on the `g_started` promise, which is set when the node starts. Line 85 acquires the operation lock and effectively blocks two `syncTransferOp` calls from running concurrently beyond that point. Lines 87-89 set up the state for the operations by clearing the completion counters and resetting the result promise.
+It is worth analysing what it does: lines 76-80 wait on the `gStarted` promise, which is set when the node starts. Line 85 acquires the operation lock and effectively blocks two `syncTransferOp` calls from running concurrently beyond that point. Lines 87-89 set up the state for the operations by clearing the completion counters and resetting the result promise.
 
 Line 92 actually sends the operation to the Storage module and, if the operation dispatches successfully (line 93), it proceeds to wait on the promise that will be set by the `onDone` callback shown in the previous listing when the operation completes. Finally, once the operation completes, Lines 99-102 extract the result and return it.
 
@@ -320,7 +323,7 @@ void StorageCliImpl::onContextReady() {
   storage.onStorageStart([](const std::string &payload) {
     const json j = parsePayload(payload);
     echo("Node started with result: " + j.dump());
-    g_started.set_value(j.value("success", false));
+    gStarted.set_value(j.value("success", false));
   });
 
   storage.onStorageUploadProgress(&onProgress);
@@ -334,17 +337,16 @@ void StorageCliImpl::onContextReady() {
   if (!storage.init(kNodeConfig)) {
     echo("failed to initialize storage module. We'll assume it has already "
          "been initialized.");
-    g_started.set_value(true);
+    gStarted.set_value(true);
     return;
   }
   if (!storage.start()) {
     echo("node start was rejected. We'll assume it has already been started.");
-    g_started.set_value(true);
+    gStarted.set_value(true);
   }
 }
 
 StdLogosResult StorageCliImpl::publish(const std::string &input) {
-  // the module, so the file has to exist there for the upload to make sense.
   std::error_code ec;
   const std::filesystem::path path = std::filesystem::absolute(input, ec);
   const auto size = static_cast<int64_t>(std::filesystem::file_size(path, ec));
@@ -404,7 +406,7 @@ The Storage module is a dependency, and you should download and install it using
 
 ```bash
 lgpd --version 2.1.2 download storage_module -o .
-lgpm install --file /tmp/storage_module-2.1.2.lgx --modules-dir ./modules
+lgpm install --file ./storage_module-2.1.2.lgx --modules-dir ./modules
 ```
 
 ## Step 7: Install your module
@@ -458,7 +460,7 @@ Let's use the CLI to publish a file:
 
 ```bash
 $ echo "Hello, World!" > hello.txt
-$ logoscore --config-dir ./config call storage_cli publish ./test.txt
+$ logoscore --config-dir ./config-dir call storage_cli publish ./hello.txt
 {
   "error": null,
   "success": true,

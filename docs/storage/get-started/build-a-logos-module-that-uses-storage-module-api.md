@@ -209,7 +209,7 @@ constexpr int64_t kChunkSize = 65536;
 
 ```
 
-The Storage module exposes mostly asynchronous API calls, and those are not convenient for CLIs in which the user expects the operation to be complete once control returns to the terminal. Our plan, therefore, is to make both `publish` and `download` fully synchronous. We will rely on standard C++ [promises](https://en.cppreference.com/cpp/thread/promise) to do that. We will also use a [mutex](https://en.cppreference.com/cpp/thread/mutex) to serialize `publish/download` operations and keep our bookkeeping simple:
+The Storage module exposes mostly asynchronous API calls, and those are not convenient for CLIs in which the user expects the operation to be complete once control returns to the terminal. Our plan, therefore, is to make both `publish` and `download` fully synchronous. We will rely on standard C++ [promises](https://en.cppreference.com/cpp/thread/promise) to do that. We will also use a [mutex](https://en.cppreference.com/cpp/thread/mutex) to serialise `publish/download` operations and keep our bookkeeping simple:
 
 ```cpp showLineNumbers=23
 // We'll use two promises: one for synchronizing node startup, and another for

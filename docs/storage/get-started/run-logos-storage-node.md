@@ -104,25 +104,32 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 
     ```sh
     logoscore status
+
+    # Logoscore Daemon
+    #   Status:       running
+    #   PID:          148188
+    #   Uptime:       0s
+    #   Version:      v1.0.0
+    #
+    # Modules: 1 loaded, 0 crashed, 1 not loaded
+    #   storage_module     v2.1.2  not_loaded  -
+    #   capability_module  v1.0.0  loaded      2m
     ```
 
-    `logoscore` prints JSON when its output is piped and a table when attached to a terminal; pass
-    `--json` or `--human` to force one. Piped, a healthy daemon reports:
-
-    ```json
-    {"daemon":{"pid":148188,"status":"running","version":"1.0.0"},
-     "modules":[{"name":"storage_module","status":"not_loaded","version":"2.1.2"},
-                {"name":"capability_module","status":"loaded","uptime_seconds":7,"version":"1.0.0"}],
-     "modules_summary":{"crashed":0,"loaded":1,"not_loaded":1}}
-    ```
+    - `logoscore` prints this table when it is attached to a terminal and JSON when its output is
+      piped or redirected. Pass `--human` or `--json` to force either one.
 
 1.  Load the storage module and confirm it reports `loaded`:
 
     ```sh
     logoscore load-module storage_module
-    # {"dependencies_loaded":[],"module":"storage_module","status":"ok","version":"2.1.2"}
+    # Loaded module: storage_module (v2.1.2)
+
     logoscore status
-    # ... "modules_summary":{"crashed":0,"loaded":2,"not_loaded":0}
+    # ...
+    # Modules: 2 loaded, 0 crashed, 0 not loaded
+    #   storage_module     v2.1.2  loaded      0s
+    #   capability_module  v1.0.0  loaded      2m
     ```
 
     - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.

@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
 
@@ -41,7 +41,7 @@ Identity, conversations, and message history exist only while the app is running
 ## What to expect
 
 - You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](../../get-started/glossary.md#basecamp).
-- You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
+- You can exchange encrypted messages between two instances in real time once one of them has opened a conversation with the other's address.
 - You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
 
 ## Step 1: Run the Logos Chat app
@@ -59,7 +59,7 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
 1.  Find **Chat** (type `ui_qml`) in the package list and click **INSTALL**. The **Install Package?**
-    dialogue lists **Chat Module** (type `core`) as a dependency; confirm with **Install**.
+    dialogue lists the `chat_module` core package it depends on; confirm with **Install**.
 
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
 1. Wait until the **Action** column reads **INSTALLED** for both packages.
@@ -100,19 +100,18 @@ instance's address to open a conversation from the other—referred to here as *
 2. Paste B's address into the **New DM** dialogue under **Paste the other user's address**.
 3. Click **Create**. A new conversation appears in A's conversation list.
 
-**Back on instance B:**
-
-1. Confirm the conversation appears automatically in B's list once A sends its first message, then select it.
+There is no intro message to type and nothing to accept on B's side: the conversation appears in
+B's list as soon as A's first message arrives, which you send in the next step.
 
 ## Step 3: Send and receive messages
 
-1. Select the shared conversation in either instance.
-2.  Type a message in the message input field, then press `Enter` or click `>>`.
+1. On instance A, select the conversation you created in [Step 2](#step-2-start-a-conversation).
+2.  Type a message in the message input field, then press `Enter` or click the send button.
 
     Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
-3.  From instance A, send a message and observe instance B.
+3.  Observe instance B.
 
-    **Expected result:** the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. A reply from B appears as an incoming bubble in A.
+    **Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select it and reply; the reply appears as an incoming bubble in A.
 
 ## Troubleshooting Logos Chat
 

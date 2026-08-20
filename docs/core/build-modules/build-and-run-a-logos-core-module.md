@@ -357,7 +357,7 @@ Registry packages currently ship portable variants only (for example, `linux-amd
    - The downloaded file is named `<name>-<version>.lgx`. For example, `lgpd download chat_module` writes `./packages/chat_module-0.2.2.lgx`.
    - Run `lgpd info <registry-name>` to see every published version and its root hash.
 
-1. Create the `modules/` directory and install the downloaded package. Replace `<downloaded-name>` with the actual filename written by `lgpd` (for example, `chat_module.lgx`).
+1. Create the `modules/` directory and install the downloaded package. Replace `<downloaded-name>` with the actual filename written by `lgpd` (for example, `chat_module-0.2.2.lgx`).
 
    ```bash
    lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx

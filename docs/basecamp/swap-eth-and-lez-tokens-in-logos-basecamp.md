@@ -108,7 +108,7 @@ The catalogue is saved in your Basecamp settings and survives restarts. You add 
 
 ## Step 2: Set up your accounts
 
-A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. Version `0.4.4` builds both for you in the **Setup** tab—no command line, and no copying a raw private key between apps. Every field the tab fills is an ordinary **Config** field underneath, so nothing here is hidden from you.
+A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. Version `0.4.4` builds both for you in the **Setup** tab—no command line, and no copying a raw private key between apps.
 
 On a fresh install the app opens on the **Setup** tab automatically. You can also reach it any time from the **Setup** tab at the right-hand end of the tab row.
 
@@ -145,11 +145,12 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 The **Add funds** button initialises the account for you, so you can't forget to. That matters because an uninitialised LEZ account is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. If a swap ever does nothing at all, re-running **Add funds** re-checks the initialisation.
 :::
 
-## Step 3: Confirm your configuration
+## Step 3: Confirm the app is ready to trade
 
-Version `0.4.4` has no **Config** tab: the network endpoints ship pre-filled and the **Setup** tab
-writes your keys for you, so there is nothing to enter by hand. Use the values in
-[Networks and addresses](#networks-and-addresses) to check what the app is using.
+Version `0.4.4` has nothing to configure by hand: the network endpoints ship pre-filled and the
+**Setup** tab writes your keys for you. This step is a check that the app is connected and pointed
+at the right contracts before you commit funds. Use the values in
+[Networks and addresses](#networks-and-addresses) to compare against.
 
 1. Open the **Market** tab and click any offer.
 
@@ -159,6 +160,13 @@ writes your keys for you, so there is nothing to enter by hand. Use the values i
 
 1. Confirm the header shows your `ETH` and `LEZ` balances and the status chip reads
    `Connected · <n> peers`, and that the board's own chip reads `Ready to trade`.
+
+:::info
+A red `Fix validation errors before fetching balances` banner can sit across the top of the
+**Market** tab at the same time as the `Ready to trade` chip. In `0.4.4` the two disagree and the
+banner is the one that's wrong: with the **Setup** tab finished, offers still load and a swap still
+starts. Dismiss it with the **×** on its right and go by the chip.
+:::
 
 :::info
 The contract at `0x351B0EA07739FA9F6769213927D7836a790A5FAF` is version 2 of the Ethereum HTLC. Earlier builds of this app pointed at a version 1 contract at `0x8636Fe66DFee166589a913140f14d5F57394834A`, which is still deployed and still responds. It's written out in full here so you can check character by character that you aren't on it, because the two are easy to confuse and the failure is unhelpful. Version 1 has no `INTERFACE_VERSION` function, so the app's compatibility check reverts against it and swaps don't start.

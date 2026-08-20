@@ -52,14 +52,15 @@ Transfers are irreversible. Double-check all details before proceeding.
 ## What to expect
 
 - The token program can move balances between token holding accounts.
-- A token holding account is claimed by the token program when it is first given a balance. After that, only the token program can modify it, and it can only hold tokens of that one definition ID.
+- The account you name in `wallet token new --supply-account-id` is claimed by the token program when the token is created. After that, only the token program can modify it, and it can only hold tokens of that one definition ID.
 
 :::warning
 On the current testnet, `wallet token send` to an account that has never been initialised is
 discarded by the sequencer without an error: `wallet chain-info transaction --hash <hash>` reports
-`Transaction is None`, the sender keeps its balance and the recipient stays `Uninitialized`. Until
-this is fixed, create recipient holding accounts with `wallet token new --supply-account-id`, which
-does claim an uninitialised account correctly.
+`Transaction is None`, the sender keeps its balance and the recipient stays `Uninitialized`. Only
+the supply account named at `wallet token new` is claimed reliably, and there is no
+`wallet token init`, so until this is fixed the transfers in [Step 2](#step-2-transfer-tokens) only
+work between accounts that already hold a balance of the same token.
 :::
 
 :::info
@@ -135,7 +136,7 @@ Holding account owned by token program
 When checking the status of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
 :::
 
-### Step 2: Transfer tokens
+## Step 2: Transfer tokens
 
 When transferring custom tokens using the `wallet token send` command, you specify the sender and recipient accounts with the account IDs. Both accounts can be public or private, but they must have the same token definition ID.
 

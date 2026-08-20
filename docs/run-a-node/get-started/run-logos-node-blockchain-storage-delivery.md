@@ -157,7 +157,7 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    lgpd download blockchain_module --version 0.2.2 --output /opt/logos-node/packages
-   lgpd download storage_module --version 2.1.2 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
+   lgpd download storage_module --version 2.1.2 --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 --output /opt/logos-node/packages
    lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output /opt/logos-node/packages
    ```
 
@@ -165,7 +165,7 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.2.lgx
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/storage_module-2.1.0.lgx
+   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/storage_module-2.1.2.lgx
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/delivery_module-0.2.0.lgx
    ```
 
@@ -180,8 +180,11 @@ Download and install the three module packages from the configured module [catal
    ```text
    blockchain_module 0.2.2
    delivery_module 0.2.0
-   storage_module 2.1.0
+   storage_module 2.1.2
    ```
+
+   - If a `lgpd download … --root-hash` call fails, run `lgpd info <module>` to list the published
+     versions with their root hashes and use the one that matches the version you asked for.
 
 ## Step 4: Start Logos Core
 
@@ -363,7 +366,7 @@ Create the storage config and start the module.
    mkdir -p storage-data
    cat > config.json <<EOF
    {
-     "data-dir": "./storage-data",
+     "data-dir": "$(pwd)/storage-data",
      "log-level": "INFO",
      "listen-port": 8091,
      "disc-port": 8090,
@@ -372,11 +375,18 @@ Create the storage config and start the module.
    EOF
    ```
 
+   :::warning
+   Use an absolute path for `data-dir`. In daemon mode the storage module runs as its own process
+   whose working directory is the daemon's (`/var/lib/logos-node` in this layout), not the
+   directory you are typing in, so a relative `./storage-data` writes to
+   `/var/lib/logos-node/storage-data` and leaves the directory you created here empty.
+   :::
+
    - `config.json` includes the following fields:
 
    | Field | Purpose |
    |-------|---------|
-   | `data-dir` | Storage repository path |
+   | `data-dir` | Storage repository path (absolute) |
    | `log-level` | Log verbosity |
    | `listen-port` | Public TCP libp2p port |
    | `disc-port` | Public UDP discovery port |

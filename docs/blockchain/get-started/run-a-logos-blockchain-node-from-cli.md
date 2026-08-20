@@ -81,7 +81,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
+1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.2:
 
     ```sh
     logoscore call blockchain_module generate_user_config '{
@@ -164,19 +164,25 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
     ```json
     {
-      "listen_addresses": ["/ip4/127.0.0.1/udp/3001/quic-v1"],
+      "listen_addresses": ["/ip4/127.0.0.1/udp/3000/quic-v1"],
       "peer_id": "12D3...fuS2",
+      "connected_peers": ["12D3...", "..."],
       "n_peers": 16,
       "n_connections": 19,
-      "n_pending_connections": 0
+      "n_pending_connections": 0,
+      "discovered_peers": ["12D3...", "..."],
+      "n_discovered_peers": 12
     }
     ```
+
+    - `connected_peers` and `discovered_peers` are full lists and dominate the real output; pipe
+      through `jq '{n_peers, n_connections}'` if you only want the counts.
 
     - Confirm `n_peers` is greater than `0`.
 
 1. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
 
-1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
+1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping usually takes about an hour, but can take considerably longer if the chain head is far ahead; the node reports `phase: ProlongedBootstrapPeriod` while it catches up.
 
 ## Step 5: Request tokens from the faucet
 
@@ -201,12 +207,10 @@ A faucet distributes free tokens on test networks so you can experiment without 
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 
-    :::tip
-    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
-
-    ```sh
-    curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
-    ```
+    :::info
+    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`,
+    but that endpoint sits behind an authentication proxy: an unauthenticated `curl -X POST`
+    returns `403` and an OAuth2 sign-in page. Request funds from the faucet page in a browser.
     :::
 
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:

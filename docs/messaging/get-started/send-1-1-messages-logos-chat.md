@@ -58,11 +58,12 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
 1.  In the left bar, select **Package Manager**.
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-1.  Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
+1.  Find **Chat** (type `ui_qml`) in the package list and click **INSTALL**. The **Install Package?**
+    dialogue lists **Chat Module** (type `core`) as a dependency; confirm with **Install**.
 
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
-1. Wait until a green **Installed** label appears next to both modules.
-1. In the left bar, select **chat** to launch the Logos Chat app.
+1. Wait until the **Action** column reads **INSTALLED** for both packages.
+1. Restart Basecamp, then select the chat icon in the left bar to launch the Logos Chat app.
 
 ### Option B—Build and run locally with Nix
 
@@ -80,30 +81,28 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     nix run
     ```
 
-## Step 2: Exchange intro bundles
+## Step 2: Start a conversation
 
-The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances—referred to here as **A** and **B**.
+The app auto-initialises on launch. The bottom-left panel shows your identity, an **Online**
+indicator, and your **address** in hexadecimal with a copy button next to it. You need one
+instance's address to open a conversation from the other—referred to here as **A** and **B**.
 
 ![Logos Chat App UI screenshot](../assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
 
-**On instance A:**
-
-1.  Click **Get Intro Bundle**, then click **Copy to Clipboard**.
-
-    The bundle is a string starting with `logos_chatintro…`.
-1. Send the copied bundle to instance B through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
-1. Close the **My Bundle** popup.
-
 **On instance B:**
 
-1. Click **+ new**.
-2. Paste A's intro bundle into the dialogue, then type an intro message (default: `Hello!`).
-3. Confirm. A new conversation appears in B's conversation list.
+1. In the bottom-left panel, click the copy button next to your address.
+1. Send the address to instance A through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
 
-**Back on instance A:**
+**On instance A:**
 
-1. Confirm the new conversation appears automatically in A's conversation list, then select it.
-2. Verify that B's intro message is visible in the chat panel.
+1. Click **New chat**, then choose **Direct message** ("One person, by address").
+2. Paste B's address into the **New DM** dialogue under **Paste the other user's address**.
+3. Click **Create**. A new conversation appears in A's conversation list.
+
+**Back on instance B:**
+
+1. Confirm the conversation appears automatically in B's list once A sends its first message, then select it.
 
 ## Step 3: Send and receive messages
 
@@ -123,4 +122,4 @@ Both instances need to reach a shared bootstrap peer to connect to the peer-to-p
 
 ### A previously open conversation has disappeared
 
-Conversations are ephemeral and are not persisted between sessions. Re-exchange intro bundles between the two instances to open a new conversation.
+Conversations are ephemeral and are not persisted between sessions. Open a new conversation with **New chat > Direct message** using the other instance's current address.

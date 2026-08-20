@@ -59,11 +59,13 @@ Create a new directory and initialise it from the C++ backend UI template.
     ```bash
     git init && git add -A
     ```
-4.  Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
+4.  Remove the template's example sources. The scaffolded template includes `ui_example` files whose class names and IIDs do not match the module you are about to write; leaving them in `src/` is confusing and the `.rep` file would be built alongside yours:
 
     ```bash
-    rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
+    rm -f src/ui_example.rep src/ui_example_backend.h src/ui_example_backend.cpp
     ```
+
+    Keep `src/qml/Main.qml`—you replace its contents in [Step 7](#step-7-write-the-qml-view).
 
 ## Step 2: Configure the module metadata
 

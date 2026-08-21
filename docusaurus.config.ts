@@ -237,7 +237,7 @@ const config: Config = {
               label: 'Build an app',
             },
             {
-              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file',
+              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
               label: 'Contribute',
             },
           ],

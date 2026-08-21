@@ -112,25 +112,24 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
     #   Version:      v1.0.0
     #
     # Modules: 1 loaded, 0 crashed, 1 not loaded
-    #   storage_modulev         not_loaded  -
-    #   capability_modulev         loaded      -
+    #   storage_module     v2.1.2  not_loaded  -
+    #   capability_module  v1.0.0  loaded      2m
     ```
+
+    - `logoscore` prints this table when it is attached to a terminal and JSON when its output is
+      piped or redirected. Pass `--human` or `--json` to force either one.
 
 1.  Load the storage module and confirm it reports `loaded`:
 
     ```sh
     logoscore load-module storage_module
-    # Loaded module: storage_module (v)
-    logoscore status
-    # Logoscore Daemon
-    #   Status:       running
-    #   PID:          148188
-    #   Uptime:       0s
-    #   Version:      v1.0.0
+    # Loaded module: storage_module (v2.1.2)
 
+    logoscore status
+    # ...
     # Modules: 2 loaded, 0 crashed, 0 not loaded
-    #   storage_modulev         loaded      -
-    #   capability_modulev         loaded      -
+    #   storage_module     v2.1.2  loaded      0s
+    #   capability_module  v1.0.0  loaded      2m
     ```
 
     - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.

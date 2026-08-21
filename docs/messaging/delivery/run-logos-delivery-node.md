@@ -235,6 +235,18 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
 The first build runs Nix and downloads release packages, which takes 30–45 minutes on a typical connection. The process is not hung—let it finish. Subsequent starts use the cached layers and complete in seconds.
 
+### Why does the daemon refuse to start with "a logoscore daemon is already running"?
+
+A `logoscore` daemon is exclusive to its config directory, so a daemon started for another guide
+(the blockchain node, for example) blocks this one. Give each daemon its own config directory:
+
+```bash
+logoscore --config-dir "$PWD/.logoscore" -D -m ./modules
+```
+
+Pass the same `--config-dir` to every client command for that daemon, or export
+`LOGOSCORE_CONFIG_DIR`.
+
 ### Why does `logoscore call` return an error after `load-module`?
 
 The daemon may not have finished starting. Wait a few seconds after `logoscore -D` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logoscore …`.

@@ -60,17 +60,23 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    git clone https://github.com/logos-co/logos-accounts-module.git
    cd logos-accounts-module
 
-   nix build '.#lgx'
+   nix build '.#lgx-portable'
 
    cd ..
    ```
 
-1. Create the `modules` directory and copy the pre-loaded logos modules to it:
+   - Use `.#lgx-portable`, not `.#lgx`. The released `lgpm` from the prerequisites installs
+     portable variants only and rejects the `-dev` variant that `.#lgx` produces with
+     `Package does not contain variant for platform: linux-x86_64`.
+
+1. Create the `modules` directory:
 
    ```bash
    mkdir -p modules
-   cp -RL ./logos/modules/. ./modules/
    ```
+
+   - You do not need to copy any other modules in. `logoscore` loads its built-in
+     `capability_module` from its own bundle.
 
 1. Install the LGX package into the `modules` directory:
 
@@ -130,7 +136,7 @@ With the module installed, start the [`logoscore`](https://github.com/logos-co/l
    logoscore call accounts_module lengthToEntropyStrength 12
    ```
 
-1. Inspect all available methods in `accounts_module` with `module_info`:
+1. Inspect all available methods in `accounts_module` with `module-info`:
 
    ```bash
    logoscore module-info accounts_module

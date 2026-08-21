@@ -399,7 +399,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 1.  Build the module:
 
     ```bash
-    nix build '#lgx-portable'
+    nix build '.#lgx-portable'
     ```
 
     - **Expected result:** an `.lgx` package appears under the `result` folder:
@@ -438,6 +438,10 @@ The Storage module is a dependency of your module, so install it before loading 
 1.  In a new terminal, start `logoscore`:
 
     ```bash
+    # Make sure to export the PATH and navigate to the correct repository in the new terminal window
+    export PATH="$PWD/bin:$PATH"
+    cd ./storage_cli
+
     logoscore -D --config-dir ./config-dir -m ./modules
     ```
 

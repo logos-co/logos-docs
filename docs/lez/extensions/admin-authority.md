@@ -29,22 +29,44 @@ Pick `admin-authority` when your program has:
 
 If your program needs multi-party approval rather than single-admin gating, `admin-authority` is the wrong primitive, wait for `multisig-authority` (RFP-TBD) or compose admin-authority with a multisig PDA as the admin.
 
+## Prerequisites
+
+You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (a build script unpacks a prebuilt rapidsnark archive) and the Python development library (the CLI links against libpython). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
+
+```bash
+sudo apt-get install curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
+```
+
+The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.98. The lifecycle commands have not been run against a live node yet.
+
 ## Add the dependency
 
 In your program's `Cargo.toml`:
 
 ```toml
 [dependencies]
-admin-authority = { git = "https://github.com/mmlado/spel-admin-authority" }
-spel-framework  = { git = "https://github.com/logos-co/spel" }
+admin-authority = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.0" }
+spel-framework  = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
 nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-All five are needed: the reference samples use exactly this set. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing even when your own types never touch it. The `admin-authority-macros` sub-crate is pulled in transitively. You do not need to declare it directly. The library README documents the framework revision each release is verified against.
+All five are needed: the reference samples use exactly this set. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing even when your own types never touch it. The `admin-authority-macros` sub-crate is pulled in transitively. You do not need to declare it directly.
+
+The `spel-framework` entry points at a fork on purpose. It must be the exact revision `admin-authority` itself pins, and the library README documents that revision for each release. Pointing at `logos-co/spel` instead puts two copies of the framework into your dependency graph, and the build fails with a `From<AdminError>` trait error plus name resolution errors inside the `require_admin` expansion. The dependency moves to `logos-co/spel` once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 
 After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
+
+## Install the spel CLI
+
+The lifecycle commands below and the IDL check at the end use the `spel` CLI. Install it from the same fork revision the framework dependency pins:
+
+```bash
+cargo install --git https://github.com/mmlado/spel --rev f7aa464b2c6c72ef513a25ede16584bca85b722f spel
+```
+
+The package name is `spel`, not `spel-cli` as the repository directory suggests, asking cargo for `spel-cli` fails with "could not find `spel-cli`".
 
 ## Annotate the module
 
@@ -54,20 +76,18 @@ Add `#[admin_authority]` inside your `#[lez_program]` module:
 
 ```rust
 use spel_framework::prelude::*;
-use admin_authority::{admin_authority, require_admin};
 
 #[lez_program]
 #[admin_authority]
 mod my_program {
-    use super::*;
-
     #[instruction]
     pub fn create_pool(
         #[account(init, pda = literal("pool"))] pool: AccountWithMetadata,
-        #[account(signer)] caller: AccountWithMetadata,
     ) -> SpelResult { /* ... */ }
 }
 ```
+
+Nothing is imported from the library at this point. The `#[admin_authority]` marker is consumed by the framework's scanner during expansion, not resolved as an import, so importing the name only earns an unused import warning. The gate attribute gets imported when the first instruction uses it, next section. The module body does not need `use super::*;` either, the macro resolves paths to items declared outside the module on its own.
 
 That single annotation exposes three new instructions in your program's IDL:
 
@@ -86,31 +106,44 @@ That single annotation exposes three new instructions in your program's IDL:
 Add `#[require_admin]` to any instruction that should only succeed when the caller is the current admin:
 
 ```rust
+#[account_type]
+#[derive(BorshSerialize, BorshDeserialize, Clone, Debug)]
+pub struct PoolConfig {
+    pub fee_bps: u16,
+}
+
+// ... inside the #[lez_program] module:
+use admin_authority::require_admin;
+
 #[instruction]
 #[require_admin]
 pub fn set_fee_bps(
     #[account(mut, pda = literal("pool_config"))] mut config: AccountWithMetadata,
     new_fee_bps: u16,
 ) -> SpelResult {
-    // Admin check has already run. Just mutate.
-    todo!()
+    // The admin check has already run.
+    PoolConfig { fee_bps: new_fee_bps }.write_to(&mut config)?;
+    Ok(SpelOutput::execute(vec![config], vec![]))
 }
 ```
 
-The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program:
+The `write_to` helper is yours to write, the library does not provide it. The reference sample uses this one:
 
 ```rust
-#[instruction]
-#[require_admin]
-pub fn set_fee_bps(
-    #[account(pda = literal("admin_config"))] admin_config: AccountWithMetadata,
-    #[account(signer)] caller: AccountWithMetadata,
-    #[account(mut, pda = literal("pool_config"))] mut config: AccountWithMetadata,
-    new_fee_bps: u16,
-) -> SpelResult {
-    todo!()
+impl PoolConfig {
+    fn write_to(&self, account: &mut AccountWithMetadata) -> Result<(), SpelError> {
+        account.account.data = borsh::to_vec(self)
+            .map_err(|_| SpelError::SerializationError { message: "encoding failed".into() })?
+            .try_into()
+            .map_err(|_| SpelError::SerializationError { message: "data too large".into() })?;
+        Ok(())
+    }
 }
 ```
+
+The `#[account_type]` struct sits outside the `#[lez_program]` module, the instruction inside it. The handler returns `Ok(SpelOutput::execute(post_states, messages))`, where `post_states` lists your declared accounts in declaration order. The injected `admin_config` and `caller` are appended to the post-states automatically, you only handle the parameters you wrote.
+
+The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program, and then they are your parameters, appearing in your post-states list like any other account.
 
 If your instruction already has parameters by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. The framework also recognises declared parameters by role, a `#[account(signer)]` parameter or a PDA parameter with the matching seed is reused under its declared name instead of being injected twice.
 
@@ -173,6 +206,8 @@ The PDA must already exist on chain as a claimed account, an unclaimed candidate
 Instead of a dedicated Config PDA, the admin slot can live inside one of your program's own accounts at a byte offset. Declared once, program wide, on the marker:
 
 ```rust
+use admin_authority::AdminConfig;
+
 #[account_type]
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug)]
 pub struct ProgramConfig {
@@ -191,28 +226,21 @@ mod my_program {
     #[instruction]
     pub fn initialize(
         #[account(init, pda = literal("program_config"))] mut config: AccountWithMetadata,
-        #[account(signer)] signer: AccountWithMetadata,
     ) -> SpelResult {
-        ProgramConfig { value: 0, padding: [0; 24], admin: AdminConfig::default() }
-            .write_to(&mut config)?;
-        // ...
+        ProgramConfig {
+            value: 0,
+            padding: [0; 24],
+            admin: AdminConfig::default(),
+        }
+        .write_to(&mut config)?;
+        // the signing caller is injected, and the injected bootstrap
+        // installs it as admin in this same transaction
+        Ok(SpelOutput::execute(vec![config], vec![]))
     }
 }
 ```
 
-The `write_to` helper is yours to write, the library does not provide it. The reference sample uses this one:
-
-```rust
-impl ProgramConfig {
-    fn write_to(&self, account: &mut AccountWithMetadata) -> Result<(), SpelError> {
-        account.account.data = borsh::to_vec(self)
-            .map_err(|_| SpelError::SerializationError { message: "encoding failed".into() })?
-            .try_into()
-            .map_err(|_| SpelError::SerializationError { message: "data too large".into() })?;
-        Ok(())
-    }
-}
-```
+`write_to` is the same helper pattern from the gating section, implemented on `ProgramConfig`.
 
 What changes:
 

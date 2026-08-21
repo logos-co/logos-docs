@@ -31,21 +31,27 @@ Pick `freeze-authority` when your program needs:
 
 If your program needs a permanent pause with no recovery, use `admin_renounce` after deployment instead — freeze-authority is the wrong primitive for one-way upgrades.
 
+## Prerequisites
+
+Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the spel CLI](admin-authority.md#install-the-spel-cli) there. Everything below assumes those are in place.
+
+The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.98, in auto, manual, and embedded mode. The lifecycle commands have not been run against a live node yet.
+
 ## Add the dependency
 
 In your program's `Cargo.toml`:
 
 ```toml
 [dependencies]
-admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority" }
-freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority" }
-spel-framework   = { git = "https://github.com/logos-co/spel" }
+admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.0" }
+freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority", tag = "v0.1.0" }
+spel-framework   = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
 nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
+The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Both libraries pin their `v0.1.0` release tags. The framework must be the exact revision those releases pin, spelled as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
 
 After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched. And if you started from `cargo new`, delete the default `fn main`, the `#[lez_program]` macro generates the program's entry point.
 
@@ -58,16 +64,13 @@ After adding the dependencies, run `cargo fetch` once. The framework's extension
 Every dispatched instruction except the F3 carve-outs and admin operations is automatically gated by the freeze check. Consumers opt OUT per instruction with `#[freeze_exempt]`.
 
 ```rust
+use freeze_authority::{freeze_exempt, FreezeCandidate};
 use spel_framework::prelude::*;
-use admin_authority::admin_authority;
-use freeze_authority::{freeze_authority, freeze_exempt, FreezeCandidate};
 
 #[lez_program]
 #[admin_authority]
 #[freeze_authority]
 mod my_program {
-    use super::*;
-
     #[instruction]
     pub fn transfer(/* ... */) -> SpelResult { /* ... */ }   // auto-gated
 
@@ -77,21 +80,20 @@ mod my_program {
 }
 ```
 
+The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports. `FreezeCandidate` is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it. The module body does not need `use super::*;`.
+
 ### Manual mode
 
 Auto-wrap is disabled; the consumer applies `#[require_not_frozen]` only to instructions they want gated. F3 conformance becomes the consumer's responsibility.
 
 ```rust
+use freeze_authority::{require_not_frozen, FreezeCandidate};
 use spel_framework::prelude::*;
-use admin_authority::admin_authority;
-use freeze_authority::{freeze_authority, require_not_frozen, FreezeCandidate};
 
 #[lez_program]
 #[admin_authority]
 #[freeze_authority(manual)]
 mod my_program {
-    use super::*;
-
     #[instruction]
     #[require_not_frozen]
     pub fn transfer(/* ... */) -> SpelResult { /* ... */ }   // explicitly gated
@@ -249,15 +251,18 @@ If the admin has already been renounced first (terminal), the freeze slot become
 Like admin-authority, the freeze state can live inside one of your program's own accounts instead of a dedicated Config PDA, and both extensions can share the same account at distinct offsets:
 
 ```rust
+use admin_authority::AdminConfig;
+use freeze_authority::{FreezeCandidate, FreezeConfig};
+
 #[account_type]
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug)]
 pub struct ProgramConfig {
     pub value: u64,            // bytes 0..8
     pub padding: [u8; 24],     // bytes 8..32
     #[admin_slot]
-    pub admin: AdminConfig,    // bytes 32..64
+    pub admin: AdminConfig,    // bytes 32..64, the admin slot
     #[freeze_slot]
-    pub freeze: FreezeConfig,  // bytes 64..97
+    pub freeze: FreezeConfig,  // bytes 64..97, the freeze slot
 }
 
 #[lez_program]
@@ -270,11 +275,31 @@ mod my_program {
     #[instruction]
     pub fn initialize(
         #[account(init, pda = literal("program_config"))] mut config: AccountWithMetadata,
-        #[account(signer)] signer: AccountWithMetadata,
     ) -> SpelResult {
-        // write the struct with both slots defaulted; the admin
-        // bootstrap is injected by the attribute
-        // ...
+        ProgramConfig {
+            value: 0,
+            padding: [0; 24],
+            admin: AdminConfig::default(),
+            freeze: FreezeConfig::default(),
+        }
+        .write_to(&mut config)?;
+        // the signing caller is injected, the injected bootstrap
+        // installs it as admin, and the freeze slot stays vacant
+        Ok(SpelOutput::execute(vec![config], vec![]))
+    }
+}
+```
+
+The `write_to` helper is yours to write, the library does not provide it. The reference sample uses this one:
+
+```rust
+impl ProgramConfig {
+    fn write_to(&self, account: &mut AccountWithMetadata) -> Result<(), SpelError> {
+        account.account.data = borsh::to_vec(self)
+            .map_err(|_| SpelError::SerializationError { message: "encoding failed".into() })?
+            .try_into()
+            .map_err(|_| SpelError::SerializationError { message: "data too large".into() })?;
+        Ok(())
     }
 }
 ```

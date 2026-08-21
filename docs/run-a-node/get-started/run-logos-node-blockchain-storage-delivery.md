@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Get started running a full Logos node with all three core modules on testnet v0.2.1.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 The default paths used throughout this procedure are:
@@ -28,11 +32,11 @@ The default paths used throughout this procedure are:
 /var/lib/logos-node
 ```
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux host with a public IPv4 address
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall
-- Root or `sudo` access to install tools and create system users
+- Linux host with a public IPv4 address.
+- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall.
+- Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
 - CPU: 2 Cores, 2Ghz. Modern multi-core processor.
@@ -40,8 +44,9 @@ Make sure your hardware meets the following requirements for running a blockchai
 - Storage: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 
-:::info
-If you wish to run a Blend node, make sure you have a stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation. Stable and accessible external IP is mandatory.
+To run a Blend node, make sure you have:
+- A stable and accessible external IP.
+- A stable, low-latency connection (10 Mbps+ recommended) to handle multiple concurrent connections (recommended). This is beneficial for effective message blending and timing obfuscation.
 :::
 
 ## What to expect
@@ -151,15 +156,15 @@ Download and install the three module packages from the configured module [catal
 1. Download the module packages. The root hash selects the exact published package identity for the pinned version:
 
    ```sh
-   lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output /opt/logos-node/packages
-   lgpd download storage_module --version 2.1.0 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
+   lgpd download blockchain_module --version 0.2.2 --output /opt/logos-node/packages
+   lgpd download storage_module --version 2.1.2 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
    lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output /opt/logos-node/packages
    ```
 
 1. Install all three packages into the shared modules directory:
 
    ```sh
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.1.lgx
+   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.2.lgx
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/storage_module-2.1.0.lgx
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/delivery_module-0.2.0.lgx
    ```
@@ -173,7 +178,7 @@ Download and install the three module packages from the configured module [catal
    - The output must include:
    
    ```text
-   blockchain_module 0.2.1
+   blockchain_module 0.2.2
    delivery_module 0.2.0
    storage_module 2.1.0
    ```
@@ -326,8 +331,8 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
    ```
    curl http://127.0.0.1:8080/mantle/sdp/declarations | jq . 
-   # > [
-   # >   {
+   # > {
+   # >   "<DECLARATION_ID>": {
    # >     "service_type": "BN",
    # >     "provider_id": "35d60d973560b8344f83dc266a3fe89e35a3dcf9959c492d0a7a0b7a85c5d2ce",
    # >     "locked_note_id": "<BLEND_ZK_NOTE_ID>",
@@ -340,13 +345,12 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
    # >     "withdraw_at": null,
    # >     "nonce": 0
    # >   }
-   # > ]
+   # > }
    ```
 
+   - The response is a JSON object keyed by declaration id (not a list). Find your entry by its `provider_id` (your BlendSigning key) or `zk_id` (your BlendZk key).
    - `service_type: BN` identifies it as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-   - `zk_id` is your BlendZk public key
-   - `provider_id` is your BlendSigning key.
-   - `active` is 2 [epochs](../../get-started/glossary.md#epoch) in the future, when the declaration will become active.
+   - `created` is the epoch your declaration was included; it takes effect about two [epochs](../../get-started/glossary.md#epoch) later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it advances over time—equal to `created + 2` right after activation and higher on a long-running node.
 
 ## Step 6: Configure and start the storage module
 
@@ -361,7 +365,6 @@ Create the storage config and start the module.
    {
      "data-dir": "./storage-data",
      "log-level": "INFO",
-     "listen-ip": "0.0.0.0",
      "listen-port": 8091,
      "disc-port": 8090,
      "network": "logos.test"
@@ -375,7 +378,6 @@ Create the storage config and start the module.
    |-------|---------|
    | `data-dir` | Storage repository path |
    | `log-level` | Log verbosity |
-   | `listen-ip` | Local TCP bind address |
    | `listen-port` | Public TCP libp2p port |
    | `disc-port` | Public UDP discovery port |
    | `network` | Storage network preset |
@@ -384,33 +386,54 @@ Create the storage config and start the module.
    - The `logos.test` preset provides the storage bootstrap settings.
 
    :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data.
-
-   The script accepts an optional storage data directory as its first argument. Without one, it uses `logos-storage-data` under the current directory.
+   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (for example `storage-config.sh`):
 
    ```sh
-   data_dir=${1:-"${PWD}/logos-storage-data"}
-   udp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/udp-sprs.json)
-   tcp_spr_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/tcp-sprs.json)
-   mp_json=$(curl -s https://logos-storage-network.fra1.digitaloceanspaces.com/v0.2/mix-pool.json | jq -c 'tostring')
-     
-   cat <<JSON | jq .
-   {
-      "log-level": "INFO;trace:libp2p,mix",
-      "mix-enabled": true,
-      "listen-port": 8091,
-      "disc-port": 8090,
-      "bootstrap-node": $udp_spr_json,
-      "dht-mix-proxy": $tcp_spr_json,
-      "data-dir": "${data_dir}",
-      "mix-pool-json": ${mp_json}
-   }
-   JSON
-   EOF
+   #!/usr/bin/env bash
+   # Copy the contents of this file into a script named mix-config.sh
+   set -euo pipefail
 
-   chmod 755 make-mix-storage-config.sh
-   ./make-mix-storage-config.sh > config.json
+   if ! command -v jq &> /dev/null; then
+     echo "Please install jq first"
+     exit 1
+   fi
+
+   data_dir="${1:-./logos-storage-data}"
+
+   raw_data=$(curl -s -fsSL https://fleets.logos.co/logos-test/storage-network.json)
+   mp_json=$(echo $raw_data | jq -c '{
+     "version": 1,
+     "relays": map({
+       "peerId": .peerId,
+       "mixPubKey": .mixPubKey,
+       "libp2pPubKey": .libp2pPubKey,
+       "multiAddr": "/ip4/\(.address)/tcp/\(.port)"
+     })
+   } | tostring')
+
+   dht_proxy_sprs=$(echo $raw_data | jq '[.[].tcpSpr]')
+
+   cat <<EOF | jq .
+   {
+     "data-dir": "${data_dir}",
+     "log-level": "INFO",
+     "listen-port": 8091,
+     "disc-port": 8090,
+     "network": "logos.test",
+     "mix-enabled": true,
+     "dht-mix-proxy": ${dht_proxy_sprs},
+     "mix-pool-json": ${mp_json}
+   }
+   EOF
    ```
+   Then make it executable and run it:
+
+   ```sh
+   chmod +x storage-config.sh
+   ./storage-config.sh > config.json
+   ```
+
+   The script accepts an optional storage data directory as its first argument. Without one, it uses `logos-storage-data` under the current directory.
    :::
 
 1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
@@ -422,12 +445,12 @@ Create the storage config and start the module.
    logoscore call storage_module start
    ```
 
-   - If using the mix config, also enable private queries and verify with a test download:
+   _If using the mix config_, also enable private queries and verify with a test download:
 
-     ```sh
-     logoscore call storage_module togglePrivateQueries true
-     logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
-     ```
+   ```sh
+   logoscore call storage_module togglePrivateQueries true
+   logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
+   ```
 
 ## Step 7: Configure and start the delivery module
 
@@ -540,7 +563,7 @@ Run health checks against the daemon and all three modules to confirm the node i
 
 ### Optional: Run the node unattended with systemd
 
-Use a dedicated service for `logoscore` and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in the `logoscore` service — slow or failing module starts may cause systemd to kill the daemon.
+Use a dedicated service for `logoscore` and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in the `logoscore` service—slow or failing module starts may cause systemd to kill the daemon.
 
 Daemon service unit:
 

@@ -62,7 +62,7 @@ The node will try to use a relay if it is unreachable.
 
 :::warning
 
-If you are using Mix with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
+If you are using [Mix](../../get-started/glossary.md#mix) with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
 
 :::
 
@@ -71,7 +71,7 @@ The `nat` option controls how the node finds the address to announce:
 | Value        | When to use it                                                                                                                                                                                       |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `auto`       | Default. Everything described above.                                                                                                                                                                   |
-| `extip:<IP>` | Set your public IP yourself, e.g. `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know your public IP and have opened your listen port on the router yourself, or on a machine with a public IP (a cloud server or VPS). |
+| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know your public IP and have opened your listen port on the router yourself, or on a machine with a public IP (a cloud server or VPS). |
 
 :::warning
 
@@ -94,7 +94,7 @@ To use `extip:<IP>` you need your public IP. Two easy ways:
 
 ### Enabling UPnP on your router
 
-With `nat` set to `any` or `upnp`, the node asks the router to open its ports by itself — but only if UPnP is enabled on the router. Router interfaces differ, but the steps are always the same:
+With `nat` set to `any` or `upnp`, the node asks the router to open its ports by itself—but only if UPnP is enabled on the router. Router interfaces differ, but the steps are always the same:
 
 1. Open your router's admin page in a browser. Its address is your default gateway, often `192.168.1.1`. On Linux, find it with `ip route | grep default`.
 2. Find the *UPnP* setting, usually under the NAT, network, or advanced settings, and enable it.
@@ -105,7 +105,7 @@ With `nat` set to `any` or `upnp`, the node asks the router to open its ports by
 If your router does not support UPnP, or you prefer not to enable it, map the ports yourself and announce your public IP with `extip`:
 
 1. Set fixed values for `listen-port` and `disc-port` (see [Ports](#ports)): you cannot forward a random port.
-2. Find your machine's address on the local network, e.g. with `ip -4 addr`.
+2. Find your machine's address on the local network, for example with `ip -4 addr`.
 3. In your router's admin page, find the *Port forwarding* section (sometimes called *NAT rules* or *Virtual server*) and add two rules pointing to your machine's local address: one TCP rule for `listen-port`, one UDP rule for `disc-port`. Use the same external and internal port numbers.
 4. Set the `nat` option to `extip:<your-public-IP>` (see [Finding your public IP](#finding-your-public-ip)).
 

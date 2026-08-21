@@ -15,17 +15,23 @@ sidebar_position: 2
 
 #### Use the SPEL CLI to deploy an AMM, create a pool, swap tokens, and publish a TWAP price on LEZ testnet v0.2.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure explains how developers and node operators deploy and drive the automated market maker (AMM) [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) ([LEZ](../../get-started/glossary.md#lez)), from building the on-chain programs through swapping tokens and publishing a TWAP oracle price, all using the [SPEL CLI](https://github.com/logos-co/spel). The AMM is one of the essential launch-day applications for Logos, since it enables on-chain trading and supplies the price data that on-chain oracles rely on. Follow this procedure on LEZ testnet v0.2 whenever you need to stand up a pool from scratch, execute a swap, or publish a fresh price to the TWAP oracle.
 
-**Before you start**, make sure you have the following:
+:::info[Prerequisites]
 
-- Docker
-- [A funded LEZ wallet](../get-started/run-lez-wallet-via-cli.md)
-- [RISC0 installed](https://dev.risczero.com/api/zkvm/install)
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
+    - To install, run `rzup install rust`
+:::
 
 ## What to expect
 
-- You can build, deploy, and initialize the AMM, TWAP oracle, and [token programs](../../get-started/glossary.md#token-program) on LEZ testnet.
+- You can build, deploy, and initialise the AMM, TWAP oracle, and [token programs](../../get-started/glossary.md#token-program) on LEZ testnet.
 - You can create a liquidity pool and swap between two tokens using the SPEL CLI.
 - You can publish a TWAP price that on-chain oracles can consume.
 
@@ -59,10 +65,10 @@ This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-ex
 
 ## Step 3: Build and deploy the AMM programs
 
-Build and deploy the `token`, `twap_oracle`, and `amm` programs from the [lez-programs](https://github.com/logos-blockchain/lez-programs/tree/main) repository, then record each program's ProgramId; you need all three before you can initialize the AMM.
+Build and deploy the `token`, `twap_oracle`, and `amm` programs from the [lez-programs](https://github.com/logos-blockchain/lez-programs/tree/main) repository, then record each program's ProgramId; you need all three before you can initialise the AMM.
 
 :::warning
-Recompiling a guest changes its ProgramId, and every [PDA](../../get-started/glossary.md#pda) derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize` — never reuse old values.
+Recompiling a guest changes its ProgramId, and every [PDA](../../get-started/glossary.md#pda) derived from that ProgramId changes too. If you rebuild the AMM, recompute all AMM PDAs and rerun `initialize`—never reuse old values.
 :::
 
 1. Clone the lez-programs repository and navigate to it.
@@ -137,7 +143,7 @@ Use `spel` to create the two fungible tokens your pool will hold.
         --holding-target-account <HOLDING_B>
    ```
 
-   - `<DEF_A>` and `<DEF_B>` become the token-definition accounts; `<HOLDING_A>` and `<HOLDING_B>` receive the total supply of each token.
+   - `<DEF_A>` and `<DEF_B>` become the [token-definition accounts](../../get-started/glossary.md#token-definition-account); `<HOLDING_A>` and `<HOLDING_B>` receive the total supply of each token.
 
 1. Inspect a holding or definition to confirm it was created correctly.
 
@@ -160,7 +166,7 @@ AMM PDAs use a SHA-256 seed scheme, so derive them with the program's own `*_pda
 
    - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, and `<CURRENT_TICK_PDA>`.
 
-1. Select any of your accounts to be `<AUTHORITY>` — the admin who can later call `update_config`.
+1. Select any of your accounts to be `<AUTHORITY>`—the admin who can later call `update_config`.
 
 1. Initialise the AMM using the config PDA and the token/TWAP ProgramIds from [Step 3](#step-3-build-and-deploy-the-amm-programs).
 
@@ -242,8 +248,8 @@ Initiate a swap between your two tokens, then feed the resulting price tick into
         --window-duration <WINDOW_DURATION>
    ```
 
-   - This instruction is permissionless — no signers needed.
-   - `window_duration` is in milliseconds (24h = `86400000`); each window gets its own account.
+   - This instruction is permissionless—no signers needed.
+   - `window_duration` is in milliseconds (24 h = `86400000`); each window gets its own account.
 
    :::info
    To verify, run the following:
@@ -349,7 +355,7 @@ Create the oracle's price account once, then publish the TWAP so downstream cons
 
 ### PDAs stop matching after a rebuild
 
-Recompiling any program changes its ProgramId, and every PDA derived from that ProgramId changes with it (config, pool, vaults, LP definition, LP lock, current tick). After any AMM rebuild, redo the PDA-derivation, initialization, and pool-creation steps rather than reusing old values.
+Recompiling any program changes its ProgramId, and every PDA derived from that ProgramId changes with it (config, pool, vaults, LP definition, LP lock, current tick). After any AMM rebuild, redo the PDA-derivation, initialisation, and pool-creation steps rather than reusing old values.
 
 ### `spel` rejects an `account_id` argument
 
@@ -365,7 +371,7 @@ Recompiling any program changes its ProgramId, and every PDA derived from that P
 
 ### A swap fails because a holding isn't signed
 
-`swap-exact-input` and `swap-exact-output` mark both `user-holding-a` and `user-holding-b` as signers, even though only the input side is debited — the input side is chosen at runtime, so both must be signed.
+`swap-exact-input` and `swap-exact-output` mark both `user-holding-a` and `user-holding-b` as signers, even though only the input side is debited—the input side is chosen at runtime, so both must be signed.
 
 ### `spel` and `wallet` point at different networks
 

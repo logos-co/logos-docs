@@ -1,33 +1,37 @@
 ---
-title: Transfer native LEZ tokens between public and private states
+title: Transfer LEZ tokens between public and private states
 doc_type: procedure
 product: lez
 topics: lez
 steps_layout: sectioned
 authors: moudyellaz, kashepavadan
 owner: logos
-doc_version: 1
-slug: transfer-native-lez-tokens-between-public-private-states
+doc_version: 2
+slug: transfer-lez-tokens-between-public-private-states
 sidebar_position: 3
 ---
 
-# Transfer native LEZ tokens between public and private states
+# Transfer LEZ tokens between public and private states
 
 #### Get started with private transfers to accounts you don't control, using a recipient-published keypair.
 
-This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account) — regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda)) — that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-Before you start, make sure you have the following:
+This procedure covers how to credit a [private account](../../get-started/glossary.md#private-account)—regular or a [Program Derived Address](../../get-started/glossary.md#program-derived-address) ([PDA](../../get-started/glossary.md#pda))—that you do not control, using only the recipient's published keypair and the sender's chosen identifier. It is intended for wallet users on testnet v0.2 who need to make private payments without interactive setup or per-sender [account](../../get-started/glossary.md#account) registration. For example, a recipient can publish one keypair and receive from many independent senders, each into a separate account.
 
-- Linux or macOS — macOS requires full Xcode with the Metal toolchain for the Risc0 guest build, not just command-line tools
-- Rust toolchain, `cargo`
-- An [LEZ wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded
+:::info[Prerequisites]
+
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+:::
 
 ## What to expect
 
 - You can credit a recipient's private account using only their published [NPK](../../get-started/glossary.md#npk) and [VPK](../../get-started/glossary.md#vpk), with no interactive setup required.
 - You can receive tokens into up to 2^128 distinct accounts from the same keypair by varying the identifier, so one published key serves many independent senders.
 - You can discover and spend incoming funds with `wallet account sync-private` after the sender's transaction is confirmed.
+- Transfers work for both native LEZ tokens and [custom tokens](./create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
 
 ## Step 1: Publish a reusable keypair as the recipient
 
@@ -108,4 +112,4 @@ Two transfers to the same `(npk, identifier)` pair resolve to the same `AccountI
 
 ### Why does spending multiple incoming transfers become expensive?
 
-There is no automatic balance consolidation. N transfers to the same keypair produce N separate accounts, and spending all of them requires N inputs, so proof and transaction cost grows linearly with N. Plan identifier allocation to minimize the number of accounts that need to be spent together.
+There is no automatic balance consolidation. N transfers to the same keypair produce N separate accounts, and spending all of them requires N inputs, so proof and transaction cost grows linearly with N. Plan identifier allocation to minimise the number of accounts that need to be spent together.

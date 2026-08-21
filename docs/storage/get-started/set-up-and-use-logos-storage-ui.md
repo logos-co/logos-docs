@@ -15,9 +15,11 @@ sidebar_position: 2
 
 #### Get started sharing and downloading files on the Logos Storage network
 
-The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-Before you start, have a router where you can configure port forwarding or that supports UPnP/NAT-PMP ready (see [Connectivity](../concepts/connectivity.md)).
+The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
 
 ## What to expect
 
@@ -30,15 +32,15 @@ Before you start, have a router where you can configure port forwarding or that 
 
 You can install the application through Logos Basecamp (Option A), or build it from source with Nix (Option B).
 
-### Option A — Run in Logos Basecamp
+### Option A—Run in Logos Basecamp
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
 1. In the left bar, select **Package Manager**.
 1. Select `Storage` in `Categories` then click **Install**.
-1. Wait until a green **Installed** label appears next to both modules.
+1. Wait until a green **Installed** label appears next to both [modules](../../get-started/glossary.md#module).
 1. In the left bar, select **storage** to launch the Logos Storage UI.
 
-### Option B — Build and run locally with Nix
+### Option B—Build and run locally with Nix
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries. You need:
 
@@ -143,70 +145,6 @@ This guide follows the `Guided` setup.
 
    ![NAT status](../assets/set-up-and-use-logos-storage-ui/storage-ui-nat.png)
 
-:::warning 
-
-The latest Logos Storage Module (v2.1.0) relies on AutoNAT servers, which are not deployed on the `logos.test` network yet. NAT detection will not work until they are.
-
-In the meantime, you can point the node at other AutoNAT servers with a manual configuration:
-
-1. Bootstrap nodes: 
-
-```json
-[
-  "spr:CiUIAhIhA_30VxBSXq0xCjoMIlFKlnY7gBEQzHv0pRY5kHP17-pTEgIDARpICicAJQgCEiED_fRXEFJerTEKOgwiUUqWdjuAERDMe_SlFjmQc_Xv6lMQrJLE0wYaCgoIBM-a0SUGH5AaCwoJBM-a0SWRAh-aKkYwRAIgHGe5zrUfxBfg0bY-rf0WOaYkci1mvYnwmgMKeXRVo68CIHjJUGqlj5jwNklm_BuIdz5_kHpLYH4tfiADtZx3Xmnu",
-  "spr:CiUIAhIhAo61xuA0H8l-DQs4pjcsXRgIK_VrDlW9br-ad6-EAUKTEgIDARpICicAJQgCEiECjrXG4DQfyX4NCzimNyxdGAgr9WsOVb1uv5p3r4QBQpMQrJLE0wYaCgoIBEDicIcGH5AaCwoJBEDicIeRAh-aKkcwRQIhAIpb9JvG6OiphjL9gb1awcrGX8f-_j_qRcYkce5U6moLAiBjBF_uAtD5G6m_E_-TVHA-yV0klnYmrtCeyzm18KE9DA",
-  "spr:CiUIAhIhAlvt_ed7o68o2EjRMAOLxOaAjhfs4Xo1mSMj4zFmGjqJEgIDARpICicAJQgCEiECW-3953ujryjYSNEwA4vE5oCOF-zhejWZIyPjMWYaOokQrJLE0wYaCgoIBIZ6WPAGH5AaCwoJBIZ6WPCRAh-aKkcwRQIhAPR-rNdpKYHhVb-jW7rEFMvlILBgWn9TTCAPOhCxCSf9AiAa4yqBS1U-a1BfYKzFCQ86wh2LLTxtwLgXKekMmuHxsg",
-  "spr:CiUIAhIhAskyX6nTawF8y_IBEFWYiRNnjQDl8zpO78ImQpb5cXOuEgIDARpICicAJQgCEiECyTJfqdNrAXzL8gEQVZiJE2eNAOXzOk7vwiZClvlxc64QrJLE0wYaCgoIBIbR-fEGH5AaCwoJBIbR-fGRAh-aKkYwRAIgdbClsN6hpvfQRFopGJPN9-1P6fmrbv6sN0LNwSDs8xICIG_NXwQVb8IiGB5qMuREF6p-SjCWSKTFllWZFBmJHYmW"
-]
-```
-
-2. Mix relay pool:
-
-```json
-{
-  "version": 1,
-  "relays": [
-    {
-      "peerId": "16Uiu2HAmVkKbPiweAgwiqjWkhptDUApzEM2w7jEjpRWB3zpQe9ZU",
-      "multiAddr": "/ip4/207.154.209.37/tcp/8080",
-      "mixPubKey": "2922d84ffd5a2d0dc8206034390ec38972a64402188c265b92a2045d0559775a",
-      "libp2pPubKey": "03fdf45710525ead310a3a0c22514a96763b801110cc7bf4a516399073f5efea53"
-    },
-    {
-      "peerId": "16Uiu2HAm52kdvfTWTrkGhkvGQX8dp8FfRcaPc6UgTzLFHsSLVQCi",
-      "multiAddr": "/ip4/64.226.112.135/tcp/8080",
-      "mixPubKey": "d91c44f0aebb26a2d78f83d31c805ce478a86c7b35d9b44e10a8ae6f6c30ba00",
-      "libp2pPubKey": "028eb5c6e0341fc97e0d0b38a6372c5d18082bf56b0e55bd6ebf9a77af84014293"
-    },
-    {
-      "peerId": "16Uiu2HAm1cXZXgyw47PM7xL1FFiNVQuntihVevNFK5Fy18uZU62c",
-      "multiAddr": "/ip4/134.122.88.240/tcp/8080",
-      "mixPubKey": "7eccd26d9decc8c8f236788313f2d76247614a005ff85808b0e6b473e435514a",
-      "libp2pPubKey": "025bedfde77ba3af28d848d130038bc4e6808e17ece17a35992323e331661a3a89"
-    },
-    {
-      "peerId": "16Uiu2HAm8y4UgDx9L5FVBPPgpoA36sdydWkewuLVgM4rnvnMtg1T",
-      "multiAddr": "/ip4/134.209.249.241/tcp/8080",
-      "mixPubKey": "fdb59c1dc2eb066f697b69d58866579dfb50586b161e8c604becfe177c8eb147",
-      "libp2pPubKey": "02c9325fa9d36b017ccbf2011055988913678d00e5f33a4eefc2264296f97173ae"
-    }
-  ]
-}
-```
-
-3. DHT mix proxies: 
-
-```json
-[
-  "spr:CiUIAhIhA_30VxBSXq0xCjoMIlFKlnY7gBEQzHv0pRY5kHP17-pTEgIDARo7CicAJQgCEiED_fRXEFJerTEKOgwiUUqWdjuAERDMe_SlFjmQc_Xv6lMQl4nE0wYaCgoIBM-a0SUGH5AqRjBEAiAqH3RfY85YEUtyqBcFzGvDdQ8vV3g6teXDzocPeCWWKgIgGHFpJyc2-wxEaDQ5a5kIKgNOKxXqtF35dCfDQTKvgjg",
-  "spr:CiUIAhIhAo61xuA0H8l-DQs4pjcsXRgIK_VrDlW9br-ad6-EAUKTEgIDARo7CicAJQgCEiECjrXG4DQfyX4NCzimNyxdGAgr9WsOVb1uv5p3r4QBQpMQ0ZHE0wYaCgoIBEDicIcGH5AqRjBEAiAUDfpZJRvZ2QjNHZV3fRQ3Hz4NaMlf-reFir93l9JJJQIgYXzXn0Kuw1I5H4G9M2hrV0B7ufspkiTySJEXqbjc2TI",
-  "spr:CiUIAhIhAlvt_ed7o68o2EjRMAOLxOaAjhfs4Xo1mSMj4zFmGjqJEgIDARo7CicAJQgCEiECW-3953ujryjYSNEwA4vE5oCOF-zhejWZIyPjMWYaOokQ0ZHE0wYaCgoIBIZ6WPAGH5AqRzBFAiEA0CDBW5lpQ1IHZvh17-0aHS0YBrLVRrYlHDNVNnzrxiACIHrxDmdsrDKM2gFnU67yGXq0ukUMLMyVoUv7NmMbAh1V",
-  "spr:CiUIAhIhAskyX6nTawF8y_IBEFWYiRNnjQDl8zpO78ImQpb5cXOuEgIDARo7CicAJQgCEiECyTJfqdNrAXzL8gEQVZiJE2eNAOXzOk7vwiZClvlxc64Q0pHE0wYaCgoIBIbR-fEGH5AqRzBFAiEAovgkG6R4aF6vdwB2t8tI8S0BAHey8O6AgZr-RpfITxUCIDEV4e4P_Vhf8h_gHi4AyE5T-gDJWvsMnPhbGFITcOQm"
-]
-```
-
-:::
-
 ### Configuration
 
 After onboarding, the settings are saved to a file whose location depends on the OS. If you are running the UI inside the Basecamp application:
@@ -257,8 +195,8 @@ When the file is downloaded, the download icon will turn green indicating that t
 
 The **Mix** switch in the **Node** panel controls private queries. When enabled, the node forwards its content lookups over the Logos mix network, which makes them much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
 
-- The switch is on by default when your configuration includes the Mix options.
-- Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off — observers will then be able to link you to your queries.
+- The switch is on by default when your configuration includes the Mix options (which, by default, it does).
+- Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off—observers will then be able to link you to your queries.
 
 :::warning
 
@@ -303,7 +241,7 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
    - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
 
-1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilized**: the blocks are actually removed from disk.
+1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
 
 ## Troubleshooting Logos Storage
 

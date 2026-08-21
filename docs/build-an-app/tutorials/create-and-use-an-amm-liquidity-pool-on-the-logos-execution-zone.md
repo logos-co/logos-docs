@@ -14,16 +14,20 @@ slug: create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone
 
 #### Get started creating a token pair pool, swapping, and managing liquidity on LEZ.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers the AMM [program](../../get-started/glossary.md#program) on the [Logos Execution Zone](../../get-started/glossary.md#lez), which manages liquidity pools and enables swaps between custom tokens. It walks through creating a liquidity pool for a token pair, swapping tokens, withdrawing liquidity, and adding liquidity back to the pool.
 
-:::info
+:::note
 The AMM does not currently charge swap fees or distribute rewards to liquidity providers. LP tokens represent only a proportional share of the pool reserves. Fee support will be added in future versions.
 :::
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- The `wallet` CLI installed and configured against a LEZ sequencer
 - Two existing [custom tokens](../../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md) (Token A and Token B) with funded holding accounts
+:::
 
 ## What to expect
 
@@ -88,7 +92,7 @@ Use `wallet amm swap-exact-input` to swap a fixed input amount of one token for 
 
    - `--amount-in`: the amount of tokens to swap
    - `--min-amount-out`: the minimum number of tokens expected in return
-   - `--token-definition`: the definition ID of the token you are providing. Here we swap TOKENA → TOKENB, so this is TOKENA's definition ID. Pass the raw base58 definition ID with no Public/ prefix — a prefixed value is rejected with invalid base58.
+   - `--token-definition`: the definition ID of the token you are providing. Here we swap TOKENA → TOKENB, so this is TOKENA's definition ID. Pass the raw base58 definition ID with no Public/ prefix—a prefixed value is rejected with invalid base58.
 
    - Once executed, 5 tokens are deducted from the Token A holding account and the corresponding amount, computed by the pool's pricing function, is credited to the Token B holding account.
 

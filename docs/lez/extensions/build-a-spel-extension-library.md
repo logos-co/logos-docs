@@ -15,6 +15,8 @@ sidebar_position: 2
 
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
+This page tracks unreleased code. The dependency snippets pin a personal fork of the framework. The pin moves to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
 SPEL extension libraries ship reusable on-chain primitives, access control, freeze switches, multisig, etc., that consuming programs adopt with a single attribute. This guide is for library authors. App developers consuming an existing extension should follow that extension's own integration guide instead.
@@ -59,6 +61,11 @@ edition = "2021"
 
 [package.metadata.spel]
 extension_attr = "my_extension"
+
+[dependencies]
+borsh = { version = "1", features = ["derive"] }
+spel-framework = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
+my-extension-macros = { path = "../my-extension-macros" }
 ```
 
 - `extension_attr` is the attribute name consumers put on their `#[lez_program]` module to opt in. By convention, match it to your crate name (with `_` not `-`).
@@ -84,7 +91,7 @@ pub struct MyState {
 
 #[instruction]
 pub fn extension_action(
-    #[account(mut, pda = literal("my_state"))] mut state: AccountWithMetadata,
+    #[account(mut, pda = literal("my_state"))] mut my_state: AccountWithMetadata,
     #[account(signer)] caller: AccountWithMetadata,
     new_value: u64,
 ) -> SpelResult {
@@ -97,6 +104,8 @@ Three things to note:
 - `extern crate self as my_extension;`, lets the library reference its own types via the absolute path `::my_extension::MyState`. The framework emits cross-crate calls into the consumer's binary using that path, so the path needs to resolve both in the library's own compile and at the consumer's compile.
 - `pub use my_extension_macros::{instruction, my_extension};`, re-exports the marker attribute and the no-op `#[instruction]` shim so consumers (and the library's own `lib.rs`) can use them without importing the macros crate directly.
 - `#[account(...)]` attributes on parameters, these are framework helper attributes that describe PDA seeds, signer requirements, etc. The library's own `#[instruction]` shim strips them at the library's compile so rustc accepts the source; the framework reads them during the path-dep scan.
+- Name the state parameter after the inject role you will declare for it (`my_state` here). Injection reuse, wrap stamping, and embedded retargeting resolve your accounts by role name, a differently named parameter breaks embedded mode with an argument-count error at the consumer's compile.
+- When you write the real body, post-states are the inner `account` values (`vec![my_state.account, caller.account]`), with an `(account, AutoClaim)` tuple for accounts the instruction claims. Consumer handlers return the `AccountWithMetadata` wrappers, library handlers do not. The reference samples show both patterns.
 
 ## Define the proc-macro sub-crate
 
@@ -173,6 +182,8 @@ pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
+The `from_account` and `assert_allowed` helpers the prologue calls are yours to write on `MyState`, the framework provides neither. Re-export the gate from the runtime library next to the marker (`pub use my_extension_macros::require_my_gate;`) so consumers import everything from one crate.
+
 Never read or strip `#[account(...)]` attributes in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
 
 **The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved parameter name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))` and assert the declared account names equal the kwarg set a probe function hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert.
@@ -217,6 +228,8 @@ exempt = [
 
 When the consumer puts `#[my_extension]` on their `#[lez_program]` mod, the framework walks the dispatcher table and prepends `#[require_my_gate]` to every function that is not in `exempt` and does not carry `#[my_extension_exempt]`. Consumers write normal code, the gate arrives with the wrap. Injection and wrapping compose: a wrapped instruction gets your gate's parameters injected like an annotated one.
 
+The wrap covers your own extension's instructions too, and those dispatch cross-crate, so the dispatcher cannot add a parameter to your library's function. A wrapped own instruction whose parameter list does not cover your inject roles, by role name or matching seed, fails the consumer's compile with an argument-count error on the dispatch call. Own instructions that lack your gate accounts, or that must stay callable while your gate rejects, carry your own `self_exempt_marker` attribute in the library source, the way freeze-authority's release and transfer ops carry `#[freeze_exempt]`.
+
 The hook is opt-in, omit `wrap_instructions` from your metadata and the framework leaves all instructions alone. This is the right choice for most extensions (pure data primitives, single-instruction gates, etc.).
 
 ## Embedded mode (optional)
@@ -227,7 +240,7 @@ An extension whose per-program state is one fixed-size slot can let consumers em
 #[my_extension(my_state = config, offset = 32)]
 ```
 
-To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction functions a trailing `offset: usize` parameter, and declare it as a bound arg so the framework fills it at the dispatch call site as a compile-time literal. Bound args must be the trailing parameters of the function, in the same order as their metadata blocks. Any other position is a hard error at discovery naming the function, because the framework always appends the literals last:
+To support this as an author: ship windowed state accessors that splice only your slot's byte window (`decode_at`, `write_to_at`, `bootstrap_at` and friends), give the affected instruction functions a trailing `offset: usize` parameter, keep the state parameter named after its inject role (retargeting resolves it by that name), and declare the offset as a bound arg so the framework fills it at the dispatch call site as a compile-time literal. Bound args must be the trailing parameters of the function, in the same order as their metadata blocks. Any other position is a hard error at discovery naming the function, because the framework always appends the literals last:
 
 ```toml
 [package.metadata.spel.embedded]
@@ -280,8 +293,10 @@ A consumer adds your extension to their `Cargo.toml`:
 ```toml
 [dependencies]
 my-extension = { git = "https://github.com/you/my-extension" }
-spel-framework = { git = "https://github.com/logos-co/spel" }
+spel-framework = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
 ```
+
+The `spel-framework` pin must be a revision that carries the extension scanner, and it must be the exact revision your library pins, spelled the same way. Upstream `logos-co/spel` does not have the scanner until [logos-co/spel#257](https://github.com/logos-co/spel/pull/257) lands, and a branch reference fails to unify with a rev pin even at the same commit, cargo keys git sources by reference kind. Swap this for the `logos-co` URL once the mechanism reaches an upstream release.
 
 Path, git, and registry dependencies are all discoverable. Discovery is restricted to the consumer's direct dependencies, a transitive crate can never contribute instructions by claiming a matching `extension_attr`, and the generated call paths use your `[package].name`, never a directory name.
 
@@ -289,7 +304,6 @@ Then puts the marker on their `#[lez_program]` module:
 
 ```rust
 use spel_framework::prelude::*;
-use my_extension::my_extension;
 
 #[lez_program]
 #[my_extension]
@@ -298,6 +312,8 @@ mod my_program {
     pub fn my_user_instr(...) -> SpelResult { ... }
 }
 ```
+
+The marker is matched by attribute name only, nothing is imported for it. `use my_extension::my_extension;` would only earn an unused import warning. Gate attributes and types your extension expects consumers to name in code are real imports, document those in your library's README.
 
 After compilation, the consumer's binary contains your extension's instructions in its `Instruction` enum, dispatcher, and `PROGRAM_IDL_JSON` const. `spel generate-idl` shows them too. The extension's source is never copied into the consumer's module; calls dispatch directly to your library via `::my_extension::extension_action(...)`.
 
@@ -324,7 +340,9 @@ Build a small sample program that consumes your extension. Then:
 spel generate-idl path/to/sample/src/main.rs
 ```
 
-The IDL should contain your extension's instructions alongside the consumer's own. A marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. When you hit that error, the most common causes are:
+The IDL should contain your extension's instructions alongside the consumer's own. The `spel` binary must itself be built from a scanner-carrying framework revision, a CLI without the scanner omits every extension instruction from this output without reporting an error.
+
+On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. The fail-closed behaviour is a property of the framework revision, not of the mechanism: on a build without the scanner the marker is ignored and the program compiles without your extension. An author debugging a missing surface should check the framework pin before the metadata. When you hit the hard error, the most common causes are:
 
 - `[package.metadata.spel.extension_attr]` not declared, or value does not match the attribute name the consumer wrote.
 - The library is a transitive dependency rather than a direct one. Only the consumer's own `[dependencies]` are scanned, by design.

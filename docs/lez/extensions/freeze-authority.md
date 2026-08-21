@@ -15,6 +15,8 @@ sidebar_position: 3
 
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
+This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
 `freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your LEZ program. A designated freeze authority can pause all program execution (program-wide freeze) and block specific accounts from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only the freeze management carve-outs (unfreeze, authority transfer and renounce, per-account freeze edits), admin operations, and instructions you marked `#[freeze_exempt]` remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
@@ -321,6 +323,8 @@ After building your program, check that the freeze instructions appear in the ID
 ```bash
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
+
+The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits every extension instruction from this output without reporting an error.
 
 Expected output includes:
 

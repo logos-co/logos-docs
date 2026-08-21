@@ -15,6 +15,8 @@ sidebar_position: 1
 
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+
+This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
 `admin-authority` is a SPEL extension that adds a single transferable admin role to your LEZ program. The admin is the only account allowed to call admin-gated instructions. The role can be transferred to another signer or PDA, or renounced permanently. This page walks through using `admin-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
@@ -269,6 +271,8 @@ After building your program, check that the admin instructions appear in the IDL
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 
+The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits the admin instructions from this output without reporting an error, so the check appears to pass while the surface is missing. The install command in [Install the spel CLI](#install-the-spel-cli) pins the right revision.
+
 Expected output includes:
 
 ```
@@ -277,7 +281,7 @@ Expected output includes:
 "admin_renounce"
 ```
 
-Plus your own instructions. A marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. When you hit that error, the most common causes are:
+Plus your own instructions. On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. That safety net is a property of the pinned framework revision: on a framework without the scanner, upstream `logos-co/spel` main today, the marker is ignored and the program builds cleanly without the trio. When you hit the hard error, the most common causes are:
 
 - `admin-authority` not declared as a direct path or git dependency in your `Cargo.toml`. Transitive dependencies are never discovered.
 - `#[admin_authority]` placed outside `#[lez_program]` rather than inside.

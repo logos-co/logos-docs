@@ -310,7 +310,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
     - Lines 81-85 wait on the `gStartedFut` promise, which is set once the node has started.
     - Line 90 acquires `gOpLock` so two `syncTransferOp` calls can't run concurrently.
     - Lines 92-94 reset the result promise and progress counters
-    - Line 97 dispatches the operation via `op()`, and blocks on the result promise, which is fulfiled by the `onDone` callback above once the operation completes.
+    - Line 97 dispatches the operation via `op()`, and blocks on the result promise, which is fulfilled by the `onDone` callback above once the operation completes.
     - Lines 103-106 parse and return the result.
 
 ## Step 6: Implement the context hook and the public operations

@@ -72,7 +72,7 @@ Sepolia
 [Tt]imelocks
 tx
 rustup
-
+[Ff]ulfilled
 A
 AMM
 anonymise

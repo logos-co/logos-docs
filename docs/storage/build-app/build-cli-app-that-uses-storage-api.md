@@ -19,7 +19,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](https://docs.logos.co/get-started/glossary#module) — a separate module that depends on Logos Storage and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
+The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](https://docs.logos.co/get-started/glossary#module)—a separate module that depends on Logos Storage and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
 
 :::info[Prerequisites]
 - A supported OS
@@ -136,7 +136,7 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
 
 ## Step 3: Define the module interface
 
-1.  Create `src/storage_cli_impl.h` with the following interface. It declares two operations — `publish` and `download` — both of which return a [`StdLogosResult`](https://github.com/logos-co/logos-cpp-sdk/tree/95d7b3a9c5ef845bdc31f12f1d8222a12eda916d#logosresult) ([result type](https://en.wikipedia.org/wiki/Result_type)), and overrides `onContextReady`, a [Logos C++ SDK](https://github.com/logos-co/logos-cpp-sdk) hook called when the module is loaded:
+1.  Create `src/storage_cli_impl.h` with the following interface. It declares two operations—`publish` and `download`—both of which return a [`StdLogosResult`](https://github.com/logos-co/logos-cpp-sdk/tree/95d7b3a9c5ef845bdc31f12f1d8222a12eda916d#logosresult) ([result type](https://en.wikipedia.org/wiki/Result_type)), and overrides `onContextReady`, a [Logos C++ SDK](https://github.com/logos-co/logos-cpp-sdk) hook called when the module is loaded:
 
     ```cpp showLineNumbers
     // storage_cli_impl.h
@@ -272,7 +272,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
     void onDone(const std::string &payload) { gResult.set_value(payload); }
     ```
 
-1.  Add `syncTransferOp`, the helper that turns an asynchronous Storage operation into a synchronous one — this is the core of the module:
+1.  Add `syncTransferOp`, the helper that turns an asynchronous Storage operation into a synchronous one—this is the core of the module:
 
     ```cpp showLineNumbers=79
     StdLogosResult syncTransferOp(const std::string &what, int64_t total,
@@ -310,7 +310,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
     - Lines 81-85 wait on the `gStartedFut` promise, which is set once the node has started.
     - Line 90 acquires `gOpLock` so two `syncTransferOp` calls can't run concurrently.
     - Lines 92-94 reset the result promise and progress counters
-    - Line 97 dispatches the operation via `op()`, and blocks on the result promise, which the `onDone` callback above fulfills once the operation completes
+    - Line 97 dispatches the operation via `op()`, and blocks on the result promise, which is fulfiled by the `onDone` callback above once the operation completes.
     - Lines 103-106 parse and return the result.
 
 ## Step 6: Implement the context hook and the public operations

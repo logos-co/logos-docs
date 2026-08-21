@@ -34,7 +34,7 @@ const choosePath: CardItem[] = [
   {
     title: 'Contribute',
     description: 'Improve the protocol, the docs, or the tooling',
-    to: '/contribute/welcome',
+    to: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file',
     icon: '/img/home/contribute.png',
   },
 ];

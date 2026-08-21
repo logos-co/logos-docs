@@ -237,8 +237,7 @@ const config: Config = {
               label: 'Build an app',
             },
             {
-              type: 'docSidebar',
-              sidebarId: 'contributeSidebar',
+              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file',
               label: 'Contribute',
             },
           ],

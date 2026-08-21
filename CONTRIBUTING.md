@@ -46,7 +46,7 @@ If you want to fix a typo, clarify a step, update a command, or make any other i
 
 1. Create a branch with a descriptive name (for example, `fix/blockchain-node-typo`).
 1. Make your changes. Preserve the existing structure - do not reorganise sections or change the document type.
-1. Open a pull request against `main`. In the PR description, explain what you changed and why. Make sure that all checks pass before opening your PR for review.
+1. Open a pull request against `main` and tag `logos-co/docs` and `logos-co/eco-dev-eng` as reviewers. In the PR description, explain what you changed and why. Make sure that all checks pass before opening your PR for review.
 1. The Docs team and others will review your PR. Further changes may be requested before the PR is merged.
 
 Keep PRs small and focused. One fix per PR is easier to review than a large batch of unrelated changes.

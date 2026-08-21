@@ -52,11 +52,11 @@ Zones can implement almost anything, ranging from applications to virtual machin
 
 ### Logos Execution Zone
 
-The [Logos Execution Zone (LEZ)](https://github.com/logos-co/logos-docs/blob/main/docs/lez/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It serves as the home for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), see the page below:
+The [Logos Execution Zone (LEZ)](../../lez/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It serves as the home for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the Logos Execution Zone, see the page below:
 
 ### Other uses
 
-In addition to the [LEZ](../../get-started/glossary.md#lez), anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
+In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
 
 - Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
   - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.

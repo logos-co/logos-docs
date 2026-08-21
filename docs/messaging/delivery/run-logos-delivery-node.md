@@ -53,8 +53,8 @@ Follow the instructions for your chosen path.
    ```
 
    :::info
-The first Docker build runs Nix and downloads release packages. It can take 30â€“45 minutes; subsequent starts are fast.
-:::
+   The first Docker build runs Nix and downloads release packages. It can take 30â€“45 minutes; subsequent starts are fast.
+   :::
 
 **Path B â€” Prebuilt binaries**
 
@@ -65,11 +65,11 @@ The first Docker build runs Nix and downloads release packages. It can take 30â€
    export PATH="$PWD/bin:$PATH"
    ```
 
-1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
+1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module). The root hash selects the exact published package identity for the pinned version:
 
    ```bash
    mkdir -p packages modules
-   lgpd download delivery_module --output ./packages
+   lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output ./packages
    lgpm install --dir ./packages --modules-dir ./modules
    ```
 
@@ -78,13 +78,16 @@ The first Docker build runs Nix and downloads release packages. It can take 30â€
    ```bash
    cat > logos-test.json <<EOF
    {
-      "preset": "logos.test",
-      "mode": "Core",
-      "logLevel": "INFO",
-      "tcpPort": 30303,
-      "discv5UdpPort": 9000,
-      "discv5Discovery": true,
-      "nat": "extip:<public-ip>"
+      "entryLayer": "kernel",
+      "kernelConf": {
+         "preset": "logos.test",
+         "relay": true,
+         "logLevel": "INFO",
+         "tcpPort": 30303,
+         "discv5UdpPort": 9000,
+         "discv5Discovery": true,
+         "nat": "extip:<public-ip>"
+      }
    }
    EOF
 

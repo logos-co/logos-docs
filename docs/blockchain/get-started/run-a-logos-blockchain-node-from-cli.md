@@ -23,7 +23,10 @@ Before you start, ensure you have:
 
 - Linux x86\_64, macOS, or a Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed
 - glibc version 2.39 or later (Linux only)
-- At least 64 GB of storage
+- 2 Core CPU, 2Ghz. Modern multi-core processor.
+- Minimal RAM (1 Gb).
+- SSD with 100+ GB free with ability to expand storage on demand.
+- Relatively reliable network connection. 1Mbps of free bandwidth.
 
 ## What to expect
 
@@ -33,7 +36,7 @@ Before you start, ensure you have:
 
 ## Step 1: Install Logos core tools
 
-1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.0), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.0), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.0) into `./bin`:
+1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) into `./bin`:
 
     ```bash
     curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
@@ -44,18 +47,20 @@ Before you start, ensure you have:
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
 
-1.  Download the module:
+1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.0 --output ./
-    # writes ./blockchain_module-0.2.0.lgx
+    lgpd download blockchain_module --version 0.2.1 --root-hash c33c59d690b206476214e5fcacaee08bd56911ad855ae9c08919005b5f3b3c43 --output ./
+    # writes ./blockchain_module-0.2.1.lgx
     ```
-2.  Install the module:
+
+1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.0.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.1.lgx
     ```
-3.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
+
+1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
 
     ```bash
     logoscore -m ./modules -D &
@@ -86,7 +91,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
 
     :::info
-    To migrate an existing version 0.1.2 blockchain config to version 0.2.0, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
+    To migrate an existing version 0.1.2 blockchain config to version 0.2.1, run the `migrate_user_config_0_1_2` command of the blockchain module and stop the module before restarting it in the next step:
 
     ```bash
     logoscore call blockchain_module migrate_user_config_0_1_2 \
@@ -98,7 +103,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     ```
     :::
 
-2.  Start the node:
+1.  Start the node:
 
     ```sh
     logoscore call blockchain_module start user_config.yaml ""
@@ -132,7 +137,8 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
     - `mode` starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
-2.  Check peer connectivity:
+
+1.  Check peer connectivity:
 
     ```sh
     curl -s http://localhost:8080/network/info | jq .
@@ -151,8 +157,10 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     ```
 
     - Confirm `n_peers` is greater than `0`.
-3. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
-4. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
+
+1. After 30–60 seconds, run the `get_cryptarchia_info` command again and confirm `slot` and `height` have increased.
+
+1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
 ## Step 5: Request tokens from the faucet
 
@@ -172,10 +180,19 @@ A faucet distributes free tokens on test networks so you can experiment without 
         de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
     voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
     ```
-2.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
+
+1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
-3.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+
+:::tip
+The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+```sh
+curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+```
+:::
+
+1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
     ```sh
     curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .

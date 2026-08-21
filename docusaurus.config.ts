@@ -115,12 +115,12 @@ const config: Config = {
             to: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
           },
           {
-            from: '/run-an-app/lez-wallet-ui/initiate-native-token-transfers-on-lez-with-wallet-ui',
-            to: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+            from: '/run-an-app/lez-wallet-ui/run-lez-wallet-ui-and-initiate-native-token-transfers',
+            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
           },
           {
             from: '/run-an-app/lez-wallet-ui/readme',
-            to: '/lez/get-started/initiate-native-token-transfers-on-lez-with-wallet-ui',
+            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
           },
           // run-a-node (-> blockchain / messaging / storage)
           {

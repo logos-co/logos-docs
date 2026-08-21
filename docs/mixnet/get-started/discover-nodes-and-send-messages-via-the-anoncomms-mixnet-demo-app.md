@@ -18,9 +18,7 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 - **Journey name:** Use the Mix Push Message App to send messages over the libp2p mixnet
 - **Owner (GitHub + Discord):** [GitHub](https://github.com/chaitanyaprem), Discord: prem_chaitanya
 - **Applies to:**
-  - [Chat UI App](https://github.com/logos-co/logos-chat-ui), branch: logos-testnet-demo
-  - [Chat module](https://github.com/logos-co/logos-chat-module), branch: logos-testnet-demo
-  - [Logos Messaging (Waku) Module](https://github.com/logos-co/logos-waku-module), branch: logos-testnet-demo
+  - [Chat UI App](https://github.com/logos-co/logos-chat-legacy-ui), branch: logos-testnet-mix-demo
 
 - **Runtime target:** Logos testnet v0.1.
 
@@ -37,14 +35,14 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
   1. Clone the chat-ui repo
 
      ```shell
-     git clone https://github.com/logos-co/logos-chat-ui.git
+     git clone https://github.com/logos-co/logos-chat-legacy-ui.git
      ```
 
   2. Change into the repo directory and check out the demo branch
 
      ```shell
-     cd logos-chat-ui
-     git checkout logos-testnet-demo
+     cd logos-chat-legacy-ui
+     git checkout logos-testnet-mix-demo
      ```
 
   3. Run the standalone application. You should not see any errors in the console.

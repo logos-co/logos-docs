@@ -14,6 +14,10 @@ slug: build-dapp-with-logos-zone-sdk
 
 #### Learn how to use the Zone SDK to implement a decentralised password manager application.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.0**.
+:::
+
 This tutorial covers building a Logos [Zone](../../get-started/glossary.md#zone) from scratch using the [Zone SDK](../../get-started/glossary.md#zone-sdk). Zones are execution environments built on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) that post data as on-chain inscriptions via Logos channels. A Zone can host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or a simple standalone Zone tracking the state of a single application.
 
 The Zone SDK provides a ready-to-use toolbox for basic interactions with a Logos Zone. Every Zone is operated by one or more **sequencers**, which collect transactions, batch them, and publish them as inscriptions on the Logos Blockchain. **Indexers** are nodes that follow a Zone's updates on-chain, re-executing them locally to maintain an up-to-date copy of the Zone state. The Zone SDK supports building both.
@@ -31,11 +35,12 @@ Read [**Decentralise the Log, Not the Server**](https://press.logos.co/article/d
 
 The implementation skeleton already has most of the password manager code written. This tutorial will focus on using the Zone SDK to write the sequencer and indexer functionality, contained primarily in the `sequencer/src/sequencer.rs` and `indexer/src/indexer.rs` files.
 
-**Before you start:**
+:::info[Prerequisites]
 
+- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md).
 - [Git](https://git-scm.com/)
 - [Rust toolchain](https://www.rust-lang.org/tools/install) (stable)
-- Access to a running Logos Blockchain node (see [documentation](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md))
+:::
 
 ## What to expect
 
@@ -59,7 +64,7 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
    cd logos-sql-zone
    git checkout tutorial
    
-   git submodule update --init --recursive
+   git submodule update --init
    ```
 
    The complete demo is available in the `master` branch.
@@ -72,10 +77,10 @@ The sequencer is the node that accepts user transactions, batches them, and post
 
 Your sequencer wraps the `ZoneSequencer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/sequencer/zone_sequencer.rs`. Initialising it requires these arguments:
 
-- `channel_id: ChannelId` — the ID of the channel associated with the Zone.
-- `signing_key: Ed25519Key` — a key authorised to post updates to the channel.
-- `node: Node` — a `Node` struct referring to your Logos Blockchain node, created by `NodeHttpClient::new()`.
-- `checkpoint: Option<SequencerCheckpoint>` — (optional) the checkpoint representing the most recently pushed channel update.
+- `channel_id: ChannelId`—the ID of the channel associated with the Zone.
+- `signing_key: Ed25519Key`—a key authorised to post updates to the channel.
+- `node: Node`—a `Node` struct referring to your Logos Blockchain node, created by `NodeHttpClient::new()`.
+- `checkpoint: Option<SequencerCheckpoint>`—(optional) the checkpoint representing the most recently pushed channel update.
 
 Before posting to a new channel, the sequencer must generate an Ed25519 public/private key pair. **The initial public key defines the channel ID; the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](../../get-started/glossary.md#message) with this channel ID, unless the channel already exists. Additional keys can be authorised via the [CHANNEL_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](../../get-started/glossary.md#mantle) Operation.
 
@@ -323,12 +328,12 @@ Whenever the password manager's database is updated, the SQL transactions are al
 
 ### Step 3: Handle channel events
 
-The sequencer must track the Zone state on the blockchain so it can detect reorgs, finalized blocks, and updates from other sequencers. In our example, there is only one sequencer, and therefore the state only has to track which inscriptions have finalized. The Zone SDK communicates these via `Event`:
+The sequencer must track the Zone state on the blockchain so it can detect reorgs, finalised blocks, and updates from other sequencers. In our example, there is only one sequencer, and therefore the state only has to track which inscriptions have finalised. The Zone SDK communicates these via `Event`:
 
-- `Ready` — the sequencer is caught up and ready to accept updates.
-- `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
-- `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
-- `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
+- `Ready`—the sequencer is caught up and ready to accept updates.
+- `BlocksProcessed`—a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel—**a centralised Zone ignores it**.
+- `MempoolPending`—transaction was accepted by node API and is waiting in mempool.
+- `TurnNotification`—the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
 1. In `common/src/state.rs`, add the `InMemoryZoneState` struct to track inscription IDs:
 
@@ -440,8 +445,8 @@ The indexer is the node that follows a Zone's channel on the Logos Blockchain an
 
 Your indexer wraps the `ZoneIndexer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/indexer.rs`. Initialising it requires:
 
-- `channel_id: ChannelId` — the ID of the channel associated with the Zone.
-- `node: Node` — a `Node` struct referring to your Logos Blockchain node, created by `NodeHttpClient::new()`.
+- `channel_id: ChannelId`—the ID of the channel associated with the Zone.
+- `node: Node`—a `Node` struct referring to your Logos Blockchain node, created by `NodeHttpClient::new()`.
 
 1. In `indexer/src/indexer.rs`, add the `Indexer` struct definition:
 

@@ -17,15 +17,29 @@ sidebar_position: 1
 
 #### Use `logos-scaffold` to create, build, and deploy a guest program on the Logos Execution Zone testnet.
 
-[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program) — from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-Before you begin, ensure you have:
+[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
 
-- Linux x86\_64 or macOS
-- `git`, `curl`, and Rust/Cargo (latest stable)
-- Docker or Podman — required for the RISC0 guest method build
-- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) installed via `rzup`: run `rzup install rust` (needed by `logos-scaffold build`) and `rzup install r0vm` (needed by the sequencer to execute transactions)
-- [Nix](https://nixos.org/download/) — `logos-scaffold setup` builds the `basecamp` and `lgpm` dependencies as Nix flakes (`build = "nix-flake"` in `scaffold.toml`); `logos-scaffold doctor` flags a missing `nix` with *Install `nix`*
+:::info[Prerequisites]
+
+- A supported OS:
+    - Linux: x86_64
+    - macOS
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+- [Docker](https://docs.docker.com/get-docker/) or Podman installed.
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
+    - To install, run `rzup install rust`
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+    ```bash
+    mkdir -p ~/.config/nix
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+    ```
+:::
 
 ## What to expect
 
@@ -131,7 +145,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id` — a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id`—a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
 
 1. To deploy a specific program by name:
 

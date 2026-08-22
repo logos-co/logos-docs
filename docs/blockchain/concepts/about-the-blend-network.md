@@ -20,7 +20,7 @@ The [Blend Network](../../get-started/glossary.md#blend-network) adds a layer of
 
 - The Blend Network adds anonymity for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
 - Proposals are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
-- Nodes must explicitly opt in through the [Service Declaration Protocol](../../get-started/glossary.md#service-declaration-protocol) and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake.
+- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake.
 
 ## Objectives
 
@@ -30,12 +30,12 @@ The Blend Network supports the privacy of the [Logos Blockchain](../../get-start
 
 ## How the Blend Protocol works
 
-The Blend Network makes it difficult to link a block proposer to their proposal by having the message travel between several nodes before being revealed. Blend nodes must maintain a minimum number of connections with other nodes, and cannot exceed a maximum frequency of messages they can send - putting an upper bound on bandwidth usage.
+The Blend Network makes it difficult to link a block proposer to their proposal by having the message travel between several nodes before being revealed. [Blend nodes](../../get-started/glossary.md#blend-node) (also known as [core nodes](../../get-started/glossary.md#core-node)) must maintain a minimum number of connections with other nodes, and cannot exceed a maximum frequency of messages they can send - putting an upper bound on bandwidth usage.
 
 While dedicated participation in the Blend Network is reserved for declared Blend nodes, proposals can also be sent to it from regular Logos nodes. The following steps illustrate the process which a proposal message goes through before being broadcast and included in the chain.
 
 1. The message sender selects a random path of nodes along which it will relay its message to the receiver, covering the message in layers of encryption for every node on the path.
-2.  The sender sends the layered message to every [Blend node](../../get-started/glossary.md#blend-node) with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
+2.  The sender sends the layered message to every Blend node with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
 
     ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../assets/about-the-blend-network/dissemination.png)
 
@@ -61,11 +61,21 @@ To avoid the network getting congested with too much message traffic, the Blend 
 
 ## Participating in the Blend Network
 
-Participation in the Blend Network is more complex than running a [Logos node](../../get-started/glossary.md#logos-node). The protocol relies on an agreed-upon sets of active participants to ensure its correct operation, as Blend nodes must keep track of connections to other Blend nodes for message relaying. As a result, it is not possible to allow dynamic participation in the Blend Network as it exists for [Bedrock](../../get-started/glossary.md#bedrock). Participation in the Blend Network is therefore not incumbent upon a node unless it opts in.
+Participation in the Blend Network as a Blend node is more complex than running a [Logos Blockchain node](../../get-started/glossary.md#logos-node). The protocol relies on an agreed-upon sets of active participants to ensure its correct operation, as Blend nodes must keep track of connections to other Blend nodes for message relaying. As a result, it is not possible to allow dynamic participation in the Blend Network as it exists for [Bedrock](../../get-started/glossary.md#bedrock). Participation in the Blend Network is therefore not incumbent upon a node unless it opts in.
+
+### Node roles: core, edge, and broadcast
+
+A Logos Blockchain node operates in one of three modes in terms of its engagement with the Blend Network. These roles are refreshed every [epoch](../../get-started/glossary.md#epoch) based on the set of active Blend declarations for that epoch:
+
+- **Core node**—a node that has opted in through the [Service Declaration Protocol](#service-declaration-protocol) and locked the required stake. Core nodes carry out the message blending: they relay and blend messages for others, resulting in maximum privacy for their own proposals. Core nodes receive rewards for their efforts via the [SRDP](#service-reward-distribution-protocol).
+- **Edge node**—a block proposer node that has *not* declared as a core node but participates whenever there are enough core nodes in that epoch. An edge node sends its own proposals through the core nodes for blending, gaining limited proposer privacy without relaying for others. This is automatic and needs no configuration or stake.
+- **Broadcast**—a fallback method used when fewer than the minimum number of core nodes are active in an epoch. With too few core nodes to blend through, a proposer will broadcast its proposal directly, without Blend privacy for that epoch.
+
+Only the **core** role requires operator action—an SDP declaration, a locked stake, and a publicly reachable Blend port (see [Join the Blend Network as a core node](../blend/join-the-blend-network-as-a-core-node.md)). By contrast, a Logos Blockchain node participates as an edge node if the chain is online and enough core nodes exist, and falls back to broadcast mode otherwise. The minimum number of core nodes needed for edge participation is set by the network.
 
 ### Service Declaration Protocol
 
-Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol ([SDP](../../get-started/glossary.md#sdp)). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
+Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol (SDP). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
 
 The SDP provides a standardised mechanism for Logos nodes to declare their participation, demonstrate activity, and withdraw when desired. It operates around a schedule measured by consensus epochs. This protocol creates a single repository of identifiers used to establish secure communication between nodes and manage service participation.
 
@@ -79,7 +89,7 @@ To submit a service declaration, a node must prove that it owns a note with a se
 
 ### Service Reward Distribution Protocol
 
-The [Service Reward Distribution Protocol](../../get-started/glossary.md#service-reward-distribution-protocol) ([SRDP](../../get-started/glossary.md#srdp)) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
+The Service Reward Distribution Protocol (SRDP) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
 
 - Activity tracking: Nodes participating in services submit active messages to attest to their participation in the previous [epoch](../../get-started/glossary.md#epoch).
 - Reward calculation: At the end of the epoch, the system calculates rewards for nodes that participated in the previous epoch.

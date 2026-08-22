@@ -15,13 +15,26 @@ sidebar_position: 1
 
 #### Get started sending and receiving messages with sender anonymity using the Logos Chat UI.
 
-This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co/logos-chat-ui/tree/feat/logos-testnetv02-mix) desktop app, connect to the testnet-0.2 [mix](../../get-started/glossary.md#mix) fleet, and exchange messages between two instances with sender unlinkability. No configuration is required — the app ships with shared testnet credentials and discovers the fleet automatically.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-Before you start, make sure you have the following:
+This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co/logos-chat-ui/tree/feat/logos-testnetv02-mix) desktop app, connect to the testnet-0.2 [mix](../../get-started/glossary.md#mix) fleet, and exchange messages between two instances with sender unlinkability. No configuration is required—the app ships with shared testnet credentials and discovers the fleet automatically.
 
-- macOS or Linux
-- [Nix](https://nixos.org/download) with flakes enabled — add `experimental-features = nix-command flakes` to `~/.config/nix/nix.conf` (create it if needed)
-- Outbound TCP access to the fleet on port `30304`
+:::info[Prerequisites]
+
+- A supported OS:
+    - Linux
+    - macOS
+- Outbound TCP access to the fleet on port `30304`.
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+   ```bash
+   mkdir -p ~/.config/nix
+   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+   ```
+:::
 
 ## What to expect
 
@@ -82,7 +95,7 @@ Never run two instances in the same working directory. The app stages credential
 
 1. Exchange intro bundles between the two instances:
 
-   - In one instance, click **Get Intro Bundle**, then click **Copy to Clipboard** in the **My Bundle** dialog that opens.
+   - In one instance, click **Get Intro Bundle**, then click **Copy to Clipboard** in the **My Bundle** dialogue that opens.
    - In the other instance, click **+ new**, paste the bundle and enter a first message, then click **Create**.
 
 1. Send a message from one instance and confirm it arrives in the other:
@@ -90,7 +103,7 @@ Never run two instances in the same working directory. The app stages credential
    - **Sender console:** `Sending via mix (lightpushPublish)` → **`Message sent via mix successfully`**
    - **Recipient console:** `ChatBackend: New message: …`
    - The message appears in the recipient's conversation within approximately 1–2 seconds.
-   - A `Mix lightpush: no SURB reply within 60s` warning in the sender console is benign — delivery uses the forward path, which is independent of the SURB reply.
+   - A `Mix lightpush: no SURB reply within 60s` warning in the sender console is benign—delivery uses the forward path, which is independent of the SURB reply.
 
 1. Confirm the final status bar state on both instances:
 
@@ -104,7 +117,7 @@ A previous instance was killed while `logos_host_qt` child processes were still 
 
 ### Why does the mix pool stay at `MIX 0/4` or fill slowly?
 
-The pool takes 1–2 minutes to fill on first launch. Wait and watch the status bar. If the pool does not reach **`MIX 5/4`** after several minutes, the fleet may be temporarily degraded — the mix fleet is a shared testnet of 5 nodes and connectivity depends on all of them being reachable.
+The pool takes 1–2 minutes to fill on first launch. Wait and watch the status bar. If the pool does not reach **`MIX 5/4`** after several minutes, the fleet may be temporarily degraded—the mix fleet is a shared testnet of 5 nodes and connectivity depends on all of them being reachable.
 
 ### Why does the send succeed but the recipient never sees the message?
 

@@ -29,6 +29,14 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    {
+      tagName: 'script',
+      attributes: {
+        src: 'https://umami.bi.status.im/script.js',
+        defer: true,
+        'data-website-id': '0f95ea33-c693-4fe7-91dc-8effe9645fa8',
+      },
+    },
   ],
 
   future: {
@@ -297,6 +305,8 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      // see https://github.com/facebook/docusaurus/issues/3559
+      additionalLanguages: ['bash', 'cmake', 'nix'],
     },
   } satisfies Preset.ThemeConfig,
 };

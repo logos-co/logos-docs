@@ -15,13 +15,18 @@ sidebar_position: 2
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to send funds from one of your wallet addresses to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the Logos Blockchain dashboard. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- A built [Blockchain node app](./build-and-run-logos-blockchain-node-app-ui.md)
-- At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/)
-- The recipient's 64-hex-character public key
+- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) built and running.
+- At least one wallet address with a positive balance, for example one funded via the faucet at [`testnet.blockchain.logos.co`](https://testnet.blockchain.logos.co/web/faucet/).
+- The recipient's 64-hex-character public key.
+:::
 
 ## What to expect
 
@@ -71,14 +76,14 @@ The **Operations** tab is disabled until the node is running and synced. Start t
 
 The **Operations** tab is gated on the node status being **Running**. Start the node from the **Node** tab and wait for the status to change before attempting a transfer.
 
-### Why does the result row show "Module not initialized"?
+### Why does the result row show `Module not initialized`?
 
 The backend client is null, which means the module did not initialise correctly at startup. Restart the app and try again.
 
-### Why does the result row show "Call failed"?
+### Why does the result row show `Call failed`?
 
 The remote call timed out or returned no reply. Confirm the node is still running and the network connection is healthy, then retry.
 
-### Why does the result row show "Error: …"?
+### Why does the result row show `Error: …`?
 
 The module rejected the transaction. Common causes are an insufficient balance, an invalid recipient key, or a malformed amount string. Verify the recipient key is exactly 64 hex characters and the amount is a valid number, then retry.

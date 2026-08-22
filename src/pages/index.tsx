@@ -68,7 +68,7 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Storage',
     description: 'Decentralised, content-addressed file storage and retrieval',
-    to: '/storage/get-started/run-logos-storage-node',
+    to: '/storage',
   },
   {
     title: 'λ Mixnet',

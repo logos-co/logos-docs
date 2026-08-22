@@ -15,7 +15,11 @@ sidebar_position: 2
 
 #### Use the Logos Delivery module to run a Logos delivery node
 
-This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.2). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available — Docker, prebuilt binaries, and Nix — so you can choose the one that fits your environment.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
+This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.2). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available—Docker, prebuilt binaries, and Nix—so you can choose the one that fits your environment.
 
 Choose one of the three installation paths based on your environment:
 
@@ -25,12 +29,24 @@ Choose one of the three installation paths based on your environment:
 | **B** | Prebuilt binaries | No build, no clone required |
 | **C** | Nix | From source; most reproducible |
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
-- Linux or macOS
-- Network access so both node instances can reach each other
-- `jq` installed (required for the verify step)
-- Per path: **A** — Docker with Compose; **B** — `curl` and a shell; **C** — [Nix with flakes enabled](https://nixos.org/download)
+- A supported OS:
+    - Linux
+    - macOS
+- Network access so both node instances can reach each other.
+- Some prerequisites differ between paths:
+   - **Path A**: Docker with Compose
+   - **Path B**: `curl` and a shell
+   - **Path C**: **Nix** with flakes enabled.
+      - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+
+      ```bash
+      mkdir -p ~/.config/nix
+       echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+      ```
+
+:::
 
 ## What to expect
 
@@ -42,7 +58,7 @@ Before you start, make sure you have the following:
 
 Follow the instructions for your chosen path.
 
-**Path A — Docker**
+**Path A—Docker**
 
 1. Clone the repository and start the daemon container:
 
@@ -56,7 +72,7 @@ Follow the instructions for your chosen path.
    The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
    :::
 
-**Path B — Prebuilt binaries**
+**Path B—Prebuilt binaries**
 
 1. Install `logoscore`, `lgpd`, and `lgpm` into `./bin`:
 
@@ -94,7 +110,7 @@ Follow the instructions for your chosen path.
    logoscore -D -m ./modules > logs.txt
    ```
 
-**Path C — Nix**
+**Path C—Nix**
 
 1. Clone the repository and build the runtime, package manager, and [module](../../get-started/glossary.md#module):
 
@@ -217,7 +233,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
 ### Why does the first `docker compose up` appear stuck?
 
-The first build runs Nix and downloads release packages, which takes 30–45 minutes on a typical connection. The process is not hung — let it finish. Subsequent starts use the cached layers and complete in seconds.
+The first build runs Nix and downloads release packages, which takes 30–45 minutes on a typical connection. The process is not hung—let it finish. Subsequent starts use the cached layers and complete in seconds.
 
 ### Why does `logoscore call` return an error after `load-module`?
 

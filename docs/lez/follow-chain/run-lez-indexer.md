@@ -13,23 +13,30 @@ sidebar_position: 1
 
 # Run an LEZ Indexer
 
-#### Get started with the LEZ Indexer and query finalized LEZ state over HTTP RPC.
+#### Get started with the LEZ Indexer and query finalised LEZ state over HTTP RPC.
 
-The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the finalized LEZ state from the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](../../get-started/glossary.md#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-Before you start, make sure you have the following:
+The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the finalised LEZ state from the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node and exposes it over an HTTP RPC interface. Any application can use this interface to query blocks, transactions, and [account](../../get-started/glossary.md#account) state. This procedure walks you through running an LEZ Indexer locally alongside its dependencies, verifying it is indexing blocks, and querying account state through the RPC.
 
-- Linux or macOS operating system
-- [Docker](https://docs.docker.com/get-docker/) installed
-- Rust 1.94.0 and `cargo` installed
-- [`just`](https://github.com/casey/just) installed
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) and [wallet](../get-started/run-lez-wallet-via-cli.md) set up
-- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally)
-- Port `8779` free on your machine
+:::info[Prerequisites]
+
+- A supported OS:
+   - Linux
+   - macOS
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone).
+- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
+- [`just`](https://github.com/casey/just) installed.
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally).
+- Port `8779` free on your machine.
+:::
 
 ## What to expect
 
-- You can query finalized LEZ blockchain state including blocks, transactions, and accounts via HTTP RPC on `http://localhost:8779`.
+- You can query finalised LEZ blockchain state including blocks, transactions, and accounts via HTTP RPC on `http://localhost:8779`.
 - You have a running local stack with the Logos Blockchain node, LEZ Sequencer, and LEZ Indexer coordinated through `just` commands.
 - You can verify indexer health and confirm it is progressing by calling the `getLastFinalizedBlockId` and `checkHealth` RPC methods.
 
@@ -55,7 +62,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
     ```sh
     # Run node, in terminal 1
-    just run-bedrock
+    docker compose up logos-blockchain-node-0
     ```
 
     ```sh
@@ -77,7 +84,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     [2026-06-18T14:21:59Z INFO  indexer_core] Starting indexer from beginning of channel
     ```
 
-    The indexer then listens for block finalizations.
+    The indexer then listens for block finalisations.
 
 ## Verify the indexer is progressing
 
@@ -135,11 +142,11 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
 
 ### Why is there a delay between sending a transaction and seeing it in the indexer?
 
-The delay is caused by Logos Blockchain's block finality time. The indexer only processes finalized blocks from the L1 node, so transactions sent through the sequencer are not visible until the corresponding block is finalized. This is expected behavior.
+The delay is caused by Logos Blockchain's block finality time. The indexer only processes finalised blocks from the L1 node, so transactions sent through the sequencer are not visible until the corresponding block is finalised. This is expected behaviour.
 
 ### How do I change the indexer configuration?
 
 The indexer config used by `just run-indexer` is located at [lez/indexer/service/configs/debug/indexer\_config.json](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/indexer/service/configs/debug/indexer_config.json) (a `configs/docker/indexer_config.json` variant is used for the Docker setup). Two fields control connectivity:
 
-- `bedrock_config` — the HTTP address of the Logos Blockchain node.
-- `channel_id` — the channel that LEZ Sequencer writes into. This must match the sequencer you are using.
+- `bedrock_config`—the HTTP address of the Logos Blockchain node.
+- `channel_id`—the channel that LEZ Sequencer writes into. This must match the sequencer you are using.

@@ -17,21 +17,26 @@ sidebar_position: 1
 
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
 The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
 
-:::info
+:::tip
 You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
 :::
 
-Before you begin, you will need:
+:::info[Prerequisites]
 
-- A running [Logos node](../get-started/run-a-logos-blockchain-node-from-cli.md)
+- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
+:::
 
 ## What to expect
 
-- You will initialise a `ZoneSequencer` that connects to your Logos node and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
+- You will initialise a `ZoneSequencer` that connects to your [Logos node](../../get-started/glossary.md#logos-node) and creates a new [channel](../../get-started/glossary.md#channel) for posting inscriptions.
 - You will implement event handling so the sequencer tracks which of its inscriptions have finalised and keeps a checkpoint to resume from.
 - You will publish plain-text messages as on-chain inscriptions and verify they are finalised in the channel.
 
@@ -53,10 +58,10 @@ Before you begin, clone the [logos-blockchain](https://github.com/logos-blockcha
 
 Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone SDK, found in `logos-blockchain/zone-sdk/src/sequencer/zone_sequencer.rs`. When initialising this struct, provide the following arguments:
 
-- `channel_id: ChannelId` — the ID of the channel associated with the Zone.
-- `signing_key: Ed25519Key` — a key authorised to post updates to the channel.
-- `node: Node` — a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
-- `checkpoint: Option<SequencerCheckpoint>` — \[Optional] the checkpoint representing the most recently-pushed channel update.
+- `channel_id: ChannelId`—the ID of the channel associated with the Zone.
+- `signing_key: Ed25519Key`—a key authorised to post updates to the channel.
+- `node: Node`—a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
+- `checkpoint: Option<SequencerCheckpoint>`—\[Optional] the checkpoint representing the most recently pushed channel update.
 
 Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](../../get-started/glossary.md#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL\_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](../../get-started/glossary.md#mantle) Operation.
 
@@ -133,14 +138,14 @@ After the first channel message, further messages include a hash reference to th
 
 ## Step 3: Handle channel events
 
-For a centralized Zone — a single sequencer that owns its channel — event handling is minimal. There are no competing sequencers, and a single sequencer never loses a [slot](../../get-started/glossary.md#slot), so the sequencer only needs to track which of its inscriptions have finalised and keep a checkpoint so it can resume after a restart. It learns about both through the Zone SDK's `Event` stream.
+For a centralised Zone—a single sequencer that owns its channel—event handling is minimal. There are no competing sequencers, and a single sequencer never loses a [slot](../../get-started/glossary.md#slot), so the sequencer only needs to track which of its inscriptions have finalised and keep a checkpoint so it can resume after a restart. It learns about both through the Zone SDK's `Event` stream.
 
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
-- `Ready` — the sequencer is caught up and ready to accept updates.
-- `BlocksProcessed` — a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel — **a centralized Zone ignores it**.
-- `MempoolPending` — transaction was accepted by node API and is waiting in mempool.
-- `TurnNotification` — the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
+- `Ready`—the sequencer is caught up and ready to accept updates.
+- `BlocksProcessed`—a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel—**a centralised Zone ignores it**.
+- `MempoolPending`—transaction was accepted by node API and is waiting in mempool.
+- `TurnNotification`—the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
 1.  In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint:
 
@@ -149,7 +154,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
     //
     // published: Inscriptions published by your sequencer, not yet finalised
     // finalized: All finalised inscriptions
-    // checkpoint: Last message in Zone state — lets the sequencer resume after a restart
+    // checkpoint: Last message in Zone state—lets the sequencer resume after a restart
     #[derive(Default)]
     pub struct InMemoryZoneState {
         published: Vec<Msg>,
@@ -166,7 +171,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
 
         // Move our finalised publishes out of `published` and into `finalized`.
-        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+        pub fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
             for info in inscriptions {
                 if let Some(i) = self
                     .published
@@ -388,4 +393,4 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
     The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
 
-    Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalized** — confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.
+    Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalised**—confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.

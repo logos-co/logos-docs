@@ -8,7 +8,7 @@ authors: mmlado
 owner: logos
 doc_version: 1
 slug: build-a-spel-extension-library
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Build a SPEL extension library
@@ -70,7 +70,7 @@ my-extension-macros = { path = "../my-extension-macros" }
 
 - `extension_attr` is the attribute name consumers put on their `#[lez_program]` module to opt in. By convention, match it to your crate name (with `_` not `-`).
 
-Per-instruction gate attributes your library defines (e.g. `#[require_admin]` from `admin-authority`) need no metadata for the check itself: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone. If your gate needs specific account parameters on every gated instruction, you can declare those in an optional inject block so consumers do not have to write them out (see the gate attribute section below).
+Per-instruction gate attributes your library defines (for example, `#[require_admin]` from `admin-authority`) need no metadata for the check itself: they are ordinary proc-macros that re-expand on the emitted handler and consume themselves, so the framework leaves them alone. If your gate needs specific account parameters on every gated instruction, you can declare those in an optional inject block so consumers do not have to write them out (see the gate attribute section below).
 
 ## Define the runtime library
 
@@ -103,7 +103,7 @@ Three things to note:
 
 - `extern crate self as my_extension;`, lets the library reference its own types via the absolute path `::my_extension::MyState`. The framework emits cross-crate calls into the consumer's binary using that path, so the path needs to resolve both in the library's own compile and at the consumer's compile.
 - `pub use my_extension_macros::{instruction, my_extension};`, re-exports the marker attribute and the no-op `#[instruction]` shim so consumers (and the library's own `lib.rs`) can use them without importing the macros crate directly.
-- `#[account(...)]` attributes on parameters, these are framework helper attributes that describe PDA seeds, signer requirements, etc. The library's own `#[instruction]` shim strips them at the library's compile so rustc accepts the source; the framework reads them during the path-dep scan.
+- `#[account(...)]` attributes on parameters, these are framework helper attributes that describe PDA seeds, signer requirements, etc. The library's own `#[instruction]` shim strips them at the library's compile so rustc accepts the source; the framework reads them during the path-dependency scan.
 - Name the state parameter after the inject role you will declare for it (`my_state` here). Injection reuse, wrap stamping, and embedded retargeting resolve your accounts by role name, a differently named parameter breaks embedded mode with an argument-count error at the consumer's compile.
 - When you write the real body, post-states are the inner `account` values (`vec![my_state.account, caller.account]`), with an `(account, AutoClaim)` tuple for accounts the instruction claims. Consumer handlers return the `AccountWithMetadata` wrappers, library handlers do not. The reference samples show both patterns.
 
@@ -134,7 +134,7 @@ use quote::quote;
 use syn::{parse_macro_input, FnArg, ItemFn};
 
 /// Marker attribute. Pass-through; the framework detects it on a #[lez_program]
-/// module by name and triggers the path-dep scan for `my-extension`.
+/// module by name and triggers the path-dependency scan for `my-extension`.
 #[proc_macro_attribute]
 pub fn my_extension(_attr: TokenStream, item: TokenStream) -> TokenStream {
     item
@@ -203,7 +203,7 @@ wrapper = "require_my_gate"
   signer = true
 ```
 
-Any consumer instruction carrying `#[require_my_gate]` gets the listed parameters synthesized at expansion time unless it already declares them (skip-if-declared). The injected parameters are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account. Compound PDA seeds work too: `seed = [{ const = "frozen" }, { account = "caller" }]` derives from a literal plus another account's id.
+Any consumer instruction carrying `#[require_my_gate]` gets the listed parameters synthesised at expansion time unless it already declares them (skip-if-declared). The injected parameters are exactly what the explicit declaration would have been, land after a leading `ProgramContext` in the block's declaration order, and appear in the IDL like any declared account. Compound PDA seeds work too: `seed = [{ const = "frozen" }, { account = "caller" }]` derives from a literal plus another account's id.
 
 ## Auto-wrap every instruction (optional)
 
@@ -221,9 +221,9 @@ exempt = [
 ]
 ```
 
-- `wrapper`: a qualified path to the per-instruction attribute the framework prepends onto each non-exempt dispatched function, including other extensions' discovered instructions. Reuses the same `#[require_my_gate]` attribute consumers apply by hand in manual mode — one proc-macro, two callers.
+- `wrapper`: a qualified path to the per-instruction attribute the framework prepends onto each non-exempt dispatched function, including other extensions' discovered instructions. Reuses the same `#[require_my_gate]` attribute consumers apply by hand in manual mode, one proc-macro, two callers.
 - `skip`: the arg literal on your `#[my_extension]` marker that DISABLES auto-wrap. With `skip = "manual"`, `#[my_extension(manual)]` opts out of the wrap and `#[my_extension]` (bare) opts in.
-- `self_exempt_marker`: an attribute name the framework recognises as "skip this function from wrap". Add another pass-through proc-macro of that name to your macros crate; consumers carry it on any instruction they want to remain callable while gated.
+- `self_exempt_marker`: an attribute name the framework recognises as "skip this function from wrap." Add another pass-through proc-macro of that name to your macros crate; consumers carry it on any instruction they want to remain callable while gated.
 - `exempt`: a list of cross-crate dispatched instructions to skip unconditionally. Use this when composing with another extension whose ops must stay operable even when your wrap is active. (Self-exemptions for your own instructions go on the function via `self_exempt_marker` instead.)
 
 When the consumer puts `#[my_extension]` on their `#[lez_program]` mod, the framework walks the dispatcher table and prepends `#[require_my_gate]` to every function that is not in `exempt` and does not carry `#[my_extension_exempt]`. Consumers write normal code, the gate arrives with the wrap. Injection and wrapping compose: a wrapped instruction gets your gate's parameters injected like an annotated one.
@@ -257,34 +257,34 @@ default = 0
 
 **Slot field markers.** The framework derives a marker name from your role, the role name minus a `_config` suffix plus `_slot` (role `admin_config` gives `#[admin_slot]`, role `my_state` gives `#[my_state_slot]`). A consumer who puts that marker on the embedding field of an `#[account_type]` struct gets a derived `<MARKER>_OFFSET` const, an emitted layout test, and a compile-time assert that the derived offset equals the `offset = ...` declared on your marker, so a field added above the slot fails the build instead of silently moving the window. Adoption is optional (no marker, no check), and two structs carrying the same marker is a compile error. Nothing to implement on your side, the mechanism ships with `#[account_type]`, but document the marker name your role produces.
 
-**Born-initialized slots.** If your slot must never exist uninitialized (the way an admin slot without a holder is a takeover window), ship a bootstrap attribute consumers put on their own account-creating instruction (the way `admin-authority` ships `#[admin_initialize]`). Implement it as a proc macro that injects your `bootstrap_at` call into the handler body, and declare it as an inject wrapper in metadata so your role parameters synthesize on the marked instruction like they do on gates. Make it embedded-mode only and let the framework stamp the location kwargs, and reject instructions whose embedding account is not `init`, a bootstrap against an existing account is a takeover. A slot that can start empty (the way freeze starts vacant and the admin appoints the first holder via transfer) needs no bootstrap attribute at all.
+**Born-initialized slots.** If your slot must never exist uninitialised (the way an admin slot without a holder is a takeover window), ship a bootstrap attribute consumers put on their own account-creating instruction (the way `admin-authority` ships `#[admin_initialize]`). Implement it as a proc macro that injects your `bootstrap_at` call into the handler body, and declare it as an inject wrapper in metadata so your role parameters synthesise on the marked instruction like they do on gates. Make it embedded-mode only and let the framework stamp the location kwargs, and reject instructions whose embedding account is not `init`, a bootstrap against an existing account is a takeover. A slot that can start empty (the way freeze starts vacant and the admin appoints the first holder via transfer) needs no bootstrap attribute at all.
 
 When two extensions embed into the same consumer account at distinct offsets, the framework merges the duplicated account into one transaction account (listed once in the IDL with unioned constraints, cloned into each position of the call) and your instruction must emit exactly one post-state per unique account id. Same account at the same offset is a compile error.
 
 ### Attribute-order convention in library source
 
-When a per-instruction gate attribute does shape validation on parameters (the way `#[require_admin]` checks for an `#[account(pda = literal("admin_config"))]` parameter and an `#[account(signer)]` parameter), the order of attributes on the library's own `#[instruction]` functions matters:
+If a per-instruction gate attribute reads the `#[account(...)]` attributes on parameters to validate their shape, the order of attributes on the library's own `#[instruction]` functions matters:
 
 ```rust
-#[require_my_gate]   // runs first — sees params with #[account(...)] intact
-#[instruction]       // shim runs second — strips #[account(...)] for rustc
+#[require_my_gate]   // runs first, sees params with #[account(...)] intact
+#[instruction]       // shim runs second, strips #[account(...)] for rustc
 pub fn gated_op(/* ... */) -> SpelResult { /* ... */ }
 ```
 
-Rust expands attribute macros top-down. The library's `#[instruction]` shim strips `#[account(...)]` from parameters. If `#[require_my_gate]` is placed below `#[instruction]`, it runs after the strip, no PDA or signer parameters are left for its shape check, and it emits a confusing error.
+Rust expands attribute macros top-down. The library's `#[instruction]` shim strips `#[account(...)]` from parameters. A gate placed below `#[instruction]` runs after the strip, no PDA or signer attributes are left for its shape check, and it emits a confusing error.
 
-The rule only applies inside libraries that re-export the shim (like the one shown in this guide). Consumer code uses SPEL's no-op `#[instruction]` from the prelude, which doesn't strip anything; order doesn't matter there.
+A body-inject gate that references parameters by name only, the way `#[require_admin]` and the gate in this guide do, is order-independent. The shim strips attributes, never parameters, so the names it references survive in either position. The rule only applies to gates that read parameter attributes, inside libraries that re-export the shim. In consumer code the stripper is `#[lez_program]` itself: the module rewrite removes `#[instruction]` and `#[account(...)]` from every instruction before any function-level attribute expands, so gate order never matters there, and a gate never sees account attributes at all.
 
-## Composing with another extension (hard dep)
+## Composing with another extension (hard dependency)
 
-Some extensions naturally build on others. `freeze-authority` depends on `admin-authority` — its freeze-authority slot is governed by admin signatures. When your extension does this:
+Some extensions naturally build on others. `freeze-authority` depends on `admin-authority`, its freeze-authority slot is governed by admin signatures. When your extension does this:
 
-1. **Declare a normal Cargo path dep** on the other extension in your `Cargo.toml`. Consumers get both extensions in their dep graph automatically.
+1. **Declare a normal Cargo dependency** on the other extension in your `Cargo.toml`, path or git. `freeze-authority` uses a git dependency on `admin-authority` pinned to its `v0.1.0` tag. Consumers get both extensions in their dependency graph automatically.
 2. **Add both markers to the consumer's mod.** Consumers write `#[admin_authority] #[my_extension]` on their `#[lez_program]` mod. Each marker triggers its own discovery.
-3. **Import the gate attributes you compose with.** E.g. `use admin_authority::require_admin;` in your library source, then `#[require_admin]` on instructions that should require admin sig (like an initialization that creates your config PDA).
+3. **Import the gate attributes you compose with.** For example, `use admin_authority::require_admin;` in your library source, then `#[require_admin]` on instructions that should require an admin signature (like an initialisation that creates your config PDA).
 4. **List the other extension's exempt-while-wrapped instructions** in your `wrap_instructions.exempt` if applicable. freeze-authority lists admin-authority's three management instructions so they stay callable while the program is frozen.
 
-The framework deduplicates path-dep dirs, so admin-authority is scanned once even if both your extension and the consumer name it as a path dep.
+The framework deduplicates path-dependency directories, so admin-authority is scanned once even if both your extension and the consumer name it as a path dependency.
 
 ## Consumer integration
 
@@ -294,9 +294,13 @@ A consumer adds your extension to their `Cargo.toml`:
 [dependencies]
 my-extension = { git = "https://github.com/you/my-extension" }
 spel-framework = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
+serde = { version = "1", features = ["derive"] }
 ```
 
-The `spel-framework` pin must be a revision that carries the extension scanner, and it must be the exact revision your library pins, spelled the same way. Upstream `logos-co/spel` does not have the scanner until [logos-co/spel#257](https://github.com/logos-co/spel/pull/257) lands, and a branch reference fails to unify with a rev pin even at the same commit, cargo keys git sources by reference kind. Swap this for the `logos-co` URL once the mechanism reaches an upstream release.
+`nssa_core` and `serde` are named directly by `#[lez_program]`'s expansion, so the consumer must declare both even though their own source never mentions either.
+
+The `spel-framework` pin must be a revision that carries the extension scanner, and it must be the exact revision your library pins, spelt the same way. Upstream `logos-co/spel` does not have the scanner until [logos-co/spel#257](https://github.com/logos-co/spel/pull/257) lands, and a branch reference fails to unify with a rev pin even at the same commit, cargo keys git sources by reference kind. Swap this for the `logos-co` URL once the mechanism reaches an upstream release.
 
 Path, git, and registry dependencies are all discoverable. Discovery is restricted to the consumer's direct dependencies, a transitive crate can never contribute instructions by claiming a matching `extension_attr`, and the generated call paths use your `[package].name`, never a directory name.
 
@@ -314,6 +318,8 @@ mod my_program {
 ```
 
 The marker is matched by attribute name only, nothing is imported for it. `use my_extension::my_extension;` would only earn an unused import warning. Gate attributes and types your extension expects consumers to name in code are real imports, document those in your library's README.
+
+`#[lez_program]` must be the outermost attribute on the module. Markers sit below it and are consumed during expansion. Only inert markers may sit there: the module rebuild does not re-emit inner attributes, so a real attribute macro placed below `#[lez_program]` is dropped silently and never runs.
 
 After compilation, the consumer's binary contains your extension's instructions in its `Instruction` enum, dispatcher, and `PROGRAM_IDL_JSON` const. `spel generate-idl` shows them too. The extension's source is never copied into the consumer's module; calls dispatch directly to your library via `::my_extension::extension_action(...)`.
 

@@ -8,7 +8,7 @@ authors: mmlado
 owner: logos
 doc_version: 1
 slug: freeze-authority
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Freeze program execution with freeze-authority
@@ -29,15 +29,15 @@ Pick `freeze-authority` when your program needs:
 
 - An emergency circuit breaker for incident response (`freeze` everything until the team can investigate).
 - A blocklist for sanctioned or compromised accounts (`block` specific `AccountId`s while the rest of the program keeps running).
-- Both layered — global pause plus per-account blocks for graduated response.
+- Both layered, global pause plus per-account blocks for graduated response.
 
-If your program needs a permanent pause with no recovery, use `admin_renounce` after deployment instead — freeze-authority is the wrong primitive for one-way upgrades.
+If your program needs a permanent pause with no recovery, use `admin_renounce` after deployment instead, freeze-authority is the wrong primitive for one-way upgrades.
 
 ## Prerequisites
 
-Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the spel CLI](admin-authority.md#install-the-spel-cli) there. Everything below assumes those are in place.
+Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there. Everything below assumes those are in place.
 
-The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.98, in auto, manual, and embedded mode. The lifecycle commands have not been run against a live node yet.
+The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98, in auto, manual, and embedded mode. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -53,7 +53,7 @@ borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Both libraries pin their `v0.1.0` release tags. The framework must be the exact revision those releases pin, spelled as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
+The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Both libraries pin their `v0.1.0` release tags. The framework must be the exact revision those releases pin, spelt as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
 
 After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched. And if you started from `cargo new`, delete the default `fn main`, the `#[lez_program]` macro generates the program's entry point.
 
@@ -78,7 +78,7 @@ mod my_program {
 
     #[instruction]
     #[freeze_exempt]
-    pub fn balance_of(/* ... */) -> SpelResult { /* ... */ } // exempt — callable while frozen
+    pub fn balance_of(/* ... */) -> SpelResult { /* ... */ } // exempt, callable while frozen
 }
 ```
 
@@ -118,12 +118,12 @@ That single annotation pair (plus `#[admin_authority]`) exposes seven new instru
 | `freeze_account_release(target)` | Sets per-account frozen flag to false for `target`. Freeze authority only. Callable while frozen. |
 
 :::warning
-**Initialization window.** Until `freeze_initialize` is called, the freeze Config PDA does not exist and no gates are active. Unlike `admin_initialize`, freeze initialization is NOT front-runnable — `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: submit `admin_initialize` and then `freeze_initialize` as the first two transactions after deployment, back to back. A LEZ transaction carries a single instruction, so they cannot share one.
+**Initialisation window.** Until `freeze_initialize` is called, the freeze Config PDA does not exist and no gates are active. Unlike `admin_initialize`, freeze initialisation is NOT front-runnable, `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: submit `admin_initialize` and then `freeze_initialize` as the first two transactions after deployment, back to back. A LEZ transaction carries a single instruction, so they cannot share one.
 :::
 
 ## Gate an instruction
 
-In auto mode, all instructions are gated by default — you don't add any annotation. In manual mode, add `#[require_not_frozen]` to instructions you want gated:
+In auto mode, all instructions are gated by default, you don't add any annotation. In manual mode, add `#[require_not_frozen]` to instructions you want gated:
 
 ```rust
 #[instruction]
@@ -139,8 +139,8 @@ pub fn transfer(
 
 The injected gate performs two checks before the handler body runs:
 
-1. **Program-wide check** — reads `freeze_config.is_frozen`. Rejects if true.
-2. **Per-account check** — derives the PDA at `(program_id, "frozen", caller.account_id)` and reads `is_frozen`. Rejects if true. Missing PDA = not frozen.
+1. **Program-wide check**, reads `freeze_config.is_frozen`. Rejects if true.
+2. **Per-account check**, derives the PDA at `(program_id, "frozen", caller.account_id)` and reads `is_frozen`. Rejects if true. Missing PDA = not frozen.
 
 Both checks pass for the call to proceed.
 
@@ -156,7 +156,7 @@ pub fn balance_of(/* ... */) -> SpelResult { /* read-only, safe while frozen */ 
 
 The framework reads `self_exempt_marker = "freeze_exempt"` from freeze-authority's Cargo metadata and skips the wrap for any function carrying the attribute.
 
-## Initialize the freeze authority
+## Initialise the freeze authority
 
 `freeze_initialize` takes no candidate argument. The admin signs, and the admin becomes the initial freeze authority, the same self-election pattern as `admin_initialize`. Hand the role to a dedicated operations key or a PDA afterwards with `freeze_authority_transfer`.
 
@@ -193,7 +193,7 @@ spel --idl program-idl.json --program <program-id> -- \
 
 `target` is a raw 32 byte argument, pass the account id as 64 hex characters, not base58.
 
-When account X is frozen, any instruction in your program that's auto-gated or carries `#[require_not_frozen]` rejects when X is the signer. Other accounts are unaffected. Per-account state survives the program-wide frozen flag toggling — the two layers are independent. Releasing a target that is not currently frozen rejects with `account is not frozen`, so a release cannot silently create marker state for untouched accounts.
+When account X is frozen, any instruction in your program that's auto-gated or carries `#[require_not_frozen]` rejects when X is the signer. Other accounts are unaffected. Per-account state survives the program-wide frozen flag toggling, the two layers are independent. Releasing a target that is not currently frozen rejects with `account is not frozen`, so a release cannot silently create marker state for untouched accounts.
 
 ## Transfer freeze authority to another party
 
@@ -220,11 +220,11 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. Collect the new holder's signature with the multi-signature exchange flow: export the partial transaction with the candidate named as a co-signer (`--export handover.json --co-signer <new-holder-account-id-hex>`), send the file to the candidate to run `spel sign`, then submit it. The single command above builds and submits directly, and the sequencer drops it unless the new holder's signature is attached.
+A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. The `spel` CLI at the pinned revision has no multi-signature exchange flow: the single command above builds and submits with the caller's signature only, and the sequencer drops it unless the new holder's signature is attached. Collecting that second signature is not yet possible from `spel` itself, the exchange flow is in review ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)).
 
 ## Use a program (PDA) as freeze authority
 
-To delegate freeze authority to another program (e.g. a multisig or a circuit-breaker DAO), pass `FreezeCandidate::Pda`:
+To delegate freeze authority to another program (for example, a multisig or a circuit-breaker DAO), pass `FreezeCandidate::Pda`:
 
 ```bash
 spel --idl program-idl.json --program <program-id> -- \
@@ -244,7 +244,7 @@ spel --idl program-idl.json --program <program-id> -- \
     freeze-authority-renounce --caller <admin-or-freeze-authority-account-id>
 ```
 
-Unlike admin renounce, this is NOT terminal. The freeze authority slot becomes vacant; the admin can repopulate it later via `freeze_authority_transfer`. While the slot is vacant, `freeze_program`, `freeze_program_release`, `freeze_account`, and `freeze_account_release` all fail. The program-wide `is_frozen` flag and per-account states are preserved at the moment of renounce — they don't reset.
+Unlike admin renounce, this is NOT terminal. The freeze authority slot becomes vacant; the admin can repopulate it later via `freeze_authority_transfer`. While the slot is vacant, `freeze_program`, `freeze_program_release`, `freeze_account`, and `freeze_account_release` all fail. The program-wide `is_frozen` flag and per-account states are preserved at the moment of renounce, they don't reset.
 
 If the admin has already been renounced first (terminal), the freeze slot becomes effectively permanent: there is no one to call `freeze_authority_transfer` to repopulate it. Plan the order of renounces carefully if you intend to commit to no-future-freeze.
 
@@ -308,10 +308,10 @@ impl ProgramConfig {
 
 What changes:
 
-- **No `freeze_initialize`.** Your account-creating instruction writes the struct, and the freeze slot is born vacant: it rejects every holder-path caller until the admin appoints the first holder via `freeze_authority_transfer`, the same path that repopulates a renounced slot. There is no initialization ordering to get right because there is no initializer. The admin slot next door is bootstrapped by marking that same instruction with `#[admin_initialize]`, the caller becomes admin in the transaction that creates the account.
+- **No `freeze_initialize`.** Your account-creating instruction writes the struct, and the freeze slot is born vacant: it rejects every holder-path caller until the admin appoints the first holder via `freeze_authority_transfer`, the same path that repopulates a renounced slot. There is no initialisation ordering to get right because there is no initializer. The admin slot next door is bootstrapped by marking that same instruction with `#[admin_initialize]`, the caller becomes admin in the transaction that creates the account.
 - **Slot markers keep the layout honest.** `#[admin_slot]` and `#[freeze_slot]` each derive an offset const and a layout test, and the build fails if a marker position and its `offset = ...` declaration ever disagree, for example after a field is added above a slot.
 - **One account per transaction.** When admin and freeze share the embedding account, management instructions that read both carry the shared account once. `freeze_authority_renounce` drops from 3 accounts to 2.
-- **Splice-only writes.** Freeze operations write only the 33 byte window (32 byte slot plus the frozen flag), your neighboring fields survive every toggle and transfer.
+- **Splice-only writes.** Freeze operations write only the 33 byte window (32 byte slot plus the frozen flag), your neighbouring fields survive every toggle and transfer.
 - **Offsets never appear in a transaction.** They compile into the program as literals, and the IDL carries no offset arguments.
 
 The library repository ships `freeze-authority-sample-embedded` with the full layout, adjacent-window tests, and a committed dry-run walkthrough.
@@ -350,11 +350,11 @@ Plus your own instructions. In embedded mode neither `admin_initialize` nor `fre
 
 ## Security notes
 
-- **Initialization order matters.** `freeze_initialize` requires admin signature and an initialized `admin_config`. Submit both inits back to back immediately after deployment, admin first.
-- **Renounce is recoverable (unlike admin).** Vacating the freeze authority slot is reversible by the admin via `freeze_authority_transfer`. Plan accordingly if your operational model assumes the role is permanent — only renouncing admin first locks it down.
+- **Initialisation order matters.** `freeze_initialize` requires admin signature and an initialised `admin_config`. Submit both initialisation transactions back to back immediately after deployment, admin first.
+- **Renounce is recoverable (unlike admin).** Vacating the freeze authority slot is reversible by the admin via `freeze_authority_transfer`. Plan accordingly if your operational model assumes the role is permanent, only renouncing admin first locks it down.
 - **Exempt is shallow.** A `#[freeze_exempt]` consumer function that uses `chained_call` to invoke a gated function still hits the gated function's check. Frozen-state behaviour of chained calls is determined by the called function's exemption status, not the caller's.
-- **Auto mode covers all dispatched instructions.** Including admin operations? No — admin-authority's three management instructions are exempt by an explicit entry in freeze-authority's metadata. Admin can still transfer or renounce while the program is frozen. This is by design to avoid deadlock from a lost admin key during freeze.
-- **Per-account PDAs persist.** Per-account freeze state writes a PDA per target. Once initialized, the PDA exists for the program's lifetime (LEZ has no close primitive). Toggling release writes `is_frozen = false`; the PDA itself stays. No rent applies in LEZ.
+- **Auto mode covers all dispatched instructions.** Including admin operations? No, admin-authority's three management instructions are exempt by an explicit entry in freeze-authority's metadata. Admin can still transfer or renounce while the program is frozen. This is by design to avoid deadlock from a lost admin key during freeze.
+- **Per-account PDAs persist.** Per-account freeze state writes a PDA per target. Once initialised, the PDA exists for the program's lifetime (LEZ has no close primitive). Toggling release writes `is_frozen = false`; the PDA itself stays. No rent applies in LEZ.
 
 ## Reference
 

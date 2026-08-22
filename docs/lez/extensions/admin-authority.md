@@ -36,10 +36,10 @@ If your program needs multi-party approval rather than single-admin gating, `adm
 You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (a build script unpacks a prebuilt rapidsnark archive) and the Python development library (the CLI links against libpython). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
 
 ```bash
-sudo apt-get install curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
+sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
 ```
 
-The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.98. The lifecycle commands have not been run against a live node yet.
+The build and IDL verification steps on this page need a toolchain new enough for edition 2024, `admin-authority` declares `rust-version = "1.88"`. They were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -60,7 +60,7 @@ The `spel-framework` entry points at a fork on purpose. It must be the exact rev
 
 After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
 
-## Install the spel CLI
+## Install the `spel` CLI
 
 The lifecycle commands below and the IDL check at the end use the `spel` CLI. Install it from the same fork revision the framework dependency pins:
 
@@ -68,7 +68,9 @@ The lifecycle commands below and the IDL check at the end use the `spel` CLI. In
 cargo install --git https://github.com/mmlado/spel --rev f7aa464b2c6c72ef513a25ede16584bca85b722f spel
 ```
 
-The package name is `spel`, not `spel-cli` as the repository directory suggests, asking cargo for `spel-cli` fails with "could not find `spel-cli`".
+The package name is `spel`, not `spel-cli` as the repository directory suggests, asking cargo for `spel-cli` fails with "could not find `spel-cli`."
+
+This build also reaches the network beyond fetching crates: a transitive build script downloads a prebuilt `logos-blockchain-circuits` artifact from GitHub releases. It does not honour the usual CA environment variables, so behind a TLS-inspecting proxy it fails with `invalid peer certificate: UnknownIssuer` partway through the build. Set `LBC_ROOT_DIR` to a local circuits build, or unpack the release tarball into `~/.cache/logos/blockchain/` beforehand, if the download cannot reach GitHub directly.
 
 ## Annotate the module
 
@@ -100,7 +102,7 @@ That single annotation exposes three new instructions in your program's IDL:
 | `admin_renounce` | Zeros the admin permanently. Terminal, no recovery path. |
 
 :::warning
-**Initialization window.** Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Send it as the very next transaction after deployment to prevent a third party from claiming the role. Bundling with the deployment itself is not possible today because a LEZ deployment transaction carries no instructions.
+**Initialisation window.** Until `admin_initialize` is called, the admin Config PDA does not exist. Anyone who submits the first `admin_initialize` becomes the admin. Send it as the very next transaction after deployment to prevent a third party from claiming the role. Bundling with the deployment itself is not possible today because a LEZ deployment transaction carries no instructions.
 :::
 
 ## Gate an instruction
@@ -151,14 +153,14 @@ If your instruction already has parameters by different names, point the gate at
 
 ## Become the first admin
 
-`admin_initialize` takes no arguments. The signing caller becomes the admin (self-election). There is no candidate argument at initialize because the LEZ duplicate-account rule rejects a transaction listing the same account twice, so a caller could never also pass itself as candidate evidence.
+`admin_initialize` takes no arguments. The signing caller becomes the admin (self-election). There is no candidate argument at initialise because the LEZ duplicate-account rule rejects a transaction listing the same account twice, so a caller could never also pass itself as candidate evidence.
 
 ```bash
 spel --idl program-idl.json --program <program-id> -- \
     admin-initialize --caller <your-account-id>
 ```
 
-To hand the role to a different keyholder or a PDA, initialize first and then call `admin_transfer`.
+To hand the role to a different keyholder or a PDA, initialise first and then call `admin_transfer`.
 
 ## Transfer admin to another party
 
@@ -185,7 +187,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message, an off-chain co-signing exchange: export the partial transaction with the candidate named as a co-signer (`--export handover.json --co-signer <new-admin-account-id-hex>`), send the file to the candidate to run `spel sign`, then submit it. Without the second signature the sequencer drops the transaction.
+A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message. The `spel` CLI at the pinned revision has no co-signing exchange: the command above builds and submits with the caller's signature only, and the sequencer drops the transaction unless the candidate's signature is attached. Collecting that second signature is not yet possible from `spel` itself, the exchange flow is in review ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)).
 
 After the transaction lands, the previous admin can no longer call gated instructions.
 
@@ -201,7 +203,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate '{"Pda": {"program_id": "<multisig-program-id>", "seed": "<32-byte-hex-seed>"}}'
 ```
 
-The PDA must already exist on chain as a claimed account, an unclaimed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then accepts the PDA as the legitimate admin. No private key is needed for the PDA, authorization comes from the seed delegation.
+The PDA must already exist on chain as a claimed account, an unclaimed candidate is rejected. When the multisig later wants to invoke a gated instruction on your program, it does so through a chained call and declares its admin PDA in `caller-pda-seeds`. LEZ verifies the seed and propagates `is_authorized = true` to your program; the `#[require_admin]` check then accepts the PDA as the legitimate admin. No private key is needed for the PDA, authorisation comes from the seed delegation.
 
 ## Embedded mode, the admin slot inside your own account
 
@@ -246,9 +248,9 @@ mod my_program {
 
 What changes:
 
-- **No `admin_initialize` instruction.** Mark your own account-creating instruction with `#[admin_initialize]` instead. The bootstrap is injected, the caller is installed as admin in the same transaction that creates the account, and the slot is born initialized, so the initialization window from the warning above does not exist in embedded mode. An account created without the bootstrap is born renounced, permanently.
+- **No `admin_initialize` instruction.** Mark your own account-creating instruction with `#[admin_initialize]` instead. The bootstrap is injected, the caller is installed as admin in the same transaction that creates the account, and the slot is born initialised, so the initialisation window from the warning above does not exist in embedded mode. An account created without the bootstrap is born renounced, permanently.
 - **`#[admin_slot]` keeps the layout honest.** The field marker derives an `ADMIN_SLOT_OFFSET` const and a layout test, and the build fails if the marker position and the `offset = ...` declaration ever disagree, for example after a field is added above the slot.
-- **Everything retargets.** Gates read the slot at the declared offset from your account, `admin_transfer` and `admin_renounce` splice only the 32 byte window and leave your neighboring fields untouched, and the IDL shows your account wherever the dedicated PDA used to appear.
+- **Everything retargets.** Gates read the slot at the declared offset from your account, `admin_transfer` and `admin_renounce` splice only the 32 byte window and leave your neighbouring fields untouched, and the IDL shows your account wherever the dedicated PDA used to appear.
 - **The offset is never in a transaction.** It compiles into the program as a literal. The IDL carries no offset argument, and writing `admin_config = ...` or `offset = ...` on a gate by hand is a compile error in embedded mode.
 - **One account fewer** on every gated transaction, the slot travels with state you were already passing.
 
@@ -261,7 +263,7 @@ spel --idl program-idl.json --program <program-id> -- \
     admin-renounce --caller <current-admin-account-id>
 ```
 
-This writes `AccountId::default()` to the Config PDA. All future admin-gated instructions reject with an authorization error. There is no recovery path, design your program so renounce is only callable when permanent loss of mutability is the intended outcome (handoff to "immutable" governance, end of life, etc.).
+This writes `AccountId::default()` to the Config PDA. All future admin-gated instructions reject with an authorisation error. There is no recovery path, design your program so renounce is only callable when permanent loss of mutability is the intended outcome (handoff to "immutable" governance, end of life, etc.).
 
 ## Verify your integration
 
@@ -271,7 +273,7 @@ After building your program, check that the admin instructions appear in the IDL
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 
-The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits the admin instructions from this output without reporting an error, so the check appears to pass while the surface is missing. The install command in [Install the spel CLI](#install-the-spel-cli) pins the right revision.
+The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits the admin instructions from this output without reporting an error, so the check appears to pass while the surface is missing. The install command in [Install the `spel` CLI](#install-the-spel-cli) pins the right revision.
 
 Expected output includes:
 
@@ -289,7 +291,7 @@ Plus your own instructions. On a framework build that carries the extension scan
 
 ## Security notes
 
-- **Initialization window**, front-running is possible until the first `admin_initialize` lands. Send it immediately after deployment. Deploy-time bundling is not possible on LEZ today, a deployment transaction carries no instructions.
+- **Initialisation window**, front-running is possible until the first `admin_initialize` lands. Send it immediately after deployment. Deploy-time bundling is not possible on LEZ today, a deployment transaction carries no instructions.
 - **Renounce is terminal**, there is no recovery. Treat it as a one-way switch.
 - **PDA admins via CPI**, the delegating program must declare its admin PDA in `caller-pda-seeds` for the gated call. LEZ verifies the seed; the admin check then trusts the propagated `is_authorized`.
 - **Transfer history**, not recorded on chain in this release. The current admin is always readable from the Config PDA; historical transfers require an off-chain indexer.

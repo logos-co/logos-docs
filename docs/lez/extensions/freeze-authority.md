@@ -37,7 +37,7 @@ If your program needs a permanent pause with no recovery, use `admin_renounce` a
 
 Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, those two sections are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its three instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
 
-The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98, in auto, manual, and embedded mode. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
+The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04, in auto, manual, and embedded mode. The toolchain floors from the admin-authority page apply here unchanged. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -45,15 +45,15 @@ In your program's `Cargo.toml`:
 
 ```toml
 [dependencies]
-admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.0" }
-freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority", tag = "v0.1.0" }
+admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.2" }
+freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority", tag = "v0.1.2" }
 spel-framework   = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
 nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Both libraries pin their `v0.1.0` release tags. The framework must be the exact revision those releases pin, spelt as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
+The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Both libraries pin their `v0.1.2` release tags. The framework must be the exact revision those releases pin, spelt as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
 
 After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched. And if you started from `cargo new`, delete the default `fn main`, the `#[lez_program]` macro generates the program's entry point.
 
@@ -197,18 +197,9 @@ When account X is frozen, any instruction in your program that's auto-gated or c
 
 ## Transfer freeze authority to another party
 
-`freeze_authority_transfer` requires the admin to sign. It takes a `FreezeCandidate` describing the new holder, the same type as `AdminCandidate` (both alias the shared `AuthorityCandidate`), paired with a `new_account` that carries the chain-state evidence:
+`freeze_authority_transfer` requires the admin to sign. It takes a `FreezeCandidate` describing the new holder, the same type as `AdminCandidate` (each is an alias for the shared `AuthorityCandidate`, and both libraries pin one copy of that crate), paired with a `new_account` that carries the chain-state evidence.
 
-```rust
-pub enum FreezeCandidate {
-    /// The new freeze authority is a keyholder. Validated by checking that
-    /// the new account co-signed the transaction.
-    Signer,
-    /// The new freeze authority is a program-owned PDA. Validated by deriving
-    /// the address from (program_id, seed) and confirming the PDA exists on chain.
-    Pda { program_id: ProgramId, seed: [u8; 32] },
-}
-```
+The two candidate shapes, `Signer` and `Pda`, are documented in [Transfer admin to another party](admin-authority.md#transfer-admin-to-another-party), and the commands below show both in use.
 
 The slot can also be transferred from a Renounced (vacant) state, so admins can rotate the role with or without an interim vacancy:
 

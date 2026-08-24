@@ -279,7 +279,7 @@ A body-inject gate that references parameters by name only, the way `#[require_a
 
 Some extensions naturally build on others. `freeze-authority` depends on `admin-authority`, its freeze-authority slot is governed by admin signatures. When your extension does this:
 
-1. **Declare a normal Cargo dependency** on the other extension in your `Cargo.toml`, path or git. `freeze-authority` uses a git dependency on `admin-authority` pinned to its `v0.1.0` tag. Consumers get both extensions in their dependency graph automatically.
+1. **Declare a normal Cargo dependency** on the other extension in your `Cargo.toml`, path or git. `freeze-authority` uses a git dependency on `admin-authority` pinned to its `v0.1.2` tag. Consumers get both extensions in their dependency graph automatically.
 2. **Add both markers to the consumer's mod.** Consumers write `#[admin_authority] #[my_extension]` on their `#[lez_program]` mod. Each marker triggers its own discovery.
 3. **Import the gate attributes you compose with.** For example, `use admin_authority::require_admin;` in your library source, then `#[require_admin]` on instructions that should require an admin signature (like an initialisation that creates your config PDA).
 4. **List the other extension's exempt-while-wrapped instructions** in your `wrap_instructions.exempt` if applicable. freeze-authority lists admin-authority's three management instructions so they stay callable while the program is frozen.

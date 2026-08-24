@@ -39,7 +39,7 @@ You need a stable Rust toolchain, git, and the native build tools the dependency
 sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
 ```
 
-The build and IDL verification steps on this page need rustc 1.94.1 or newer. That floor comes from the wider dependency tree rather than from `admin-authority` itself, which declares only `rust-version = "1.88"`: the `spel` CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, and transitive crates in the program's dependency graph already require 1.90. They were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
+Two different floors apply here, and neither comes from `admin-authority` itself, which declares only `rust-version = "1.88"`. Building your program needs rustc 1.90 or newer, a floor set by transitive crates in its dependency graph (`ruint 1.20.0`). Installing the `spel` CLI needs rustc 1.94.0 or newer: a transitive `logos-blockchain` crate uses `strict_overflow_ops`, which older toolchains reject as an unstable feature. The CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, but `cargo install --git` does not apply a dependency's toolchain file, so your default toolchain has to meet that floor itself. Verified on a clean Ubuntu 24.04 at both floors: the program builds on rustc 1.90.0 and the CLI installs on 1.94.0. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -47,7 +47,7 @@ In your program's `Cargo.toml`:
 
 ```toml
 [dependencies]
-admin-authority = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.0" }
+admin-authority = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.2" }
 spel-framework  = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
 nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }

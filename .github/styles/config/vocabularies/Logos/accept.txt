@@ -113,8 +113,8 @@ keystore
 kwarg
 kwargs
 learned
-LEZ
 lez
+LEZ
 libcalc
 libchat
 liblogos
@@ -207,6 +207,7 @@ tmux
 TOKENA
 tokenomics
 toolchain
+toolchains
 Tribler
 Trilemma
 tx

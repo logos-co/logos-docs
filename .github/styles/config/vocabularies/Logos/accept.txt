@@ -47,9 +47,7 @@ backfilled
 backoff
 basename
 Blend [Nn]etwork
-Blend Network
 blocklist
-boostrapping
 bundler
 bytecode
 camelCase

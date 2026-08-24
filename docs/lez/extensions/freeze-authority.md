@@ -35,7 +35,7 @@ If your program needs a permanent pause with no recovery, use `admin_renounce` a
 
 ## Prerequisites
 
-Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there. Everything below assumes those are in place.
+Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, those two sections are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its three instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
 
 The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98, in auto, manual, and embedded mode. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
 
@@ -197,7 +197,7 @@ When account X is frozen, any instruction in your program that's auto-gated or c
 
 ## Transfer freeze authority to another party
 
-`freeze_authority_transfer` requires the admin to sign. It takes a `FreezeCandidate` describing the new holder, the same shape as `AdminCandidate`, paired with a `new_account` that carries the chain-state evidence:
+`freeze_authority_transfer` requires the admin to sign. It takes a `FreezeCandidate` describing the new holder, the same type as `AdminCandidate` (both alias the shared `AuthorityCandidate`), paired with a `new_account` that carries the chain-state evidence:
 
 ```rust
 pub enum FreezeCandidate {

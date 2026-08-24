@@ -33,13 +33,13 @@ If your program needs multi-party approval rather than single-admin gating, `adm
 
 ## Prerequisites
 
-You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (a build script unpacks a prebuilt rapidsnark archive) and the Python development library (the CLI links against libpython). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
+You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (the `rust-rapidsnark` build script downloads a prebuilt zip and unpacks it through a helper shell script) and the Python development library (a transitive dependency links against libpython through `pyo3`). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
 
 ```bash
 sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
 ```
 
-The build and IDL verification steps on this page need a toolchain new enough for edition 2024, `admin-authority` declares `rust-version = "1.88"`. They were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
+The build and IDL verification steps on this page need rustc 1.94.1 or newer. That floor comes from the wider dependency tree rather than from `admin-authority` itself, which declares only `rust-version = "1.88"`: the `spel` CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, and transitive crates in the program's dependency graph already require 1.90. They were verified on a clean Ubuntu 24.04 with rustc 1.94.1 and 1.98. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -70,7 +70,15 @@ cargo install --git https://github.com/mmlado/spel --rev f7aa464b2c6c72ef513a25e
 
 The package name is `spel`, not `spel-cli` as the repository directory suggests, asking cargo for `spel-cli` fails with "could not find `spel-cli`."
 
-This build also reaches the network beyond fetching crates: a transitive build script downloads a prebuilt `logos-blockchain-circuits` artifact from GitHub releases. It does not honour the usual CA environment variables, so behind a TLS-inspecting proxy it fails with `invalid peer certificate: UnknownIssuer` partway through the build. Set `LBC_ROOT_DIR` to a local circuits build, or unpack the release tarball into `~/.cache/logos/blockchain/` beforehand, if the download cannot reach GitHub directly.
+This build also reaches the network beyond fetching crates: a transitive build script downloads a prebuilt `logos-blockchain-circuits` artifact from GitHub releases. It does not honour the usual CA environment variables, so behind a TLS-inspecting proxy it fails with `invalid peer certificate: UnknownIssuer` partway through the build. If the download cannot reach GitHub directly, either point `LBC_ROOT_DIR` at a local circuits build, or pre-seed the cache using a tool that does honour your CA bundle:
+
+```bash
+mkdir -p ~/.cache/logos/blockchain
+curl -L https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.5.3/logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz \
+  | tar xz -C ~/.cache/logos/blockchain/
+```
+
+The version has to match the `logos-blockchain-circuits` version the pinned framework resolves to, `v0.5.3` for `f7aa464`. The build script reuses any artifact directory it finds there and skips the download entirely.
 
 ## Annotate the module
 
@@ -169,7 +177,9 @@ To hand the role to a different keyholder or a PDA, initialise first and then ca
 Two candidate shapes:
 
 ```rust
-pub enum AdminCandidate {
+// `AdminCandidate` is a re-exported alias for the shared authority type:
+// `pub type AdminCandidate = AuthorityCandidate;`
+pub enum AuthorityCandidate {
     /// The new admin is a keyholder. Validated by checking the new account
     /// co-signed the transaction.
     Signer,

@@ -50,7 +50,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     ```
 
     :::info
-    On Linux, the tools are packaged as AppImages, which require FUSE to run. On minimal installations and containers without FUSE (for example, a Docker container), the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE (`apt install fuse3`) or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+    On Linux, the tools ship as AppImages and require FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
     :::
 
 ## Step 2: Load the Logos Blockchain module
@@ -248,14 +248,14 @@ An error such as:
 {"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
 ```
 
-means the `logoscore` daemon is not running or not reachable. Check for a running daemon with `ps aux | grep logoscore`, and restart it if needed:
+means the `logoscore` daemon isn't running or reachable. Check for a running daemon with `ps aux | grep logoscore`, and restart it if needed:
 
 ```sh
 logoscore -m ./modules -D &
 logoscore load-module blockchain_module
 ```
 
-Loaded modules do not persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A different error, `METHOD_FAILED` (`Call to blockchain_module.<method> failed.`), means the daemon is reachable but the call itself failed. The most common causes are that the module is not loaded, or that a required argument is missing (for example, calling `generate_user_config` without the JSON `initial_peers` argument).
+Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
 
 ### The testnet explorer shows an error when I click on a transaction?
 
@@ -265,4 +265,4 @@ The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not suppor
 
 Only one faucet transaction can be included per block. During high demand, your transaction may be dropped. Retry the request and wait 1 to 2 minutes before checking your balance again.
 
-If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node has not yet synced past the block containing the faucet transaction. While the node is still `Bootstrapping`, funded addresses are not visible; wait for the node to reach `Online` mode and check again.
+If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the faucet transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again.

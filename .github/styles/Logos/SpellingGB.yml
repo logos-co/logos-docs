@@ -2,6 +2,5 @@ extends: spelling
 message: "'%s' is not in British English."
 level: error
 scope: ~text.frontmatter
-dicpath: config/dictionaries
 dictionaries:
   - en_GB

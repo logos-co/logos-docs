@@ -49,6 +49,10 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     export PATH="$PWD/bin:$PATH"
     ```
 
+    :::info
+    On Linux, the tools are packaged as AppImages, which require FUSE to run. On minimal installations and containers without FUSE (for example, a Docker container), the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE (`apt install fuse3`) or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+    :::
+
 ## Step 2: Load the Logos Blockchain module
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
@@ -56,14 +60,14 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
 1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.2 --output ./
-    # writes ./blockchain_module-0.2.2.lgx
+    lgpd download blockchain_module --version 0.2.3 --output ./
+    # writes ./blockchain_module-0.2.3.lgx
     ```
 
 1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.2.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.3.lgx
     ```
 
 1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
@@ -202,11 +206,14 @@ A faucet distributes free tokens on test networks so you can experiment without 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 
     :::tip
-    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+    The faucet UI POSTs to `https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
 
     ```sh
-    curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+    curl -X POST "https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>"
+    # {"status":"queued"}
     ```
+
+    Note: the similar-looking `/faucet-backend/<key>` path (without `/web/`) is protected by GitHub OAuth and returns a sign-in page instead of queueing the request.
     :::
 
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
@@ -235,6 +242,23 @@ Block proposal is probabilistic. Your node will not propose on every [slot](../.
 
 ## Troubleshooting the Logos Blockchain node
 
+### `logoscore call` fails with `RPC call failed`?
+
+An error such as:
+
+```
+{"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
+```
+
+means the `logoscore` daemon is not running or not reachable. Check for a running daemon with `ps aux | grep logoscore`, and restart it if needed:
+
+```sh
+logoscore -m ./modules -D &
+logoscore load-module blockchain_module
+```
+
+Loaded modules do not persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A different error, `METHOD_FAILED` (`Call to blockchain_module.<method> failed.`), means the daemon is reachable but the call itself failed — most commonly because the module is not loaded, or because a required argument is missing (for example, calling `generate_user_config` without the JSON `initial_peers` argument).
+
 ### The testnet explorer shows an error when I click on a transaction?
 
 The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
@@ -242,3 +266,5 @@ The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not suppor
 ### My wallet balance is not updating after requesting tokens?
 
 Only one faucet transaction can be included per block. During high demand, your transaction may be dropped. Retry the request and wait 1 to 2 minutes before checking your balance again.
+
+If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node has not yet synced past the block containing the faucet transaction. While the node is still `Bootstrapping`, funded addresses are not visible; wait for the node to reach `Online` mode and check again.

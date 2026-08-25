@@ -4,6 +4,7 @@ artifact
 Blend [Nn]etwork
 Broadwell
 Codex
+cooldown
 [Cc]ore
 Cryptarchia
 [Dd]elivery
@@ -156,7 +157,9 @@ Overwatch
 PDAs
 pdf
 pluggable
+[Pp]lugins?
 Podman
+popup
 Proxmox
 prefilled
 preinstall
@@ -165,6 +168,7 @@ programmability
 Qt
 reachability
 resync
+reorged
 retransmission
 retransmits
 rfp

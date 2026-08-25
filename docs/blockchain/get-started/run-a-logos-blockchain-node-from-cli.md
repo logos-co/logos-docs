@@ -51,7 +51,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     ```
 
     :::info
-    On Linux, the tools ship as AppImages, which require FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+    On Linux, `logoscore`, `lgpd`, and `lgpm` ship as AppImages, which require FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
     :::
 
 ## Step 2: Load the Logos Blockchain module

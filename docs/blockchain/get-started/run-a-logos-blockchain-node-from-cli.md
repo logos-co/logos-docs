@@ -252,14 +252,14 @@ An error such as:
 {"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
 ```
 
-means the `logoscore` daemon isn't running or reachable, or the module's host process has crashed. Check for a running daemon with `ps aux | grep logoscore`, and restart it if needed:
+means the `logoscore` daemon isn't reachable, or the module isn't loaded. Run `logoscore list-modules` to tell the two apart: an error means the daemon isn't running, while a `not_loaded` status means the module needs loading. Restart the daemon if needed, then load the module:
 
 ```sh
 logoscore -m ./modules -D &
 logoscore load-module blockchain_module
 ```
 
-If the daemon is running and the error persists, check the daemon output for a module crash:
+If the module shows `not_loaded` again after a successful `load-module`, or calls keep failing, check the daemon output for a module crash:
 
 ```
 [critical] [logos] [blockchain_module] FATAL: module 'blockchain_module' crashed (signal 4).

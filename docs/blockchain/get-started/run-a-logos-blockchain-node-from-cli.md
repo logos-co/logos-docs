@@ -77,13 +77,25 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
     logoscore -m ./modules -D &
     ```
 
-1.  Wait for the daemon to print `Logoscore daemon started`, then load the Logos Blockchain module:
+1.  Confirm the daemon RPC server is up. The daemon needs a few seconds to start, so repeat this command until the daemon reports `running`:
+
+    ```bash
+    logoscore status
+    ```
+
+    Example response once the daemon is ready:
+
+    ```json
+    {"daemon":{"pid":4720,"status":"running","version":"1.0.0"},"modules":[...]}
+    ```
+
+1.  Load the Logos Blockchain module:
 
     ```bash
     logoscore load-module blockchain_module
     ```
 
-    - Don't run `load-module` in the same paste as the daemon launch: the daemon needs a few seconds to start, and a `load-module` sent too early fails with an RPC or missing client config error. If that happens, wait a few seconds and run `load-module` again.
+    - A `load-module` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logoscore status` again and retry.
 
 ## Step 3: Configure and start the node
 
@@ -259,7 +271,7 @@ An error such as:
 {"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
 ```
 
-means the `logoscore` daemon isn't reachable, or the module isn't loaded. Run `logoscore list-modules` to tell the two apart: an error means the daemon isn't running, while a `not_loaded` status means the module needs loading. Restart the daemon if needed, then load the module:
+means the `logoscore` daemon isn't reachable, or the module isn't loaded. Run `logoscore status` to tell the cases apart: it reports the daemon state, `running` or `not_running`, and the status of each module, `loaded`, `not_loaded`, or `crashed`. Restart the daemon if needed, then load the module:
 
 ```sh
 logoscore -m ./modules -D &

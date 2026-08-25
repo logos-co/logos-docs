@@ -71,12 +71,19 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
     lgpm --modules-dir ./modules install --file blockchain_module-0.2.3.lgx
     ```
 
-1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
+1.  Launch `logoscore` in daemon mode:
 
     ```bash
     logoscore -m ./modules -D &
+    ```
+
+1.  Wait for the daemon to print `Logoscore daemon started`, then load the Logos Blockchain module:
+
+    ```bash
     logoscore load-module blockchain_module
     ```
+
+    - Don't run `load-module` in the same paste as the daemon launch: the daemon needs a few seconds to start, and a `load-module` sent too early fails with an RPC or missing client config error. If that happens, wait a few seconds and run `load-module` again.
 
 ## Step 3: Configure and start the node
 

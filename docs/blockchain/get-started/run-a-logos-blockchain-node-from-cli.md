@@ -212,8 +212,6 @@ A faucet distributes free tokens on test networks so you can experiment without 
     curl -X POST "https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>"
     # {"status":"queued"}
     ```
-
-    Note: the similar-looking `/faucet-backend/<key>` path (without `/web/`) is protected by GitHub OAuth and returns a sign-in page instead of queueing the request.
     :::
 
 1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
@@ -257,7 +255,7 @@ logoscore -m ./modules -D &
 logoscore load-module blockchain_module
 ```
 
-Loaded modules do not persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A different error, `METHOD_FAILED` (`Call to blockchain_module.<method> failed.`), means the daemon is reachable but the call itself failed — most commonly because the module is not loaded, or because a required argument is missing (for example, calling `generate_user_config` without the JSON `initial_peers` argument).
+Loaded modules do not persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A different error, `METHOD_FAILED` (`Call to blockchain_module.<method> failed.`), means the daemon is reachable but the call itself failed. The most common causes are that the module is not loaded, or that a required argument is missing (for example, calling `generate_user_config` without the JSON `initial_peers` argument).
 
 ### The testnet explorer shows an error when I click on a transaction?
 

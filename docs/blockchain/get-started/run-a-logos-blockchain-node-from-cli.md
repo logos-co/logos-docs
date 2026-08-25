@@ -28,7 +28,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     - macOS aarch64 (recent versions)
     - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
-- On x86_64, a CPU with ADX instruction support: Intel Broadwell (2014) or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- On x86_64, a CPU with ADX instruction support: Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
@@ -265,7 +265,7 @@ If the daemon is running and the error persists, check the daemon output for a m
 [critical] [logos] [blockchain_module] FATAL: module 'blockchain_module' crashed (signal 4).
 ```
 
-`signal 4` is an illegal-instruction fault: the blockchain module requires a CPU with ADX support. Run `grep -c adx /proc/cpuinfo` to verify. An output of `0` means the CPU, or the VM's CPU model, lacks ADX. On physical hardware, the module needs an Intel Broadwell (2014) or later, or an AMD Zen CPU. On a virtual machine, set the CPU model to pass through host features, for example `host` in QEMU and Proxmox.
+`signal 4` is an illegal-instruction fault: the blockchain module requires a CPU with ADX support. Run `grep -c adx /proc/cpuinfo` to verify. An output of `0` means the CPU, or the CPU model of the VM, lacks ADX. On physical hardware, the module needs an Intel Broadwell or later, or an AMD Zen CPU. On a virtual machine, set the CPU model to pass through host features, for example `host` in QEMU and Proxmox.
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
 

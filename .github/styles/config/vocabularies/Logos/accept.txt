@@ -2,6 +2,7 @@ artifact
 [Bb]asecamp
 [Bb]edrock
 Blend [Nn]etwork
+Broadwell
 Codex
 [Cc]ore
 Cryptarchia
@@ -156,6 +157,7 @@ PDAs
 pdf
 pluggable
 Podman
+Proxmox
 prefilled
 preinstall
 programmability

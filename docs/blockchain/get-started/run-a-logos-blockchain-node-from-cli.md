@@ -85,7 +85,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
+1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.3:
 
     ```sh
     logoscore call blockchain_module generate_user_config '{
@@ -170,8 +170,11 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     {
       "listen_addresses": ["/ip4/127.0.0.1/udp/3001/quic-v1"],
       "peer_id": "12D3...fuS2",
+      "connected_peers": ["12D3...Mxu1", "12D3...sbD3"],
+      "discovered_peers": ["12D3...Mxu1", "12D3...sbD3"],
       "n_peers": 16,
       "n_connections": 19,
+      "n_discovered_peers": 18,
       "n_pending_connections": 0
     }
     ```
@@ -189,7 +192,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 1.  Find the keys associated with your node:
 
     ```sh
-    grep -A3 known_keys user_config.yaml
+    grep -A6 known_keys user_config.yaml
     ```
 
     Example output:
@@ -230,7 +233,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
     }
     ```
 
-    - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
+    - The faucet enforces a rate limit per key. A request made during the cooldown returns `429` with `{"status":"cooldown","retry_after_secs":...}`. Wait for the cooldown to pass, then retry.
 
 :::info
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
@@ -262,7 +265,5 @@ Loaded modules don't persist across daemon restarts, so always re-run `load-modu
 The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
 
 ### My wallet balance is not updating after requesting tokens?
-
-Only one faucet transaction can be included per block. During high demand, your transaction may be dropped. Retry the request and wait 1 to 2 minutes before checking your balance again.
 
 If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the faucet transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again.

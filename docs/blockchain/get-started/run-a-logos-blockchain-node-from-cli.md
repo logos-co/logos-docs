@@ -28,6 +28,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     - macOS aarch64 (recent versions)
     - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
+- On x86_64, a CPU with ADX instruction support: Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
@@ -49,6 +50,10 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     export PATH="$PWD/bin:$PATH"
     ```
 
+    :::info
+    On Linux, `logoscore`, `lgpd`, and `lgpm` ship as AppImages, which require FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+    :::
+
 ## Step 2: Load the Logos Blockchain module
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
@@ -56,22 +61,41 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) wit
 1.  Download the module. The root hash selects the exact published package identity for the pinned version:
 
     ```bash
-    lgpd download blockchain_module --version 0.2.2 --output ./
-    # writes ./blockchain_module-0.2.2.lgx
+    lgpd download blockchain_module --version 0.2.3 --output ./
+    # writes ./blockchain_module-0.2.3.lgx
     ```
 
 1.  Install the module:
 
     ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.2.lgx
+    lgpm --modules-dir ./modules install --file blockchain_module-0.2.3.lgx
     ```
 
-1.  Launch `logoscore` in daemon mode and load the Logos Blockchain module:
+1.  Launch `logoscore` in daemon mode:
 
     ```bash
     logoscore -m ./modules -D &
+    ```
+
+1.  Confirm the daemon RPC server is up. The daemon needs a few seconds to start, so repeat this command until the daemon reports `running`:
+
+    ```bash
+    logoscore status
+    ```
+
+    Example response once the daemon is ready:
+
+    ```json
+    {"daemon":{"pid":4720,"status":"running","version":"1.0.0"},"modules":[...]}
+    ```
+
+1.  Load the Logos Blockchain module:
+
+    ```bash
     logoscore load-module blockchain_module
     ```
+
+    - A `load-module` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logoscore status` again and retry.
 
 ## Step 3: Configure and start the node
 
@@ -81,7 +105,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.0:
+1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.3:
 
     ```sh
     logoscore call blockchain_module generate_user_config '{
@@ -166,8 +190,11 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     {
       "listen_addresses": ["/ip4/127.0.0.1/udp/3001/quic-v1"],
       "peer_id": "12D3...fuS2",
+      "connected_peers": ["12D3...Mxu1", "12D3...sbD3"],
+      "discovered_peers": ["12D3...Mxu1", "12D3...sbD3"],
       "n_peers": 16,
       "n_connections": 19,
+      "n_discovered_peers": 18,
       "n_pending_connections": 0
     }
     ```
@@ -185,7 +212,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 1.  Find the keys associated with your node:
 
     ```sh
-    grep -A3 known_keys user_config.yaml
+    grep -A6 known_keys user_config.yaml
     ```
 
     Example output:
@@ -202,10 +229,11 @@ A faucet distributes free tokens on test networks so you can experiment without 
     ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
 
     :::tip
-    The faucet UI POSTs to `https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+    The faucet UI POSTs to `https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
 
     ```sh
-    curl -X POST "https://testnet.blockchain.logos.co/faucet-backend/<your-chosen-key>"
+    curl -X POST "https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>"
+    # {"status":"queued"}
     ```
     :::
 
@@ -225,7 +253,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
     }
     ```
 
-    - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
+    - The faucet enforces a rate limit per key. A request made during the cooldown returns `429` with `{"status":"cooldown","retry_after_secs":...}`. Wait for the cooldown to pass, then retry.
 
 :::info
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
@@ -235,10 +263,37 @@ Block proposal is probabilistic. Your node will not propose on every [slot](../.
 
 ## Troubleshooting the Logos Blockchain node
 
+### `logoscore call` fails with `RPC call failed`?
+
+An error such as:
+
+```
+{"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
+```
+
+means the `logoscore` daemon isn't reachable, or the module isn't loaded. Run `logoscore status` to tell the cases apart: it reports the daemon state, `running` or `not_running`, and the status of each module, `loaded`, `not_loaded`, or `crashed`. Restart the daemon if needed, then load the module:
+
+```sh
+logoscore -m ./modules -D &
+logoscore load-module blockchain_module
+```
+
+If the module shows `not_loaded` again after a successful `load-module`, or calls keep failing, check the daemon output for a module crash:
+
+```
+[critical] [logos] [blockchain_module] FATAL: module 'blockchain_module' crashed (signal 4).
+```
+
+`signal 4` is an illegal-instruction fault. One known cause: the blockchain module requires a CPU with ADX support. Run `grep -c adx /proc/cpuinfo` to check. An output of `0` means the CPU, or the CPU model of the VM, lacks ADX. On physical hardware, the module needs an Intel Broadwell or later, or an AMD Zen CPU. On a virtual machine, set the CPU model to pass through host features, for example `host` in QEMU and Proxmox.
+
+If the count is greater than `0`, the crash has a different cause. Collect the complete `FATAL` lines from the daemon output, including the backtrace addresses, together with the last lines of the newest node log file in the directory where the daemon runs, and report them to the Logos team.
+
+Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
+
 ### The testnet explorer shows an error when I click on a transaction?
 
 The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
 
 ### My wallet balance is not updating after requesting tokens?
 
-Only one faucet transaction can be included per block. During high demand, your transaction may be dropped. Retry the request and wait 1 to 2 minutes before checking your balance again.
+If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the faucet transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again.

@@ -53,7 +53,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 - [Basecamp installed and running](./install-logos-basecamp.md).
 - Internet access.
-- A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app funds your LEZ side for you but cannot fund your Ethereum side, so this part is genuinely required: without it the app blocks the swap rather than letting it fail on gas.
+- A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app funds your LEZ side for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.
 :::
 
@@ -194,7 +194,7 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 
-    If the button is disabled, the app shows why immediately beneath it, such as `Finish setting up first — open Setup`, `This offer has expired`, or a note that you don't hold enough ETH for this offer plus gas.
+    If the button is disabled, the app shows why immediately beneath it, such as `Finish setting up first — open Setup` or `This offer has expired`.
 
 1. Switch to the **Swap** tab and watch it run.
 

@@ -136,7 +136,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     This is the one part that has to happen outside the app, because only you can fund your Ethereum address. The section names a faucet, `https://sepolia-faucet.pk910.de/`, behind a **Copy faucet link** button; Basecamp can't open it for you, so paste it into your browser yourself. Any other public Sepolia faucet works just as well.
 
-    **Expected:** while you wait, the section reads `Watching for it… you don't need to do anything.` and polls for the balance on its own. Once the ETH lands it shows `done` and a line reading **Arrived —** followed by the amount.
+    **Expected:** while you wait, the section reads `Watching for it… you don't need to do anything.` and polls for the balance on its own. Once the ETH lands it shows `done` and a line reading `Arrived —` followed by the amount.
 
 1. Under **5. Start trading**, click **Go to Market**.
 

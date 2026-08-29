@@ -186,7 +186,12 @@ The `from_account` and `assert_allowed` helpers the prologue calls are yours to 
 
 Never read or strip `#[account(...)]` attributes in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
 
-**The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved parameter name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))` and assert the declared account names equal the kwarg set a probe function hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert.
+**The kwarg contract.** Your gate's attribute keys must be exactly the inject-account names you declare in metadata (`#[require_my_gate(my_state = their_cfg, caller = owner)]`). The framework's auto-wrap and gate stamping emit every kwarg with the resolved parameter name, so your macro receives the framework's naming decisions instead of guessing from convention. Ship an alignment self-test so the two cannot drift: read your own metadata with `spel_framework_core::extension::read_inject_specs(Path::new(env!("CARGO_MANIFEST_DIR")))`, which returns `Result<Vec<InjectSpec>, String>`, and assert the declared account names equal the kwarg set a probe function hands your gate. A name the macro rejects fails the probe's compile, a metadata rename fails the runtime assert. The `extension` module sits behind `spel-framework-core`'s non-default `idl-gen` feature and is not reachable through `spel-framework`, so the test needs its own dev-dependency:
+
+```toml
+[dev-dependencies]
+spel-framework-core = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f", features = ["idl-gen"] }
+```
 
 To spare consumers declaring your gate's account parameters on every gated instruction, declare them in your `Cargo.toml`:
 

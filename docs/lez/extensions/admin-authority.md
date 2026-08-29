@@ -153,15 +153,23 @@ impl PoolConfig {
 }
 ```
 
-The `#[account_type]` struct sits outside the `#[lez_program]` module, the instruction inside it. The handler returns `Ok(SpelOutput::execute(post_states, messages))`, where `post_states` lists your declared accounts in declaration order. The injected `admin_config` and `caller` are appended to the post-states automatically, you only handle the parameters you wrote.
+The `#[account_type]` struct sits outside the `#[lez_program]` module, the instruction inside it. The handler returns `Ok(SpelOutput::execute(post_states, messages))`, where `post_states` lists your declared accounts in declaration order. The injected `admin_config` and `caller` are prepended to the post-states automatically, ahead of the accounts you declared, you only handle the parameters you wrote.
 
-The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program, and then they are your parameters, appearing in your post-states list like any other account.
+The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program only if you declare them ahead of your own parameters and in the injected order, `admin_config` then `caller`. They are then your parameters, appearing in your post-states list like any other account. Declaring them after your own parameters still compiles, but it reorders the instruction's accounts in the IDL, and that order is the transaction ABI.
 
 If your instruction already has parameters by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. The framework also recognises declared parameters by role, a `#[account(signer)]` parameter or a PDA parameter with the matching seed is reused under its declared name instead of being injected twice.
 
 ## Become the first admin
 
 `admin_initialize` takes no arguments. The signing caller becomes the admin (self-election). There is no candidate argument at initialise because the LEZ duplicate-account rule rejects a transaction listing the same account twice, so a caller could never also pass itself as candidate evidence.
+
+Every lifecycle command below reads your program's IDL from a file. Generate it once from the program you just built:
+
+```bash
+spel generate-idl path/to/your/program/src/main.rs > program-idl.json
+```
+
+To check a command without submitting it, add `--dry-run=text` before the `--` separator. It resolves the accounts and arguments and prints the transaction it would send, which is the only way to validate an invocation before you have a node to submit to.
 
 ```bash
 spel --idl program-idl.json --program <program-id> -- \

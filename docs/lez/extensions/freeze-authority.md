@@ -160,6 +160,8 @@ The framework reads `self_exempt_marker = "freeze_exempt"` from freeze-authority
 
 `freeze_initialize` takes no candidate argument. The admin signs, and the admin becomes the initial freeze authority, the same self-election pattern as `admin_initialize`. Hand the role to a dedicated operations key or a PDA afterwards with `freeze_authority_transfer`.
 
+Every command below reads `program-idl.json`, generated once from your built program, and takes `--dry-run=text` before the `--` separator to validate an invocation without submitting it. See [Become the first admin](admin-authority.md#become-the-first-admin) for both.
+
 ```bash
 spel --idl program-idl.json --program <program-id> -- \
     freeze-initialize --caller <admin-account-id>
@@ -324,10 +326,10 @@ Expected output includes:
 "admin_transfer"
 "admin_renounce"
 "freeze_initialize"
-"freeze_program"
-"freeze_program_release"
 "freeze_authority_transfer"
 "freeze_authority_renounce"
+"freeze_program"
+"freeze_program_release"
 "freeze_account"
 "freeze_account_release"
 ```

@@ -48,6 +48,7 @@ backoff
 basename
 Blend [Nn]etwork
 blocklist
+Broadwell
 bundler
 bytecode
 camelCase
@@ -102,6 +103,7 @@ IIDs
 impl
 indexer
 initializer
+instruction's
 IPs
 ISPs
 journald
@@ -113,8 +115,8 @@ keystore
 kwarg
 kwargs
 learned
-lez
 LEZ
+lez
 libcalc
 libchat
 liblogos
@@ -158,9 +160,11 @@ pluggable
 Podman
 prefilled
 preinstall
+prepended
 prepends
 proc
 programmability
+Proxmox
 Qt
 quickstart
 rapidsnark

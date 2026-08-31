@@ -156,7 +156,7 @@ Download and install the three module packages from the configured module [catal
 1. Download the module packages. The root hash selects the exact published package identity for the pinned version:
 
    ```sh
-   lgpd download blockchain_module --version 0.2.2 --output /opt/logos-node/packages
+   lgpd download blockchain_module --version 0.2.3 --output /opt/logos-node/packages
    lgpd download storage_module --version 2.1.2 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
    lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output /opt/logos-node/packages
    ```
@@ -164,7 +164,7 @@ Download and install the three module packages from the configured module [catal
 1. Install all three packages into the shared modules directory:
 
    ```sh
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.2.lgx
+   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.3.lgx
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/storage_module-2.1.0.lgx
    lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/delivery_module-0.2.0.lgx
    ```
@@ -178,7 +178,7 @@ Download and install the three module packages from the configured module [catal
    - The output must include:
    
    ```text
-   blockchain_module 0.2.2
+   blockchain_module 0.2.3
    delivery_module 0.2.0
    storage_module 2.1.0
    ```

@@ -14,7 +14,7 @@ sidebar_position: 3
 # Build a SPEL extension library
 
 :::warning
-This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. We are actively working to complete and verify this content.
+This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
 
 This page tracks unreleased code. The dependency snippets pin a personal fork of the framework. The pin moves to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
@@ -104,7 +104,7 @@ Three things to note:
 - `extern crate self as my_extension;`, lets the library reference its own types via the absolute path `::my_extension::MyState`. The framework emits cross-crate calls into the consumer's binary using that path, so the path needs to resolve both in the library's own compile and at the consumer's compile.
 - `pub use my_extension_macros::{instruction, my_extension};`, re-exports the marker attribute and the no-op `#[instruction]` shim so consumers (and the library's own `lib.rs`) can use them without importing the macros crate directly.
 - `#[account(...)]` attributes on parameters, these are framework helper attributes that describe PDA seeds, signer requirements, etc. The library's own `#[instruction]` shim strips them at the library's compile so rustc accepts the source; the framework reads them during the path-dependency scan.
-- Name the state parameter after the inject role you will declare for it (`my_state` here). Injection reuse, wrap stamping, and embedded retargeting resolve your accounts by role name, a differently named parameter breaks embedded mode with an argument-count error at the consumer's compile.
+- Name the state parameter after the inject role you declare for it (`my_state` here). Injection reuse, wrap stamping, and embedded retargeting resolve your accounts by role name, a differently named parameter breaks embedded mode with an argument-count error at the consumer's compile.
 - When you write the real body, post-states are the inner `account` values (`vec![my_state.account, caller.account]`). If the instruction claims any account, every entry in that `vec` becomes an `(account, AutoClaim)` tuple instead, with `AutoClaim::None` for the ones it does not claim, the way `admin-authority`'s `admin_initialize` returns `vec![(config.account, AutoClaim::Claimed(..)), (caller.account, AutoClaim::None)]`. The `vec` is homogeneous either way, mixing a bare `account` with a tuple fails to compile with `expected Account, found (Account, AutoClaim)`. Consumer handlers return the `AccountWithMetadata` wrappers, library handlers do not. The reference samples show both patterns.
 
 ## Define the proc-macro sub-crate

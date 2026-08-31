@@ -115,8 +115,8 @@ keystore
 kwarg
 kwargs
 learned
-lez
 LEZ
+lez
 libcalc
 libchat
 liblogos
@@ -190,6 +190,7 @@ sequencer
 sharding
 slashing
 slot's
+SPEL
 spel
 SPEL's
 SPRs

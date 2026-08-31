@@ -31,7 +31,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'link',
               label: 'Swap ETH and LEZ tokens in Logos Basecamp',
-              href: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
+              href: '/basecamp/atomic-swaps-poc',
             },
           ],
         },

@@ -17,6 +17,10 @@ Several pages under `docs/` (notably `docs/basecamp/swap-eth-and-lez-tokens-in-l
 
 For the swap page specifically, ground truth lives in `logos-co/eth-lez-atomic-swaps` at the `swap_ui-vX.Y.Z` tags: `swap-ui/src/qml/SetupSteps.js` derives the Setup step order, titles, numbering and page subtitle for both onboarding flows, `swap-ui/src/qml/SetupView.qml` holds the card copy, and `docs/DEVELOPMENT.md` documents which flow ships by default. Read those at the tag rather than the repo's working tree, since `master` can be ahead of the released catalogue build.
 
+## Public URLs and renames
+
+A page's public URL is its frontmatter `slug`, not its filename, so the two can differ (`docs/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp.md` serves `/basecamp/atomic-swaps-poc`). Some published URLs live outside this repo — spoken in demo videos, embedded in in-app feedback links — and cannot be fixed after the fact. So never change or remove a `slug` or a `redirects` entry in `docusaurus.config.ts` without leaving the old path redirecting; the plugin's redirect page carries the query string and hash across, so deep links to a step survive. Sidebar entries are raw `href` strings in `sidebars.ts` that the build checks against real routes, and redirect stubs are not routes — point them at the slug.
+
 ## Conventions
 
 `CONTRIBUTING.md` is the authority on document types, templates, and the review workflow; read it before adding or restructuring a page. Note the repo-wide `:::tip[Version]` banner that states which Testnet release a page is accurate for — it tracks the Testnet, not the app the page describes.

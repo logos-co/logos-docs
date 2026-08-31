@@ -15,6 +15,8 @@ Two checks run on every PR, and both are cheap to run locally:
 
 Several pages under `docs/` (notably `docs/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp.md`) are literal walkthroughs of apps whose source is in another repository. There is no CI that can detect drift, so every UI string, version, address, and program ID has to be re-verified against that repo's release tags before the page is edited — the app's own QML/source is the authority, not the page's previous wording.
 
+For the swap page specifically, ground truth lives in `logos-co/eth-lez-atomic-swaps` at the `swap_ui-vX.Y.Z` tags: `swap-ui/src/qml/SetupSteps.js` derives the Setup step order, titles, numbering and page subtitle for both onboarding flows, `swap-ui/src/qml/SetupView.qml` holds the card copy, and `docs/DEVELOPMENT.md` documents which flow ships by default. Read those at the tag rather than the repo's working tree, since `master` can be ahead of the released catalogue build.
+
 ## Conventions
 
 `CONTRIBUTING.md` is the authority on document types, templates, and the review workflow; read it before adding or restructuring a page. Note the repo-wide `:::tip[Version]` banner that states which Testnet release a page is accurate for — it tracks the Testnet, not the app the page describes.

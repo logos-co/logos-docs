@@ -21,7 +21,7 @@ This document is accurate for **Testnet v0.2.1**.
 
 The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
-You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. The app also sets up both of your accounts for you: a guided **Setup** tab generates your Ethereum key, then creates, initialises, and funds your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account), and finishes by pointing you at a faucet for the Sepolia gas it can't fetch on your behalf, all in [Step 2](#step-2-set-up-your-accounts). Nothing in this journey needs a command line.
+You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. The app also sets up both of your accounts for you: a guided **Setup** tab generates your Ethereum key, then creates and activates your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account), and finishes by pointing you at a faucet for the Sepolia gas it can't fetch on your behalf, all in [Step 2](#step-2-set-up-your-accounts). You don't need to hold any LEZ before you start, because buying LEZ is what this app is for. Nothing in this journey needs a command line.
 
 ## Networks and addresses
 
@@ -53,14 +53,15 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 - [Basecamp installed and running](./install-logos-basecamp.md).
 - Internet access.
-- A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app funds your LEZ side for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
+- A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app can activate your LEZ account for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.
+- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get test LEZ without trading](#get-test-lez-without-trading) covers it.
 :::
 
 ## What to expect
 
 - You can add a third-party catalogue to Basecamp and install an app from it.
-- You can use the app's guided **Setup** tab to generate an Ethereum key, to create, initialise, and fund a LEZ account, and to get that Ethereum key funded, with no command line and no hand-copied keys.
+- You can use the app's guided **Setup** tab to generate an Ethereum key, to create and activate a LEZ account, and to get that Ethereum key funded, with no command line and no hand-copied keys.
 - You can take a live offer and complete a real cross-chain swap on public test networks.
 - You can verify both legs of your swap independently on two block explorers.
 
@@ -108,7 +109,7 @@ The catalogue is saved in your Basecamp settings and survives restarts. You add 
 
 ## Step 2: Set up your accounts
 
-A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an initialised LEZ account to receive your tokens. The app builds both for you in the **Setup** tab—no command line, and no copying a raw private key between apps. Every field the tab fills is an ordinary configuration field underneath, listed in the tab's own **Advanced settings** section, so nothing here is hidden from you.
+A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an activated LEZ account to receive your tokens. Setup doesn't hand you LEZ, and doesn't need to: you buy that on the **Market** tab in [Step 4](#step-4-take-a-live-offer). The app builds both identities for you in the **Setup** tab, with no command line and no copying a raw private key between apps. Every field the tab fills is an ordinary configuration field underneath, listed in the tab's own **Advanced settings** section, so nothing here is hidden from you.
 
 On a fresh install the app opens on the **Setup** tab automatically. You can also reach it any time from the **Setup** tab at the right-hand end of the tab row.
 
@@ -118,7 +119,9 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
 1. Open the **Setup** tab.
 
-    **Expected:** a page headed **Get set up** with five numbered sections—**1. Ethereum key**, **2. LEZ account**, **3. Fund LEZ**, **4. Get test ETH**, and **5. Start trading**. Each section's border turns green and its heading gains a `done` marker as you complete it. Only the first four ask anything of you; the fifth is the handoff to the market, and it stays dimmed until the ones above it are done.
+    **Expected:** a page headed **Get set up**, subtitled `Four steps, then you're trading. No keys to type.`, with four numbered sections: **1. Ethereum key**, **2. LEZ account**, **3. Activate your LEZ account**, and **4. Get test ETH**. Each section's border turns green and its heading gains a `done` marker as you complete it.
+
+    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two collapsed sections follow it: **Get test LEZ without trading**, described in [Get test LEZ without trading](#get-test-lez-without-trading) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration).
 
 1. Under **1. Ethereum key**, click **Generate a key**.
 
@@ -126,11 +129,13 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
 1. Under **2. LEZ account**, click **Create an account**.
 
-    **Expected:** the section shows `done` and displays **Your account** followed by your new [account](../get-started/glossary.md#account) ID. Nothing is on-chain yet—creating the account is local, and the next section is what puts it on-chain.
+    **Expected:** the section shows `done` and displays **Your account** followed by your new [account](../get-started/glossary.md#account) ID. Nothing has reached the network yet. Creating the account is local, and the next section is what registers it.
 
-1. Under **3. Fund LEZ**, click **Add funds**.
+1. Under **3. Activate your LEZ account**, click **Activate account**.
 
-    **Expected:** the button changes to **Adding funds…** and a status line appears with a live seconds counter. It initialises your account on-chain, then claims `150` LEZ from the [Piñata](../get-started/glossary.md#piñata) faucet—each phase needs a proof-of-work solve and an on-chain commit, and testnet blocks can be a minute or more apart, so the counter keeps moving to show it isn't stuck. When it finishes, the section shows `done` and the status line reads **LEZ funded** with the balance it reached.
+    Activation registers your account on the LEZ network so it can receive the tokens you buy. It's free, it's a single transaction, and it's the one step a buyer can't skip. It doesn't give you any LEZ and doesn't need to: you get that from the market in [Step 4](#step-4-take-a-live-offer).
+
+    **Expected:** the button changes to **Activating…** and a status line appears with a live seconds counter, reading `Setting up your account on the network…` and then saying it's waiting for the network to confirm. Test-network blocks can be a minute or more apart, so the counter keeps moving to show it isn't stuck. When it finishes, the section shows `done`, the status line reads `Account set up on the network`, and the button becomes **Check again**.
 
 1. Under **4. Get test ETH**, copy the address shown under **Send it here** and send Sepolia ETH to it.
 
@@ -138,13 +143,21 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     **Expected:** while you wait, the section reads `Watching for it… you don't need to do anything.` and polls for the balance on its own. Once the ETH lands it shows `done` and a line reading `Arrived —` followed by the amount.
 
-1. Under **5. Start trading**, click **Go to Market**.
+1. Under **Start trading**, click **Go to Market**.
 
-    The button only enables once both **3. Fund LEZ** and **4. Get test ETH** are done, because a swap needs LEZ to receive and Sepolia ETH to pay gas with.
+    The button only enables once both **3. Activate your LEZ account** and **4. Get test ETH** are done, because a swap needs an activated account for the LEZ to land in and Sepolia ETH to pay the gas with. Until then the card tells you so: `Once you've activated your LEZ account (step 3) and test-ETH has landed, this is where you head to the market.`
 
 :::info
-The **Add funds** button initialises the account for you, so you can't forget to. That matters because an uninitialised LEZ account is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. If a swap ever does nothing at all, re-running **Add funds** re-checks the initialisation.
+Activation gets a step of its own because a LEZ account that was never activated is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. The app doesn't remember between launches whether your account is registered, so it always asks the network rather than guessing. If you set this account up in an earlier session, press **Activate account** anyway. It checks first and confirms in about a second without sending anything, and the same is true of **Check again** afterwards, which is the button to press if a swap ever does nothing at all.
 :::
+
+### Get test LEZ without trading
+
+Below **Start trading**, the **Setup** tab carries a collapsed section labelled **Get test LEZ without trading**. It's a secondary path rather than one of the four steps, and you can finish this whole procedure without opening it.
+
+You don't need it to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
+
+You do need it to *sell* LEZ, because a sell offer has to be backed by LEZ you already hold, and on a test network the only other source is the [Piñata](../get-started/glossary.md#piñata) faucet. Expand the section and click **Claim test LEZ** to claim up to `150` LEZ per run. Each claim solves a small proof-of-work puzzle and then waits for the network, so it can take a few minutes, and the collapsed header carries a `claiming…`, `claimed`, or `claim failed` badge so folding the section away never loses track of one. A claim needs the account from **2. LEZ account** to arrive in, and it changes none of the numbered steps.
 
 ## Step 3: Confirm your configuration
 
@@ -256,7 +269,7 @@ Check **RPC URL** begins with `wss://` and not `https://`. The app opens a WebSo
 
 ### The swap does nothing and no error appears
 
-Your LEZ account is almost certainly uninitialised. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Open the **Setup** tab from [Step 2](#step-2-set-up-your-accounts) and click **Add funds** under **3. Fund LEZ** again—it re-checks the on-chain initialisation and tops the balance back up. Confirm the balance is genuinely positive before retrying.
+Your LEZ account almost certainly isn't activated. The sequencer discards transactions for an account it has never seen initialised and returns no error, so the app has nothing to report. Open the **Setup** tab from [Step 2](#step-2-set-up-your-accounts) and press the button under **3. Activate your LEZ account** again. It re-checks the registration against the network, and confirms in about a second if the account was already fine.
 
 ### The swap stalls on `Wait for the seller`
 
@@ -264,7 +277,11 @@ The maker refuses a lock that doesn't leave it enough time to respond, and the E
 
 ### There isn't enough LEZ in the account
 
-Open the **Setup** tab from [Step 2](#step-2-set-up-your-accounts) and click **Add funds** under **3. Fund LEZ** again. Each run claims `150` LEZ from the Piñata faucet, so repeat it until the balance covers what you need.
+Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, expand **Get test LEZ without trading** on the **Setup** tab and click **Claim test LEZ**. Each run claims up to `150` LEZ from the Piñata faucet, so repeat it until the balance covers what you need.
+
+### Setup shows a `Fund LEZ` step instead
+
+You're on an older build, or on one launched with the developer override that restores the previous screens. Up to `swap_ui` `0.4.5`, step 3 both activated the account and claimed `150` LEZ from the faucet, and **Start trading** was numbered as a fifth step. That flow still works, and everything else on this page still applies to it, but the faucet claim is no longer part of getting set up. Update `swap` and `swap_ui` from the **Package Manager** to get the four-step flow this page describes.
 
 ### A swap stopped halfway and the funds are still locked
 

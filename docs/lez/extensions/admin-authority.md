@@ -19,6 +19,10 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 `admin-authority` is a SPEL extension that adds a single transferable admin role to your LEZ program. The admin is the only account allowed to call admin-gated instructions. The role can be transferred to another signer or PDA, or renounced permanently. This page walks through using `admin-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
 ## When to use it
@@ -82,7 +86,15 @@ The version has to match the `logos-blockchain-circuits` version the pinned fram
 
 ## Annotate the module
 
-If you started from `cargo new`, delete the default `fn main` first. The `#[lez_program]` macro generates the program's entry point, and the leftover stub collides with it as a duplicate `main`.
+This page assumes you already have an LEZ program crate. A deployable one is a RISC Zero guest, and `spel init` scaffolds it at `methods/guest/src/bin/<name>.rs`, the same layout `spel generate-idl` auto-detects when given no path. Override both source flags, or the scaffold pins a framework without the extension scanner and the marker below is ignored silently:
+
+```bash
+spel init my-program \
+    --spel-git https://github.com/mmlado/spel.git \
+    --spel-rev f7aa464b2c6c72ef513a25ede16584bca85b722f
+```
+
+If you only want to check the integration and started from `cargo new`, delete the default `fn main` first. The `#[lez_program]` macro generates the program's entry point, and the leftover stub collides with it as a duplicate `main`.
 
 Add `#[admin_authority]` inside your `#[lez_program]` module:
 

@@ -19,6 +19,10 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 `freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your LEZ program. A designated freeze authority can pause all program execution (program-wide freeze) and block specific accounts from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only the freeze management carve-outs (unfreeze, authority transfer and renounce, per-account freeze edits), admin operations, and instructions you marked `#[freeze_exempt]` remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
 `freeze-authority` depends on `admin-authority`. The admin governs the freeze authority slot; the freeze authority governs the frozen flags. See [Gate program instructions with admin-authority](admin-authority.md) for the admin layer.
@@ -74,6 +78,10 @@ use spel_framework::prelude::*;
 #[freeze_authority]
 mod my_program {
     #[instruction]
+    #[freeze_exempt]
+    pub fn initialize(/* ... */) -> SpelResult { /* ... */ } // creates your account, see below
+
+    #[instruction]
     pub fn transfer(/* ... */) -> SpelResult { /* ... */ }   // auto-gated
 
     #[instruction]
@@ -81,6 +89,8 @@ mod my_program {
     pub fn balance_of(/* ... */) -> SpelResult { /* ... */ } // exempt, callable while frozen
 }
 ```
+
+Your own account-creating instruction needs `#[freeze_exempt]` in dedicated mode, because `freeze_config` does not exist yet when it runs and the auto-wrap prologue would reject it as not initialised. In embedded mode the framework works this out for itself, the instruction that creates the embedding account is skipped by that gate automatically.
 
 The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports. `FreezeCandidate` is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it. The module body does not need `use super::*;`.
 
@@ -118,7 +128,7 @@ That single annotation pair (plus `#[admin_authority]`) exposes seven new instru
 | `freeze_account_release(target)` | Sets per-account frozen flag to false for `target`. Freeze authority only. Callable while frozen. |
 
 :::warning
-**Initialisation window.** Until `freeze_initialize` is called, the freeze Config PDA does not exist and no gates are active. Unlike `admin_initialize`, freeze initialisation is NOT front-runnable, `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: submit `admin_initialize` and then `freeze_initialize` as the first two transactions after deployment, back to back. A LEZ transaction carries a single instruction, so they cannot share one.
+**Initialisation window.** Until `freeze_initialize` is called, the freeze Config PDA does not exist, and in auto mode that blocks the program rather than leaving it open: the injected prologue strict-decodes `freeze_config`, so every non-exempt instruction rejects with `Unauthorized: freeze authority not initialized`. Unlike `admin_initialize`, freeze initialisation is NOT front-runnable, `freeze_initialize` requires the admin's signature. But it does require `admin_initialize` to have run first. Recommended pattern: submit `admin_initialize` and then `freeze_initialize` as the first two transactions after deployment, back to back and before any of your own instructions. A LEZ transaction carries a single instruction, so they cannot share one.
 :::
 
 ## Gate an instruction

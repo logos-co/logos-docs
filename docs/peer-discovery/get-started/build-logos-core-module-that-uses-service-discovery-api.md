@@ -396,11 +396,11 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
 
    ```json
    {"method":"discover","module":"my_service_module",
-    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"version=1\",\"id\":\"myservice/v1\"}]}]",
+    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"dmVyc2lvbj0x\",\"id\":\"myservice/v1\"}]}]",
     "status":"ok"}
    ```
 
-   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` (`version=1`) that A advertised.
+   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` that A advertised, base64-encoded: `dmVyc2lvbj0x` decodes to `version=1`.
 
    :::info
    A first `discover` returning `[]` means the advertisement has not yet propagated. Repeat the call after a few seconds.

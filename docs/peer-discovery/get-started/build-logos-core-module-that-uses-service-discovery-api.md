@@ -243,13 +243,26 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
 ## Step 3: Build both modules
 
-The `.#install` target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+The install target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; it generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+
+:::warning
+Use `.#install-portable`, not `.#install`. The released `logoscore` from the prerequisites loads
+portable variants only, and `.#install` produces a `-dev` variant it refuses:
+
+```text
+Warning: module 'libp2p_module' in .../result/modules/libp2p_module was installed for variant
+'linux-amd64-dev' which is not supported on this platform and will not be loadable:
+supported variants [linux-x86_64, linux-amd64].
+```
+
+`load-module` then fails with `MODULE_LOAD_FAILED`. Build both modules the same way.
+:::
 
 1. In `logos-my-service-module`, initialise a Git repository and run the install build:
 
    ```sh
    git init && git add -A
-   nix build .#install -L
+   nix build .#install-portable -L -o result
    ```
 
    This produces:
@@ -265,7 +278,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 
    ```sh
    cd ../logos-libp2p-module
-   nix build .#install -L
+   nix build .#install-portable -L -o result
    ```
 
    This produces:
@@ -311,7 +324,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
    # → discovery started
 
    logoscore call my_service_module getPeerInfo
-   # → {"peerId":"16Uiu2…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
+   # → {"peerId":"12D3KooW…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
 
    logoscore call my_service_module advertise myservice/v1 version=1
    # → advertising myservice/v1

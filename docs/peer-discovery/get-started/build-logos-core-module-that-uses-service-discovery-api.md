@@ -76,7 +76,7 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    CBIND=$(find /nix/store -maxdepth 4 -name libp2p.h -path '*cbind*' | head -1 | xargs dirname)
    mkdir -p lib
    cp "$CBIND/libp2p.h" lib/
-   find /nix/store -name libp2p.so -path '*cbind*' -exec cp {} lib/ \;
+   find /nix/store -name liblibp2p.so -path '*cbind*' -exec cp {} lib/ \;
    ```
 
 1. Build the example target from the root project and run it:

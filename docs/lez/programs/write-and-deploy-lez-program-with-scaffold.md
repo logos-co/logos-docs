@@ -137,6 +137,25 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
     The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
 
+    :::warning
+    The local sequencer always uses port `3040`. If something else is already listening there—another
+    scaffold project, or a sequencer left running by an earlier session—`localnet start` fails with:
+
+    ```text
+    Error: Failed to build RPC server
+
+    Caused by:
+        Address already in use (os error 98)
+    ```
+
+    Free port `3040` before starting. Changing `port` under `[localnet]` in `scaffold.toml` is not a
+    workaround in `logos-scaffold` 0.3.0: it moves the readiness check and the generated
+    `sequencer_config.json`, but the sequencer binary still binds `3040` (its `--port` default) and
+    `.scaffold/wallet/wallet_config.json` keeps pointing at `http://127.0.0.1:3040`. The result is
+    that `deploy` and `wallet topup` silently talk to whatever is already on `3040` instead of your
+    own sequencer.
+    :::
+
 ## Step 7: Deploy your program
 
 1. Deploy all guest programs to the running sequencer:

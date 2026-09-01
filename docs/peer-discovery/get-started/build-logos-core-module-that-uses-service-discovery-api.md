@@ -218,7 +218,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    ```
 
    :::info
-   For local development, override`flake.nix` at build time:
+   For local development, override `flake.nix` at build time:
 
    ```bash
    nix build --override-input libp2p_module path:../logos-libp2p-module

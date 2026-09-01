@@ -43,7 +43,7 @@ The recipient generates a reusable keypair (NPK and VPK) and shares it with send
    wallet account new private-accounts-key
    ```
 
-   - This prints the `chain_index`, NPK, and VPK. No account is bound to the keypair yet.
+   - This prints the key node's path—its chain index, for example `/1`—followed by the NPK and VPK. No account is bound to the keypair yet. Pass `--cci` to derive under a specific parent node instead.
 
 1. Export the keys to share with senders:
 

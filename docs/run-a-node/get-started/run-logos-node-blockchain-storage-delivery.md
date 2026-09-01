@@ -251,10 +251,11 @@ Load the blockchain module, generate the node config, and start the module.
 
    | Field | Purpose | Guidance |
    |-------|---------|----------|
-   | `network.initial_peers` | Bootstrap peers | Use the current network document |
-   | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-   | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080` |
-   | `state.base_folder` | State directory | Use a persistent local path |
+   | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
+   | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+   | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080` |
+   | `blend.core.backend.listening_address` | Public Blend listener | Only needed for the Blend Network, normally `/ip4/0.0.0.0/udp/3400/quic-v1` |
+   | `state.base_folder` | State directory | Defaults to the relative path `./state`, which resolves against the daemon working directory. Set an absolute path for unattended operation |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
 1. Start the blockchain module:
@@ -533,6 +534,8 @@ Run health checks against the daemon and all three modules to confirm the node i
    ```
 
    Expected modules in the output: `storage_module`, `blockchain_module`, `delivery_module`, `capability_module`.
+
+   - Check each module's own `status` field reads `loaded`, not just that the module is listed. Every installed module appears in the output whether or not it is running, and a module whose process has exited drops back to `"status": "not_loaded"` without `modules_summary.crashed` moving off `0`. If a module reads `not_loaded` after you started it, read the daemon output for its `FATAL` block rather than trusting the summary counts.
 
 1. Verify all ports are bound correctly:
 

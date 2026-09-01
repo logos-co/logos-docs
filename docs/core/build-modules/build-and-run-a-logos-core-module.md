@@ -416,16 +416,16 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
     ./logos-basecamp/bin/logos-basecamp
    ```
 
-   - Look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/LogosBasecamp/` (macOS) or `~/.local/share/Logos/LogosBasecamp/` (Linux). On Linux, `~/.config/Logos/` holds only the `LogosBasecamp.conf` settings file.
+   - Look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/LogosBasecampDev/` (macOS) or `~/.local/share/Logos/LogosBasecampDev/` (Linux). The `Dev` suffix is what a development build of `logos-basecamp` uses; a portable or released build drops it and uses `LogosBasecamp/` instead. On Linux, `~/.config/Logos/` holds only the `LogosBasecamp.conf` settings file.
 
 1. Set the `BASECAMP_DIR` variable to your platform's path.
 
    ```bash
    # macOS
-   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecamp"
+   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecampDev"
 
    # Linux
-   BASECAMP_DIR="$HOME/.local/share/Logos/LogosBasecamp"
+   BASECAMP_DIR="$HOME/.local/share/Logos/LogosBasecampDev"
    ```
 
 1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` as described in Step 5.

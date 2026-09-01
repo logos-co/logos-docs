@@ -82,33 +82,48 @@ Build and run the self-contained two-node demo to confirm the module and its C b
 1. Build the example target from the root project and run it:
 
    ```sh
-   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target example_service_discovery -j'
-   ./build/examples/example_service_discovery
+   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target tutorial_9_service_discovery -j'
+   ./build/tutorial/tutorial_9_service_discovery
    ```
 
    Expected output:
 
    ```
-   Starting nodes...
-   Advertiser: advertising demo-service
-   Discoverer: registering interest in demo-service
-   Discoverer: looking up demo-service
-   Discoverer found 1 peer(s) advertising demo-service
-     peer: 16Uiu2HAk... seq: 1359 addrs: 1
-   Discoverer matched the advertiser: 16Uiu2HAk...
-   Advertiser: random lookup
-   Random lookup returned 2 peer(s)
-   Advertiser: building a signed Extended Peer Record
-   Signed XPR is 288 bytes
-   Discoverer: unregistering interest in demo-service
-   Advertiser: stopping advertising demo-service
-   Done
+   === Tutorial 9: Service Discovery ===
+
+   Bootstrap node started: 12D3KooWSSowH3iU...
+   Advertiser connected to bootstrap
+   Discoverer connected to bootstrap
+
+   Advertiser advertising: "demo-chat-service"
+   Advertising started
+   Discoverer registering interest in "demo-chat-service"
+   Discoverer looking up "demo-chat-service"...
+   Discoverer found 1 provider(s):
+     Peer: 12D3KooWFTQxKwph...
+       Service: demo-chat-service (data: version=1.0;capacity=100)
+
+   Random lookup by advertiser...
+   Found 2 random peer(s):
+     Peer: 12D3KooWSSowH3iU...
+     Peer: 12D3KooWS7R31o2R...
+
+   --- Extended Peer Records ---
+   Created signed XPR
+   Decoded XPR:
+     Peer ID: 12D3KooWFTQxKwph...
+     Sequence: 1788272697
+     Services: 2
+
+   === Tutorial 9 Complete ===
    ```
+
+   The run also prints libp2p `DBG` lines around this summary; they are normal.
 
    - [Peer IDs](../../get-started/glossary.md#peer-id) are non-deterministic across runs.
 
    :::info
-   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
+   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 provider(s)` and ends with `=== Tutorial 9 Complete ===`. Exact peer counts, IDs, and the XPR sequence number vary per run.
    :::
 
 ## Step 2: Scaffold the new Logos Core module

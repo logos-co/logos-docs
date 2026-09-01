@@ -23,7 +23,7 @@ This document is accurate for **Testnet v0.2.1**.
 
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
-The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
+The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/tui-zone-tutorial/deployment/tui-zone).
 
 :::tip
 You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
@@ -42,17 +42,20 @@ You can try out a working version of the TUI Zone used in this tutorial directly
 
 ## Step 1: Clone the Logos Blockchain repository
 
-Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. A more comprehensive implementation, which also supports decentralised sequencing, can be found in the `master` branch.
+Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain) repository. The TUI Zone lives on the `tui-zone-tutorial` branch, which holds a skeleton implementation with space to fill in the relevant code. The default `master` branch has no `deployment/tui-zone` directory, so everything below assumes you are on `tui-zone-tutorial`.
 
 1.  Run the following in your desired path to clone the repository and switch to the tutorial branch:
 
     ```bash
     git clone https://github.com/logos-blockchain/logos-blockchain.git
-    cd logos-blockchain/deployment/tui-zone
+    cd logos-blockchain
 
     # To follow along with the tutorial
     git checkout tui-zone-tutorial
+    cd deployment/tui-zone
     ```
+
+    Check the branch out before changing into `deployment/tui-zone`. That directory exists only on `tui-zone-tutorial`, so entering it straight after cloning fails with `No such file or directory`.
 
 ## Step 2: Initialise the `ZoneSequencer` struct
 

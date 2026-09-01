@@ -80,7 +80,7 @@ recipient before sending.
     wallet account new private
     ```
 
-    If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
+    If you create a public account, the output is the account ID and its public key (`pk`). If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
 :::info
 Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.

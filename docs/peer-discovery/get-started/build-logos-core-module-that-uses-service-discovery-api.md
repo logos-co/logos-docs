@@ -198,8 +198,9 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
    std::string MyServiceModuleImpl::advertise(const std::string& serviceId,
                                               const std::string& serviceData) {
-       // discoStartAdvertising requires BOTH serviceId and serviceData.
-       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData);
+       // discoStartAdvertising takes serviceId, serviceData and an advertisement
+       // string; pass "" to let the module build a default advertisement.
+       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData, "");
        if (!r.success) return "advertise failed: " + r.error;
        return "advertising " + serviceId;
    }

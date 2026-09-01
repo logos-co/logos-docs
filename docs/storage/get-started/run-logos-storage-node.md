@@ -83,7 +83,7 @@ In this tutorial, you will:
 
     NAME                           VERSION         TYPE       CATEGORY
     ----------------------------------------------------------------------
-    storage_module                 (v)           core       protocol
+    storage_module                 2.1.2           core       protocol
     ```
 
 ## Start the daemon and load the storage module

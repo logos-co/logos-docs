@@ -52,16 +52,8 @@ Transfers are irreversible. Double-check all details before proceeding.
 ## What to expect
 
 - The token program can move balances between token holding accounts.
-- The account you name in `wallet token new --supply-account-id` is claimed by the token program when the token is created. After that, only the token program can modify it, and it can only hold tokens of that one definition ID.
-
-:::warning
-On the current testnet, `wallet token send` to an account that has never been initialised is
-discarded by the sequencer without an error: `wallet chain-info transaction --hash <hash>` reports
-`Transaction is None`, the sender keeps its balance and the recipient stays `Uninitialized`. Only
-the supply account named at `wallet token new` is claimed reliably, and there is no
-`wallet token init`, so until this is fixed the transfers in [Step 2](#step-2-transfer-tokens) only
-work between accounts that already hold a balance of the same token.
-:::
+- If the recipient account is uninitialised, the token program will automatically claim it. After initialisation, only the token program can modify the account.
+- You can transfer custom tokens to any uninitialised public or private account. Once the account is initialised, it can only receive tokens of the same definition ID. (A token holding account stores the balance for exactly one token definition ID.)
 
 :::info
 Currently, it's impossible to change the token name or total supply after you create the token.
@@ -85,16 +77,17 @@ Currently, it's impossible to change the token name or total supply after you cr
 
     If you create a public account, the output is the account ID. If you create a private account, the output includes the account ID, [nullifier public key](../../get-started/glossary.md#nullifier-public-key) (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
-:::info
-Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
-:::
+    :::info
+    Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
+    :::
 
 1.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
 
     ```sh
     wallet account ls
     ```
-2.  Create the token using the token definition account and token holding account you just created. Replace `NAME` with your token name, `AMOUNT` with the total supply, `ACCOUNT-TYPE` with the type of the account (public or private), and `ACCOUNT-ID` with the appropriate account IDs.
+
+1.  Create the token using the token definition account and token holding account you just created. Replace `NAME` with your token name, `AMOUNT` with the total supply, `ACCOUNT-TYPE` with the type of the account (public or private), and `ACCOUNT-ID` with the appropriate account IDs.
 
     ```sh
     wallet token new \
@@ -104,15 +97,15 @@ Your account keys and data are stored in the local file `$HOME/.lee/wallet/stora
     --supply-account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-For example,
+    For example,
 
-```sh
-wallet token new \
---name TOKENA \
---total-supply 1337 \
---definition-account-id Public/4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7 \
---supply-account-id Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw
-```
+    ```sh
+    wallet token new \
+    --name TOKENA \
+    --total-supply 1337 \
+    --definition-account-id Public/4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7 \
+    --supply-account-id Public/9RRSMm3w99uCD2Jp2Mqqf6dfc8me2tkFRE9HeU2DFftw
+    ```
 
 1.  Use the `wallet account get` command to check the status of the token definition account and token holding account. You can see their account types and the token metadata.
 
@@ -120,21 +113,21 @@ wallet token new \
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-The output for the definition account and holding account looks like the following, respectively:
+    The output for the definition account and holding account looks like the following, respectively:
 
-```text
-Definition account owned by token program
-{"Fungible":{"name":"TOKENA","total_supply":1337,"metadata_id":null}}
-```
+    ```text
+    Definition account owned by token program
+    {"Fungible":{"name":"TOKENA","total_supply":1337,"metadata_id":null}}
+    ```
 
-```text
-Holding account owned by token program
-{"Fungible":{"definition_id":"4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7","balance":1337}}
-```
+    ```text
+    Holding account owned by token program
+    {"Fungible":{"definition_id":"4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7","balance":1337}}
+    ```
 
-:::tip
-When checking the status of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
-:::
+    :::tip
+    When checking the status of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.
+    :::
 
 ## Step 2: Transfer tokens
 
@@ -153,14 +146,14 @@ Transfers involving private accounts may take a few minutes because the wallet n
         --amount TOKEN-AMOUNT
     ```
 
-For example, to transfer 1000 tokens from a private token holding account to a public recipient account, run:
+    For example, to transfer 1000 tokens from a private token holding account to a public recipient account, run:
 
-```sh
-wallet token send \
-  --from Private/HMRHZdPw4pbyPVZHNGrV6K5AA95wACFsHTRST84fr3CF \
-  --to Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
-  --amount 1000
-```
+    ```sh
+    wallet token send \
+      --from Private/HMRHZdPw4pbyPVZHNGrV6K5AA95wACFsHTRST84fr3CF \
+      --to Public/88f2zeTgiv9LUthQwPJbrmufb9SiDfmpCs47B7vw6Gd6 \
+      --amount 1000
+    ```
 
 1.  Use the `wallet account get` command to check the status of the sender and recipient accounts. You can see the updated token balances.
 
@@ -168,13 +161,13 @@ wallet token send \
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-The output looks like this:
+    The output looks like this:
 
-```text
-Holding account owned by token program
-{"Fungible":{"definition_id":"4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7","balance":1000}}
-```
+    ```text
+    Holding account owned by token program
+    {"Fungible":{"definition_id":"4X9kAcnCZ1Ukkbm3nywW9xfCNPK8XaMWCk3zfs1sP4J7","balance":1000}}
+    ```
 
-:::tip
-You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
-:::
+    :::tip
+    You can also use the `wallet account ls -l` command to check the balances of all your accounts at once.
+    :::

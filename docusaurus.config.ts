@@ -237,8 +237,7 @@ const config: Config = {
               label: 'Build an app',
             },
             {
-              type: 'docSidebar',
-              sidebarId: 'contributeSidebar',
+              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
               label: 'Contribute',
             },
           ],
@@ -305,6 +304,8 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      // see https://github.com/facebook/docusaurus/issues/3559
+      additionalLanguages: ['bash', 'cmake', 'nix'],
     },
   } satisfies Preset.ThemeConfig,
 };

@@ -72,8 +72,12 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     ```bash
     git clone https://github.com/logos-co/logos-chatsdk-ui
     cd logos-chatsdk-ui
-    git checkout v0.1.0
+    git checkout v0.2.2
     ```
+
+    - `v0.2.2` is the release the Basecamp catalogue ships as **Chat**, so both options run the same
+      app and match the walkthrough below. Older tags such as `v0.1.0` predate the address-based
+      contact flow in [Step 2](#step-2-start-a-conversation).
 1.  Run the standalone app:
 
     ```bash

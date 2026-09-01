@@ -520,10 +520,12 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    Plugin Metadata:
    ================
    Name:         calc_module
+   Display name: (unset — falls back to name)
    Version:      1.0.0
    Description:  Calculator module wrapping libcalc C library
    Author:
    Type:         core
+   Protocol:     0.2.0
    Dependencies: (none)
    ```
 

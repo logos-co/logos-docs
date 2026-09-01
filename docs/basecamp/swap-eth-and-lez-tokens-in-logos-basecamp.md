@@ -205,7 +205,7 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
     **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH.
 
-    An offer carries no hashlock. The hashlock is derived from the secret your own app invents when you accept, so it only exists from [Step 4.3](#step-4-take-a-live-offer) onwards and first appears on the receipt.
+    A **Hashlock** row appears here only for an offer that already carries one. An offer is an advertisement rather than a swap, and the hashlock comes from the secret your own app invents when you accept, so a freshly published offer has none and the row stays hidden. Yours first appears on the receipt in [Step 5](#step-5-read-your-receipt-and-verify-it).
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 

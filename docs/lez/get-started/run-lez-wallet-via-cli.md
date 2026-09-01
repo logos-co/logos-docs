@@ -30,15 +30,17 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```bash
   # Ubuntu / Debian
   sudo apt update
-  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev libpcsclite-dev
 
   # Fedora
-  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs pcsc-lite-devel
   
   # macOS
   xcode-select --install
   brew install pkg-config openssl
   ```
+
+   - `libpcsclite-dev` (`pcsc-lite-devel` on Fedora) is required: the wallet depends on `pcsc-sys`, whose build script fails with `Could not find a PCSC library` when it is missing. macOS provides PCSC in a system framework, so it needs no extra package.
 :::
 
 ## What to expect
@@ -102,6 +104,10 @@ In this flow, you create and initialise an [account](../../get-started/glossary.
 
 In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
 
+:::info
+Any command that submits a transaction—`auth-transfer init`, `pinata claim`, `auth-transfer send`—can stop polling before the transaction lands. It then prints `Error: All pollers failed` with a Rust stack backtrace and exits non-zero, even though the transaction is in flight and usually settles. Treat the `Transaction hash is <hash>` line as the outcome that matters: wait a minute or two, then confirm with `wallet account get` or `wallet chain-info transaction --hash <hash>`.
+:::
+
 ### Create and initialise the sender public account
 
 1. Create a sender [public account](../../get-started/glossary.md#public-account) and record the `account_id` value:
@@ -135,12 +141,6 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```
 
    In the output, you should see the transaction hash printed as `Transaction hash is <hash>`.
-
-   :::info
-   The wallet often stops polling before the transaction lands and prints `Error: All pollers
-   failed` after the hash. The transaction is still in flight—wait a minute or two and re-run
-   `wallet account get`, or check it with `wallet chain-info transaction --hash <hash>`.
-   :::
 
 1. Check the account updated state:
 

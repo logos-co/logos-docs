@@ -70,7 +70,7 @@ In the Blockchain app, add a node configuration.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 
-1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.2:
+1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.3:
 
    ```text
    /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar

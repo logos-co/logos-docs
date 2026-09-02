@@ -133,6 +133,24 @@ Currently, it's impossible to change the token name or total supply after you cr
 
 When transferring custom tokens using the `wallet token send` command, you specify the sender and recipient accounts with the account IDs. Both accounts can be public or private, but they must have the same token definition ID.
 
+:::warning
+The recipient must already be a holding account for this token. A brand-new public account is not
+one, and a transfer to it is discarded by the sequencer with no error returned: `wallet token send`
+prints a transaction hash, `wallet chain-info transaction --hash <hash>` reports `Transaction is
+None`, the sender's balance is unchanged, and the recipient stays `Uninitialized`.
+
+`wallet auth-transfer init` does not help here—it hands the account to the authenticated-transfer
+program rather than the token program, and the transfer is still discarded. `wallet token mint`
+only works against an account the token program already owns; minting to a fresh account is
+discarded the same way.
+
+A public holding account is therefore created only when the token itself is created, by naming it
+in `--supply-account-id` in [Step 1](#step-1-create-a-token). To pay a recipient who does not
+already hold this token, send to an uninitialised **private** account using the recipient's `npk`
+and `vpk`, the same pattern as
+[Method 2 for native tokens](transfer-native-tokens-on-the-logos-execution-zone.md#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk).
+:::
+
 :::info
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof.
 :::

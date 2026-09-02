@@ -69,7 +69,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of packages, and Basecamp re-reads it whenever the index changes.
 
-1. In the sidebar, click **Package Manager**, then click **Repositories** in the toolbar.
+1. In the sidebar, click **Package Manager**, then click **Manage Repositories** in the toolbar.
 
     This opens **Settings** at the **Package Repositories** page, which lists the repositories you're drawing packages from.
 
@@ -91,7 +91,7 @@ Basecamp arrives with the official Logos catalogue configured, and it merges tha
 
 1. Install `swap` first, then install `swap_ui`.
 
-    Each opens an **Add Application** window listing **Required Packages**. Confirm with **Install** and wait for the stage label to reach `Installed`.
+    Each opens an **Install Package?** dialogue naming the package and any dependency changes it brings with it. Confirm with **Install** and wait for the package's **Action** column to read **INSTALLED**.
 
     :::warning
     Install `swap` before `swap_ui`. The UI package declares a dependency on the backend, and taking them the other way round leaves the interface with no backend to talk to.
@@ -203,11 +203,13 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
 1. Click the offer.
 
-    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **Hashlock**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH.
+    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH.
+
+    A **Hashlock** row appears here only for an offer that already carries one. An offer is an advertisement rather than a swap, and the hashlock comes from the secret your own app invents when you accept, so a freshly published offer has none and the row stays hidden. Yours first appears on the receipt in [Step 5](#step-5-read-your-receipt-and-verify-it).
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 
-    If the button is disabled, the app shows why immediately beneath it, such as `Finish setting up first — open Setup` or `This offer has expired`.
+    If the button is disabled, the app shows why in the line just above it, such as `You don't have enough ETH for this swap. You need at least 0.00001 ETH plus a little for gas — get free test ETH on the Setup tab`, `Finish setting up first — open Setup`, or `This offer has expired`. An unfunded Ethereum address is the usual cause, and [Step 2](#step-2-set-up-your-accounts) is where you fix it.
 
 1. Switch to the **Swap** tab and watch it run.
 
@@ -235,9 +237,9 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 
     **Expected:** the LEZ explorer shows the matching claim. The URL looks like `https://explorer.testnet.lez.logos.co/transaction/` followed by a 64-character hash with no `0x` prefix.
 
-1. Compare the **Hashlock** on the receipt with the hashlock the offer advertised in [Step 4](#step-4-take-a-live-offer).
+1. Reveal the **Preimage** on the receipt and note the **Hashlock** above it.
 
-    They match, which is the point. The same hash bound both locks, and the preimage now published on the LEZ chain is what released both.
+    This pair is the point. Your app invented the preimage when you accepted the offer, hashed it into the hashlock, and that one hash bound both locks—your ETH on Sepolia and the seller's LEZ. The preimage is now published on the LEZ chain, which is what released both legs.
 
 :::warning
 A Basecamp app can't open your browser for you. Logos app interfaces run inside a sandboxed QML engine that silently ignores requests to open an external URL, as reported in [eth-lez-atomic-swaps#84](https://github.com/logos-co/eth-lez-atomic-swaps/issues/84). That's why every row on the receipt carries copy buttons instead of clickable links—**⧉** for the value itself, **↗** for a block-explorer link—and why every instruction here says to paste the link into your browser yourself.

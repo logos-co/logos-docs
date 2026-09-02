@@ -290,6 +290,18 @@ If the count is greater than `0`, the crash has a different cause. Collect the c
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
 
+### `start` reports a failure but the node is running anyway
+
+On a restart against a state directory from an earlier run, `logoscore call blockchain_module start user_config.yaml ""` can return `METHOD_FAILED` or `RPC_FAILED` even though the node comes up normally. Check before retrying, because a second `start` returns the same error:
+
+```sh
+curl -s http://localhost:8080/network/info | jq .n_peers
+```
+
+A peer count greater than `0` means the node is running and syncing, and you can carry on with [Step 4](#step-4-verify-that-your-node-is-running-and-connected-to-peers). Starting from an empty state directory returns success as documented.
+
+While the node is catching up, `/cryptarchia/info` can also time out with a `408` under sync load while `/network/info` still answers. Retry it rather than treating the timeout as a failed node.
+
 ### The testnet explorer shows an error when I click on a transaction?
 
 The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.

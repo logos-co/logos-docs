@@ -30,15 +30,17 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```bash
   # Ubuntu / Debian
   sudo apt update
-  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev libpcsclite-dev
 
   # Fedora
-  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs pcsc-lite-devel
   
   # macOS
   xcode-select --install
   brew install pkg-config openssl
   ```
+
+   - `libpcsclite-dev` (`pcsc-lite-devel` on Fedora) is required: the wallet depends on `pcsc-sys`, whose build script fails with `Could not find a PCSC library` when it is missing. macOS provides PCSC in a system framework, so it needs no extra package.
 :::
 
 ## What to expect
@@ -53,8 +55,13 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.1
+   git checkout v0.2.4
    ```
+
+   - The tag must match the programs deployed on the public testnet. An older tag builds a wallet
+     whose local program IDs no longer match the sequencer, and `wallet check-health` then fails
+     with `Local ID for authenticated transfer program is different from remote`. If you hit that,
+     check out the latest tag and reinstall.
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
@@ -73,6 +80,9 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    wallet change-network testnet
    ```
+
+   - On a fresh machine this also runs first-time setup: it prompts for a password and prints a
+     24-word recovery phrase. Write the phrase down before continuing.
 
 ## Verify the connection
 
@@ -93,6 +103,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 In this flow, you create and initialise an [account](../../get-started/glossary.md#account), claim testnet funds, send a transfer, and confirm resulting balances.
 
 In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
+
+:::info
+Any command that submits a transaction—`auth-transfer init`, `pinata claim`, `auth-transfer send`—can stop polling before the transaction lands. It then prints `Error: All pollers failed` with a Rust stack backtrace and exits non-zero, even though the transaction is in flight and usually settles. Treat the `Transaction hash is <hash>` line as the outcome that matters: wait a minute or two, then confirm with `wallet account get` or `wallet chain-info transaction --hash <hash>`.
+:::
 
 ### Create and initialise the sender public account
 
@@ -162,6 +176,19 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```bash
    wallet account new public
    ```
+
+1. Initialise the recipient account under the authenticated-transfer program:
+
+   ```bash
+   wallet auth-transfer init --account-id <recipient_public_account_id>
+   ```
+
+   :::warning
+   Do not skip this. A transfer whose recipient has never been initialised is discarded by the
+   sequencer without an error: `wallet chain-info transaction --hash <hash>` reports
+   `Transaction is None`, the sender's balance does not change, and the recipient stays
+   `Uninitialized`.
+   :::
 
 1. Send 37 tokens from sender to recipient:
 

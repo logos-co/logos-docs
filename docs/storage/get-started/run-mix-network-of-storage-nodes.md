@@ -83,7 +83,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
     NAME                           VERSION         TYPE       CATEGORY
     ----------------------------------------------------------------------
-    storage_module                 (v)           core       protocol
+    storage_module                 2.1.2           core       protocol
     ```
 
 ## Launch the bootstrap Mix node (node 1)

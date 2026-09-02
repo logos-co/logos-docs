@@ -76,39 +76,54 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    CBIND=$(find /nix/store -maxdepth 4 -name libp2p.h -path '*cbind*' | head -1 | xargs dirname)
    mkdir -p lib
    cp "$CBIND/libp2p.h" lib/
-   find /nix/store -name libp2p.so -path '*cbind*' -exec cp {} lib/ \;
+   find /nix/store -name liblibp2p.so -path '*cbind*' -exec cp {} lib/ \;
    ```
 
 1. Build the example target from the root project and run it:
 
    ```sh
-   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target example_service_discovery -j'
-   ./build/examples/example_service_discovery
+   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target tutorial_9_service_discovery -j'
+   ./build/tutorial/tutorial_9_service_discovery
    ```
 
    Expected output:
 
    ```
-   Starting nodes...
-   Advertiser: advertising demo-service
-   Discoverer: registering interest in demo-service
-   Discoverer: looking up demo-service
-   Discoverer found 1 peer(s) advertising demo-service
-     peer: 16Uiu2HAk... seq: 1359 addrs: 1
-   Discoverer matched the advertiser: 16Uiu2HAk...
-   Advertiser: random lookup
-   Random lookup returned 2 peer(s)
-   Advertiser: building a signed Extended Peer Record
-   Signed XPR is 288 bytes
-   Discoverer: unregistering interest in demo-service
-   Advertiser: stopping advertising demo-service
-   Done
+   === Tutorial 9: Service Discovery ===
+
+   Bootstrap node started: 12D3KooWSSowH3iU...
+   Advertiser connected to bootstrap
+   Discoverer connected to bootstrap
+
+   Advertiser advertising: "demo-chat-service"
+   Advertising started
+   Discoverer registering interest in "demo-chat-service"
+   Discoverer looking up "demo-chat-service"...
+   Discoverer found 1 provider(s):
+     Peer: 12D3KooWFTQxKwph...
+       Service: demo-chat-service (data: version=1.0;capacity=100)
+
+   Random lookup by advertiser...
+   Found 2 random peer(s):
+     Peer: 12D3KooWSSowH3iU...
+     Peer: 12D3KooWS7R31o2R...
+
+   --- Extended Peer Records ---
+   Created signed XPR
+   Decoded XPR:
+     Peer ID: 12D3KooWFTQxKwph...
+     Sequence: 1788272697
+     Services: 2
+
+   === Tutorial 9 Complete ===
    ```
+
+   The run also prints libp2p `DBG` lines around this summary; they are normal.
 
    - [Peer IDs](../../get-started/glossary.md#peer-id) are non-deterministic across runs.
 
    :::info
-   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
+   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 provider(s)` and ends with `=== Tutorial 9 Complete ===`. Exact peer counts, IDs, and the XPR sequence number vary per run.
    :::
 
 ## Step 2: Scaffold the new Logos Core module
@@ -183,8 +198,9 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
    std::string MyServiceModuleImpl::advertise(const std::string& serviceId,
                                               const std::string& serviceData) {
-       // discoStartAdvertising requires BOTH serviceId and serviceData.
-       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData);
+       // discoStartAdvertising takes serviceId, serviceData and an advertisement
+       // string; pass "" to let the module build a default advertisement.
+       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData, "");
        if (!r.success) return "advertise failed: " + r.error;
        return "advertising " + serviceId;
    }
@@ -218,7 +234,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    ```
 
    :::info
-   For local development, override`flake.nix` at build time:
+   For local development, override `flake.nix` at build time:
 
    ```bash
    nix build --override-input libp2p_module path:../logos-libp2p-module
@@ -227,13 +243,26 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
 ## Step 3: Build both modules
 
-The `.#install` target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+The install target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; it generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+
+:::warning
+Use `.#install-portable`, not `.#install`. The released `logoscore` from the prerequisites loads
+portable variants only, and `.#install` produces a `-dev` variant it refuses:
+
+```text
+Warning: module 'libp2p_module' in .../result/modules/libp2p_module was installed for variant
+'linux-amd64-dev' which is not supported on this platform and will not be loadable:
+supported variants [linux-x86_64, linux-amd64].
+```
+
+`load-module` then fails with `MODULE_LOAD_FAILED`. Build both modules the same way.
+:::
 
 1. In `logos-my-service-module`, initialise a Git repository and run the install build:
 
    ```sh
    git init && git add -A
-   nix build .#install -L
+   nix build .#install-portable -L -o result
    ```
 
    This produces:
@@ -249,7 +278,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 
    ```sh
    cd ../logos-libp2p-module
-   nix build .#install -L
+   nix build .#install-portable -L -o result
    ```
 
    This produces:
@@ -295,7 +324,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
    # → discovery started
 
    logoscore call my_service_module getPeerInfo
-   # → {"peerId":"16Uiu2…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
+   # → {"peerId":"12D3KooW…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
 
    logoscore call my_service_module advertise myservice/v1 version=1
    # → advertising myservice/v1
@@ -367,11 +396,11 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
 
    ```json
    {"method":"discover","module":"my_service_module",
-    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"version=1\",\"id\":\"myservice/v1\"}]}]",
+    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"dmVyc2lvbj0x\",\"id\":\"myservice/v1\"}]}]",
     "status":"ok"}
    ```
 
-   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` (`version=1`) that A advertised.
+   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` that A advertised, base64-encoded: `dmVyc2lvbj0x` decodes to `version=1`.
 
    :::info
    A first `discover` returning `[]` means the advertisement has not yet propagated. Repeat the call after a few seconds.

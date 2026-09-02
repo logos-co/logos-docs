@@ -66,13 +66,13 @@ Before writing any C code, scaffold the Logos module project using the official 
    This generates skeleton files (`flake.nix`, `metadata.json`, `CMakeLists.txt`, and a `src/` directory) pre-configured for the `logos-module-builder`. You then customise them for your specific library.
 
     :::info
-    As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
+    This tutorial uses the **pure-C++ pattern**: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The `0.2.0` template already scaffolds this pattern, and the steps below replace its example `src/` files with your own.
     :::
 
-1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files—this tutorial supplies its own pure-C++ `src/` files:
+1. Remove the template's example sources. The `with-external-lib` template ships an example implementation (`external_lib_impl.h` / `external_lib_impl.cpp`). Delete those files—this tutorial supplies its own pure-C++ `src/` files:
 
    ```bash
-   rm -f src/external_lib_interface.h src/external_lib_plugin.h src/external_lib_plugin.cpp
+   rm -f src/external_lib_impl.h src/external_lib_impl.cpp
    ```
 
 ## Step 2: Write the C library
@@ -520,10 +520,12 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    Plugin Metadata:
    ================
    Name:         calc_module
+   Display name: (unset — falls back to name)
    Version:      1.0.0
    Description:  Calculator module wrapping libcalc C library
    Author:
    Type:         core
+   Protocol:     0.2.0
    Dependencies: (none)
    ```
 

@@ -50,6 +50,9 @@ Each member who will join a group needs a one-time [sealing key](../../get-start
 
    - This prints the sealing public key. Each member shares the public key with the group owner.
    - Run this once per wallet. The secret key is stored locally and never shared.
+   - Save the printed public key. A wallet holds exactly one sealing key: running the command again
+     returns `Error: Sealing key already exists`, and there is no command to print the existing
+     public key again.
 
 ## Step 2: Create the group and the shared account
 

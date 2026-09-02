@@ -57,11 +57,15 @@ This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-ex
    export LEE_WALLET_HOME_DIR="$HOME/.lee/wallet"
    ```
 
-1. Set your wallet's sequencer address to the testnet endpoint.
+1. Point your wallet at the testnet sequencer.
 
    ```bash
-   wallet config set sequencer_addr https://testnet.lez.logos.co/
+   wallet change-network testnet
    ```
+
+   - `wallet config set sequencer_addr …` does not work: the address lives inside a `sequencers`
+     array, so the setter rejects the key with `Error: Unknown field`. Confirm the result with
+     `wallet config get --all`.
 
 ## Step 3: Build and deploy the AMM programs
 

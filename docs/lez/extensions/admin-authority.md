@@ -47,7 +47,7 @@ Two different floors apply here, and neither comes from `admin-authority` itself
 
 ## Add the dependency
 
-In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`:
+In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`. That guest manifest already carries its own `[dependencies]` table holding `spel-framework`, `nssa_core`, `serde` and `borsh`, so merge the entries below into it rather than appending a second table, which cargo rejects outright with `error: duplicate key`. Scaffolded with the source flags from [Annotate the module](#annotate-the-module), its `spel-framework` and `nssa_core` pins already match these, so `admin-authority` is the only line you add:
 
 ```toml
 [dependencies]
@@ -97,7 +97,7 @@ spel init \
 
 If you only want to check the integration and started from `cargo new`, delete the default `fn main` first. The `#[lez_program]` macro generates the program's entry point, and the leftover stub collides with it as a duplicate `main`.
 
-Add `#[admin_authority]` inside your `#[lez_program]` module:
+Add `#[admin_authority]` to your `#[lez_program]` module, directly below the `#[lez_program]` attribute:
 
 ```rust
 use spel_framework::prelude::*;
@@ -179,6 +179,7 @@ If your instruction already has parameters by different names, point the gate at
 Every lifecycle command below reads your program's IDL from a file. Generate it once from the program you just built:
 
 ```bash
+# From a `spel init` project root, drop the path entirely and the guest is auto-detected.
 spel generate-idl path/to/your/program/src/main.rs > program-idl.json
 ```
 
@@ -301,6 +302,7 @@ This writes `AccountId::default()` to the Config PDA. All future admin-gated ins
 After building your program, check that the admin instructions appear in the IDL:
 
 ```bash
+# From a `spel init` project root, drop the path entirely and the guest is auto-detected.
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 

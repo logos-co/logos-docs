@@ -45,7 +45,7 @@ The build and IDL verification steps on this page were verified on a clean Ubunt
 
 ## Add the dependency
 
-In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, see [Annotate the module](admin-authority.md#annotate-the-module) on the admin page for the scaffold layout:
+In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, see [Annotate the module](admin-authority.md#annotate-the-module) on the admin page for the scaffold layout. That manifest already carries a `[dependencies]` table with `spel-framework`, `nssa_core`, `serde` and `borsh` in it, so merge the entries below into that table rather than appending a second one, which cargo rejects with `error: duplicate key`. On that path `admin-authority` and `freeze-authority` are the only two lines you add:
 
 ```toml
 [dependencies]
@@ -324,6 +324,7 @@ The library repository ships `freeze-authority-sample-embedded` with the full la
 After building your program, check that the freeze instructions appear in the IDL:
 
 ```bash
+# From a `spel init` project root, drop the path entirely and the guest is auto-detected.
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 

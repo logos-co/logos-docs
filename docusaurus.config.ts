@@ -261,6 +261,7 @@ const config: Config = {
             {type: 'docSidebar', sidebarId: 'blockchainSidebar', label: 'Blockchain'},
             {type: 'docSidebar', sidebarId: 'lezSidebar', label: 'LEZ'},
             {type: 'docSidebar', sidebarId: 'coreSidebar', label: 'Core'},
+            {type: 'docSidebar', sidebarId: 'scaffoldSidebar', label: 'Scaffold'},
             {type: 'docSidebar', sidebarId: 'messagingSidebar', label: 'Messaging'},
             {type: 'docSidebar', sidebarId: 'storageSidebar', label: 'Storage'},
             {type: 'docSidebar', sidebarId: 'mixnetSidebar', label: 'Mixnet'},

@@ -45,7 +45,7 @@ The build and IDL verification steps on this page were verified on a clean Ubunt
 
 ## Add the dependency
 
-In your program's `Cargo.toml`:
+In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, see [Annotate the module](admin-authority.md#annotate-the-module) on the admin page for the scaffold layout:
 
 ```toml
 [dependencies]
@@ -223,7 +223,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. The `spel` CLI at the pinned revision has no multi-signature exchange flow: the single command above builds and submits with the caller's signature only, and the sequencer drops it unless the new holder's signature is attached. Collecting that second signature is not yet possible from `spel` itself, the exchange flow is in review ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)).
+A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. The `spel` CLI at the pinned revision has no multi-signature exchange flow: the single command above builds and submits with the caller's signature only, and the sequencer drops it unless the new holder's signature is attached. Collecting that second signature is not possible from the pinned `spel`. The exchange flow merged upstream after this revision ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)) and arrives here when the framework pin moves.
 
 ## Use a program (PDA) as freeze authority
 

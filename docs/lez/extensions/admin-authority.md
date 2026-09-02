@@ -47,7 +47,7 @@ Two different floors apply here, and neither comes from `admin-authority` itself
 
 ## Add the dependency
 
-In your program's `Cargo.toml`:
+In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`:
 
 ```toml
 [dependencies]
@@ -86,12 +86,13 @@ The version has to match the `logos-blockchain-circuits` version the pinned fram
 
 ## Annotate the module
 
-This page assumes you already have an LEZ program crate. A deployable one is a RISC Zero guest, and `spel init` scaffolds it at `methods/guest/src/bin/<name>.rs`, the same layout `spel generate-idl` auto-detects when given no path. Override both source flags, or the scaffold pins a framework without the extension scanner and the marker below is ignored silently:
+This page assumes you already have an LEZ program crate. A deployable one is a RISC Zero guest, and `spel init` scaffolds it at `methods/guest/src/bin/<name>.rs`, where `<name>` is the project name with hyphens replaced by underscores, so `spel init my-program` writes `my_program.rs`. That is the same layout `spel generate-idl` auto-detects when given no path. Pass both source flags ahead of the project name, the parser stops reading flags at the first argument that is not one, so anything after the name is dropped without a warning. With the default pins the scaffold takes `logos-co/spel` `main`, whose framework has no extension scanner and whose `lee_core` does not match the one `admin-authority` pins, and the guest then fails to compile with type errors out of the `#[lez_program]` expansion rather than anything naming the marker:
 
 ```bash
-spel init my-program \
+spel init \
     --spel-git https://github.com/mmlado/spel.git \
-    --spel-rev f7aa464b2c6c72ef513a25ede16584bca85b722f
+    --spel-rev f7aa464b2c6c72ef513a25ede16584bca85b722f \
+    my-program
 ```
 
 If you only want to check the integration and started from `cargo new`, delete the default `fn main` first. The `#[lez_program]` macro generates the program's entry point, and the leftover stub collides with it as a duplicate `main`.
@@ -217,7 +218,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message. The `spel` CLI at the pinned revision has no co-signing exchange: the command above builds and submits with the caller's signature only, and the sequencer drops the transaction unless the candidate's signature is attached. Collecting that second signature is not yet possible from `spel` itself, the exchange flow is in review ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)).
+A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message. The `spel` CLI at the pinned revision has no co-signing exchange: the command above builds and submits with the caller's signature only, and the sequencer drops the transaction unless the candidate's signature is attached. Collecting that second signature is not possible from the pinned `spel`. The exchange flow merged upstream after this revision ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)) and arrives here when the framework pin moves.
 
 After the transaction lands, the previous admin can no longer call gated instructions.
 

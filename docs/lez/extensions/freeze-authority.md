@@ -92,7 +92,7 @@ mod my_program {
 
 Your own account-creating instruction needs `#[freeze_exempt]` in dedicated mode, because `freeze_config` does not exist yet when it runs and the auto-wrap prologue would reject it as not initialised. In embedded mode the framework works this out for itself, the instruction that creates the embedding account is skipped by that gate automatically.
 
-The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports. `FreezeCandidate` is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it. The module body does not need `use super::*;`.
+The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports, and both must sit outside the module, where the example puts them. `FreezeCandidate` is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it at the file's outer scope, so an import inside the module fails with `cannot find type FreezeCandidate in this scope` pointed at `#[lez_program]` rather than at the import. The module body does not need `use super::*;`.
 
 ### Manual mode
 
@@ -328,7 +328,7 @@ After building your program, check that the freeze instructions appear in the ID
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 
-The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits every extension instruction from this output without reporting an error.
+The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits every extension instruction from this output without reporting an error. The check is also not a substitute for a build, `generate-idl` reads your source rather than compiling it, so run `cargo check` first.
 
 Expected output includes:
 

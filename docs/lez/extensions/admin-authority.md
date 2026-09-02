@@ -306,7 +306,7 @@ After building your program, check that the admin instructions appear in the IDL
 spel generate-idl path/to/your/program/src/main.rs | jq '.instructions[].name'
 ```
 
-The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits the admin instructions from this output without reporting an error, so the check appears to pass while the surface is missing. The install command in [Install the `spel` CLI](#install-the-spel-cli) pins the right revision.
+The `spel` binary must be built from the same framework revision your `Cargo.toml` pins. A CLI built without the extension scanner omits the admin instructions from this output without reporting an error, so the check appears to pass while the surface is missing. The install command in [Install the `spel` CLI](#install-the-spel-cli) pins the right revision. This check is also not a substitute for a build: `generate-idl` reads your source rather than compiling it, so it emits a complete IDL for a program that does not compile. Run `cargo check` first and treat the IDL as confirmation of the surface, not of the integration.
 
 Expected output includes:
 

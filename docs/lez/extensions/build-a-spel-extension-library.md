@@ -174,8 +174,9 @@ pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     };
 
-    // Prepend the runtime check. It references params by their conventional
-    // names; accept attribute args to let consumers override the names.
+    // Prepend the runtime check. This minimal form hardcodes the conventional
+    // parameter names; a shippable gate parses `_attr` for them instead, see
+    // the kwarg contract below.
     let prologue: syn::Stmt = parse_quote! {{
         let __state = ::my_extension::MyState::from_account(&my_state)?;
         __state.assert_allowed(&caller)?;
@@ -186,7 +187,7 @@ pub fn require_my_gate(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
-The `from_account` and `assert_allowed` helpers the prologue calls are yours to write on `MyState`, the framework provides neither. Re-export the gate from the runtime library next to the marker (`pub use my_extension_macros::require_my_gate;`) so consumers import everything from one crate.
+That snippet ignores its attribute args to keep the shape visible, which is enough only while every gated instruction happens to use the conventional names. Parsing them is not optional for a gate you ship, see the kwarg contract below. The `from_account` and `assert_allowed` helpers the prologue calls are yours to write on `MyState`, the framework provides neither. Re-export the gate from the runtime library next to the marker (`pub use my_extension_macros::require_my_gate;`) so consumers import everything from one crate.
 
 Never read or strip `#[account(...)]` attributes in a gate macro. That attribute belongs to the framework, which reads it for validation and the IDL. Your gate should only reference parameter names, taken from its own attribute args with sensible defaults.
 
@@ -355,7 +356,7 @@ Build a small sample program that consumes your extension. Then:
 spel generate-idl path/to/sample/src/main.rs
 ```
 
-The IDL should contain your extension's instructions alongside the consumer's own. The `spel` binary must itself be built from a scanner-carrying framework revision, a CLI without the scanner omits every extension instruction from this output without reporting an error.
+The IDL should contain your extension's instructions alongside the consumer's own. The `spel` binary must itself be built from a scanner-carrying framework revision, a CLI without the scanner omits every extension instruction from this output without reporting an error. The check is also not a substitute for a build, `generate-idl` reads the source rather than compiling it, so a sample that does not compile still produces a complete-looking IDL.
 
 On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. The fail-closed behaviour is a property of the framework revision, not of the mechanism: on a build without the scanner the marker is ignored and the program compiles without your extension. An author debugging a missing surface should check the framework pin before the metadata. When you hit the hard error, the most common causes are:
 

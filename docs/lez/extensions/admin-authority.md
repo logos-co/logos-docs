@@ -319,7 +319,7 @@ Expected output includes:
 Plus your own instructions. On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. That safety net is a property of the pinned framework revision: on a framework without the scanner, upstream `logos-co/spel` main today, the marker is ignored and the program builds cleanly without the trio. When you hit the hard error, the most common causes are:
 
 - `admin-authority` not declared as a direct path or git dependency in your `Cargo.toml`. Transitive dependencies are never discovered.
-- `#[admin_authority]` placed outside `#[lez_program]` rather than inside.
+- `#[admin_authority]` placed above `#[lez_program]` rather than below it.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
 
 ## Security notes

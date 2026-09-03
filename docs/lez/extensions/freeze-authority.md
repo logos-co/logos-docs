@@ -92,7 +92,7 @@ mod my_program {
 
 Your own account-creating instruction needs `#[freeze_exempt]` in dedicated mode, because `freeze_config` does not exist yet when it runs and the auto-wrap prologue would reject it as not initialised. In embedded mode the framework works this out for itself, the instruction that creates the embedding account is skipped by that gate automatically.
 
-The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports, and both must sit outside the module, where the example puts them. `FreezeCandidate` is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it at the file's outer scope, so an import inside the module fails with `cannot find type FreezeCandidate in this scope` pointed at `#[lez_program]` rather than at the import. The module body does not need `use super::*;`.
+The `#[admin_authority]` and `#[freeze_authority]` markers are not imported, the framework's scanner consumes them during expansion, importing those names only earns unused import warnings. `freeze_exempt` and `FreezeCandidate` are real imports, and `FreezeCandidate` is the one that must sit outside the module, where the example puts them. It is required even though your own code never names it, the generated `freeze_authority_transfer` instruction references it at the file's outer scope, so an import inside the module fails with `cannot find type FreezeCandidate in this scope` pointed at `#[lez_program]` rather than at the import. `freeze_exempt` resolves from either position, but dropping it altogether fails with `cannot find attribute freeze_exempt in this scope` on every exempt instruction. The module body does not need `use super::*;`.
 
 ### Manual mode
 
@@ -349,7 +349,7 @@ Plus your own instructions. In embedded mode neither `admin_initialize` nor `fre
 
 - `freeze-authority` not declared as a path or git dependency in your `Cargo.toml`.
 - `admin-authority` missing (freeze-authority hard-depends on it).
-- `#[freeze_authority]` placed outside `#[lez_program]` rather than inside.
+- `#[freeze_authority]` placed above `#[lez_program]` rather than below it.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
 
 ## Security notes

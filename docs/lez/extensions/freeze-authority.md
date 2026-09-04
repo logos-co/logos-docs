@@ -345,11 +345,11 @@ Expected output includes:
 "freeze_account_release"
 ```
 
-Plus your own instructions. In embedded mode neither `admin_initialize` nor `freeze_initialize` appears, and the config accounts in every instruction are your own embedding account instead of the dedicated PDAs. If the freeze instructions are missing, the most common causes are:
+Plus your own instructions. In embedded mode neither `admin_initialize` nor `freeze_initialize` appears, and the config accounts in every instruction are your own embedding account instead of the dedicated PDAs. On the pins above the surface cannot go missing quietly: a marker that matches no discoverable extension is a hard compile error naming the marker, and from `freeze-authority` v0.1.3 a marker written above `#[lez_program]` is rejected on sight rather than skipped. When you hit one of those errors, the most common causes are:
 
 - `freeze-authority` not declared as a path or git dependency in your `Cargo.toml`.
 - `admin-authority` missing (freeze-authority hard-depends on it).
-- `#[freeze_authority]` placed above `#[lez_program]` rather than below it.
+- `#[freeze_authority]` placed above `#[lez_program]` rather than below it. An imported marker names the misplacement, an unimported one fails with `cannot find attribute freeze_authority in this scope`.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
 
 ## Security notes

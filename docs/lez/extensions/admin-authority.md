@@ -78,7 +78,7 @@ This build also reaches the network beyond fetching crates: a transitive build s
 
 ```bash
 mkdir -p ~/.cache/logos/blockchain
-curl -L https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.5.3/logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz \
+curl -fL https://github.com/logos-blockchain/logos-blockchain-circuits/releases/download/v0.5.3/logos-blockchain-circuits-v0.5.3-linux-x86_64.tar.gz \
   | tar xz -C ~/.cache/logos/blockchain/
 ```
 

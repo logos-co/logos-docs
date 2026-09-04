@@ -219,6 +219,7 @@ tx
 ufw
 ui_qml
 unencrypted
+unimported
 unioned
 unlinkability
 unlinking

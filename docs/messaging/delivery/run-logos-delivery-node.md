@@ -97,7 +97,7 @@ Follow the instructions for your chosen path.
    ```
 
    :::note
-   Individual module package versions (e.g. delivery module version 0.2.1) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+   Individual module package versions (for example, delivery module version 0.2.1) are pinned independently and do not necessarily match the testnet version number (0.2.1).
    :::
 
 1. Write the testnet config:

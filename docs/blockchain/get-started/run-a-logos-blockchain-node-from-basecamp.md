@@ -57,7 +57,7 @@ By the end of this procedure:
    ![Install the Blockchain app](../assets/run-a-logos-blockchain-node-from-basecamp//blockchain-app-install.png)
 
    :::note
-   Individual module package versions (e.g. Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+   Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
    :::
 
 1. Once the modules are installed, press **Launch**.

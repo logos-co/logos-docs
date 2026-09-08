@@ -67,7 +67,7 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
     ```
 
     :::note
-    Individual module package versions (e.g. storage module version 2.1.2) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+    Individual module package versions (for example, storage module version 2.1.2) are pinned independently and do not necessarily match the testnet version number (0.2.1).
     :::
 
 1.  Load the Logos storage module and confirm that it loaded:

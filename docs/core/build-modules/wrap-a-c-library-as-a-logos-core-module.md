@@ -578,7 +578,7 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    ]
    ```
 
-## Step 6: Test with logosctl
+## Step 6: Test with `logosctl`
 
 1. Build the LGX package:
 
@@ -800,7 +800,7 @@ Ensure `libcalc.so` / `libcalc.dylib` is in the same directory as the plugin. Th
 
 Check that the event is declared in a `logos_events:` section and that the class inherits `LogosModuleContext`. Events only fire when the module is loaded by a host; constructed standalone (for example in unit tests), emission is a safe no-op. The subscriber must use the exact event name string, for example `logos.onModuleEvent("calc_module", "versionReady")`.
 
-### Plugin not discovered by logosctl
+### Plugin not discovered by `logosctl`
 
 Verify that the module is in a subdirectory of the modules dir (for example `modules/calc_module/`), that the subdirectory contains a `manifest.json` with a valid `main` object, and that the platform key in `main` matches your OS/arch (for example `linux-aarch64`, `darwin-arm64`).
 

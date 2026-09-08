@@ -68,7 +68,7 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     ```
 
     :::note
-    Individual module package versions (e.g. Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+    Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
     :::
 
 1.  Load the Logos Blockchain module:

@@ -33,6 +33,8 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 :::
 
 ## What to expect
@@ -41,63 +43,43 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 - You can verify that your node is syncing and connected to peers using the local API.
 - You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
-## Step 1: Install Logos core tools
+## Step 1: Load the Logos Blockchain module
 
-1.  Use the `install-node-tools.sh` helper script to install [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) into `./bin`:
+Download the Logos Blockchain [module](../../get-started/glossary.md#module) from the [catalogue](../../get-started/glossary.md#catalogue), then load it in `logosctl`.
 
-    ```bash
-    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-    export PATH="$PWD/bin:$PATH"
+1.  Start `logosctl`:
+
+    ```sh
+    logosctl daemon start
     ```
 
-    :::info
-    On Linux, `logoscore`, `lgpd`, and `lgpm` ship as AppImages, which require FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+1.  In a new terminal window with the same user, refresh the official module catalogue:
+
+    ```sh
+    logosctl catalog refresh
+    ```
+
+1.  Install the Logos Blockchain module package version 0.2.4. The root hash ensures you select the published package identity that exactly matches the pinned version:
+
+    ```sh
+    logosctl package install blockchain_module \
+    --version 0.2.4 \
+    --yes
+    ```
+
+    :::note
+    Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
     :::
-
-## Step 2: Load the Logos Blockchain module
-
-Download the Logos Blockchain [module](../../get-started/glossary.md#module) with `lgpd`, then install it with `lgpm` before loading it with `logoscore`.
-
-1.  Download the module. The root hash selects the exact published package identity for the pinned version:
-
-    ```bash
-    lgpd download blockchain_module --version 0.2.3 --output ./
-    # writes ./blockchain_module-0.2.3.lgx
-    ```
-
-1.  Install the module:
-
-    ```bash
-    lgpm --modules-dir ./modules install --file blockchain_module-0.2.3.lgx
-    ```
-
-1.  Launch `logoscore` in daemon mode:
-
-    ```bash
-    logoscore -m ./modules -D &
-    ```
-
-1.  Confirm the daemon RPC server is up. The daemon needs a few seconds to start, so repeat this command until the daemon reports `running`:
-
-    ```bash
-    logoscore status
-    ```
-
-    Example response once the daemon is ready:
-
-    ```json
-    {"daemon":{"pid":4720,"status":"running","version":"1.0.0"},"modules":[...]}
-    ```
 
 1.  Load the Logos Blockchain module:
 
     ```bash
-    logoscore load-module blockchain_module
+    logosctl module load blockchain_module
     ```
 
-    - A `load-module` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logoscore status` again and retry.
+    - A `module load` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
 
-## Step 3: Configure and start the node
+## Step 2: Configure and start the node
 
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
@@ -105,10 +87,10 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.3:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.4:
 
     ```sh
-    logoscore call blockchain_module generate_user_config '{
+    logosctl call blockchain_module generate_user_config '{
         "initial_peers": [
             "/ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar",
             "/ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz",
@@ -116,31 +98,47 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
             "/ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1"
         ]
     }'
+
+    chmod 600 user_config.yaml keystore.yaml
     ```
 
-    - To change the API port, set `api.backend.listen_address` in `user_config.yaml` before starting. The default is `8080`.
+    :::info
+    `user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
+    :::
+
+    - Important fields in `user_config.yaml` include:
+
+    | Field | Purpose | Guidance |
+    |-------|---------|----------|
+    | `network.initial_peers` | Bootstrap peers | Use the current network document |
+    | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+    | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080` |
+    | `state.base_folder` | State directory | Use a persistent local path |
+    | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
 1.  Start the node:
 
     ```sh
-    logoscore call blockchain_module start user_config.yaml ""
+    logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
     ```
+
+    - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
 
     :::info
     The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
     :::
 
-## Step 4: Verify that your node is running and connected to peers
+## Step 3: Verify that your node is running and connected to peers
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
-1.  Check the consensus state. The `logoscore` call and the node's HTTP endpoint return the same data in slightly different shapes.
+1.  Check the consensus state. The `logosctl` call and the node's HTTP endpoint return the same data in slightly different shapes.
 
     ```sh
-    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
+    logosctl call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
     ```
 
-    Example response (the `logoscore` call returns a flat object with a `mode` field):
+    Example response (the `logosctl` call returns a flat object with a `mode` field):
 
     ```json
     {
@@ -175,7 +173,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
     }
     ```
 
-    - The status field (`mode` from the `logoscore` call, `state` from the HTTP endpoint) starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
+    - The status field (`mode` from the `logosctl` call, `state` from the HTTP endpoint) starts as `Bootstrapping` while syncing and transitions to `Online` once caught up.
     - Confirm `slot` and `height` are increasing. `height` counts confirmed blocks; `slot` counts elapsed time intervals, with a new block expected roughly every 10 seconds.
 
 1.  Check peer connectivity:
@@ -205,7 +203,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
-## Step 5: Request tokens from the faucet
+## Step 4: Request tokens from the faucet
 
 A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
 
@@ -263,7 +261,7 @@ Block proposal is probabilistic. Your node will not propose on every [slot](../.
 
 ## Troubleshooting the Logos Blockchain node
 
-### `logoscore call` fails with `RPC call failed`?
+### `logosctl call` fails with `RPC call failed`?
 
 An error such as:
 
@@ -271,11 +269,13 @@ An error such as:
 {"code":"RPC_FAILED","message":"callModuleMethod('blockchain_module','generate_user_config') RPC call failed.","status":"error"}
 ```
 
-means the `logoscore` daemon isn't reachable, or the module isn't loaded. Run `logoscore status` to tell the cases apart: it reports the daemon state, `running` or `not_running`, and the status of each module, `loaded`, `not_loaded`, or `crashed`. Restart the daemon if needed, then load the module:
+means the `logosctl` daemon isn't reachable, or the module isn't loaded. Run `logosctl daemon status` to tell the cases apart: it reports the daemon state, `running` or `not_running`, and the status of each module, `loaded`, `not_loaded`, or `crashed`. Restart the daemon if needed, then load the module:
 
-```sh
-logoscore -m ./modules -D &
-logoscore load-module blockchain_module
+```bash
+logosctl daemon start --detach
+logosctl module load blockchain_module
+
+logosctl daemon status
 ```
 
 If the module shows `not_loaded` again after a successful `load-module`, or calls keep failing, check the daemon output for a module crash:

@@ -22,7 +22,7 @@ sidebar_position: 3
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure stands up a small local [Mix](../concepts/mix.md) network using `logoscore`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
+This procedure stands up a small local [Mix](../concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
 
 :::info[Prerequisites]
 
@@ -31,60 +31,37 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- The Logos tool suite:
-    - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) (the Logos runtime);
-    - [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1) (the Logos package downloader);
-    - [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) (the Logos package manager).
-
-  You can obtain them by running:
-
-    ```bash
-    # Export those first or the script will fetch the latest version, which might not
-    # work with this tutorial
-    export LGPM_TAG=0.2.1
-    export LGPD_TAG=0.2.1
-    export LOGOSCORE_TAG=0.2.2
-
-    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-    export PATH="$PWD/bin:$PATH"
-    ```
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 :::
 
 
 ## What to expect
 
-- You can run several `logoscore` daemons side by side with separate `--config-dir`s.
+- You can run several `logosctl` daemons side by side, each in its own session (`--config-dir`).
 - You can set up a private Mix network and configure storage nodes to anonymise their lookups through it.
 - You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
 
 ## Download and install the storage module
 
-1.  Download the storage module:
+All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's daemon is then pointed at that directory with `--modules-dir`, so there's no need to repeat the install per node.
+
+1.  Start a throwaway session and install the storage module package into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
 
     ```sh
-    mkdir -p storage-lgx
-    lgpd download storage_module --version 2.1.2 -o storage-lgx
+    logosctl daemon start --detach --config-dir ./install-session
+    logosctl --config-dir ./install-session catalog refresh
+    logosctl --config-dir ./install-session package install storage_module --version 2.1.2 --yes
     ```
 
-    This should download an `lgx` file in the `storage-lgx` folder.
-
-1.  Install the package using `lgpm`.
+1.  Confirm the module landed, then stop this session—its only job was the install:
 
     ```sh
-    mkdir -p modules
-    lgpm --modules-dir ./modules install --file storage-lgx/*.lgx
+    logosctl --config-dir ./install-session package ls
+    logosctl --config-dir ./install-session daemon stop
     ```
 
-1.  Confirm the module landed:
-
-    ```sh
-    lgpm --modules-dir ./modules list
-    Found 1 installed module(s):
-
-    NAME                           VERSION         TYPE       CATEGORY
-    ----------------------------------------------------------------------
-    storage_module                 (v)           core       protocol
-    ```
+    The package is now unpacked under `./install-session/modules/storage_module/`.
 
 ## Launch the bootstrap Mix node (node 1)
 
@@ -108,26 +85,25 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     EOF
     ```
 
-1.  Start a `logoscore` daemon for node 1 in the background, with its own config directory and its output captured:
+1.  Start a `logosctl` daemon for node 1, detached, with its own session and pointed at the shared module directory. Its logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
 
     ```sh
-    logoscore --config-dir=./logoscore-1 -D -m ./modules > logs-1.txt 2>&1 &
-    # Wait a few seconds for the daemon to come up
+    logosctl daemon start --detach --config-dir ./logosctl-1 --modules-dir ./install-session/modules
     ```
 
 1.  Load the module, initialise it, and start the node:
 
     ```sh
-    logoscore --config-dir=./logoscore-1 load-module storage_module
-    logoscore --config-dir=./logoscore-1 call storage_module init @config-1.json
-    logoscore --config-dir=./logoscore-1 call storage_module start
+    logosctl --config-dir ./logosctl-1 module load storage_module
+    logosctl --config-dir ./logosctl-1 call storage_module init @config-1.json
+    logosctl --config-dir ./logosctl-1 call storage_module start
     # Wait a few seconds for the node to start
     ```
 
 1.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](../concepts/connectivity.md)):
 
     ```sh
-    logoscore --config-dir=./logoscore-1 call storage_module debug \
+    logosctl --config-dir ./logosctl-1 call storage_module debug \
       | jq -er '.result.value.spr' > bootstrap-spr.txt
     ```
 
@@ -156,22 +132,21 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     done
     ```
 
-1.  Start one daemon per node, each with its own `--config-dir`:
+1.  Start one daemon per node, each detached with its own session, pointed at the shared module directory:
 
     ```sh
     for id in 2 3 4; do
-      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt 2>&1 &
+      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
     done
-    # Wait a few seconds for the daemons to come up
     ```
 
 1.  Load the module, initialise from each config, and start each node:
 
     ```sh
     for id in 2 3 4; do
-      logoscore --config-dir=./logoscore-$id load-module storage_module
-      logoscore --config-dir=./logoscore-$id call storage_module init @config-$id.json
-      logoscore --config-dir=./logoscore-$id call storage_module start
+      logosctl --config-dir ./logosctl-$id module load storage_module
+      logosctl --config-dir ./logosctl-$id call storage_module init @config-$id.json
+      logosctl --config-dir ./logosctl-$id call storage_module start
     done
     # Wait a few seconds for the nodes to start
     ```
@@ -180,7 +155,7 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
 
     ```sh
     for id in 1 2 3 4; do
-      started_up=$(logoscore --config-dir=./logoscore-$id call storage_module debug \
+      started_up=$(logosctl --config-dir ./logosctl-$id call storage_module debug \
         | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""')
       if [ "$started_up" = "true" ]; then
         echo "Node $id is up"
@@ -204,7 +179,7 @@ Since this is a local network, every relay is reachable at `127.0.0.1` on its fi
 
     ```sh
     for id in 1 2 3 4; do
-      logoscore --config-dir=./logoscore-$id call storage_module debug > debug-$id.json
+      logosctl --config-dir ./logosctl-$id call storage_module debug > debug-$id.json
     done
     ```
 
@@ -256,22 +231,21 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     done
     ```
 
-1.  Start one daemon per storage node:
+1.  Start one daemon per storage node, each detached with its own session, pointed at the shared module directory:
 
     ```sh
     for id in 5 6; do
-      logoscore --config-dir=./logoscore-$id -D -m ./modules > logs-$id.txt 2>&1 &
+      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
     done
-    # Wait a few seconds for the daemons to come up
     ```
 
 1.  Load the module, initialise from each config, and start each node:
 
     ```sh
     for id in 5 6; do
-      logoscore --config-dir=./logoscore-$id load-module storage_module
-      logoscore --config-dir=./logoscore-$id call storage_module init @config-$id.json
-      logoscore --config-dir=./logoscore-$id call storage_module start
+      logosctl --config-dir ./logosctl-$id module load storage_module
+      logosctl --config-dir ./logosctl-$id call storage_module init @config-$id.json
+      logosctl --config-dir ./logosctl-$id call storage_module start
     done
     # Wait a few seconds for the nodes to start
     ```
@@ -280,7 +254,7 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
 
     ```sh
     for id in 5 6; do
-      logoscore --config-dir=./logoscore-$id call storage_module debug \
+      logosctl --config-dir ./logosctl-$id call storage_module debug \
         | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""'
     done
     ```
@@ -293,27 +267,27 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 
     ```sh
     echo "Hello through Mix from the storage doc-test." > hello.txt
-    logoscore --config-dir=./logoscore-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
+    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
     ```
 
 1.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
 
     ```sh
-    logoscore --config-dir=./logoscore-5 call storage_module manifests \
+    logosctl --config-dir ./logosctl-5 call storage_module manifests \
       | jq -er '.result.value[0].cid' > cid.txt
     ```
 
 1.  Download the CID through node 6:
 
     ```sh
-    logoscore --config-dir=./logoscore-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536
+    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536
     # Wait a few seconds for the download to complete
     ```
 
 1.  Confirm the lookup was tunnelled through Mix: node 6's log records the relay selection (SURB):
 
     ```sh
-    grep "Selected mix node for surbs" storage-data/node-6/storage.log logs-6.txt
+    grep "Selected mix node for surbs" storage-data/node-6/storage.log logosctl-6/logs/daemon.log
     ```
 
 1.  Verify the round-trip: the downloaded file matches what node 5 uploaded:
@@ -329,15 +303,15 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 
     ```sh
     for id in 1 2 3 4 5 6; do
-      logoscore --config-dir=./logoscore-$id call storage_module stop || true
-      logoscore --config-dir=./logoscore-$id call storage_module destroy || true
-      logoscore --config-dir=./logoscore-$id stop || true
+      logosctl --config-dir ./logosctl-$id call storage_module stop || true
+      logosctl --config-dir ./logosctl-$id call storage_module destroy || true
+      logosctl --config-dir ./logosctl-$id daemon stop || true
     done
     ```
 
 1.  Confirm the daemons have stopped:
 
     ```sh
-    ps aux | grep logoscore | grep -v 'grep' | wc -l
+    ps aux | grep logosctl | grep -v 'grep' | wc -l
     # Should print "0"
     ```

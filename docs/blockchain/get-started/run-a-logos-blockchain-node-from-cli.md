@@ -33,6 +33,8 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 :::
 
 ## What to expect
@@ -41,50 +43,17 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 - You can verify that your node is syncing and connected to peers using the local API.
 - You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
 
-## Step 1: Install `logosctl`
-
-1.  Download and extract the [`logosctl` release version 0.2.3-rc.1](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1), replacing `<ARCHITECTURE>` with one of `aarch64-macos`, `aarch64-linux`, or `x86_64-linux` to match your machine:
-
-    ```bash
-    curl -fL \
-    -o logosctl-<ARCHITECTURE>.tar.gz \
-    https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3-rc.1/logosctl-<ARCHITECTURE>.tar.gz
-
-    tar -xvf logosctl-<ARCHITECTURE>.tar.gz
-    ```
-
-    :::info
-    On Linux, `logosctl` ships as an AppImage, which requires FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
-    :::
-
-1.  Install `logosctl` (on Linux) and add it to your PATH:
-
-    ```bash
-    # For Linux:
-    install -m755 logosctl-<ARCHITECTURE>.AppImage /usr/local/bin/logosctl
-
-    # For macOS:
-    # move the whole folder somewhere permanent (keep its contents together —
-    # the binary finds its libraries via ../lib) and put its bin/ on your PATH: 
-    mv logosctl-aarch64-macos ~/.local/logosctl
-    echo 'export PATH="$HOME/.local/logosctl/bin:$PATH"' >> ~/.zshrc
-    source ~/.zshrc
-    ```
-
-## Step 2: Load the Logos Blockchain module
+## Step 1: Load the Logos Blockchain module
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) from the [catalogue](../../get-started/glossary.md#catalogue), then load it in `logosctl`.
 
-1.  Start `logosctl` in detached mode so its bundled package-management modules are available:
+1.  Start `logosctl`:
 
     ```sh
-    logosctl daemon start --detach
-    logosctl daemon status
+    logosctl daemon start
     ```
-    
-    - The detached command returns after the Logos node is ready to accept commands.
 
-1.  Refresh the official module catalogue:
+1.  In a new terminal window with the same user, refresh the official module catalogue:
 
     ```sh
     logosctl catalog refresh
@@ -108,9 +77,9 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl module load blockchain_module
     ```
 
-    - A `load-module` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
+    - A `module load` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
 
-## Step 3: Configure and start the node
+## Step 2: Configure and start the node
 
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
@@ -159,7 +128,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
     :::
 
-## Step 4: Verify that your node is running and connected to peers
+## Step 3: Verify that your node is running and connected to peers
 
 Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
@@ -234,7 +203,7 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
-## Step 5: Request tokens from the faucet
+## Step 4: Request tokens from the faucet
 
 A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
 

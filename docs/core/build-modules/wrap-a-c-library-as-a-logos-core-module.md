@@ -19,7 +19,7 @@ sidebar_position: 3
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class—no Qt, no plugin boilerplate—and the build system generates the Qt plugin around it.
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logosctl`. You write one plain C++ class—no Qt, no plugin boilerplate—and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -31,6 +31,8 @@ For an example used in production, refer to [logos-lib2p2-module](https://github
 - RAM: 4 GB minimum, 8 GB recommended.
 - Disk: ~2 GB free for the application + installed modules.
 - **A C compiler** (gcc or clang) for building the C library. Only needed if you are building the `.so`/`.dylib` yourself rather than using a pre-built library.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 - **Nix** with flakes enabled.
     - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -44,7 +46,7 @@ For an example used in production, refer to [logos-lib2p2-module](https://github
 ## What to expect
 
 - You will write a `calc_module` that exposes arithmetic functions to Logos using the pure C++ (`interface: universal`) pattern.
-- You will build, inspect, and call the module with `lm` and `logoscore`, seeing your `int64_t` methods appear as Qt-typed signals.
+- You will build, inspect, and call the module with `lm` and `logosctl`, seeing your `int64_t` methods appear as Qt-typed signals.
 - You will unit-test the module directly against a link-time mock of the C library.
 
 ## Step 1: Scaffold the module project
@@ -334,7 +336,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
     When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
     :::
 
-1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logoscore`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
+1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logosctl`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
 
    ```cpp
    #pragma once
@@ -576,23 +578,24 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    ]
    ```
 
-## Step 6: Test with logoscore
+## Step 6: Test with logosctl
 
-1. Build [logoscore](../../get-started/glossary.md#logoscore):
-
-   ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/0.2.0' --out-link ./logos
-   ```
-
-1. Set up the modules directory. `logoscore` expects modules in subdirectories, each with a `manifest.json`. Use the Nix derivation to create an LGX package and install it with the package manager:
+1. Build the LGX package:
 
    ```bash
    nix build '.#lgx'
-   nix build 'github:logos-co/logos-package-manager/0.2.0#cli' --out-link ./pm
-   
-   mkdir -p modules
-   
-   ./pm/bin/lgpm --modules-dir ./modules install --file result/*.lgx
+   ```
+
+1. Start the daemon, detached so this terminal stays free:
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+1. Install the LGX package. `logosctl` expects modules in subdirectories, each with a `manifest.json`; `package install` handles that layout automatically, unpacking into the current session's `modules/` directory.
+
+   ```bash
+   logosctl package install --file result/*.lgx
    ```
 
    This extracts the plugin, external libraries, and manifest into the correct directory structure:
@@ -605,20 +608,17 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    └── variant                    # Platform variant identifier
    ```
 
-1. Start the daemon and call methods:
+1. Load the module and call its methods:
 
    ```bash
-   ./logos/bin/logoscore -D -m ./modules &
-   sleep 3
+   logosctl module load calc_module
 
-   ./logos/bin/logoscore load-module calc_module
-   
-   ./logos/bin/logoscore call calc_module add 3 5
-   ./logos/bin/logoscore call calc_module factorial 5
-   ./logos/bin/logoscore call calc_module fibonacci 10
-   ./logos/bin/logoscore call calc_module libVersion
+   logosctl call calc_module add 3 5
+   logosctl call calc_module factorial 5
+   logosctl call calc_module fibonacci 10
+   logosctl call calc_module libVersion
 
-   ./logos/bin/logoscore stop
+   logosctl daemon stop
    ```
 
 ## Step 7: Unit-test the module
@@ -800,7 +800,7 @@ Ensure `libcalc.so` / `libcalc.dylib` is in the same directory as the plugin. Th
 
 Check that the event is declared in a `logos_events:` section and that the class inherits `LogosModuleContext`. Events only fire when the module is loaded by a host; constructed standalone (for example in unit tests), emission is a safe no-op. The subscriber must use the exact event name string, for example `logos.onModuleEvent("calc_module", "versionReady")`.
 
-### Plugin not discovered by logoscore
+### Plugin not discovered by logosctl
 
 Verify that the module is in a subdirectory of the modules dir (for example `modules/calc_module/`), that the subdirectory contains a `manifest.json` with a valid `main` object, and that the platform key in `main` matches your OS/arch (for example `linux-aarch64`, `darwin-arm64`).
 

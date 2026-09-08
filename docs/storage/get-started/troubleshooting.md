@@ -24,7 +24,7 @@ This document is accurate for **Testnet v0.2.1**.
 
 Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
-## `logoscore` or `lgpm` fails with a FUSE error
+## `logosctl` fails with a FUSE error
 
 **Symptom**: running a tool installed from the releases fails with `No suitable fusermount binary found on the $PATH` and `Cannot mount AppImage, please check your FUSE setup`.
 
@@ -33,7 +33,7 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 **Fix**: install FUSE (`sudo dnf install fuse` on Fedora, `sudo apt install libfuse2` on Ubuntu). Without root, extract the AppImage instead and run the extracted binary:
 
 ```sh
-./bin/lgpm --appimage-extract
+./logosctl --appimage-extract
 ./squashfs-root/AppRun --help
 ```
 

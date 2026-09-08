@@ -52,9 +52,13 @@ By the end of this procedure:
    ![Blockchain node application](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-app.png)
 
 
-1. Make sure that `Blockchain` (the UI module) is set to `v0.2.1` and `Blockchain Module` (the core module) is set to `v0.2.3`, then click **Install**.
+1. Make sure that `Blockchain` (the UI module) is set to `v0.2.1` and `Blockchain Module` (the core module) is set to `v0.2.4`, then click **Install**.
 
    ![Install the Blockchain app](../assets/run-a-logos-blockchain-node-from-basecamp//blockchain-app-install.png)
+
+   :::note
+   Individual module package versions (e.g. Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+   :::
 
 1. Once the modules are installed, press **Launch**.
 
@@ -70,7 +74,7 @@ In the Blockchain app, add a node configuration.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 
-1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.2:
+1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.4:
 
    ```text
    /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
@@ -152,7 +156,7 @@ The node runs only while Basecamp is open, and it does not resume automatically 
 This is a UI-side issue, not a node fault—the core is healthy but the UI cannot render the call. Recover least-destructively first:
 
 1. **Fully quit Basecamp and relaunch** (Quit, not just close the window), then reopen the node. This clears most cases with no data loss.
-2. **Check that the module versions match**: `Blockchain Module` should be `0.2.3` and `Blockchain` should be `0.2.1`. A version mismatch is a common cause.
+2. **Check that the module versions match**: `Blockchain Module` should be `0.2.4` and `Blockchain` should be `0.2.1`. A version mismatch is a common cause.
 3. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder—that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
 
 If the consensus info on the **Node** page shows an advancing height, the node is syncing and a restart is enough—do not wipe a working node.

@@ -19,16 +19,17 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) with `logoscore` hosting the `blockchain_module`, `storage_module`, and `delivery_module` from one shared modules directory. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
+This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
+
+:::note
+Individual module package versions are pinned independently and do not necessarily match the testnet version number.
+:::
 
 The default paths used throughout this procedure are:
 
 ```text
-/usr/local/bin/logoscore
-/usr/local/bin/lgpd
-/usr/local/bin/lgpm
-/opt/logos-node/modules
-/opt/logos-node/packages
+/usr/local/bin/logosctl
+/var/lib/logos-node/.logosctl
 /var/lib/logos-node
 ```
 
@@ -39,7 +40,7 @@ The default paths used throughout this procedure are:
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
-- CPU: 2 Cores, 2Ghz. Modern multi-core processor.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. Must have ADX instruction support (on x86_64), such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
 - Memory (RAM): Minimal (1 Gb).
 - Storage: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
@@ -53,86 +54,71 @@ To run a Blend node, make sure you have:
 
 - You can run a full Logos node with all three modules active and publicly reachable on the testnet.
 - You can verify each [module](../../get-started/glossary.md#module) is healthy by querying the daemon and checking live port bindings.
-- You can configure the node for unattended operation using the systemd service pattern described in [here](#optional-run-the-node-unattended-with-systemd).
+- You can configure the node for unattended operation using the systemd service pattern described [here](#optional-run-the-node-unattended-with-systemd).
 
-## Step 1: Install runtime tools
+## Step 1: Install `logosctl`
 
 Install the system dependencies and download the three Logos CLI tools.
 
-:::info
-You can also install these tools by running:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
-:::
-
-1. Install `curl`, `jq`, `wget`, and FUSE support for AppImage binaries:
+1. Install `curl`, `jq`, `tar`, and FUSE support for AppImage binaries:
 
    ```sh
    apt-get update
-   apt-get install -y curl jq wget fuse3
+   apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the Linux release assets for `logoscore`, `lgpd`, and `lgpm`:
-
-   | Tool | Repository |
-   |------|------------|
-   | `logoscore` | `https://github.com/logos-co/logos-logoscore-cli` |
-   | `lgpd` | `https://github.com/logos-co/logos-package-downloader` |
-   | `lgpm` | `https://github.com/logos-co/logos-package-manager` |
-
-   For x86_64 Linux, download the pinned testnet tool versions:
+1. Download the release archive for `logosctl` version 0.2.3-rc.1. For x86_64 Linux, download:
 
    ```sh
-   wget https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.2/logoscore-x86_64-linux.tar.gz
-   wget https://github.com/logos-co/logos-package-downloader/releases/download/0.2.1/lgpd-x86_64-linux.tar.gz
-   wget https://github.com/logos-co/logos-package-manager/releases/download/0.2.1/lgpm-x86_64-linux.tar.gz
+   curl -fL \
+   -o logosctl-x86_64-linux.tar.gz \
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3-rc.1/logosctl-x86_64-linux.tar.gz
    ```
 
-1. Verify the runtime-tool archives against the SHA-256 digests recorded for the pinned GitHub release assets:
+   Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   6f216f4b807520194dd0e4d1a3d69bd2bc83f38781a5e7b2c1abf66e40143b33  logoscore-x86_64-linux.tar.gz
-   2581f5bb6618623b9eb27b8bba37d39647b33c56d2f5bf15b41d0da286d45aee  lgpd-x86_64-linux.tar.gz
-   41c897a6da6db0ecabe03c0098b9bd0652ea8cd2eaf091e2d646a65b71260780  lgpm-x86_64-linux.tar.gz
+   baa6e24522833c6b6e33146a9d44f7428660e465158be2d723575f62409ad851  logosctl-x86_64-linux.tar.gz
+   EOF
+   
+   tar -xzf logosctl-x86_64-linux.tar.gz
+   ```
+
+1. Verify the extracted AppImage:
+
+   ```sh
+   sha256sum --check <<'EOF'
+   3ee96869d6a873cddd19c05eaa86d258e156a69635b10811b77cda149899dd1e logosctl-x86_64.AppImage
    EOF
    ```
 
-1. Install the tools under `/usr/local/bin`:
+1. Install the tool under `/usr/local/bin` as `logosctl`:
 
    ```sh
-   tar -xzf logoscore-x86_64-linux.tar.gz
-   install -m755 logoscore-x86_64.AppImage /usr/local/bin/logoscore
-   tar -xzf lgpd-x86_64-linux.tar.gz
-   install -m755 lgpd-x86_64.AppImage /usr/local/bin/lgpd
-   tar -xzf lgpm-x86_64-linux.tar.gz
-   install -m755 lgpm-x86_64.AppImage /usr/local/bin/lgpm
+   install -m755 logosctl-x86_64.AppImage /usr/local/bin/logosctl
    ```
 
 1. Verify all three tools are accessible:
 
    ```sh
-   logoscore --version
-   lgpd --version
-   lgpm --version
+   logosctl --version
    ```
 
 ## Step 2: Prepare the host
 
-Create the runtime user and the directory layout the node uses at runtime.
+Create a new user that will run the Logos node, as well as the `logosctl` session directory and module data directories.
 
 1. Create the `logos` system user and data directories:
 
    ```sh
    useradd --system --home /var/lib/logos-node --create-home --shell /usr/sbin/nologin logos
-   mkdir -p /opt/logos-node/modules /opt/logos-node/packages
+   mkdir -p /var/lib/logos-node/.logosctl
    mkdir -p /var/lib/logos-node/blockchain-module-testnet
    mkdir -p /var/lib/logos-node/storage-module
    mkdir -p /var/lib/logos-node/delivery-module
    chown -R logos:logos /var/lib/logos-node
+   chmod 700 /var/lib/logos-node/.logosctl
    ```
 
 1. Open these on the host firewall:
@@ -149,73 +135,120 @@ Create the runtime user and the directory layout the node uses at runtime.
 
 Download and install the three module packages from the configured module [catalogue](../../get-started/glossary.md#catalogue).
 
-:::info
-`lgpd download` fetches the version published in the catalogue. It does not automatically pull the newest commit from module repositories. Ensure the intended versions are published in the catalogue before running these commands.
-:::
-
-1. Download the module packages. The root hash selects the exact published package identity for the pinned version:
-
-   ```sh
-   lgpd download blockchain_module --version 0.2.3 --output /opt/logos-node/packages
-   lgpd download storage_module --version 2.1.2 --root-hash c9ad6299dd62be478dc89a589cb88ab5876bee11812ed3bcaf97ecadcac0b34e --output /opt/logos-node/packages
-   lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output /opt/logos-node/packages
-   ```
-
-1. Install all three packages into the shared modules directory:
-
-   ```sh
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/blockchain_module-0.2.3.lgx
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/storage_module-2.1.0.lgx
-   lgpm --modules-dir /opt/logos-node/modules install --file /opt/logos-node/packages/delivery_module-0.2.0.lgx
-   ```
-
-1. Verify the installed versions:
-
-   ```sh
-   jq -r '.name + " " + .version' /opt/logos-node/modules/*/manifest.json
-   ```
-
-   - The output must include:
-   
-   ```text
-   blockchain_module 0.2.3
-   delivery_module 0.2.0
-   storage_module 2.1.0
-   ```
-
-## Step 4: Start Logos Core
-
-Start the `logoscore` daemon with the shared modules directory before loading any modules.
-
-1. As root, open a shell as the `logos` runtime user:
+1. As root, open a shell as the `logos` user. Setting `HOME` selects the default `/var/lib/logos-node/.logosctl` session:
 
    ```sh
    runuser -u logos -- env HOME=/var/lib/logos-node bash
    ```
 
-   - Run the daemon, module configuration, module calls, and health checks from this shell. This keeps the daemon and CLI client on the same `/var/lib/logos-node/.logoscore` state and ensures generated files belong to `logos`.
+1. Initialise the session with the default daemon configuration:
 
-1. Start `logoscore` in the foreground for a first manual run:
+   ```sh
+   printf '{}\n' | logosctl daemon config set -
+   ```
+
+1. Temporarily start the Logos node in detached mode so its bundled package-management modules are available:
+
+   ```sh
+   logosctl daemon start --detach
+   logosctl daemon status
+   ```
+
+   - The detached command returns after the Logos node is ready to accept commands.
+
+1. Refresh the official module catalogue:
+
+   ```sh
+   logosctl catalog refresh
+   ```
+
+1. Install the pinned module packages. The root hashes ensure you select the published package identity that exactly matches the pinned version:
+
+   ```sh
+   logosctl package install blockchain_module \
+   --version 0.2.4 \
+   --root-hash 2e57268c4ec1fdcf07e4b6bf1b33b5ac99705c071f879e6ca1c41b4e543cc674 \
+   --yes
+   logosctl package install storage_module \
+   --version 2.1.2 \
+   --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 \
+   --yes
+   logosctl package install delivery_module \
+   --version 0.2.1 \
+   --root-hash 0bccd85b4702c01a2c227df8aa55b3f5159a9fe009d57ae8bb8b3a7c20dfcbbe \
+   --yes
+   ```
+
+   :::note
+   Installing a package does not load it into the running Logos node. Packages must be loaded separately.
+   :::
+
+1. Check the installed core packages:
+
+   ```sh
+   logosctl package ls --type core
+   ```
+
+   - The output must list:
+
+   ```text
+   blockchain_module 0.2.4
+   delivery_module 0.2.1
+   storage_module 2.1.2
+   ```
+
+1. Stop the Logos node after installation:
+
+   ```sh
+   logosctl daemon stop
+   ```
+
+   - In the next section, you will restart the node for normal operation.
+
+## Step 4: Start the Logos node
+
+Start the `logosctl` daemon before loading any modules. Make sure to run the node controls, module configuration, module calls, and health checks from the `logos` user shell created in the previous section. This keeps the Logos node and `logosctl` client on the same `/var/lib/logos-node/.logosctl` session and ensures generated files belong to `logos`.
+
+:::tip
+If the window was closed, reopen it with:
+
+```sh
+runuser -u logos -- env HOME=/var/lib/logos-node bash
+```
+:::
+
+1. Set the Logos node working directory:
 
    ```sh
    cd /var/lib/logos-node
-   logoscore -D -m /opt/logos-node/modules
    ```
 
-   - Keep this terminal open. Use a second terminal for all module commands.
+1. For a manual foreground run, start the Logos node with:
+
+   ```sh
+   logosctl daemon start
+   ```
+
+- Keep this terminal open. Use another `logos` user shell for all module commands.
+
+   :::tip
+   For unattended operation, use a [systemd service](#optional-run-the-node-unattended-with-systemd) rather than a manually started daemon.
+   :::
 
 1. Verify the daemon is running:
 
    ```sh
-   logoscore status
+   logosctl daemon status
    ```
 
 ## Step 5: Configure and start the blockchain module
 
 Load the blockchain module, generate the node config, and start the module.
 
-:::info
-`user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
+:::warning
+The blockchain module `0.2.4` release starts a new blockchain with a new genesis. Despite this, the Logos node testnet release remains `v0.2.1`, and other module versions are unchanged.
+
+Blockchain nodes must start with an empty blockchain state directory. Existing `0.2.3` blockchain configuration and wallet keys can be retained, but balances and Blend declarations from the previous blockchain do not carry over.
 :::
 
 1. Create the peer bootstrap file:
@@ -237,13 +270,17 @@ Load the blockchain module, generate the node config, and start the module.
 1. Load the module and generate `user_config.yaml`:
 
    ```sh
-   logoscore load-module blockchain_module
+   logosctl module load blockchain_module
    cd /var/lib/logos-node/blockchain-module-testnet
-   logoscore call blockchain_module generate_user_config "$(cat peers.json)"
+   logosctl call blockchain_module generate_user_config @peers.json
    chmod 600 /var/lib/logos-node/user_config.yaml /var/lib/logos-node/keystore.yaml
    ```
 
-   - `generate_user_config` writes `user_config.yaml` to the `logoscore` daemon working directory (`/var/lib/logos-node/user_config.yaml` with this guide's layout).
+   :::info
+   `user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
+   :::
+
+   - `generate_user_config` writes `user_config.yaml` to the Logos node's working directory (`/var/lib/logos-node/user_config.yaml` with this guide's layout).
    - Important fields in `user_config.yaml` include:
 
    | Field | Purpose | Guidance |
@@ -257,7 +294,7 @@ Load the blockchain module, generate the node config, and start the module.
 1. Start the blockchain module:
 
    ```sh
-   logoscore call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+   logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
    ```
 
    - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
@@ -265,24 +302,24 @@ Load the blockchain module, generate the node config, and start the module.
 1. Verify the module is running:
 
    ```sh
-   logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
+   logosctl call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
    ```
 
-   - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and be in the `Online` state.
+   - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
 1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
 
-    ```sh
-    grep -A3 known_keys user_config.yaml
-    ```
+   ```sh
+   grep -A6 known_keys user_config.yaml
+   ```
 
-1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
+1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
 
-1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
 
-    ```sh
-    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
-    ```
+   ```sh
+   curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
+   ```
 
 ### Optional: Join the Blend Network
 
@@ -304,10 +341,10 @@ The public keys and [note](../../get-started/glossary.md#note) IDs below are exa
       ...
    ```
 
-1. Wait until both keys have received funds. Check each balance with wallet_get_notes. You may need to repeat the faucet requests since only one drip is allowed per block:
+1. Wait until both keys have received funds. Check each balance with `wallet_get_notes`:
 
    ```bash
-   logoscore call blockchain_module wallet_get_notes <ADDRESS> "" | jq -r .result.value | jq .notes
+   logosctl call blockchain_module wallet_get_notes <ADDRESS> "" | jq -r .result.value | jq .notes
    ```
 
 1. Join the Blend Network by locking one of the notes held by your `BlendZk` key.
@@ -317,7 +354,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 :::
 
    ```sh
-   logoscore call blockchain_module blend_join_as_core_node \
+   logosctl call blockchain_module blend_join_as_core_node \
       "/ip4/<YOUR_IP>/udp/<YOUR_BLEND_PORT>/quic-v1" \
       "<BLEND_ZK_NOTE_ID>"
    ```
@@ -440,16 +477,16 @@ Create the storage config and start the module.
 
    ```sh
    cd /var/lib/logos-node/storage-module
-   logoscore load-module storage_module
-   logoscore call storage_module init @config.json
-   logoscore call storage_module start
+   logosctl module load storage_module
+   logosctl call storage_module init @config.json
+   logosctl call storage_module start
    ```
 
    _If using the mix config_, also enable private queries and verify with a test download:
 
    ```sh
-   logoscore call storage_module togglePrivateQueries true
-   logoscore call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
+   logosctl call storage_module togglePrivateQueries true
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
    ```
 
 ## Step 7: Configure and start the delivery module
@@ -499,30 +536,31 @@ Create the kernel-only delivery config for a node operator and start the module.
 
    ```sh
    cd /var/lib/logos-node/delivery-module
-   logoscore load-module delivery_module
-   logoscore call delivery_module createNode @config.json
-   logoscore call delivery_module start
+   logosctl module load delivery_module
+   logosctl call delivery_module createNode @config.json
+   logosctl call delivery_module start
    ```
 
 1. Verify the delivery module is running:
 
    ```sh
-   logoscore call delivery_module getAvailableNodeInfoIDs
-   logoscore call delivery_module getNodeInfo Version
-   logoscore call delivery_module getNodeInfo MyMultiaddresses
+   logosctl call delivery_module getAvailableNodeInfoIDs
+   logosctl call delivery_module getNodeInfo Version
+   logosctl call delivery_module getNodeInfo MyMultiaddresses
    ```
 
 ## Step 8: Verify the full node is healthy
 
-Run health checks against the daemon and all three modules to confirm the node is fully operational.
+Run health checks against the Logos node and all three loaded modules to confirm the node is fully operational.
 
 1. Check the daemon and all loaded modules:
 
    ```sh
-   logoscore status --json
+   logosctl daemon status --json | jq .
+   logosctl module ls --loaded
    ```
 
-   Expected modules in the output: `storage_module`, `blockchain_module`, `delivery_module`, `capability_module`.
+   Expected modules in the output: `blockchain_module`, `capability_module`, `delivery_module`, `package_downloader`, `package_manager`, `storage_module`.
 
 1. Verify all ports are bound correctly:
 
@@ -544,7 +582,7 @@ Run health checks against the daemon and all three modules to confirm the node i
 1. Check the blockchain module sync state:
 
    ```sh
-   logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
+   logosctl call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .
    ```
 
 1. (Optional) Check the configured Blend UDP listener:
@@ -558,18 +596,18 @@ Run health checks against the daemon and all three modules to confirm the node i
 1. Check the delivery module bound ports:
 
    ```sh
-   logoscore call delivery_module getNodeInfo MyMultiaddresses
+   logosctl call delivery_module getNodeInfo MyMultiaddresses
    ```
 
 ### Optional: Run the node unattended with systemd
 
-Use a dedicated service for `logoscore` and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in the `logoscore` service—slow or failing module starts may cause systemd to kill the daemon.
+Use a dedicated service for the Logos node process (started and controlled by `logosctl`) and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in `logos-node.service`—slow or failing module starts may cause systemd to kill the daemon.
 
-Daemon service unit:
+Create `/etc/systemd/system/logos-node.service`:
 
 ```ini
 [Unit]
-Description=Logos Node
+Description=Logos node managed by logosctl
 After=network-online.target
 Wants=network-online.target
 
@@ -578,17 +616,18 @@ User=logos
 Group=logos
 WorkingDirectory=/var/lib/logos-node
 Environment=HOME=/var/lib/logos-node
-ExecStart=/usr/local/bin/logoscore -m /opt/logos-node/modules -D
+Environment=LOGOSCTL_CONFIG_DIR=/var/lib/logos-node/.logosctl
+ExecStart=/usr/local/bin/logosctl daemon start
+ExecStop=/usr/local/bin/logosctl daemon stop
 Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
-
 [Install]
 WantedBy=multi-user.target
 ```
 
-The bootstrap script should wait for `logoscore status`, load and start the blockchain module, load and start the storage module, and load and start the delivery module. It should tolerate already-loaded modules and slow module starts.
+The separate bootstrap script should wait for `logosctl daemon status`, load and start the blockchain module, load and start the storage module, and load and start the delivery module. It should tolerate already-loaded modules and slow module starts.
 
 Recommended journald retention to cap disk usage:
 

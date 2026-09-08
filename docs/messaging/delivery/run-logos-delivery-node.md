@@ -54,7 +54,56 @@ Choose one of the three installation paths based on your environment:
 - You can confirm the node is running and has a live network identity by querying its discv5 [ENR](../../get-started/glossary.md#enr).
 - You can configure the node for a different network preset by swapping the config file passed to `createNode`.
 
-## Step 1: Install and start the daemon
+## Step 1: Install and start `logosctl`
+
+1.  Download and extract the [`logosctl` release version 0.2.3-rc.1](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1), replacing `<ARCHITECTURE>` with one of `aarch64-macos`, `aarch64-linux`, or `x86_64-linux` to match your machine:
+
+    ```bash
+    curl -fL \
+    -o logosctl-<ARCHITECTURE>.tar.gz \
+    https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3-rc.1/logosctl-<ARCHITECTURE>.tar.gz
+
+    tar -xvf logosctl-<ARCHITECTURE>.tar.gz
+    ```
+
+    :::info
+    On Linux, `logosctl` ships as an AppImage, which requires FUSE. In environments without FUSE, such as Docker containers and minimal installations, the tools fail with `No suitable fusermount binary found on the $PATH`. Either install FUSE with `apt install fuse3` or set `export APPIMAGE_EXTRACT_AND_RUN=1` to run the tools without FUSE.
+    :::
+
+1.  Install `logosctl` (on Linux) and add it to your PATH:
+
+    ```bash
+    # For Linux:
+    install -m755 logosctl-<ARCHITECTURE>.AppImage /usr/local/bin/logosctl
+
+    # For macOS:
+    # move the whole folder somewhere permanent (keep its contents together —
+    # the binary finds its libraries via ../lib) and put its bin/ on your PATH: 
+    mv logosctl-aarch64-macos ~/.local/logosctl
+    echo 'export PATH="$HOME/.local/logosctl/bin:$PATH"' >> ~/.zshrc
+    source ~/.zshrc
+    ```
+
+1. Start `logosctl` in detached mode so its bundled package-management modules are available:
+
+   ```sh
+   logosctl daemon start --detach
+   logosctl daemon status
+   ```
+   
+   - The detached command returns after the Logos node is ready to accept commands.
+
+1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
+
+   ```bash
+   logosctl catalog refresh
+
+   logosctl package install delivery_module \
+   --version 0.2.1 \
+   --yes
+   ```
+
+## Step 2: Install and start the daemon
 
 Follow the instructions for your chosen path.
 
@@ -74,22 +123,7 @@ Follow the instructions for your chosen path.
 
 **Path B—Prebuilt binaries**
 
-1. Install `logoscore`, `lgpd`, and `lgpm` into `./bin`:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
-
-1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module). The root hash selects the exact published package identity for the pinned version:
-
-   ```bash
-   mkdir -p packages modules
-   lgpd download delivery_module --version 0.2.0 --root-hash eb47c06575a6113f34a6d71e5e0b72d6d2db2ec7510b8be0ab9633b8385edd57 --output ./packages
-   lgpm install --dir ./packages --modules-dir ./modules
-   ```
-
-1. Write the testnet config and start the daemon:
+1. Write the testnet config:
 
    ```bash
    cat > logos-test.json <<EOF
@@ -106,39 +140,26 @@ Follow the instructions for your chosen path.
       }
    }
    EOF
-
-   logoscore -D -m ./modules > logs.txt
    ```
 
 **Path C—Nix**
 
-1. Clone the repository and build the runtime, package manager, and [module](../../get-started/glossary.md#module):
+1. Clone the repository and build the [module](../../get-started/glossary.md#module):
 
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git
    cd logos-delivery-module
 
-   nix build 'github:logos-co/logos-logoscore-cli' --out-link ./logos
-   nix build 'github:logos-co/logos-package-manager#cli' -o lgpm
    nix build '.#lgx' -o delivery-lgx
    ```
 
-1. Seed the modules directory and install the module:
+1. Install the module:
 
    ```bash
-   mkdir -p modules
-   cp -RL ./logos/modules/. ./modules/
-   ./lgpm/bin/lgpm --modules-dir ./modules --allow-unsigned install --file delivery-lgx/*.lgx
+   logosctl package install delivery-lgx/*.lgx
    ```
 
-1. Start the daemon:
-
-   ```bash
-   export PATH="$PWD/logos/bin:$PATH"
-   logoscore -D -m ./modules > logs.txt
-   ```
-
-## Step 2: Load the module and boot the node
+## Step 3: Load the module and boot the node
 
 Run these commands for your path.
 
@@ -149,7 +170,7 @@ Run these commands for your path.
    docker exec logos-node logoscore load-module delivery_module --json
 
    # Paths B and C
-   logoscore load-module delivery_module
+   logosctl module load delivery_module
    ```
 
 1. Create the node with the testnet config:
@@ -163,13 +184,13 @@ Run these commands for your path.
    - Path B:
 
      ```bash
-     logoscore call delivery_module createNode @logos-test.json
+     logosctl call delivery_module createNode @logos-test.json
      ```
    
    - Path C:
 
      ```bash
-     logoscore call delivery_module createNode @conf/logos-test.json
+     logosctl call delivery_module createNode @conf/logos-test.json
      ```
 
 1. Start the node:
@@ -179,7 +200,7 @@ Run these commands for your path.
    docker exec logos-node logoscore call delivery_module start --json
 
    # Paths B and C
-   logoscore call delivery_module start
+   logosctl call delivery_module start
    ```
 
 ## Step 3: Verify the node is running
@@ -193,7 +214,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
    docker exec logos-node logoscore status --json
 
    # Paths B and C
-   logoscore status
+   logosctl daemon status
    ```
 
 1. Run the [health query](https://github.com/logos-co/logos-delivery-module/blob/master/docs/query-node.md):
@@ -203,7 +224,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
    docker exec logos-node logoscore call delivery_module getNodeInfo MyENR --json | jq
 
    # Paths B and C
-   logoscore call delivery_module getNodeInfo MyENR --json | jq
+   logosctl call delivery_module getNodeInfo MyENR --json | jq
    ```
 
    Expected output:
@@ -227,7 +248,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 1. Stop the node when finished:
 
    - Path A: `docker compose down`
-   - Paths B and C: `logoscore stop`
+   - Paths B and C: `logosctl daemon stop`
 
 ## Troubleshooting delivery node setup
 
@@ -235,6 +256,6 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
 The first build runs Nix and downloads release packages, which takes 30–45 minutes on a typical connection. The process is not hung—let it finish. Subsequent starts use the cached layers and complete in seconds.
 
-### Why does `logoscore call` return an error after `load-module`?
+### Why does `logosctl call` or `logoscore call` return an error after `module load`/`load-module`?
 
-The daemon may not have finished starting. Wait a few seconds after `logoscore -D` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logoscore …`.
+The daemon may not have finished starting. Wait a few seconds after `logosctl daemon start` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logoscore …`.

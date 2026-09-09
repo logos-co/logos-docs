@@ -47,7 +47,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 1.  Start the node and poll until the mode switches to `"Online"`. This takes approximately one hour:
 
     ```bash
-    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .mode
+    logosctl call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .mode
     # > "Bootstrapping"
 
     # ... Wait ~1h, then re-run until you see:
@@ -69,7 +69,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`. You may need to repeat the faucet requests since only one drip is allowed per block:
 
     ```bash
-    logoscore call blockchain_module wallet_get_notes <ADDRESS> "" \
+    logosctl call blockchain_module wallet_get_notes <ADDRESS> "" \
       | jq -r .result.value | jq .notes
     # > [
     # >   {
@@ -88,7 +88,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 :::
 
    ```sh
-   logoscore call blockchain_module blend_join_as_core_node \
+   logosctl call blockchain_module blend_join_as_core_node \
       "/ip4/<YOUR_IP>/udp/<YOUR_BLEND_PORT>/quic-v1" \
       "<BLEND_ZK_NOTE_ID>"
 

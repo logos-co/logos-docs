@@ -28,13 +28,8 @@ Logos is a modular application framework built on Qt 6. Applications are compose
    - macOS arm64 or x86_64
 - At least 10 GB of disk space
 - Git
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed.
-   - To install these tools, use the `install-node-tools.sh` helper script:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -49,7 +44,7 @@ Logos is a modular application framework built on Qt 6. Applications are compose
 
 - You can scaffold, configure, and build a Logos core module using the templates provided by `logos-module-builder`.
 - You can inspect the compiled module's metadata and methods using the `lm` CLI tool or the `logos-module-viewer` graphical tool.
-- You can package, install, and call your module's methods through `logoscore` or load it into `logos-basecamp`.
+- You can package, install, and call your module's methods through `logosctl` or load it into `logos-basecamp`.
 
 ## Step 1: Scaffold the module project
 
@@ -238,7 +233,7 @@ The `logos-module-viewer` is a graphical tool for inspecting loaded modules. It 
 
 ## Step 5: Package the module
 
-Before you can run your module with `logoscore` or install it into `logos-basecamp`, you need to package the build output into an `.lgx` package and install it into a `modules/` directory. Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
+Before you can run your module with `logosctl` or install it into `logos-basecamp`, you need to package the build output into an `.lgx` package and install it into a `modules/` directory. Check out the [LGX package format and bundling reference](../reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
 
 :::info
 The `manifest.json` is auto-generated from your module's `metadata.json` by the bundler. It maps each variant to its main entry point.
@@ -264,7 +259,7 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 1. Check the `result/` directory and confirm the `logos-<module-name>-module-lib.lgx` file is present.
 
    :::info
-   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logoscore` and `lgpm`—including the ones the `install-node-tools.sh` helper script downloads—only install portable variants, while dev builds of the tools and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
+   `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logosctl`—including the one the `install-logosctl.sh` helper script downloads—only install portable variants, while dev builds of the tool and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
    :::
 
 ### Use the `nix bundle` command
@@ -288,87 +283,90 @@ Check out [LGX package format and bundling reference](../reference/lgx-package-f
 
 ## Step 6: Install the module
 
-Before you can run your module with `logoscore` or `logos-basecamp`, install the LGX package into a `modules/` directory that the runtime can load from.
+Before you can run your module with `logosctl` or `logos-basecamp`, install the LGX package. `logosctl package install` unpacks it into the current [session's](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) `modules/` directory (`~/.logosctl/modules/` unless `--config-dir`/`LOGOSCTL_CONFIG_DIR` says otherwise)—the same session `logosctl daemon start` reads from later, so no extra flag is needed to make an installed module loadable.
 
-There are two ways to install `.lgx` packages:
+There are two ways to install a module:
 
 - Install a locally built `.lgx` package
-- Download and install a `.lgx` file from a registry
+- Install a package by name from a registry
 
 ### Install a locally built `.lgx` package
 
-1. Create the `modules/` directory and install the `.lgx` package.
+1. Start the `logosctl` daemon in detached mode.
 
    ```bash
-   lgpm --modules-dir ./modules install --file result/logos-<module-name>-module-lib.lgx
+   logosctl daemon start --detach
    ```
 
-   - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `./package-manager/bin/lgpm --modules-dir ./modules install --dir ./packages/`
-   - If you bundled with `nix bundle`, the path is `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx` instead of `result/...`.
-
-1. Verify the installed module directory. The directory contains `manifest.json`, the plugin binary (`.so` or `.dylib`), and a `variant` file.
-
-### Download and install a `.lgx` file from a registry
-
-The Logos module [catalogue](../../get-started/glossary.md#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. Use `lgpd` to search and download packages, then `lgpm` to install them locally.
-
-:::warning
-Registry packages currently ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They cannot be installed into a dev build of `logos-basecamp`, which expects `-dev` variants. To use a registry module with a dev build, you must build the module from source and bundle it with `#dual`. They install cleanly into `logoscore` and into portable builds of `logos-basecamp`.
-:::
-
-
-1. Search the catalogue for the module you want to install. Replace `<registry-name>` with the registry name of the module you want to find (for example, `logos-chat-module`).
+1. Install the `.lgx` package:
 
    ```bash
-   lgpd search <registry-name>
+   logosctl package install --file result/logos-<module-name>-module-lib.lgx
+   ```
+
+   - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `logosctl package install --dir ./packages/`
+   - If you bundled with `nix bundle`, the path is `./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx` instead of `result/...`.
+
+1. Verify the installed module:
+
+   ```bash
+   logosctl package ls
+   ```
+
+   The session's `modules/` directory now contains a subdirectory with `manifest.json`, the plugin binary (`.so` or `.dylib`), and a `variant` file.
+
+### Install a package by name from the catalogue
+
+The Logos module [catalogue](../../get-started/glossary.md#catalogue) is hosted on GitHub Releases in the [logos-modules](https://github.com/logos-co/logos-modules) repository. `logosctl package install` fetches a named package straight from the catalogue and installs it in one step.
+
+:::warning
+Catalogue packages currently ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They cannot be installed into a dev build of `logos-basecamp`, which expects `-dev` variants. To use a registry module with a dev build, you must build the module from source and bundle it with `#dual`. They install cleanly into `logosctl` and into portable builds of `logos-basecamp`.
+:::
+
+1. Start the `logosctl` daemon in detached mode.
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+1. Refresh the catalogue, then search it for the module you want to install. Replace `<query>` with what you're looking for (for example, `chat`).
+
+   ```bash
+   logosctl catalog refresh
+   logosctl package search <query>
    ```
 
    :::tip
-   Use `lgpd list` to browse all available packages.
+   Run `logosctl package search` with no query to browse all available packages.
    :::
 
-1. Download the LGX package to a local directory.
+1. Install it by the name from the search results (for example, `chat_module`). `logosctl` resolves the name against the catalogue, downloads the package, and unpacks it into the session's `modules/` (or `plugins/`, for a UI module—the destination follows the `type` declared in the package's metadata) in one step.
 
    ```bash
-   lgpd download <registry-name> -o ./packages/
+   logosctl package install <module-name> --yes
    ```
 
-   - Use `--release <tag>` to download from a specific release version. For example: `./downloader/bin/lgpd --release v2.0.0 download <registry-name> -o ./packages/`
-   - The downloaded file is named after the module's internal `name` field, not the registry name. For example, `lgpd download logos-chat-module` writes `./packages/chat_module.lgx`.
-
-1. Create the `modules/` directory and install the downloaded package. Replace `<downloaded-name>` with the actual filename written by `lgpd` (for example, `chat_module.lgx`).
-
-   ```bash
-   lgpm --modules-dir ./modules install --file ./packages/<downloaded-name>.lgx
-   ```
-
-   - Use `--ui-plugins-dir` instead of `--modules-dir` when installing UI modules.
+   - Add `--version` to pin a specific release instead of the newest one, and `--root-hash` to pin the exact published package identity.
 
 ## Step 7: Run the module 
 
-There are two Logos runtimes, `logoscore` and `logos-basecamp`, that can load and run your module. However, to interact with your module directly through the `logos-basecamp` interface, you need to [provide a UI module](./build-a-logos-cpp-ui-module.md).
+There are two Logos runtimes, `logosctl` and `logos-basecamp`, that can load and run your module. However, to interact with your module directly through the `logos-basecamp` interface, you need to [provide a UI module](./build-a-logos-cpp-ui-module.md).
 
-### Run with `logoscore`
+### Run with `logosctl`
 
-The `logoscore` CLI (from `logos-liblogos`) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
+The `logosctl` CLI (from `logos-liblogos`) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
 
-1. Start the `logoscore` daemon with the `modules/` directory. 
-
-   ```bash
-   logoscore -D -m ./modules
-   ```
-
-1. From another terminal, load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
+1. Load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
 
    ```bash
-   logoscore load-module <module-name>
-   logoscore call <module-name> <method> <args>
+   logosctl module load <module-name>
+   logosctl call <module-name> <method> <args>
    ```
 
 1. Stop the daemon when finished.
 
    ```bash
-   logoscore stop
+   logosctl daemon stop
    ```
 
 :::tip
@@ -409,8 +407,12 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
 
 1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` as described in Step 5.
 
+`logosctl package install` always unpacks into its own session, not an arbitrary directory, so use the standalone `lgpm` package manager instead to install straight into basecamp's data directory. Build it on demand:
+
    ```bash
-   lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
+   nix build 'github:logos-co/logos-package-manager/0.2.1#cli' --out-link ./pm
+
+   ./pm/bin/lgpm --modules-dir "$BASECAMP_DIR/modules" install --file ./logos-<module-name>-module-lib-lgx-<version>/logos-<module-name>-module-lib.lgx
    ```
 
 :::tip
@@ -421,7 +423,7 @@ Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blo
 
 ### Known constraints
 
-A single `logoscore` instance supports only one instance of a module, so all dependent apps share that state. To run multiple independent instances, start separate `logos-basecamp` instances with their own user directories, and each `logos-basecamp` instance runs its own `logoscore` and module instances in isolation.
+A single `logosctl` daemon instance supports only one instance of a module, so all dependent apps share that state. To run multiple independent instances from the CLI, start separate daemons under separate sessions—`logosctl daemon start --config-dir <dir>` for each—so each gets its own installed modules and state. From `logos-basecamp`, start separate instances with their own user directories; each one runs its own embedded runtime and module instances in isolation.
 
 ### Nix reports an "experimental features" error
 
@@ -441,26 +443,28 @@ experimental-features = nix-command flakes
 
 Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains the module binary and `manifest.json`. The `name` field in `manifest.json` must match the binary name (for example, `my_module` for `my_module_plugin.so`).
 
-### Module not discovered by `logoscore`
+### Module not discovered by `logosctl`
 
-Confirm the module is in a subdirectory of the `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains a `manifest.json` with a `main` object matching your OS and architecture.
+Confirm the module is in a subdirectory of the session's `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains a `manifest.json` with a `main` object matching your OS and architecture. Run `logosctl package ls` to see what the current session actually has installed.
 
-### `lgpm` fails to install a module
+### `logosctl package install` fails
 
-Verify the target directory exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the registry, check your internet connection—`lgpd` fetches packages from GitHub Releases. To pin a specific release version, pass `--release <tag>` to `lgpd` (not `lgpm`) when downloading.
+Verify the session's `modules/` directory (under `--config-dir`, default `~/.logosctl`) exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the catalogue, check your internet connection and that you've run `logosctl catalog refresh` recently. To pin a specific version instead of the newest one, pass `--version` (and optionally `--root-hash`) to `logosctl package install`.
+
+If installing into `logos-basecamp`'s own directory with the standalone `lgpm`, verify that target directory exists and is writable instead.
 
 ### LGX variant mismatch
 
-If `lgpm install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
+If `logosctl package install` fails with `Package does not contain variant for platform: <platform>-dev`, the LGX file does not include a `-dev` variant for your platform.
 
-- `nix build .#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) suitable for dev builds of `logoscore`/`logos-basecamp`, but rejected by released (portable) builds of `logoscore` and `lgpm`. Use `nix build .#lgx-portable` for the portable variant those released tools install.
+- `nix build .#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) suitable for dev builds of `logosctl`/`logos-basecamp`, but rejected by released (portable) builds of `logosctl`. Use `nix build .#lgx-portable` for the portable variant those released tools install.
 - `nix build .#lgx-portable` produces a single portable variant suitable for portable builds of `logos-basecamp`.
 - `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` produces both `-dev` and portable variants in a single `.lgx` file, which works with dev and portable builds of `logos-basecamp`.
 
-Registry packages downloaded with `lgpd` currently ship portable variants only.
+Registry packages installed via `logosctl`'s catalogue currently ship portable variants only.
 
 :::info
-`lgpm` error messages report the platform as `linux-x86_64` while LGX manifests label it `linux-amd64`. These refer to the same architecture.
+`logosctl` error messages report the platform as `linux-x86_64` while LGX manifests label it `linux-amd64`. These refer to the same architecture.
 :::
 
 ### `nix build .#lib` does nothing or fails silently                               

@@ -34,19 +34,14 @@ Applications on the Logos network need a protocol-agnostic way to find peers off
    mkdir -p ~/.config/nix
    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
    ```
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) installed.
-   - To install it, use the `install-node-tools.sh` helper script:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 :::
 
 ## What to expect
 
 - You can advertise a named service from a Logos Core module and discover peers offering the same service via the Kad-DHT, without hard-coding peer addresses.
-- You can verify the full discovery flow locally across three `logoscore` daemon instances, each with its own config directory and listen port.
+- You can verify the full discovery flow locally across three `logosctl` daemon instances, each with its own session and listen port.
 - You have a reusable module scaffold with typed `disco*` wrappers that you can extend for production service types.
 
 ## Step 1: Smoke-test the bundled example binary (Optional)
@@ -227,7 +222,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
 ## Step 3: Build both modules
 
-The `.#install` target runs `lgpm` internally and produces the directory structure `logoscore` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+The `.#install` target runs `lgpm` internally and produces the directory structure `logosctl` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
 
 1. In `logos-my-service-module`, initialise a Git repository and run the install build:
 
@@ -273,37 +268,37 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
    ```
 
-1. Start the daemon in the background, pointing at both module directories:
+1. Start the daemon, detached so this terminal stays free, pointing at both module directories:
 
    ```sh
-   logoscore -D \
-     -m ../logos-libp2p-module/result/modules \
-     -m ./result/modules &
+   logosctl daemon start --detach \
+     --modules-dir ../logos-libp2p-module/result/modules \
+     --modules-dir ./result/modules
    ```
 
 1. Load both modules:
 
    ```sh
-   logoscore load-module libp2p_module
-   logoscore load-module my_service_module
+   logosctl module load libp2p_module
+   logosctl module load my_service_module
    ```
 
 1. Drive the discovery lifecycle and verify each call returns immediately:
 
    ```sh
-   logoscore call my_service_module startDiscovery
+   logosctl call my_service_module startDiscovery
    # → discovery started
 
-   logoscore call my_service_module getPeerInfo
+   logosctl call my_service_module getPeerInfo
    # → {"peerId":"16Uiu2…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
 
-   logoscore call my_service_module advertise myservice/v1 version=1
+   logosctl call my_service_module advertise myservice/v1 version=1
    # → advertising myservice/v1
 
-   logoscore call my_service_module discover myservice/v1
+   logosctl call my_service_module discover myservice/v1
    # → []   (single node: no second advertiser)
 
-   logoscore call my_service_module stopDiscovery
+   logosctl call my_service_module stopDiscovery
    # → discovery stopped
    ```
 
@@ -312,26 +307,26 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 1. Shut down the daemon:
 
    ```sh
-   logoscore stop
+   logosctl daemon stop
    ```
 
 ## Step 5: Run three-node local discovery
 
-Run three `logoscore` daemon instances on one machine to see the Service Discovery API work: a bootstrap node, an advertiser, and a discoverer. The advertiser and discoverer are configured only with the bootstrap node as their bootstrap node—when the discoverer's lookup returns the advertiser's peer record, the advertisement provably travelled through the DHT, not over a direct A↔B link.
+Run three `logosctl` daemon instances on one machine to see the Service Discovery API work: a bootstrap node, an advertiser, and a discoverer. The advertiser and discoverer are configured only with the bootstrap node as their bootstrap node—when the discoverer's lookup returns the advertiser's peer record, the advertisement provably travelled through the DHT, not over a direct A↔B link.
 
-Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a distinct listen port. Run each block in a separate terminal window.
+Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` with a distinct listen port as separate sessions are what let three independent instances coexist on one machine. Run each block in a separate terminal window.
 
 1. In **Terminal 1**, start the bootstrap node:
 
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
-   logoscore -D --config-dir ~/.logoscore-bootstrap \
-     -m ../logos-libp2p-module/result/modules -m ./result/modules &
-   logoscore --config-dir ~/.logoscore-bootstrap load-module libp2p_module
-   logoscore --config-dir ~/.logoscore-bootstrap load-module my_service_module
-   logoscore --config-dir ~/.logoscore-bootstrap call my_service_module startDiscovery
-   logoscore --config-dir ~/.logoscore-bootstrap call my_service_module getPeerInfo
+   logosctl daemon start --detach --config-dir ~/.logosctl-bootstrap \
+     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   logosctl --config-dir ~/.logosctl-bootstrap module load libp2p_module
+   logosctl --config-dir ~/.logosctl-bootstrap module load my_service_module
+   logosctl --config-dir ~/.logosctl-bootstrap call my_service_module startDiscovery
+   logosctl --config-dir ~/.logosctl-bootstrap call my_service_module getPeerInfo
    # → note the "peerId" value; the bootstrap node listens on /ip4/127.0.0.1/tcp/9000
    ```
 
@@ -342,12 +337,12 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
-   logoscore -D --config-dir ~/.logoscore-advertiser \
-     -m ../logos-libp2p-module/result/modules -m ./result/modules &
-   logoscore --config-dir ~/.logoscore-advertiser load-module libp2p_module
-   logoscore --config-dir ~/.logoscore-advertiser load-module my_service_module
-   logoscore --config-dir ~/.logoscore-advertiser call my_service_module startDiscovery
-   logoscore --config-dir ~/.logoscore-advertiser call my_service_module advertise myservice/v1 version=1
+   logosctl daemon start --detach --config-dir ~/.logosctl-advertiser \
+     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   logosctl --config-dir ~/.logosctl-advertiser module load libp2p_module
+   logosctl --config-dir ~/.logosctl-advertiser module load my_service_module
+   logosctl --config-dir ~/.logosctl-advertiser call my_service_module startDiscovery
+   logosctl --config-dir ~/.logosctl-advertiser call my_service_module advertise myservice/v1 version=1
    ```
 
 1. In **Terminal 3**, start the discoverer and look up the service:
@@ -355,12 +350,12 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
-   logoscore -D --config-dir ~/.logoscore-discoverer \
-     -m ../logos-libp2p-module/result/modules -m ./result/modules &
-   logoscore --config-dir ~/.logoscore-discoverer load-module libp2p_module
-   logoscore --config-dir ~/.logoscore-discoverer load-module my_service_module
-   logoscore --config-dir ~/.logoscore-discoverer call my_service_module startDiscovery
-   logoscore --config-dir ~/.logoscore-discoverer call my_service_module discover myservice/v1
+   logosctl daemon start --detach --config-dir ~/.logosctl-discoverer \
+     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   logosctl --config-dir ~/.logosctl-discoverer module load libp2p_module
+   logosctl --config-dir ~/.logosctl-discoverer module load my_service_module
+   logosctl --config-dir ~/.logosctl-discoverer call my_service_module startDiscovery
+   logosctl --config-dir ~/.logosctl-discoverer call my_service_module discover myservice/v1
    ```
 
    Expected output:
@@ -381,8 +376,8 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
 
    ```sh
    for D in bootstrap advertiser discoverer; do
-     logoscore --config-dir ~/.logoscore-$D call my_service_module stopDiscovery
-     logoscore --config-dir ~/.logoscore-$D stop
+     logosctl --config-dir ~/.logosctl-$D call my_service_module stopDiscovery
+     logosctl --config-dir ~/.logosctl-$D daemon stop
    done
    ```
 
@@ -390,8 +385,4 @@ Each daemon needs its own `--config-dir` and `LIBP2P_MODULE_CONFIG` with a disti
 
 ### Why does `discover` return `[]` even after waiting?
 
-The Kad-DHT needs a few seconds to propagate the advertisement from the advertiser through the bootstrap node to the discoverer. Repeat `logoscore --config-dir ~/.logoscore-discoverer call my_service_module discover myservice/v1` after 5–10 seconds. If it still returns empty, confirm that the advertiser's `advertise` call succeeded and that both the advertiser and the discoverer share the same `<BOOTSTRAP_PEER_ID>` for the bootstrap node.
-
-### Why does a `logoscore call` hang with a timeout error?
-
-You may be using the one-shot `-c "module.method()"` or `--quit-on-finish` form instead of the `logoscore call` subcommand. The one-shot client does not await async lifecycle calls such as `start()`, which causes a spurious `Timeout waiting for …` before the node finishes starting up. Use `logoscore call my_service_module <method>` for all lifecycle and discovery calls.
+The Kad-DHT needs a few seconds to propagate the advertisement from the advertiser through the bootstrap node to the discoverer. Repeat `logosctl --config-dir ~/.logosctl-discoverer call my_service_module discover myservice/v1` after 5–10 seconds. If it still returns empty, confirm that the advertiser's `advertise` call succeeded and that both the advertiser and the discoverer share the same `<BOOTSTRAP_PEER_ID>` for the bootstrap node.

@@ -233,7 +233,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
    logosctl daemon status
    ```
 
-1. Run the [health query](https://github.com/logos-co/logos-delivery-module/blob/master/docs/query-node.md):
+1. Run the [health query](https://github.com/logos-co/logos-delivery-module/blob/master/docs/pages/query-node.md):
 
    ```bash
    # Path A

@@ -33,23 +33,8 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
   ```
 
 - **Git**
-- The Logos tooling suite:
-    - [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2) (the Logos runtime);
-    - [`lgpd`](https://github.com/logos-co/logos-package-downloader/releases/tag/0.2.1) (the Logos package downloader);
-    - [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) (the Logos package manager).
-
-  You can obtain those by running:
-
-    ```bash
-    # Export those first or the script will fetch the latest version, which might not
-    # work with this tutorial
-    export LGPM_TAG=0.2.1
-    export LGPD_TAG=0.2.1
-    export LOGOSCORE_TAG=0.2.2
-
-    curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-    export PATH="$PWD/bin:$PATH"
-    ```
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 :::
 
 ## What to expect
@@ -409,56 +394,49 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
       logos-storage_cli-module-lib.lgx
       ```
 
-## Step 8: Download and install the Storage module
+## Step 8: Start the Logos daemon
 
-The Storage module is a dependency of your module, so install it before loading your own.
+Package installs are handled by a module bundled inside the daemon, so the daemon has to be running before you install anything.
 
-1.  Download the Storage module package:
-
-    ```bash
-    lgpd --version 2.1.2 download storage_module -o .
-    ```
-
-1.  Install it:
+1.  Start `logosctl`, using a project-local session so everything this tutorial installs stays under `./config-dir`:
 
     ```bash
-    lgpm install --file ./storage_module-2.1.2.lgx --modules-dir ./modules
-    ```
-
-## Step 9: Install your module
-
-1.  Install your module package:
-
-    ```bash
-    lgpm install --file ./result/logos-storage_cli-module-lib.lgx --modules-dir ./modules
-    ```
-
-## Step 10: Start the Logos daemon
-
-1.  In a new terminal, start `logoscore`:
-
-    ```bash
-    # Make sure to export the PATH and navigate to the correct repository in the new terminal window
-    export PATH="$PWD/bin:$PATH"
     cd ./storage_cli
 
-    logoscore -D --config-dir ./config-dir -m ./modules
+    logosctl daemon start --detach --config-dir ./config-dir
     ```
 
-    - The daemon prints its logs to the terminal. You can also run it as a background process and redirect logs if you prefer.
+## Step 9: Install the Storage module and your module
 
-## Step 11: Load the CLI module
+The Storage module is a dependency of your module, so install it first.
+
+1.  Refresh the catalogue and install the Storage module package by name:
+
+    ```bash
+    logosctl --config-dir ./config-dir catalog refresh
+    logosctl --config-dir ./config-dir package install storage_module --version 2.1.2 --yes
+    ```
+
+1.  Install your own module package from the local `.lgx` file:
+
+    ```bash
+    logosctl --config-dir ./config-dir package install --file ./result/logos-storage_cli-module-lib.lgx
+    ```
+
+    - `package install` re-scans and unpacks into the session's own `modules/` directory (`./config-dir/modules/` here), so the daemon picks up both modules immediately—no restart needed.
+
+## Step 10: Load the CLI module
 
 1.  Confirm both modules are installed:
 
     ```bash
-    logoscore --config-dir ./config-dir status
+    logosctl --config-dir ./config-dir daemon status
     ```
 
     - **Expected result:**
 
       ```text
-      Logoscore Daemon
+      Logosctl Daemon
         Status:       running
         PID:          405049
         Uptime:       0s
@@ -473,7 +451,7 @@ The Storage module is a dependency of your module, so install it before loading 
 1.  Load the CLI module:
 
     ```bash
-    logoscore --config-dir ./config-dir load-module storage_cli
+    logosctl --config-dir ./config-dir module load storage_cli
     ```
 
     - **Expected result:**
@@ -483,13 +461,13 @@ The Storage module is a dependency of your module, so install it before loading 
         Dependencies loaded: storage_module
       ```
 
-## Step 12: Publish a file
+## Step 11: Publish a file
 
 1.  Create a sample file and publish it with the CLI module:
 
     ```bash
     echo "Hello, World!" > hello.txt
-    logoscore --config-dir ./config-dir call storage_cli publish ./hello.txt
+    logosctl --config-dir ./config-dir call storage_cli publish ./hello.txt
     ```
 
     - **Expected result:**
@@ -506,18 +484,18 @@ The Storage module is a dependency of your module, so install it before loading 
       }
       ```
 
-    - Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's terminal, not here. For a small file like this, progress is a single line:
+    - Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's own log file (`./config-dir/logs/daemon.log`), not here. For a small file like this, progress is a single line:
 
       ```text
       [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (13 of 13 bytes)
       ```
 
-## Step 13: Download a file
+## Step 12: Download a file
 
 1.  Download [Farewell to Westphalia](https://logos.co/book/farewell-to-westphalia-foss-edition.pdf) from the Storage network by its CID:
 
     ```bash
-    logoscore --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf
+    logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf
     ```
 
     This may take a little while.
@@ -548,4 +526,4 @@ The Storage module is a dependency of your module, so install it before loading 
       [2026-08-19 19:04:53.928] [out] [storage_cli]  2276462 bytes
       ```
 
-You may now stop the daemon, or leave it running and use it for other operations.
+You may now stop the daemon (`logosctl --config-dir ./config-dir daemon stop`), or leave it running and use it for other operations.

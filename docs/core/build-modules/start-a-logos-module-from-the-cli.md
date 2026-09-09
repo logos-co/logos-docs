@@ -13,13 +13,13 @@ sidebar_position: 1
 
 # Start a Logos module from the CLI
 
-#### Explore how to load and call a Logos module from the command line using `logoscore`.
+#### Explore how to load and call a Logos module from the command line using `logosctl`.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This guide covers how to build and install a Logos [module](../../get-started/glossary.md#module), start the `logoscore` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logoscore` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
+This guide covers how to build and install a Logos [module](../../get-started/glossary.md#module), start the `logosctl` daemon, and call module methods from the command line. It is intended for users who want to run an existing module, or developers who have already built a module binary and want to run it locally for testing or development. By the end you will have a running `logosctl` instance that loads [`accounts_module`](https://github.com/logos-co/logos-accounts-module) as an example module and returns results for mnemonic generation and relative strength.
 
 :::info[Prerequisites]
 
@@ -27,13 +27,8 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    - Linux x86_64 or aarch64
    - macOS arm64 or x86_64
 - Git
-- [`logoscore`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.2), and [`lgpm`](https://github.com/logos-co/logos-package-manager/releases/tag/0.2.1) installed.
-   - To install these tools, use the `install-node-tools.sh` helper script:
-
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-node-tools.sh | sh
-   export PATH="$PWD/bin:$PATH"
-   ```
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -46,13 +41,13 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
 
 ## What to expect
 
-- You can load `accounts_module` into a running `logoscore` daemon and call its methods.
+- You can load `accounts_module` into a running `logosctl` daemon and call its methods.
 - You can generate a BIP-39 mnemonic phrase and measure its entropy strength with no prior setup.
-- You have a working local `modules` directory that `logoscore` can scan for future modules.
+- You have a working local `modules` directory that `logosctl` can scan for future modules.
 
 ## Install the module
 
-`logoscore` expects each module in its own subdirectory containing a `manifest.json`. The `lgpm` package manager handles this layout automatically when given an [LGX](../../get-started/glossary.md#lgx) package.
+`logosctl` expects each module in its own subdirectory containing a `manifest.json`. `logosctl package install` handles this layout automatically when given an [LGX](../../get-started/glossary.md#lgx) package—but it always unpacks into the current [session's](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) own `modules/` directory.
 
 1. Clone the `logos-accounts-module` repository and build the LGX package:
 
@@ -65,20 +60,27 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    cd ..
    ```
 
-1. Create the `modules` directory and copy the pre-loaded logos modules to it:
+1. Start the daemon, detached so this terminal stays free:
 
    ```bash
-   mkdir -p modules
-   cp -RL ./logos/modules/. ./modules/
+   logosctl daemon start --detach
    ```
 
-1. Install the LGX package into the `modules` directory:
+   - The detached command returns after the Logos node is ready to accept commands.
+
+1. Check the status of `logosctl`:
 
    ```bash
-   lgpm --modules-dir ./modules install --file ./logos-accounts-module/result/*.lgx
+   logosctl daemon status
    ```
 
-   After installation, the directory structure looks like this:
+1. Install the LGX package into the current session:
+
+   ```bash
+   logosctl package install --file ./logos-accounts-module/result/*.lgx
+   ```
+
+   This unpacks into the `logosctl` session's `modules/` directory:
 
    ```
    modules/accounts_module/
@@ -90,71 +92,47 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
 1. Confirm the module was installed correctly:
 
    ```bash
-   lgpm --modules-dir ./modules list
+   logosctl package ls
    ```
 
 ## Call module methods
 
-With the module installed, start the [`logoscore`](https://github.com/logos-co/logos-logoscore-cli) daemon, load the module, and call its methods.
-
-1. Start the daemon in the background, pointing it at the modules directory, and wait to initialise:
-
-   ```bash
-   logoscore -D -m ./modules &
-   sleep 3
-   ```
-
-1. Check the status of `logoscore`:
-
-   ```bash
-   logoscore status
-   ```
+With the module installed, load the module with `logosctl` and call its methods.
 
 1. Load the module and confirm that it was loaded:
 
    ```bash
-   logoscore load-module accounts_module
+   logosctl module load accounts_module
 
-   logoscore list-modules
+   logosctl module ls --loaded
    ```
 
 1. Generate a random BIP-39 mnemonic phrase with 12 words:
 
    ```bash
-   logoscore call accounts_module createRandomMnemonic 12
+   logosctl call accounts_module createRandomMnemonic 12
    ```
 
 1. Map a mnemonic word count to its entropy strength in bits—for example, 12 words is 128 bits.
 
    ```bash
-   logoscore call accounts_module lengthToEntropyStrength 12
+   logosctl call accounts_module lengthToEntropyStrength 12
    ```
 
-1. Inspect all available methods in `accounts_module` with `module_info`:
+1. Inspect all available methods in `accounts_module`:
 
    ```bash
-   logoscore module-info accounts_module
+   logosctl module show accounts_module
    ```
 
 1. Stop the daemon:
 
    ```bash
-   logoscore stop
-   sleep 2
+   logosctl daemon stop
    ```
 
-   For inline (legacy) mode and other `logoscore` options, see the [Developer Guide—Running with logoscore](https://github.com/logos-co/logos-tutorial/blob/tutorial-v4/logos-developer-guide.md#61-running-with-logoscore).
-
-## Troubleshooting `logoscore` module startup
-
-### The modules directory is not found
-
-Confirm the module subdirectory exists and contains a `manifest.json` file. Installing the package again with the correct `--modules-dir` path resolves this in most cases.
+## Troubleshooting `logosctl` module startup
 
 ### The platform key in `manifest.json` does not match
 
-`logoscore` matches the `main` object in `manifest.json` against your OS and architecture (for example, `linux-aarch64` or `darwin-arm64`). Rebuild the LGX package on the target platform and reinstall.
-
-### The daemon does not respond after `sleep 3`
-
-Increase the sleep duration if your machine is slow to initialise, or check for port conflicts by inspecting the daemon's stderr output.
+`logosctl` matches the `main` object in `manifest.json` against your OS and architecture (for example, `linux-aarch64` or `darwin-arm64`). Rebuild the LGX package on the target platform and reinstall.

@@ -137,10 +137,26 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, FnArg, ItemFn};
 
-/// Marker attribute. Pass-through; the framework detects it on a #[lez_program]
-/// module by name and triggers the path-dependency scan for `my-extension`.
+/// Marker attribute. Near pass-through: the framework detects it on a
+/// #[lez_program] module by name and triggers the path-dependency scan for
+/// `my-extension`. The one thing it must reject is its own misplacement.
 #[proc_macro_attribute]
 pub fn my_extension(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    if let Ok(module) = syn::parse::<syn::ItemMod>(item.clone()) {
+        if module
+            .attrs
+            .iter()
+            .any(|a| a.path().is_ident("lez_program"))
+        {
+            return syn::Error::new_spanned(
+                &module.ident,
+                "#[my_extension] must come after #[lez_program]: a marker above \
+                 it expands first and is invisible to the framework",
+            )
+            .to_compile_error()
+            .into();
+        }
+    }
     item
 }
 
@@ -158,7 +174,7 @@ pub fn instruction(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
-The framework treats `#[my_extension]` as a marker by attribute name only, it does not invoke the library's macro to discover anything. The macro is required to exist (so rustc accepts the consumer's attribute syntactically) but its expansion is irrelevant; pass-through is correct.
+The framework treats `#[my_extension]` as a marker by attribute name only, it does not invoke the library's macro to discover anything. Past the misplacement check the expansion is irrelevant, so pass-through is right for everything else. Guard the misplacement in the macro rather than leaving it to the consumer: a marker above `#[lez_program]` is consumed before the framework ever sees it, so the consumer's build succeeds with your whole surface missing and only `spel generate-idl` reports it.
 
 ## Per-instruction gate attributes (optional)
 
@@ -358,10 +374,11 @@ spel generate-idl path/to/sample/src/main.rs
 
 The IDL should contain your extension's instructions alongside the consumer's own. The `spel` binary must itself be built from a scanner-carrying framework revision, a CLI without the scanner omits every extension instruction from this output without reporting an error. The check is also not a substitute for a build, `generate-idl` reads the source rather than compiling it, so a sample that does not compile still produces a complete-looking IDL.
 
-On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. The fail-closed behaviour is a property of the framework revision, not of the mechanism: on a build without the scanner the marker is ignored and the program compiles without your extension. An author debugging a missing surface should check the framework pin before the metadata. When you hit the hard error, the most common causes are:
+On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, regardless of why it did not match, so a broken setup refuses loudly instead of building a program silently missing its extension surface. The fail-closed behaviour is a property of the framework revision, not of the mechanism: on a build without the scanner the marker is ignored and the program compiles without your extension. An author debugging a missing surface should check the framework pin before the metadata. When you hit the hard error, or a green build with your surface missing, the most common causes are:
 
 - `[package.metadata.spel.extension_attr]` not declared, or value does not match the attribute name the consumer wrote.
 - The library is a transitive dependency rather than a direct one. Only the consumer's own `[dependencies]` are scanned, by design.
+- Your marker written above `#[lez_program]` rather than below it. This one does not reach the hard error unless your marker macro rejects it: the attribute is consumed before the framework sees it, so the consumer's build succeeds with your surface absent, and `spel generate-idl` is the only thing that reports it.
 - Cached macro expansion, try `cargo clean -p <sample-crate>` and rebuild. Cargo doesn't know proc-macros read external `Cargo.toml` files, so metadata changes don't always invalidate the cache.
 
 Malformed `[package.metadata.spel]` is a hard compile error too, never a silent skip. When dependency resolution itself degrades (for example `cargo metadata` failing in a constrained environment) but every marker still matched a path dependency, the degradation stays a warning and the build continues.

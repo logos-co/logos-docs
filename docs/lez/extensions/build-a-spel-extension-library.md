@@ -174,7 +174,7 @@ pub fn instruction(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 ```
 
-The framework treats `#[my_extension]` as a marker by attribute name only, it does not invoke the library's macro to discover anything. Past the misplacement check the expansion is irrelevant, so pass-through is right for everything else. Guard the misplacement in the macro rather than leaving it to the consumer: a marker above `#[lez_program]` is consumed before the framework ever sees it, so the consumer's build succeeds with your whole surface missing and only `spel generate-idl` reports it.
+The framework treats `#[my_extension]` as a marker by attribute name only, it does not invoke the library's macro to discover anything. Past the misplacement check the expansion is irrelevant, so pass-through is right for everything else. Guard the misplacement in the macro rather than leaving it to the consumer: a marker above `#[lez_program]` is consumed before the framework ever sees it, so a consumer who imported your marker's name gets a green build with your whole surface missing and only `spel generate-idl` reports it. A consumer who did not import it gets rustc's ``cannot find attribute `my_extension` in this scope`` instead, which says nothing about attribute order, so neither reader is served by leaving the check out.
 
 ## Per-instruction gate attributes (optional)
 
@@ -378,7 +378,7 @@ On a framework build that carries the extension scanner, a marker that matches n
 
 - `[package.metadata.spel.extension_attr]` not declared, or value does not match the attribute name the consumer wrote.
 - The library is a transitive dependency rather than a direct one. Only the consumer's own `[dependencies]` are scanned, by design.
-- Your marker written above `#[lez_program]` rather than below it. This one does not reach the hard error unless your marker macro rejects it: the attribute is consumed before the framework sees it, so the consumer's build succeeds with your surface absent, and `spel generate-idl` is the only thing that reports it.
+- Your marker written above `#[lez_program]` rather than below it. This one does not reach the hard error unless your marker macro rejects it: the attribute is consumed before the framework sees it, so a consumer who imported the marker's name gets a green build with your surface absent, and `spel generate-idl` is the only thing that reports it, failing with `Malformed extension metadata: 'extension marker #[my_extension] is above #[lez_program]…'` and a non-zero exit. A consumer who never imported the name gets rustc's ``cannot find attribute `my_extension` in this scope`` at the build instead.
 - Cached macro expansion, try `cargo clean -p <sample-crate>` and rebuild. Cargo doesn't know proc-macros read external `Cargo.toml` files, so metadata changes don't always invalidate the cache.
 
 Malformed `[package.metadata.spel]` is a hard compile error too, never a silent skip. When dependency resolution itself degrades (for example `cargo metadata` failing in a constrained environment) but every marker still matched a path dependency, the degradation stays a warning and the build continues.

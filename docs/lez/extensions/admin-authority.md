@@ -47,7 +47,7 @@ Two different floors apply here, and neither comes from `admin-authority` itself
 
 ## Add the dependency
 
-In your program's `Cargo.toml`. If you do not have a program crate yet, do [Install the `spel` CLI](#install-the-spel-cli) and the `spel init` command in [Annotate the module](#annotate-the-module) first, then come back here. For a `spel init` scaffold the manifest to edit is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`. That guest manifest already carries its own `[dependencies]` table holding `spel-framework`, `nssa_core`, `serde` and `borsh`, so merge the entries below into it rather than appending a second table, which cargo rejects outright with `error: duplicate key`. Scaffolded with the source flags from [Annotate the module](#annotate-the-module), its `spel-framework` and `nssa_core` pins already match these, so `admin-authority` is the only line you add:
+In your program's `Cargo.toml`. If you do not have a program crate yet, do [Install the `spel` CLI](#install-the-spel-cli) and the `spel init` command in [Annotate the module](#annotate-the-module) first, then come back here. For a `spel init` scaffold the manifest to edit is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`. That guest manifest already carries its own `[dependencies]` table, holding `spel-framework`, `nssa_core`, `risc0-zkvm`, your project's `_core` crate, `serde`, `borsh` and the `ruint = "=1.17.0"` pin from the prerequisites, so merge the entries below into it rather than appending a second table, which cargo rejects outright with `error: duplicate key`. Scaffolded with the source flags from [Annotate the module](#annotate-the-module), its `spel-framework` and `nssa_core` pins already match these, so `admin-authority` is the only line you add:
 
 ```toml
 [dependencies]
@@ -319,8 +319,9 @@ Expected output includes:
 Plus your own instructions. On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. That safety net is a property of the pinned framework revision: on a framework without the scanner, upstream `logos-co/spel` main today, the marker is ignored and the program builds cleanly without the trio. When you hit the hard error, the most common causes are:
 
 - `admin-authority` not declared as a direct path or git dependency in your `Cargo.toml`. Transitive dependencies are never discovered.
-- `#[admin_authority]` placed above `#[lez_program]` rather than below it.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
+
+Misplacing the marker is a different failure and never reaches that error, because a marker above `#[lez_program]` is consumed before the framework sees it. Since nothing on this page imports `admin_authority`, writing it above `#[lez_program]` stops at name resolution instead, with ``cannot find attribute `admin_authority` in this scope`` and a note that the name is a crate rather than an attribute. Import the name and `admin-authority` v0.1.2 rejects the placement itself: `#[admin_authority] must come after #[lez_program]`.
 
 ## Security notes
 

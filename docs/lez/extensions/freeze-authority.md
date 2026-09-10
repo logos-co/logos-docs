@@ -39,13 +39,13 @@ If your program needs a permanent pause with no recovery, use `admin_renounce` a
 
 ## Prerequisites
 
-Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, those two sections are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its three instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
+Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, plus the `spel init` command in [Annotate the module](admin-authority.md#annotate-the-module) if you do not have a program crate yet. Those three are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its three instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
 
 The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04, in auto, manual, and embedded mode. The toolchain floors from the admin-authority page apply here unchanged. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
-In your program's `Cargo.toml`. For a `spel init` scaffold that is `methods/guest/Cargo.toml`, not the root manifest, see [Annotate the module](admin-authority.md#annotate-the-module) on the admin page for the scaffold layout. That manifest already carries a `[dependencies]` table with `spel-framework`, `nssa_core`, `serde` and `borsh` in it, so merge the entries below into that table rather than appending a second one, which cargo rejects with `error: duplicate key`. On that path `admin-authority` and `freeze-authority` are the only two lines you add:
+In your program's `Cargo.toml`. If you do not have a program crate yet, run the `spel init` command in [Annotate the module](admin-authority.md#annotate-the-module) on the admin page first, then come back here. For a `spel init` scaffold the manifest to edit is `methods/guest/Cargo.toml`, not the root manifest, which is a `[workspace]` excluding `methods/guest`. That guest manifest already carries its own `[dependencies]` table, holding `spel-framework`, `nssa_core`, `risc0-zkvm`, your project's `_core` crate, `serde`, `borsh` and the `ruint = "=1.17.0"` pin from the prerequisites, so merge the entries below into that table rather than appending a second one, which cargo rejects with `error: duplicate key`. On that path `admin-authority` and `freeze-authority` are the only two lines you add:
 
 ```toml
 [dependencies]

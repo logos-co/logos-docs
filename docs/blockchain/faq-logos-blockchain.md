@@ -28,7 +28,7 @@ For more information on proposer privacy on Logos, see [Anonymous Block Proposer
 
 ## Does the Blend Network always protect proposer privacy for everyone?
 
-No, that protection depends on whether the proposer is a [core node](../get-started/glossary.md#core-node), and how many other core nodes are active in a given [epoch](../get-started/glossary.md#epoch). Only declared core nodes relay and blend messages, and their participation in Blend activity makes it hard to distinguish when they publish their own proposals. A block proposer that hasn't declared as a core node participates as an edge node instead, sending its proposal through core nodes for blending - an unusual activity that can be singled out and connected to broadcasted blocks by some attackers. If too few core nodes are active, all proposers fall back to broadcasting directly, with no Blend privacy for that epoch.
+No, that protection depends on whether the proposer is a [core node](../get-started/glossary.md#core-node), and how many other core nodes are active in a given [epoch](../get-started/glossary.md#epoch). Only declared core nodes relay and blend messages, and their participation in Blend activity makes it hard to distinguish when they publish their own proposals. A block proposer that hasn't declared as a core node participates as an edge node instead, sending its proposal through core nodes for blending - an unusual activity that can be singled out and connected to published blocks by some attackers. If too few core nodes are active, all proposers fall back to broadcasting directly, with no Blend privacy for that epoch.
 
 ## If Bedrock doesn't interpret Zone data, what secures funds bridged into a Zone?
 

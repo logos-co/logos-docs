@@ -62,7 +62,7 @@ All five are needed: the reference samples use exactly this set. `nssa_core` car
 
 The `spel-framework` entry points at a fork on purpose. It must be the exact revision `admin-authority` itself pins, and the library README documents that revision for each release. Pointing at `logos-co/spel` instead puts two copies of the framework into your dependency graph, and the build fails with a `From<AdminError>` trait error plus name resolution errors inside the `require_admin` expansion. The dependency moves to `logos-co/spel` once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 
-After adding the dependencies, run `cargo fetch` once. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
+After adding the dependencies, run `cargo fetch` once from `methods/guest`, not from the project root. The scaffold's root `Cargo.toml` excludes `methods/guest`, so a root `cargo fetch` resolves a graph that does not contain `admin-authority`, prints nothing, and fetches nothing. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
 
 ## Install the `spel` CLI
 
@@ -170,7 +170,7 @@ The `#[account_type]` struct sits outside the `#[lez_program]` module, the instr
 
 The gate needs two accounts, the `admin_config` PDA holding the current admin state and a signing `caller`. You do not have to write them: the framework injects both from metadata the library declares, and they appear in the IDL like declared parameters. Declaring them explicitly produces the same program only if you declare them ahead of your own parameters and in the injected order, `admin_config` then `caller`. They are then your parameters, appearing in your post-states list like any other account. Declaring them after your own parameters still compiles, but it reorders the instruction's accounts in the IDL, and that order is the transaction ABI.
 
-If your instruction already has parameters by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. The framework also recognises declared parameters by role, a `#[account(signer)]` parameter or a PDA parameter with the matching seed is reused under its declared name instead of being injected twice.
+If your instruction already has parameters by different names, point the gate at them with the inject-account names as keys: `#[require_admin(admin_config = my_cfg, caller = owner)]`. Use that form whenever either name differs. The framework does reuse a declared `#[account(signer)]` parameter, or a PDA parameter with the matching seed, in the instruction's account list rather than injecting it twice, but the gate's prologue still refers to the accounts by their role names, so a bare `#[require_admin]` over a renamed parameter fails to compile with `cannot find value caller in this scope` pointed at the attribute.
 
 ## Become the first admin
 

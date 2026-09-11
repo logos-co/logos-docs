@@ -62,7 +62,7 @@ All five are needed: the reference samples use exactly this set. `nssa_core` car
 
 The `spel-framework` entry points at a fork on purpose. It must be the exact revision `admin-authority` itself pins, and the library README documents that revision for each release. Pointing at `logos-co/spel` instead puts two copies of the framework into your dependency graph, and the build fails with a `From<AdminError>` trait error plus name resolution errors inside the `require_admin` expansion. The dependency moves to `logos-co/spel` once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 
-After adding the dependencies, run `cargo fetch` once from `methods/guest`, not from the project root. The scaffold's root `Cargo.toml` excludes `methods/guest`, so a root `cargo fetch` resolves a graph that does not contain `admin-authority`, prints nothing, and fetches nothing. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
+After adding the dependencies, run `cargo fetch` once from `methods/guest`, not from the project root. The scaffold's root `Cargo.toml` excludes `methods/guest`, so a root `cargo fetch` resolves a graph that does not contain `admin-authority`: it still updates the workspace's own registry and git sources and exits 0, so nothing in its output tells you the extension was skipped. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
 
 ## Install the `spel` CLI
 

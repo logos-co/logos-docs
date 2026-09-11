@@ -287,7 +287,7 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
    |-------|---------|----------|
    | `network.initial_peers` | Bootstrap peers | Use the current network document |
    | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-   | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080` |
+   | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
    | `state.base_folder` | State directory | Use a persistent local path |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
 

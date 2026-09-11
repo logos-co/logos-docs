@@ -19,7 +19,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](https://docs.logos.co/get-started/glossary#module)—a separate module that depends on Logos Storage and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
+The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
 
 :::info[Prerequisites]
 - A supported OS
@@ -357,7 +357,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
     }
     ```
 
-1.  Implement `download`, which downloads a file by its CID onto local disk:
+1.  Implement `download`, which downloads a file by its [CID](../../get-started/glossary.md#cid) onto local disk:
 
     ```cpp showLineNumbers=156
     StdLogosResult StorageCliImpl::download(const std::string &cid,
@@ -410,7 +410,7 @@ Package installs are handled by a module bundled inside the daemon, so the daemo
 
 The Storage module is a dependency of your module, so install it first.
 
-1.  Refresh the catalogue and install the Storage module package by name:
+1.  Refresh the [catalogue](../../get-started/glossary.md#catalogue) and install the Storage module package by name:
 
     ```bash
     logosctl --config-dir ./config-dir catalog refresh

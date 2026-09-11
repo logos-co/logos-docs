@@ -143,6 +143,7 @@ multiaddrs
 multisig
 mutex
 namespace
+natively
 Nescience
 Nim
 nimbos

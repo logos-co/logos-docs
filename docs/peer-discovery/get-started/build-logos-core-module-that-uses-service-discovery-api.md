@@ -34,8 +34,8 @@ Applications on the Logos network need a protocol-agnostic way to find peers off
    mkdir -p ~/.config/nix
    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
    ```
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
-   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
 ## What to expect

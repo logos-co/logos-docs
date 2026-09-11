@@ -30,8 +30,8 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
-   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
 ## What to expect

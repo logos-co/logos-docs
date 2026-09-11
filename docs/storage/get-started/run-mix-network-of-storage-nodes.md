@@ -31,8 +31,8 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
-   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
 

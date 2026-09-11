@@ -29,7 +29,7 @@ Logos is a modular application framework built on Qt 6. Applications are compose
 - At least 10 GB of disk space
 - Git
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
-   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 

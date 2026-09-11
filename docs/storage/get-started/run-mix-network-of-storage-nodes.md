@@ -32,7 +32,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
-   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
 

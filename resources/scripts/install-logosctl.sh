@@ -10,7 +10,7 @@
 set -eu
 
 # Pinned tool release.
-LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.2.3-rc.1}
+LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.2.3}
 
 os=$(uname -s)
 arch=$(uname -m)
@@ -33,7 +33,8 @@ tar -xzf "$tmp/logosctl-$platform.tar.gz" -C "$tmp"
 case "$platform" in
   *-linux)
     echo "Installing to /usr/local/bin/logosctl ..."
-    install -m755 "$tmp/logosctl-$platform.AppImage" /usr/local/bin/logosctl
+    appimage=$(ls "$tmp"/logosctl-*.AppImage)
+    install -m755 "$appimage" /usr/local/bin/logosctl
     echo "Done. logosctl is on PATH via /usr/local/bin."
     ;;
   *-macos)

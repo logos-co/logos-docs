@@ -35,7 +35,7 @@ Choose one of the three installation paths based on your environment:
    - Linux
    - macOS
 - Network access so both node instances can reach each other.
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3-rc.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sh`
 - Some prerequisites differ between paths:
    - **Path A**: Docker with Compose

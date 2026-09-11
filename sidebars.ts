@@ -106,6 +106,11 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'link',
+          label: 'Run a Logos Blockchain node from Basecamp',
+          href: '/blockchain/get-started/run-a-logos-blockchain-node-from-basecamp',
+        },
+        {
+          type: 'link',
           label: 'Run a Logos Blockchain node on the public testnet from the CLI',
           href: '/blockchain/get-started/run-a-logos-blockchain-node-from-cli',
         },

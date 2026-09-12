@@ -16,7 +16,7 @@ sidebar_position: 1
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
 
-This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
+This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)), and pre-release library tags. The framework pin becomes a release tag once upstream cuts a release that contains it.
 :::
 
 :::tip[Version]
@@ -37,13 +37,13 @@ If your program needs multi-party approval rather than single-admin gating, `adm
 
 ## Prerequisites
 
-You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (the `rust-rapidsnark` build script downloads a prebuilt zip and unpacks it through a helper shell script) and the Python development library (a transitive dependency links against libpython through `pyo3`). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
+You need a stable Rust toolchain, git, and the native build tools the dependency tree leans on. The `spel` CLI additionally needs `unzip` (the `rust-rapidsnark` build script downloads a prebuilt zip and unpacks it through a helper shell script), the Python development library (a transitive dependency links against libpython through `pyo3`), and the PC/SC smart card library (the wallet crate it builds links `pcsc`). The verification step at the end uses `jq`. On a fresh Ubuntu 24.04 this covers everything:
 
 ```bash
-sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake jq
+sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake libpcsclite-dev jq
 ```
 
-Two different floors apply here, and neither comes from `admin-authority` itself, which declares only `rust-version = "1.88"`. Building your program needs rustc 1.90 or newer whenever `ruint` resolves freely, the floor its 1.20.0 release sets. A `spel init` scaffold pins `ruint = "=1.17.0"` in its guest manifest, so that particular floor does not apply on the scaffold route. Installing the `spel` CLI needs rustc 1.94.0 or newer: a transitive `logos-blockchain` crate uses `strict_overflow_ops`, which older toolchains reject as an unstable feature. The CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, but `cargo install --git` does not apply a dependency's toolchain file, so your default toolchain has to meet that floor itself. Verified on a clean Ubuntu 24.04: the CLI installs on 1.94.0, and the scaffolded program builds on the same toolchain. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The co-signing exchange is the one exception, see the transfer section.
+Two different floors apply here, and neither comes from `admin-authority` itself, which declares only `rust-version = "1.88"`. Building your program needs rustc 1.90 or newer whenever `ruint` resolves freely, the floor its 1.20.0 release sets. A `spel init` scaffold pins `ruint = "=1.17.0"` in its guest manifest, so that particular floor does not apply on the scaffold route. Installing the `spel` CLI needs rustc 1.94.0 or newer: a transitive `logos-blockchain` crate uses `strict_overflow_ops`, which older toolchains reject as an unstable feature. The CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, but `cargo install --git` does not apply a dependency's toolchain file, so your default toolchain has to meet that floor itself. Verified on a clean Ubuntu 24.04 at the previous framework revision and re-run with these pins on 1.94.0: the CLI installs, and the scaffolded program builds on the same toolchain. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, at the previous framework revision (`f7aa464`, LEZ v0.2.0). The co-signing exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -51,25 +51,25 @@ In your program's `Cargo.toml`. If you do not have a program crate yet, do [Inst
 
 ```toml
 [dependencies]
-admin-authority = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.2" }
-spel-framework  = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
-nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
+admin-authority = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.3" }
+spel-framework  = { git = "https://github.com/logos-co/spel", rev = "8183b011b1a00dbc73ca9209f6b902c622d899af" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.4", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
 All five are needed: the reference samples use exactly this set. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing even when your own types never touch it. The `admin-authority-macros` sub-crate is pulled in transitively. You do not need to declare it directly.
 
-The `spel-framework` entry points at a fork on purpose. It must be the exact revision `admin-authority` itself pins, and the library README documents that revision for each release. Pointing at `logos-co/spel` instead puts two copies of the framework into your dependency graph, and the build fails with a `From<AdminError>` trait error plus name resolution errors inside the `require_admin` expansion. The dependency moves to `logos-co/spel` once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
+The `spel-framework` entry points at an exact commit on purpose. It must be the revision `admin-authority` itself pins, spelt the same way, and the library README documents that revision for each release. Pointing at a branch instead, or at any other commit, puts two copies of the framework into your dependency graph, and the build fails with a `From<AdminError>` trait error plus name resolution errors inside the `require_admin` expansion. The revision is the upstream commit that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). It becomes a tag once upstream cuts a release that contains it.
 
 After adding the dependencies, run `cargo fetch` once from `methods/guest`, not from the project root. The scaffold's root `Cargo.toml` excludes `methods/guest`, so a root `cargo fetch` resolves a graph that does not contain `admin-authority`: it still updates the workspace's own registry and git sources and exits 0, so nothing in its output tells you the extension was skipped. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched.
 
 ## Install the `spel` CLI
 
-The lifecycle commands below and the IDL check at the end use the `spel` CLI. Install it from the same fork revision the framework dependency pins:
+The lifecycle commands below and the IDL check at the end use the `spel` CLI. Install it from the same upstream revision the framework dependency pins:
 
 ```bash
-cargo install --git https://github.com/mmlado/spel --rev f7aa464b2c6c72ef513a25ede16584bca85b722f spel
+cargo install --git https://github.com/logos-co/spel --rev 8183b011b1a00dbc73ca9209f6b902c622d899af spel
 ```
 
 The package name is `spel`, not `spel-cli` as the repository directory suggests, asking cargo for `spel-cli` fails with "could not find `spel-cli`."
@@ -82,16 +82,16 @@ curl -fL https://github.com/logos-blockchain/logos-blockchain-circuits/releases/
   | tar xz -C ~/.cache/logos/blockchain/
 ```
 
-The version has to match the `logos-blockchain-circuits` version the pinned framework resolves to, `v0.5.3` for `f7aa464`. The build script reuses any artifact directory it finds there and skips the download entirely.
+The version has to match the `logos-blockchain-circuits` version the pinned framework resolves to, `v0.5.3` for `8183b01`. The build script reuses any artifact directory it finds there and skips the download entirely.
 
 ## Annotate the module
 
-This page assumes you already have an LEZ program crate. A deployable one is a RISC Zero guest, and `spel init` scaffolds it at `methods/guest/src/bin/<name>.rs`, where `<name>` is the project name with hyphens replaced by underscores, so `spel init my-program` writes `my_program.rs`. That is the same layout `spel generate-idl` auto-detects when given no path. Pass both source flags ahead of the project name, the parser stops reading flags at the first argument that is not one, so anything after the name is dropped without a warning. With the default pins the scaffold takes `logos-co/spel` `main`, whose framework has no extension scanner and whose `lee_core` does not match the one `admin-authority` pins, and the guest then fails to compile with type errors out of the `#[lez_program]` expansion rather than anything naming the marker:
+This page assumes you already have an LEZ program crate. A deployable one is a RISC Zero guest, and `spel init` scaffolds it at `methods/guest/src/bin/<name>.rs`, where `<name>` is the project name with hyphens replaced by underscores, so `spel init my-program` writes `my_program.rs`. That is the same layout `spel generate-idl` auto-detects when given no path. Pass both source flags ahead of the project name, the parser stops reading flags at the first argument that is not one, so anything after the name is dropped without a warning. With the default pins the scaffold takes `logos-co/spel` at a floating reference, a pull request head at this revision of the CLI. A floating pin never unifies with the exact revision `admin-authority` pins, and as it moves its `lee_core` can differ too. Either way the guest ends up with two copies of the framework and fails to compile with type errors out of the `#[lez_program]` expansion rather than anything naming the marker. Pass the revision:
 
 ```bash
 spel init \
-    --spel-git https://github.com/mmlado/spel.git \
-    --spel-rev f7aa464b2c6c72ef513a25ede16584bca85b722f \
+    --spel-git https://github.com/logos-co/spel.git \
+    --spel-rev 8183b011b1a00dbc73ca9209f6b902c622d899af \
     my-program
 ```
 
@@ -219,7 +219,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message. The `spel` CLI at the pinned revision has no co-signing exchange: the command above builds and submits with the caller's signature only, and the sequencer drops the transaction unless the candidate's signature is attached. Collecting that second signature is not possible from the pinned `spel`. The exchange flow merged upstream after this revision ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)) and arrives here when the framework pin moves.
+A `Signer` transfer needs the new admin's signature on the same transaction, which proves the keyholder consents. That means two parties sign one message. Run as written, the command above builds and submits with the caller's signature only, and the sequencer drops the transaction unless the candidate's signature is attached. The `spel` CLI at this revision collects that second signature through a partial-transaction file ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)): the current admin adds the global flags `--co-signer <new-admin-account-id> --export handover.json` before the `--` separator, which writes the transaction to the file instead of submitting it. The new admin runs `spel sign handover.json` on their own machine, offline, and anyone with a node connection then runs `spel submit handover.json`. The CLI README's witness exchange section describes the file format. This page has not walked that exchange against a live stack.
 
 After the transaction lands, the previous admin can no longer call gated instructions.
 
@@ -316,12 +316,12 @@ Expected output includes:
 "admin_renounce"
 ```
 
-Plus your own instructions. On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. That safety net is a property of the pinned framework revision: on a framework without the scanner, upstream `logos-co/spel` main today, the marker is ignored and the program builds cleanly without the trio. When you hit the hard error, the most common causes are:
+Plus your own instructions. On a framework build that carries the extension scanner, a marker that matches no discoverable extension is a hard compile error naming the marker, so a broken setup refuses loudly rather than building without the trio. That safety net is a property of the framework revision: on a framework without the scanner, any upstream release from before #257, the marker is ignored and the program builds cleanly without the trio. When you hit the hard error, the most common causes are:
 
 - `admin-authority` not declared as a direct path or git dependency in your `Cargo.toml`. Transitive dependencies are never discovered.
 - Cached macro expansion, run `cargo clean -p <your-crate>` and rebuild.
 
-Misplacing the marker is a different failure and never reaches that error, because a marker above `#[lez_program]` is consumed before the framework sees it. Since nothing on this page imports `admin_authority`, writing it above `#[lez_program]` stops at name resolution instead, with ``cannot find attribute `admin_authority` in this scope`` and a note that the name is a crate rather than an attribute. Import the name and `admin-authority` v0.1.2 rejects the placement itself: `#[admin_authority] must come after #[lez_program]`.
+Misplacing the marker is a different failure and never reaches that error, because a marker above `#[lez_program]` is consumed before the framework sees it. Since nothing on this page imports `admin_authority`, writing it above `#[lez_program]` stops at name resolution instead, with ``cannot find attribute `admin_authority` in this scope`` and a note that the name is a crate rather than an attribute. Import the name and `admin-authority` v0.1.3 rejects the placement itself: `#[admin_authority] must come after #[lez_program]`.
 
 ## Security notes
 

@@ -16,7 +16,7 @@ sidebar_position: 2
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
 
-This page tracks unreleased code. The dependency snippets pin a personal fork of the framework and pre-release library tags. The pins move to logos-co sources once the extension mechanism lands upstream ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
+This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)), and pre-release library tags. The framework pin becomes a release tag once upstream cuts a release that contains it.
 :::
 
 :::tip[Version]
@@ -41,7 +41,7 @@ If your program needs a permanent pause with no recovery, use `admin_renounce` a
 
 Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, plus the `spel init` command in [Annotate the module](admin-authority.md#annotate-the-module) if you do not have a program crate yet. Those three are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its three instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
 
-The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04, in auto, manual, and embedded mode. The toolchain floors from the admin-authority page apply here unchanged. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, on the same framework revision this page pins. The multi-signature exchange is the one exception, see the transfer section.
+The build and IDL verification steps on this page were verified on a clean Ubuntu 24.04 at the previous framework revision, in auto, manual, and embedded mode, and the library's own CI builds its three reference samples with these pins in every mode. The toolchain floors from the admin-authority page apply here unchanged. The lifecycle commands were verified against a live LEZ stack during the library's milestone reviews, at the previous framework revision (`f7aa464`, LEZ v0.2.0). The multi-signature exchange is the one exception, see the transfer section.
 
 ## Add the dependency
 
@@ -49,15 +49,15 @@ In your program's `Cargo.toml`. If you do not have a program crate yet, run the 
 
 ```toml
 [dependencies]
-admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.2" }
-freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority", tag = "v0.1.3" }
-spel-framework   = { git = "https://github.com/mmlado/spel", rev = "f7aa464b2c6c72ef513a25ede16584bca85b722f" }
-nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.0", package = "lee_core" }
+admin-authority  = { git = "https://github.com/mmlado/spel-admin-authority", tag = "v0.1.3" }
+freeze-authority = { git = "https://github.com/mmlado/spel-freeze-authority", tag = "v0.1.4" }
+spel-framework   = { git = "https://github.com/logos-co/spel", rev = "8183b011b1a00dbc73ca9209f6b902c622d899af" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.4", package = "lee_core" }
 borsh = { version = "1", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Use the tags above together, `freeze-authority` v0.1.3 pins `admin-authority` v0.1.2, so a consumer on both resolves one copy of each. The framework must be the exact revision those releases pin, spelt as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The source flips to `logos-co/spel` once the extension mechanism reaches an upstream release ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
+The `admin-authority` dependency is required because freeze-authority composes with it, and both must be direct dependencies, the framework never discovers extensions transitively. Use the tags above together, `freeze-authority` v0.1.4 pins `admin-authority` v0.1.3, so a consumer on both resolves one copy of each. The framework must be the exact revision those releases pin, spelt as `rev = ...`. A branch reference fails even when the branch points at the same commit, because cargo treats different git reference kinds as different sources and you end up with two copies of the framework and a `From<AdminError>` trait error. The revision is the upstream commit that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). It becomes a tag once upstream cuts a release that contains it. `nssa_core` carries the on-chain account types, `borsh` encodes your state, and `serde` is required by the instruction plumbing. The `freeze-authority-macros` sub-crate is pulled in transitively.
 
 After adding the dependencies, run `cargo fetch` once from `methods/guest`, not from the project root. The scaffold's root `Cargo.toml` excludes `methods/guest`, so a root `cargo fetch` resolves a graph that contains neither `admin-authority` nor `freeze-authority`: it still updates the workspace's own registry and git sources and exits 0, so nothing in its output tells you the extensions were skipped. The framework's extension scanner resolves your dependency graph with an offline metadata call, which fails deterministically for a fresh consumer whose git dependencies were never fetched. And if you started from `cargo new`, delete the default `fn main`, the `#[lez_program]` macro generates the program's entry point.
 
@@ -223,7 +223,7 @@ spel --idl program-idl.json --program <program-id> -- \
     --candidate Signer
 ```
 
-A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. The `spel` CLI at the pinned revision has no multi-signature exchange flow: the single command above builds and submits with the caller's signature only, and the sequencer drops it unless the new holder's signature is attached. Collecting that second signature is not possible from the pinned `spel`. The exchange flow merged upstream after this revision ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)) and arrives here when the framework pin moves.
+A `Signer` candidate is validated on chain by checking that the new holder co-signed the transaction, and the wallet only collects signatures for declared signer accounts. Run as written, the command above builds and submits with the caller's signature only, and the sequencer drops it unless the new holder's signature is attached. The `spel` CLI at this revision collects that second signature through a partial-transaction file ([logos-co/spel#246](https://github.com/logos-co/spel/pull/246)): the admin adds the global flags `--co-signer <new-freeze-authority-account-id> --export handover.json` before the `--` separator, the new holder runs `spel sign handover.json` on their own machine, and anyone with a node connection runs `spel submit handover.json`. See the transfer section of the [admin-authority page](admin-authority.md#transfer-admin-to-another-party) for the same flow. This page has not walked that exchange against a live stack.
 
 ## Use a program (PDA) as freeze authority
 

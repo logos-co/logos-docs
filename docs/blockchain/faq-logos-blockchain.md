@@ -1,5 +1,5 @@
 ---
-title: "FAQ: Logos Blockchain"
+title: "Blockchain FAQ"
 doc_type: concept
 product: blockchain
 topics: faq
@@ -10,7 +10,7 @@ slug: faq
 sidebar_position: 6
 ---
 
-# FAQ: Logos Blockchain
+# Blockchain FAQ
 
 #### Review answers to less obvious questions about how the Logos Blockchain works and where it fits.
 
@@ -20,7 +20,7 @@ It is important to distinguish between two distinct kinds of privacy that are po
 
 Because the Logos Blockchain's Bedrock layer (which maintains the [Mantle ledger](concepts/about-mantle.md#mantle-ledger)) serves a resilient foundational layer for apps running on Logos Zones, it is designed primarily to protect the privacy of block proposers. If proposers could be identified or connected with transactions included in their blocks, they could become targets for coercion or denial of service attacks by hostile actors. Even when there is no credible threat of being targeted, block proposers without privacy could engage in cautionary self-censorship by excluding certain transactions, thereby compromising the neutrality of the entire network. Hiding proposer identity keeps that from happening regardless of how transparent the ledger is.
 
-Transaction privacy needs different vastly for different use cases, and is therefore not provided directly by Bedrock. [Notes](../get-started/glossary.md#note) and their transfers are recorded openly on the ledger, similar to Bitcoin, and the Bedrock layer makes no attempt to hide that data. Developers that need to hide their app's data, such as balances or message contents, must implement their desired level of transaction privacy at the [Zone](concepts/about-zones.md) layer instead of relying on Bedrock for it. **Transaction privacy is supported natively on the [LEZ](../get-started/glossary.md#lez), in addition to public transactions**.
+Transaction privacy needs differ vastly for different use cases, so this type of privacy is not provided directly by Bedrock. [Notes](../get-started/glossary.md#note) and their transfers are recorded openly on the ledger, similar to Bitcoin, and the Bedrock layer makes no attempt to hide that data. Developers that need to hide their app's data, such as balances or message contents, must implement their desired level of transaction privacy at the [Zone](concepts/about-zones.md) layer instead of relying on Bedrock for it. **Transaction privacy is supported natively on the [LEZ](../get-started/glossary.md#lez), in addition to public transactions**.
 
 :::note
 For more information on proposer privacy on Logos, see [Anonymous Block Proposers](https://blog.logos.co/article/anonymous-block-proposers).
@@ -34,11 +34,13 @@ No, that protection depends on whether the proposer is a [core node](../get-star
 
 Correctness is the Zone's own responsibility, not Bedrock's. [Bedrock](concepts/about-bedrock.md) stores whatever state updates a [Zone](concepts/about-zones.md)'s sequencer inscribes without verifying their validity, so each Zone chooses its own correctness mechanism - publishing zero knowledge validity proofs, running a fraud-proof challenge window, or requiring its nodes to re-execute the state transition themselves. For bridged funds specifically, Bedrock enforces only one aggregate invariant: the total note value withdrawn from a Zone can never exceed the total value deposited into it. It doesn't verify that a withdrawal went to the correct account or that a Zone's internal accounting is honest - that guarantee comes entirely from whichever correctness mechanism the Zone itself implements.
 
-On the LEZ, transactions are verified differently depending on if they're public or private. Public transactions are re-executed by LEZ validators, while private transactions involve the generation of zero knowledge proofs via Risc0, which are then verified by LEZ validators. 
+On the LEZ, transactions are verified differently depending on if they're public or private. Public transactions are re-executed by LEZ validators, while private transactions involve the generation of zero knowledge proofs via Risc0, which are then verified by LEZ validators.
 
 ## Does decentralised sequencing eliminate MEV on a Zone?
 
 No, it distributes the opportunity for MEV extraction across a set of sequencers rather than removing it. When a Zone uses several sequencers, taking turns on a round-robin schedule or competing to publish first, no single sequencer can reliably capture all of the MEV available the way a single-sequencer rollup's operator could. A threshold of sequencers can also jointly sign a change to the sequencer list, letting an honest majority remove a malicious one.
+
+By isolating MEV to the Zone level, the Logos Blockchain is able to remain neutral and decentralised - centralised sequencing in one Zone does not impact the decentalisation of other Zones.
 
 ## Why build on a Zone instead of launching an independent Layer 1?
 

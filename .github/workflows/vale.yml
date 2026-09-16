@@ -24,6 +24,7 @@ jobs:
         with:
           version: 3.11.1
           files: docs
+          vale_flags: "--minAlertLevel=error"
           reporter: github-pr-check
           filter_mode: added
           fail_on_error: true

@@ -178,6 +178,16 @@ const config: Config = {
             from: '/build-an-app/build-modules/readme',
             to: '/core/build-modules/build-and-run-a-logos-core-module',
           },
+          // Shortened canonical URLs. The page now lives at the short path
+          // (frontmatter `slug`), and the long path it used to own is kept
+          // alive here because it is spoken in a published demo video and
+          // embedded in in-app feedback links. Docusaurus's redirect page
+          // carries the query string and hash across, so deep links to a
+          // named step still land on that step.
+          {
+            from: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
+            to: '/basecamp/atomic-swaps-poc',
+          },
         ],
       } satisfies PluginClientRedirects.Options,
     ],

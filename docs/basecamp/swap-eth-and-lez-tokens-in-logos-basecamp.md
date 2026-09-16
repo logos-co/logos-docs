@@ -7,7 +7,7 @@ steps_layout: sectioned
 authors: [danisharora099]
 owner: logos
 doc_version: 1
-slug: swap-eth-and-lez-tokens-in-logos-basecamp
+slug: atomic-swaps-poc
 sidebar_position: 3
 ---
 

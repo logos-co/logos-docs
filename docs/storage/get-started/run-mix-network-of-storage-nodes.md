@@ -61,20 +61,7 @@ All six nodes below share one already-unpacked copy of `storage_module`, install
     logosctl --config-dir ./install-session daemon stop
     ```
 
-<<<<<<< HEAD
-1.  Confirm the module landed:
-
-    ```sh
-    lgpm --modules-dir ./modules list
-    Found 1 installed module(s):
-
-    NAME                           VERSION         TYPE       CATEGORY
-    ----------------------------------------------------------------------
-    storage_module                 2.1.2           core       protocol
-    ```
-=======
     The package is now unpacked under `./install-session/modules/storage_module/`.
->>>>>>> main
 
 ## Launch the bootstrap Mix node (node 1)
 

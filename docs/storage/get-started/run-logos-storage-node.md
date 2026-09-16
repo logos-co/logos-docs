@@ -61,18 +61,9 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
 1.  Install the Logos storage module package version 2.1.2. The root hash ensures you select the published package identity that exactly matches the pinned version:
 
     ```sh
-<<<<<<< HEAD
-    lgpm --modules-dir ./modules list
-    Found 1 installed module(s):
-
-    NAME                           VERSION         TYPE       CATEGORY
-    ----------------------------------------------------------------------
-    storage_module                 2.1.2           core       protocol
-=======
     logosctl package install storage_module \
     --version 2.1.2 \
     --yes
->>>>>>> main
     ```
 
     :::note
@@ -92,42 +83,11 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
 
 Initialise and start the storage module with `logosctl`.
 
-<<<<<<< HEAD
-    # Logoscore Daemon
-    #   Status:       running
-    #   PID:          148188
-    #   Uptime:       0s
-    #   Version:      v1.0.0
-    #
-    # Modules: 1 loaded, 0 crashed, 1 not loaded
-    #   storage_module     v2.1.2  not_loaded  -
-    #   capability_module  v1.0.0  loaded      2m
-    ```
-
-    - `logoscore` prints this table when it is attached to a terminal and JSON when its output is
-      piped or redirected. Pass `--human` or `--json` to force either one.
-
-1.  Load the storage module and confirm it reports `loaded`:
-
-    ```sh
-    logoscore load-module storage_module
-    # Loaded module: storage_module (v2.1.2)
-
-    logoscore status
-    # ...
-    # Modules: 2 loaded, 0 crashed, 0 not loaded
-    #   storage_module     v2.1.2  loaded      0s
-    #   capability_module  v1.0.0  loaded      2m
-    ```
-
-    - To see every method the module exposes (the same methods you can `call`), run `logoscore module-info storage_module`.
-=======
 Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logosctl call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
 :::tip
 To see every method the module exposes (the same methods you can `call`), run `logosctl module-info storage_module`.
 :::
->>>>>>> main
 
 1.  Create a minimal storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
 

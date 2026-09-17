@@ -19,9 +19,9 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) (tag `v0.2.0`).
+This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) (tag `v0.2.1`).
 
-The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.0`](https://github.com/logos-co/logos-delivery-module/tree/3258cdb0132e37228aa2519e0c01c0e7429a20dd)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
+The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.1`](https://github.com/logos-co/logos-delivery-module/tree/b8b9ac2f4667bc63644b2116f64a07aa30cfd3ef)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 
 :::info[Prerequisites]
 
@@ -99,7 +99,7 @@ The flake input name (`delivery_module`) must exactly match the dependency name 
    inputs = {
      logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.5";
      delivery_module = {
-       url = "github:logos-co/logos-delivery-module/v0.2.0";
+       url = "github:logos-co/logos-delivery-module/v0.2.1";
        # Your module and delivery_module must be built by the same
        # logos-module-builder: the event emitter and the consumer have to agree
        # on the binary event wire format.
@@ -178,7 +178,7 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
 The node is a singleton per Logos Core instance: call `createNode` exactly once per context, and expect the node to already exist when another module created it first.
 :::
 
-1. Initialise the node with `createNode`. For a complete list of node configuration keys, see the [Module Interface](https://github.com/logos-co/logos-delivery-module/blob/3258cdb0132e37228aa2519e0c01c0e7429a20dd/README.md#module-interface) section of the README.
+1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](https://logos-co.github.io/logos-delivery-module/v0.2.1/pages/api_reference.html#_CPPv4N18DeliveryModuleImpl10createNodeERKNSt6stringE) in the Delivery module API reference.
 
    ```cpp
    auto& delivery = modules().delivery_module;
@@ -376,7 +376,7 @@ Reliability shows only between two participants of the same channel. Use the sam
 Messages arriving on both sides, each attributed to the sending participant, confirms the channel journey: channel creation on a shared content topic and acknowledgement through SDS.
 
 :::tip
-[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
+[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
 :::
 
 ## Troubleshooting the Logos Delivery module

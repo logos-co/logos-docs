@@ -216,6 +216,7 @@ toolchain
 toolchains
 Tribler
 Trilemma
+tutorial's
 tx
 ufw
 ui_qml

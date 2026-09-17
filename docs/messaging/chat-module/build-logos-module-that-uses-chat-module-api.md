@@ -191,7 +191,7 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
    });
    ```
 
-   See [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.2.2/rust-lib/chat_module.lidl) for the exact argument list of every method and event.
+   See the [Chat module API reference](https://logos-co.github.io/logos-chat-module/v0.2.2/pages/api_reference.html) for the exact argument list of every method and event. It is generated from [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.2.2/rust-lib/chat_module.lidl), the contract this tutorial's client is built from.
 
 ## Step 4: Initialise the chat client
 

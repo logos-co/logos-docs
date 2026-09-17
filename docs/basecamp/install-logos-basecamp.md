@@ -59,7 +59,7 @@ This tutorial is also available in video form:
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
-- On macOS, drag the `.dmg` file into `/Applications`. Then launch Basecamp from `/Applications`.
+- On macOS, open the `.dmg` file and drag the Logos Basecamp app inside it into `/Applications`. Then launch Basecamp from `/Applications`.
 - On Linux and WSL, install some prerequisites, then grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
@@ -68,8 +68,12 @@ This tutorial is also available in video form:
     # On Ubuntu 22.04 and earlier, use libfuse2 instead of libfuse2t64
 
     chmod +x LogosBasecamp-Desktop-*.AppImage
-    ./LogosBasecamp-Desktop-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
+    ./LogosBasecamp-Desktop-*-x86_64.AppImage  # or ./LogosBasecamp-Desktop-*-aarch64.AppImage
     ```
+
+    Release artifacts carry the version and commit in their name, for example
+    `LogosBasecamp-Desktop-v0.2.3-aa2377-x86_64.AppImage`, so run the file you actually
+    downloaded rather than a fixed name.
 
 ## Build and run Logos Basecamp from source
 

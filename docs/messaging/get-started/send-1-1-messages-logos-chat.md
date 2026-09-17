@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, intro-bundle handshake, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
 
@@ -41,7 +41,7 @@ Identity, conversations, and message history exist only while the app is running
 ## What to expect
 
 - You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](../../get-started/glossary.md#basecamp).
-- You can exchange encrypted messages between two instances in real time after completing the intro-bundle handshake.
+- You can exchange encrypted messages between two instances in real time once one of them has opened a conversation with the other's address.
 - You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
 
 ## Step 1: Run the Logos Chat app
@@ -58,11 +58,12 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
 1.  In the left bar, select **Package Manager**.
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-1.  Select `logos-chat-module` and `logos-chat-ui`, then click **Install**.
+1.  Find **Chat** (type `ui_qml`) in the package list and click **INSTALL**. The **Install Package?**
+    dialogue lists the `chat_module` core package it depends on; confirm with **Install**.
 
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
-1. Wait until a green **Installed** label appears next to both modules.
-1. In the left bar, select **chat** to launch the Logos Chat app.
+1. Wait until the **Action** column reads **INSTALLED** for both packages.
+1. Restart Basecamp, then select the chat icon in the left bar to launch the Logos Chat app.
 
 ### Option B—Build and run locally with Nix
 
@@ -71,8 +72,12 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     ```bash
     git clone https://github.com/logos-co/logos-chatsdk-ui
     cd logos-chatsdk-ui
-    git checkout v0.1.0
+    git checkout v0.2.2
     ```
+
+    - `v0.2.2` is the release the Basecamp catalogue ships as **Chat**, so both options run the same
+      app and match the walkthrough below. Older tags such as `v0.1.0` predate the address-based
+      contact flow in [Step 2](#step-2-start-a-conversation).
 1.  Run the standalone app:
 
     ```bash
@@ -80,40 +85,37 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     nix run
     ```
 
-## Step 2: Exchange intro bundles
+## Step 2: Start a conversation
 
-The app auto-initialises on launch and displays your identity ID in the bottom status bar. Perform the steps below on **both** instances—referred to here as **A** and **B**.
+The app auto-initialises on launch. The bottom-left panel shows your identity, an **Online**
+indicator, and your **address** in hexadecimal with a copy button next to it. You need one
+instance's address to open a conversation from the other—referred to here as **A** and **B**.
 
 ![Logos Chat App UI screenshot](../assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
 
-**On instance A:**
-
-1.  Click **Get Intro Bundle**, then click **Copy to Clipboard**.
-
-    The bundle is a string starting with `logos_chatintro…`.
-1. Send the copied bundle to instance B through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
-1. Close the **My Bundle** popup.
-
 **On instance B:**
 
-1. Click **+ new**.
-2. Paste A's intro bundle into the dialogue, then type an intro message (default: `Hello!`).
-3. Confirm. A new conversation appears in B's conversation list.
+1. In the bottom-left panel, click the copy button next to your address.
+1. Send the address to instance A through any [out-of-band](../../get-started/glossary.md#out-of-band) [channel](../../get-started/glossary.md#channel).
 
-**Back on instance A:**
+**On instance A:**
 
-1. Confirm the new conversation appears automatically in A's conversation list, then select it.
-2. Verify that B's intro message is visible in the chat panel.
+1. Click **New chat**, then choose **Direct message** ("One person, by address").
+2. Paste B's address into the **New DM** dialogue under **Paste the other user's address**.
+3. Click **Create**. A new conversation appears in A's conversation list.
+
+There is no intro message to type and nothing to accept on B's side: the conversation appears in
+B's list as soon as A's first message arrives, which you send in the next step.
 
 ## Step 3: Send and receive messages
 
-1. Select the shared conversation in either instance.
-2.  Type a message in the message input field, then press `Enter` or click `>>`.
+1. On instance A, select the conversation you created in [Step 2](#step-2-start-a-conversation).
+2.  Type a message in the message input field, then press `Enter` or click the send button.
 
     Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
-3.  From instance A, send a message and observe instance B.
+3.  Observe instance B.
 
-    **Expected result:** the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. A reply from B appears as an incoming bubble in A.
+    **Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select it and reply; the reply appears as an incoming bubble in A.
 
 ## Troubleshooting Logos Chat
 
@@ -123,4 +125,4 @@ Both instances need to reach a shared bootstrap peer to connect to the peer-to-p
 
 ### A previously open conversation has disappeared
 
-Conversations are ephemeral and are not persisted between sessions. Re-exchange intro bundles between the two instances to open a new conversation.
+Conversations are ephemeral and are not persisted between sessions. Open a new conversation with **New chat > Direct message** using the other instance's current address.

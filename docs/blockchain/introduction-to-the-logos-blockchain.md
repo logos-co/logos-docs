@@ -38,7 +38,7 @@ The Logos Blockchain is implemented as two blockchain layers. Application execut
 
 ### Bedrock
 
-Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its [Private Proof of Stake](../get-started/glossary.md#private-proof-of-stake) ([PPoS](../get-started/glossary.md#ppos)) consensus protocol, [Cryptarchia](concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, note mining & bridging, and inter-Zone messaging.
+Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its [Private Proof of Stake](../get-started/glossary.md#private-proof-of-stake) ([PPoS](../get-started/glossary.md#ppos)) consensus protocol, [Cryptarchia](concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, note [mining](../get-started/glossary.md#mining) & bridging, and inter-Zone messaging.
 
 Running a Bedrock validator node means leaving the [Logos node](../get-started/glossary.md#logos-node) application running in the background, with a low-maintenance approach. This makes it straightforward to contribute to the security, consensus, and interoperability of the network.
 

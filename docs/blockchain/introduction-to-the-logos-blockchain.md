@@ -26,11 +26,11 @@ The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the found
 
 The Logos Blockchain was designed around three principles: privacy, neutrality, and resilience.
 
-Privacy means the network protects information about all participants, regardless of their role. At the infrastructure level, nodes can propose blocks with a very low probability of being traced. Logos also gives developers tools to build applications with programmable privacy, so those applications can keep personal data hidden.
+**Privacy** means the network protects information about all participants, regardless of their role. At the infrastructure level, nodes can propose blocks with a very low probability of being traced. Logos also gives developers tools to build applications with programmable privacy, so those applications can keep personal data hidden.
 
-Neutrality means activity is handled without compromising the public neutrality of nodes. Nodes can process transactions without having to make their inclusion public.
+**Neutrality** means activity is handled in a consistent way, without nodes having to make active decisions about which transactions to include in a block. Nodes process transactions according to simple criteria, without making their decisions about transaction inclusion public. As a result, nodes cannot effectively be pressured to exclude transactions originating from a certain party or containing certain information from a block, and are able to process all activity in an unbiased fashion.
 
-Resilience means the network stays operational and protects privacy under difficult conditions, including a partitioned internet, heavy censorship, and hostile government action. Running a node is meant to be easy enough to do on a laptop, which attracts more nodes and reduces points of failure. A consensus protocol that prioritises liveness lets the network keep operating in the worst conditions.
+**Resilience** means the network stays operational and protects privacy under difficult conditions, including a partitioned internet, heavy censorship, and adversarial attacks. Running a node is meant to be easy enough to do on a laptop, which attracts more nodes and reduces points of failure. A consensus protocol that prioritises liveness lets the network keep operating in the worst conditions.
 
 ## Architecture
 

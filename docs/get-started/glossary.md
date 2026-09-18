@@ -98,6 +98,10 @@ A peer discovery mechanism used in Logos Delivery that allows the retrieval of a
 
 ## E
 
+### EmPoWering
+
+A term used to describe how Proof of Work (PoW) is used on the Logos Blockchain, both to mine notes and to send Mantle transactions through the Blend Network. See [About Mantle](../blockchain/concepts/about-mantle.md#mining-notes) and [About the Blend Network](../blockchain/concepts/about-the-blend-network.md#sending-mantle-transactions-via-proof-of-work).
+
 ### ENR
 
 **Ethereum Node Record** - a specification used in Logos Delivery to represent and identify nodes, facilitating discovery and communication within the network. Besides connection details, ENR also includes node configuration information like enabled protocol and shards.
@@ -249,6 +253,10 @@ The execution layer of Bedrock, enabling participation in the Blend Network and 
 ### Message
 
 A virtual "block" of data that forms part of a Logos channel. See [About Mantle](../blockchain/concepts/about-mantle.md).
+
+### Mining
+
+The process of obtaining notes via Proof of Work. See [About Mantle](../blockchain/concepts/about-mantle.md#mining-notes).
 
 ### Mix
 

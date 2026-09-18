@@ -100,7 +100,7 @@ A peer discovery mechanism used in Logos Delivery that allows the retrieval of a
 
 ### EmPoWering
 
-A term used to describe how Proof of Work (PoW) is used on the Blend Network. See [About Mantle](../blockchain/concepts/about-mantle.md#mining-notes) and [About the Blend Network](../blockchain/concepts/about-the-blend-network.md#sending-mantle-transactions-via-proof-of-work).
+A term used to describe how Proof of Work (PoW) is used on the Logos Blockchain, both to mine notes and to send Mantle transactions through the Blend Network. See [About Mantle](../blockchain/concepts/about-mantle.md#mining-notes) and [About the Blend Network](../blockchain/concepts/about-the-blend-network.md#sending-mantle-transactions-via-proof-of-work).
 
 ### ENR
 

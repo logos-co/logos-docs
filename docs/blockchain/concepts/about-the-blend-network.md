@@ -80,7 +80,7 @@ In addition to block proposals, nodes can also send Mantle transactions directly
 
 To send a Mantle transaction through the Blend Network, a user chooses a value and hashes it together with the consensus randomness value for the current or previous epoch. This hash is compared to a threshold value derived from the transactions in the epoch before last - if the hash is below the threshold, the user is eligible to send a Mantle transaction via the Blend Network. This transaction gets added to the mempool of the last node on its Blend path, eventually being included in a block in a way that makes it infeasible to link the transaction with the user that sent it.
 
-While Logos note transfers and most channel inscriptions are not private, Proof of Work Blending can be used to inscribe arbitrary data on-chain in a private way. To do this, the user should first mint some notes and submit the claim transaction via PoW through the Blend Network. Then, they can submit an inscription transaction to a new Mantle channel through Blend, which will add the desired data to the chain. To avoiding linking this inscription with future ones, the user should then throw away the channel's signing key.
+While Logos note transfers and most channel inscriptions are not private, Proof of Work Blending can be used to inscribe arbitrary data on-chain in a private way. To do this, the user should first mine some notes and submit the claim transaction via PoW through the Blend Network. Then, they can submit an inscription transaction to a new Mantle channel through Blend, which will add the desired data to the chain. To avoiding linking this inscription with future ones, the user should then throw away the channel's signing key.
 
 ### Service Declaration Protocol
 

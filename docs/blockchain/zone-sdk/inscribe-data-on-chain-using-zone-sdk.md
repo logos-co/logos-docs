@@ -93,7 +93,7 @@ After the first channel message, further messages include a hash reference to th
         }
     }
     ```
-2.  Fill in the `run()` function in `src/lib.rs` with the following code that creates a channel with an associated sequencer:
+1.  Fill in the `run()` function in `src/lib.rs` with the following code that creates a channel with an associated sequencer:
 
     ```rust
     // Processing loop
@@ -204,7 +204,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
     }
     ```
-2.  Back in `src/lib.rs`, add a function to handle when the sequencer has finished [bootstrapping](../../get-started/glossary.md#bootstrapping):
+1.  Back in `src/lib.rs`, add a function to handle when the sequencer has finished [bootstrapping](../../get-started/glossary.md#bootstrapping):
 
     ```rust
     // Defines initial post-bootstrapping behaviour
@@ -228,7 +228,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         ui::prompt();
     }
     ```
-3.  Add a function to apply finalised messages to the Zone state:
+1.  Add a function to apply finalised messages to the Zone state:
 
     ```rust
     // Apply finalised messages from chain to Zone state
@@ -252,7 +252,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         ui::prompt();
     }
     ```
-4.  Add a function to handle sequencer events and execute whichever of the above handlers is necessary for the current event:
+1.  Add a function to handle sequencer events and execute whichever of the above handlers is necessary for the current event:
 
     ```rust
     // Handle sequencer events
@@ -281,7 +281,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
         }
     }
     ```
-5.  Add the processing loop to `run()` to watch for events:
+1.  Add the processing loop to `run()` to watch for events:
 
     ```rust
     pub async fn run(args: InscribeArgs) {

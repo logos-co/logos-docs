@@ -36,13 +36,13 @@ The Blend Network makes it difficult to link a block proposer to their proposal 
 While dedicated participation in the Blend Network is reserved for declared Blend nodes, proposals and other messages can also be sent to it from regular Logos nodes. The following steps illustrate the process which a message goes through before being broadcast and included in the chain.
 
 1. The message sender selects a random path of nodes along which it will relay its message to the receiver, covering the message in layers of encryption for every node on the path.
-2. The sender sends the layered message to every Blend node with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
+1.  The sender sends the layered message to every Blend node with which it maintains a peer-to-peer connection. This process, known as dissemination, is shown below.
 
     ![The Blend Network using dissemination to relay proposal messages. Peer-to-peer relaying of messages is not shown for simplicity.](../assets/about-the-blend-network/dissemination.png)
 
-3. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
-4. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
-5. When the receiver finally receives its message, it decrypts this message and is able to retrieve the original payload. This payload is then broadcast to the Logos Blockchain as a block proposal.
+1. When a Blend node receives a message, it checks that the message is unique and has not yet been seen, relaying it to its own peers. This ensures that every message is ultimately disseminated to the entire network.
+1. A Blend node that receives a message will also attempt to decrypt the message. If it is able to decrypt the outer layer of a message it receives, it relays this decrypted message (after a randomised delay) to its peers for the next node in the path to receive and decrypt.
+1. When the receiver finally receives its message, it decrypts this message and is able to retrieve the original payload. This payload is then broadcast to the Logos Blockchain as a block proposal.
 
 This process of hiding messages under several layers of encryption and randomly delaying their propagation at each stage of dissemination is known as message blending. When a message is disseminated to all nodes, observers cannot determine which node was the intended receiver, even if they can identify the sender. Due to the layered encryption, observers also cannot determine which "hop" of the relay process the message is currently on. This decryption at each node in the path transforms messages, so the incoming and outgoing messages cannot be linked together based on their content.
 

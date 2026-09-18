@@ -97,21 +97,21 @@ The app auto-initialises on launch and displays your identity ID in the bottom s
 **On instance B:**
 
 1. Click **+ new**.
-2. Paste A's intro bundle into the dialogue, then type an intro message (default: `Hello!`).
-3. Confirm. A new conversation appears in B's conversation list.
+1. Paste A's intro bundle into the dialogue, then type an intro message (default: `Hello!`).
+1. Confirm. A new conversation appears in B's conversation list.
 
 **Back on instance A:**
 
 1. Confirm the new conversation appears automatically in A's conversation list, then select it.
-2. Verify that B's intro message is visible in the chat panel.
+1. Verify that B's intro message is visible in the chat panel.
 
 ## Step 3: Send and receive messages
 
 1. Select the shared conversation in either instance.
-2.  Type a message in the message input field, then press `Enter` or click `>>`.
+1.  Type a message in the message input field, then press `Enter` or click `>>`.
 
     Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
-3.  From instance A, send a message and observe instance B.
+1.  From instance A, send a message and observe instance B.
 
     **Expected result:** the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. A reply from B appears as an incoming bubble in A.
 

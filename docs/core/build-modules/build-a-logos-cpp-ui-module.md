@@ -49,17 +49,17 @@ Create a new directory and initialise it from the C++ backend UI template.
     ```bash
     mkdir logos-calc-ui-cpp && cd logos-calc-ui-cpp
     ```
-2.  Initialise from the template:
+1.  Initialise from the template:
 
     ```bash
     nix flake init -t github:logos-co/logos-module-builder/0.2.0#ui-qml-backend
     ```
-3.  Initialise a Git repository and stage all generated files:
+1.  Initialise a Git repository and stage all generated files:
 
     ```bash
     git init && git add -A
     ```
-4.  Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
+1.  Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
 
     ```bash
     rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
@@ -106,7 +106,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
     - `"main": "calc_ui_cpp_plugin"`—the backend Qt plugin library name (without extension).
     - `"view": "qml/Main.qml"`—the QML entry point.
     - `"dependencies": ["calc_module"]`—core modules the backend calls.
-2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
+1.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash
     mkdir -p icons
@@ -248,7 +248,7 @@ The backend plugin inherits three base classes:
     :::info
     If the interface filename or IID symbol here doesn't match the names in `src/calc_ui_cpp_interface.h`, you will get build errors or plugin-load failures at runtime.
     :::
-2.  Create `src/calc_ui_cpp_plugin.cpp`:
+1.  Create `src/calc_ui_cpp_plugin.cpp`:
 
     ```cpp
     #include "calc_ui_cpp_plugin.h"
@@ -441,7 +441,7 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
         LogosText { text: qsTr("Result"); color: Theme.palette.text }
     }
     ```
-2.  Explore available components by running the design system storybook in the logos-design-system repo:
+1.  Explore available components by running the design system storybook in the logos-design-system repo:
 
     ```bash
     git clone https://github.com/logos-co/logos-design-system.git
@@ -510,19 +510,19 @@ Before building, confirm the `calc_module` shared library is present from [Part 
     # gcc -shared -fPIC -o libcalc.dylib libcalc.c  # macOS
     cd ../../logos-calc-ui-cpp
     ```
-2.  Stage all files, then lock `calc_module` to your local Part 1 checkout. The `--override-input` flag resolves `../logos-calc-module` to an absolute path and records it in `flake.lock`:
+1.  Stage all files, then lock `calc_module` to your local Part 1 checkout. The `--override-input` flag resolves `../logos-calc-module` to an absolute path and records it in `flake.lock`:
 
     ```bash
     git add -A
     nix flake update --override-input calc_module path:../logos-calc-module
     git add flake.lock
     ```
-3.  Build and run the app. After the lock is in place, no override flag is needed on subsequent commands:
+1.  Build and run the app. After the lock is in place, no override flag is needed on subsequent commands:
 
     ```bash
     nix run
     ```
-4.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
+1.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
 
     ![Operation buttons visible](../assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
 
@@ -570,7 +570,7 @@ Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logo
 
     run();
     ```
-2.  Stage the test file and run the hermetic CI test:
+1.  Stage the test file and run the hermetic CI test:
 
     ```bash
     git add tests/
@@ -578,7 +578,7 @@ Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logo
     ```
 
     The `integration-test` output launches `logos-standalone-app` with `QT_QPA_PLATFORM=offscreen` (no display needed), connects to the QML inspector, and runs all `.mjs` files in `tests/`.
-3.  To run tests interactively against an already-running app, build the test framework and run the app and tests in separate terminals:
+1.  To run tests interactively against an already-running app, build the test framework and run the app and tests in separate terminals:
 
     ```bash
     nix build .#test-framework -o result-mcp

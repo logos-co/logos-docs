@@ -51,7 +51,7 @@ By the end of this tutorial:
     git clone https://github.com/logos-blockchain/logos-blockchain-ui.git
     cd logos-blockchain-ui
     ```
-2.  Build and run the standalone app:
+1.  Build and run the standalone app:
 
     ```sh
     nix run
@@ -66,16 +66,16 @@ By the end of this tutorial:
 1. In the app, click **Generate Config**.
 
     ![Initial screen](../assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
-2. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
-3. In the app, paste the peer set information into **Initial peers (one per line)** and click the generate button at the bottom. The generated file becomes the active user config, shown as **User Config: … (Generated)**. (To use an existing config file instead, choose **Set path to config**.)
-5.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
+1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
+1. In the app, paste the peer set information into **Initial peers (one per line)** and click the generate button at the bottom. The generated file becomes the active user config, shown as **User Config: … (Generated)**. (To use an existing config file instead, choose **Set path to config**.)
+1.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
 
     ![Running node](../assets/build-and-run-logos-blockchain-node-app-ui/03-node-running.png)
 
 ## Step 3: Request testnet funds from the faucet
 
 1. From the wallet section of the UI, copy one of your keys.
-2.  Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste your key, and click **Request Funds**.
+1.  Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste your key, and click **Request Funds**.
 
     :::info
     The transaction can take up to a minute to confirm and appear in your wallet.
@@ -96,7 +96,7 @@ By the end of this tutorial:
     ```
 
     Expect `height` to increase at an average rate of one block every 10 seconds. The timing is probabilistic, so some variance is normal.
-2.  Check that the node is connected to peers:
+1.  Check that the node is connected to peers:
 
     ```sh
     curl localhost:8080/network/info

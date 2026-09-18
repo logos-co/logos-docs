@@ -147,7 +147,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet pinata claim --to <sender_public_account_id>
    ```
 
-2. Check the sender account balance:
+1. Check the sender account balance:
 
    ```bash
    wallet account get --account-id <sender_public_account_id>

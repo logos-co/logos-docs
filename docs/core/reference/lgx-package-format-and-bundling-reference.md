@@ -69,5 +69,5 @@ Installers (`lgpm install`, and the package-manager module underlying Basecamp) 
 ## Further reading
 
 - [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md)—manifest schema, `lgx` CLI reference, signing and DID details.
-- [Logos catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/master/docs/catalog-format.md)—`logos-repo.json` and `index.json`, version selection, and download verification.
+- [Logos catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/master/docs/catalog-format.md)—for `logos-repo.json` and `index.json`, version selection, and download verification.
 - [Build and run a Logos core module](../build-modules/build-and-run-a-logos-core-module.md)—building and installing an `.lgx` package end to end.

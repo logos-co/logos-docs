@@ -27,8 +27,22 @@ Before you start, make sure you have the following:
 - [Nix](https://nixos.org/download.html) with flakes enabled. Required by every `basecamp` subcommand.
 - `git`, and Rust 1.81 or newer with `cargo`, to install scaffold.
 - The Unix process helpers `lsof`, `ps`, and `kill`, which scaffold uses to track the processes it starts.
-- A module project that exposes `packages.<system>.lgx` from a `flake.nix`, built with [`logos-module-builder`](https://github.com/logos-co/logos-module-builder) 0.2.0 or later. Older, `tutorial-v1`-era packages carry no content hashes and the pinned `lgpm` rejects them. See [Build and run a Logos core module](../../core/build-modules/build-and-run-a-logos-core-module.md) if you do not have a module yet.
+- A module project that exposes `packages.<system>.lgx` from a `flake.nix`, built with [`logos-module-builder`](https://github.com/logos-co/logos-module-builder) **0.2.x**. The `lgpm` that scaffold pins rejects packages from both neighbouring generations: `tutorial-v1`-era packages carry no content hashes, and 0.3.x packages add an `assets/` directory it does not accept. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
+- About 6 GB of free memory for the first `lgs basecamp setup`. Evaluating the Basecamp 0.2.3 flake alone peaks at close to that, and with less the build is killed.
 - A graphical environment. Basecamp is a desktop application.
+
+:::tip
+If you do not have a module yet, start from a `logos-module-builder` 0.2.x template and pin the builder in the generated `flake.nix`. The template leaves the URL unpinned, which resolves to the newest release:
+
+```bash
+mkdir my_ui && cd my_ui && git init
+nix flake init -t github:logos-co/logos-module-builder/0.2.6#ui-qml
+sed -i 's#github:logos-co/logos-module-builder"#github:logos-co/logos-module-builder/0.2.6"#' flake.nix
+git add -A
+```
+
+The `ui-qml` template produces a QML-only module that shows up in the Basecamp sidebar. Set `name` and `display_name` in `metadata.json` before you build. The same release also has `default` (a minimal core module), `with-external-lib`, and `ui-qml-backend` templates.
+:::
 
 ## What to expect
 
@@ -69,7 +83,7 @@ Run these commands from the root of your module project.
    lgs init
    ```
 
-   `init` writes `scaffold.toml`, creates `.scaffold/`, and appends `.scaffold` to `.gitignore`. Run it once per project. If the project already has a `scaffold.toml` from an older schema, `init` migrates it in place and leaves a `scaffold.toml.bak` next to it.
+   `init` writes `scaffold.toml`, creates `.scaffold/`, and appends `.scaffold` to `.gitignore`. It also installs AI-assistant instructions for the project under `.claude/skills/`, `.cursor/rules/`, and `AGENTS.md`. Run it once per project. If the project already has a `scaffold.toml` from an older schema, `init` migrates it in place and leaves a `scaffold.toml.bak` next to it.
 
 1. Pin and build the Basecamp toolchain:
 
@@ -81,7 +95,9 @@ Run these commands from the root of your module project.
 
    The two pins move as a set: scaffold's default `lgpm` is the revision the pinned Basecamp release locks, because Basecamp reads installed modules with that same library. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
 
-   Neither binary lands on your `PATH`. Scaffold invokes the project-local copies directly.
+   Neither binary lands on your `PATH`. The Basecamp checkout and the build results live under scaffold's [cache root](../about-logos-scaffold.md#project-layout), shared by every project that uses the same pin, and scaffold records their paths in `.scaffold/state/basecamp.state`.
+
+   If the Basecamp build fails with `signal: 9 (SIGKILL)`, the machine ran out of memory. See [Basecamp setup is killed](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#basecamp-setup-is-killed).
 
 1. Capture the set of modules to install, then review what was captured:
 
@@ -102,7 +118,7 @@ Run these commands from the root of your module project.
    role = "dependency"
    ```
 
-   `role = "project"` marks a module you build locally, `role = "dependency"` a runtime companion. Sources inside the project are recorded as relative `path:./…` references, so the committed file works in any checkout. The table is hand-editable, and re-running `basecamp modules` never overwrites an existing entry.
+   `role = "project"` marks a module you build locally, `role = "dependency"` a runtime companion. Sources inside the project are recorded as relative references, `path:.#lgx` for a module at the project root and `path:./<dir>#lgx` for a sub-directory, so the committed file works in any checkout. The table is hand-editable, and re-running `basecamp modules` never overwrites an existing entry.
 
    Modules that Basecamp bundles itself (`capability_module`, `main_ui`, `package_downloader`, `package_manager`, and `package_manager_ui`) are never captured. Basecamp 0.2.x loads them from next to its own binary, so they do not appear in a profile's `modules/` directory either. A profile listing only your own modules is expected.
 
@@ -152,10 +168,10 @@ Run these commands from the root of your module project.
    1. Fails straight away if `[modules]` is empty, or if the profile's runtime directory cannot be used, before anything is deleted.
    1. Removes the profile's data and cache.
    1. Rebuilds and reinstalls every captured module into the profile.
-   1. Prints a one-line variant check of the installed modules, for example `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`.
+   1. Prints a one-line variant check of the installed core modules, for example `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`. The count covers `modules/` only, so a project of QML-only modules reports `0 module(s)`.
    1. Starts Basecamp with the profile's environment.
 
-1. Confirm your module appears in the Basecamp window and behaves as expected.
+1. Confirm your module appears in the Basecamp window and behaves as expected. A UI module gets an entry in the sidebar, shown with its initials when it ships no icon; click it to open the module.
 
    To keep a copy of the window's output, add `--log-file`. Bare `--log-file` writes to `.scaffold/basecamp/profiles/<profile>/basecamp.log` and still tees to your terminal; `--log-file=PATH` picks the file.
 
@@ -183,10 +199,24 @@ lgs basecamp paths alice --json
 
 You can layer your own variables on top in `scaffold.toml`. They apply in this order, last writer wins:
 
-1. `[basecamp.env_append]`, whose lists are `:`-joined onto the value `lgs` inherited, for path variables such as `QT_PLUGIN_PATH` or `LD_LIBRARY_PATH`.
+1. `[basecamp.env_append]`, whose lists are `:`-joined onto the value `lgs` inherited, for path-style variables.
 1. The profile's `env_file`, a dotenv-style `KEY=VALUE` file.
 1. `[basecamp.env]`, applied to every profile.
-1. The profile's inline `env` in `[basecamp.profiles.<name>]`.
+1. The profile's own variables, in a `[basecamp.profiles.<name>.env]` table.
+
+```toml
+[basecamp.env]
+LOG_LEVEL = "debug"
+
+[basecamp.profiles.alice.env]
+LOG_LEVEL = "trace"
+```
+
+:::warning
+Write each `env` as its own `[… .env]` table, as above. `logos-scaffold` 0.3.1 silently ignores the inline form, `env = { KEY = "value" }`, for both `[basecamp]` and profiles.
+
+`[basecamp.env_append]` cannot extend `QT_PLUGIN_PATH`, `QML2_IMPORT_PATH`, or `LD_LIBRARY_PATH` with Basecamp 0.2.3: its launcher script sets those three variables outright, replacing whatever it inherits.
+:::
 
 `LOGOS_USER_DIR` and `LOGOS_DATA_DIR` are post-processed after that layering: an absolute value you set is kept, a relative one is rewritten to absolute against the project root, and an empty one counts as unset and falls back to the profile default.
 
@@ -219,7 +249,7 @@ nix build .#lgx
 
 lgpm --modules-dir /tmp/basecamp-a/modules \
      --ui-plugins-dir /tmp/basecamp-a/plugins \
-     install --file result/<module-name>.lgx
+     install --file result/logos-<module-name>-module.lgx
 
 # Then close and restart the Basecamp instance that uses /tmp/basecamp-a.
 ```
@@ -236,21 +266,16 @@ lgs basecamp build --variant lgx --module swap  # one variant, one module
 ```
 
 :::tip
-Two faster loops skip a full Basecamp launch while you work on a single module:
+Faster loops skip a full Basecamp launch while you work on a single module:
 
 - `lgs basecamp run <module>` runs a captured module through `nix run` in its own standalone app, so you exercise the module without the rest of the stack. It runs the flake's default app, or the app named by `standalone_app` in the module's `[modules.<name>]` entry. A module captured from a prebuilt `.lgx` file has no app to run.
-- For QML-only changes, `logos-module-builder` exposes a `ui-dev` target that hot-reloads QML on save:
-
-  ```bash
-  nix build .#ui-dev
-  ./result/bin/run-logos-standalone-ui
-  ```
+- For QML-only changes, `logos-module-builder` 0.3.x adds a `ui-dev` target that hot-reloads QML on save (`nix build .#ui-dev`, then `./result/bin/run-logos-standalone-ui`). It does not exist in 0.2.x, and scaffold's default pins cannot install 0.3.x packages, so use it only in a separate checkout pinned to 0.3.x.
 
 Use them for iteration, then go back to Basecamp to verify the module in its real host. `lgs basecamp develop <module>` drops you into that module's Nix dev shell when you need to build by hand.
 :::
 
 :::warning
-A Nix flake whose `src = ./.` only sees files that git tracks. A new file that you have not staged is silently absent from the build: the build succeeds, the `.lgx` is produced, and the module misbehaves at runtime. Run `git add -A` before you build after adding any file, including `qmldir` files, QML assets, and configuration files. See [A new file is missing from the built package](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#a-new-file-is-missing-from-the-built-package).
+A Nix flake whose `src = ./.` only sees files that git tracks, and that holds for scaffold's own builds too. A new file that you have not staged is silently absent from the build: the build succeeds, the `.lgx` is produced, and the module misbehaves at runtime. Run `git add -A` before you build after adding any file, including `qmldir` files, QML assets, and configuration files. See [A new file is missing from the built package](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#a-new-file-is-missing-from-the-built-package).
 :::
 
 ## Step 6: Run two instances side by side
@@ -271,21 +296,27 @@ lgs basecamp launch alice
 lgs basecamp launch bob
 ```
 
-Each window gets its own configuration, data, cache, and runtime directories under `.scaffold/basecamp/profiles/<profile>/`, plus `LOGOS_PROFILE` set to the profile name. An action in `alice` should be observable in `bob`.
+Each window gets its own configuration, data, and cache directories under `.scaffold/basecamp/profiles/<profile>/`, its own runtime directory under `/tmp`, and `LOGOS_PROFILE` set to the profile name. An action in `alice` should be observable in `bob`.
 
 To add more profiles, declare them in `scaffold.toml`. Unknown profiles are seeded on first launch:
 
 ```toml
 [basecamp.profiles.maker]
 env_file    = ".env"
-env         = { SWAP_UI_AUTO_ROLE = "maker" }
 runtime_dir = "/tmp/lgs-maker"
 log_file    = ".scaffold/basecamp/profiles/maker/basecamp.log"
 
+[basecamp.profiles.maker.env]
+SWAP_UI_AUTO_ROLE = "maker"
+
 [basecamp.profiles.taker]
 env_file = ".env.taker"
-env      = { SWAP_UI_AUTO_ROLE = "taker" }
+
+[basecamp.profiles.taker.env]
+SWAP_UI_AUTO_ROLE = "taker"
 ```
+
+`log_file` makes every launch of that profile tee its output, as `--log-file` does.
 
 ### With `--user-dir`
 
@@ -320,7 +351,7 @@ On macOS, Basecamp does not honour `XDG_DATA_HOME`: without an override, every i
 
 ### Keep runtime paths short
 
-When a module loads, the Logos runtime opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the full socket path at 104 bytes on macOS and 108 on Linux, and a long runtime root overflows that budget before the socket name is even appended. Module loading then aborts with:
+When a module loads, the Logos runtime opens a Unix domain socket for it under the temp root, which is `TMPDIR`: `logos_<module>_<id>` in Basecamp 0.2.3, `logos_token_<module>` in older releases. The operating system caps the full socket path at 104 bytes on macOS and 108 on Linux, and a long runtime root overflows that budget before the socket name is even appended. Module loading then aborts with:
 
 ```
 [SubprocessContainer] Unix socket path too long (122 >= 104)
@@ -340,7 +371,7 @@ The default lives outside the project on purpose. A module flake is often the pr
 
 Scaffold creates the directory with mode `0700` before it touches the profile. It refuses to use a runtime directory that is a symbolic link, is not a directory, or belongs to another user and cannot be restricted to `0700`, because the sockets in it give access to running modules.
 
-A distinct runtime root per instance matters for a second reason on every platform: two instances sharing one temp root collide on the same `logos_token_<module>` socket, and the second instance to bind takes the socket away from the first.
+A distinct runtime root per instance matters for a second reason on every platform: two instances sharing one temp root can collide on the same module socket, and the second instance to bind takes the socket away from the first.
 
 ## Step 7: Test against a released Basecamp
 

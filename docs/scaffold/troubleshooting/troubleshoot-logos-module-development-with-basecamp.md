@@ -26,23 +26,33 @@ The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a modu
 
 | Symptom | Section |
 |:---|:---|
+| `lgs basecamp setup` fails with `signal: 9 (SIGKILL)` | [Basecamp setup is killed](#basecamp-setup-is-killed) |
 | A rebuilt module behaves as if nothing changed | [Your change is not visible after a rebuild](#your-change-is-not-visible-after-a-rebuild) |
 | A module you installed is missing from Basecamp | [An installed module is missing](#an-installed-module-is-missing) |
 | `Unix socket path too long (122 >= 104)` | [Module loading aborts with a socket path error](#module-loading-aborts-with-a-socket-path-error) |
 | `file '…/logos_token_…' has an unsupported type` during a build | [Builds fail after the first launch](#builds-fail-after-the-first-launch) |
 | `refusing to use runtime dir …` or `cannot restrict permissions on runtime dir …` | [Launch refuses the runtime directory](#launch-refuses-the-runtime-directory) |
 | `no modules captured` when launching | [Launch finds no modules](#launch-finds-no-modules) |
-| A module freezes on first click, or is dropped when Basecamp starts | [An installed module lacks the platform variant](#an-installed-module-lacks-the-platform-variant) |
+| `the .lgx has no variant for this stack` during install | [An installed module lacks the platform variant](#an-installed-module-lacks-the-platform-variant) |
 | `Invalid null URL`, or a QML singleton holding the wrong values | [A QML type or singleton resolves to the wrong module](#a-qml-type-or-singleton-resolves-to-the-wrong-module) |
 | A file you just added is absent at runtime | [A new file is missing from the built package](#a-new-file-is-missing-from-the-built-package) |
 | Two instances share identity or crash together | [Two instances collide](#two-instances-collide) |
 | `Missing content hashes in manifest` during install | [Install fails with `Missing content hashes in manifest`](#install-fails-with-missing-content-hashes-in-manifest) |
+| `Forbidden root entry: assets` during install | [Install fails with `Forbidden root entry: assets`](#install-fails-with-forbidden-root-entry-assets) |
 | `no 'main' field in metadata.json` during install | [Install fails inside a Nix build](#install-fails-inside-a-nix-build) |
 | `basecamp modules` fails on an unresolved dependency | [A dependency cannot be resolved](#a-dependency-cannot-be-resolved) |
 | A sibling sub-flake builds from the wrong source | [A sibling sub-flake override is ignored](#a-sibling-sub-flake-override-is-ignored) |
 | `basecamp doctor` reports drift | [Doctor reports drift](#doctor-reports-drift) |
 | Two macOS profiles share modules and identity despite isolation | [Profiles share state on macOS](#profiles-share-state-on-macos) |
 | The macOS window opens but the UI never renders | [The macOS UI stays blank](#the-macos-ui-stays-blank) |
+
+## Basecamp setup is killed
+
+**Symptom.** `lgs basecamp setup` fails after several minutes with `error: building basecamp (.#app) failed with signal: 9 (SIGKILL)`. The setup log under `.scaffold/logs/` ends mid-way, often right after an `evaluation warning:` or `copying path` line, with no build error.
+
+**Cause.** The machine ran out of memory and the kernel killed Nix. Evaluating the Basecamp 0.2.3 flake, before anything is built, peaks at close to 6 GB of resident memory, because its lock file pins thousands of inputs. Scaffold reports only the signal.
+
+**Fix.** Free memory and run `lgs basecamp setup` again: close other large applications, stop Basecamp instances, and do not run another large build at the same time. Tuning the parallelism or garbage collector of Nix does not reduce the peak noticeably. On a machine with 8 GB of RAM or less that leaves little headroom: stop everything else first, or use a released [Basecamp](../../basecamp/install-logos-basecamp.md) with the [portable workflow](../get-started/develop-a-logos-module-with-logos-scaffold.md#step-7-test-against-a-released-basecamp).
 
 ## Your change is not visible after a rebuild
 
@@ -70,15 +80,14 @@ By hand, per base directory:
 nix build .#lgx
 lgpm --modules-dir <base-dir>/modules \
      --ui-plugins-dir <base-dir>/plugins \
-     install --file result/<module-name>.lgx
+     install --file result/logos-<module-name>-module.lgx
 # Restart the Basecamp instance that uses <base-dir>.
 ```
 
-For QML-only edits, avoid the loop altogether during layout work by running the module in the standalone app with hot reload:
+For UI edits, you can skip Basecamp during layout work by running the module in its standalone app:
 
 ```bash
-nix build .#ui-dev
-./result/bin/run-logos-standalone-ui
+lgs basecamp run <module>
 ```
 
 ## An installed module is missing
@@ -119,7 +128,7 @@ Also check that the module was captured at all. `lgs basecamp modules --show` pr
 [SubprocessContainer] Unix socket path too long (122 >= 104)
 ```
 
-**Cause.** Loading a module opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the whole socket path at 104 bytes on macOS and 108 on Linux. A runtime root nested under a long path, for example a `runtime_dir` inside a deep project directory, uses up that budget before the socket name is appended.
+**Cause.** Loading a module opens a Unix domain socket for it under the temp root, which is `TMPDIR`: `logos_<module>_<id>` in Basecamp 0.2.3, `logos_token_<module>` in older releases. The operating system caps the whole socket path at 104 bytes on macOS and 108 on Linux. A runtime root nested under a long path, for example a `runtime_dir` inside a deep project directory, uses up that budget before the socket name is appended.
 
 **Fix.** Point the runtime root at a short path. Scaffold's default, `/tmp/lgs-<project-hash>-<profile>`, stays well under the limit on every platform, and scaffold exports it as both `TMPDIR` and `XDG_RUNTIME_DIR`. If you configured `runtime_dir` yourself, shorten it or remove it:
 
@@ -146,7 +155,7 @@ Keep any override short. A project-relative or deeply nested directory can excee
 error: file '/.scaffold/basecamp/profiles/alice/xdg-tmp/logos_token_package_manager' has an unsupported type
 ```
 
-**Cause.** The profile's runtime directory is inside the project tree. When the module flake is the project root, `nix build` copies that tree into the store and refuses to copy the Unix sockets a running Basecamp leaves in the runtime directory. Scaffold releases before 0.3.1 used the in-profile `xdg-tmp` directory by default on Linux; a `runtime_dir` that points inside the project has the same effect.
+**Cause.** The profile's runtime directory is inside the project tree. The socket name in the error depends on the Basecamp release. When the module flake is the project root, `nix build` copies that tree into the store and refuses to copy the Unix sockets a running Basecamp leaves in the runtime directory. Scaffold releases before 0.3.1 used the in-profile `xdg-tmp` directory by default on Linux; a `runtime_dir` that points inside the project has the same effect.
 
 **Fix.** Upgrade scaffold to 0.3.1 or later, and remove any `runtime_dir` that points inside the project. The default runtime directory is now `/tmp/lgs-<project-hash>-<profile>`, outside the project. The next `launch` also clears the legacy `xdg-tmp` directory, so an affected project recovers without manual clean-up.
 
@@ -181,11 +190,11 @@ lgs basecamp launch alice
 
 ## An installed module lacks the platform variant
 
-**Symptom.** A module is installed, but it freezes the first time you click it in a development Basecamp, or a portable Basecamp drops it while scanning modules at start-up. Before starting Basecamp, `launch` printed a line such as `launch: profile alice has 3 module(s); 1 missing linux-amd64-dev variant (my_module)` instead of `all linux-amd64-dev variants present ✓`.
+**Symptom.** `lgs basecamp install` or `launch` fails with `the .lgx has no variant for this stack`, followed by `lgpm`'s `Package does not contain variant for platform: linux-x86_64-dev (package provides: linux-amd64)`. With a package installed by other means, the module instead freezes the first time you click it in a development Basecamp, or a portable Basecamp drops it at start-up; `launch` then prints `… missing linux-amd64-dev variant (<module>)` instead of `all linux-amd64-dev variants present ✓`.
 
-**Cause.** The module's `manifest.json` `main` object has no entry for the platform and stack Basecamp runs on. Development builds of Basecamp need the `-dev` key, for example `linux-amd64-dev` or `darwin-arm64-dev`. Portable builds need the bare key, for example `linux-amd64`. A `.lgx` built from the `lgx` output carries `-dev` keys, and one built from `lgx-portable` carries bare keys.
+**Cause.** The package has no variant for the platform and stack Basecamp runs on. Development builds of Basecamp need the `-dev` key, for example `linux-amd64-dev` or `darwin-arm64-dev`. Portable builds need the bare key, for example `linux-amd64`. A `.lgx` built from the `lgx` output carries `-dev` keys, and one built from `lgx-portable` carries bare keys.
 
-**Fix.** Build the variant that matches the Basecamp you run. Scaffold profiles use the `lgx` output unless `[repos.basecamp].attr` selects a portable stack. For a released AppImage or DMG, use `lgs basecamp build-portable`. `lgs basecamp doctor` repeats the variant check for every seeded profile.
+**Fix.** Build the variant that matches the Basecamp you run. Scaffold profiles use the `lgx` output unless `[repos.basecamp].attr` selects a portable stack. For a released AppImage or DMG, use `lgs basecamp build-portable`. For core modules, `lgs basecamp doctor` repeats the variant check for every seeded profile.
 
 ## A QML type or singleton resolves to the wrong module
 
@@ -193,25 +202,24 @@ lgs basecamp launch alice
 
 **Cause.** QML composite types are cached for the whole process, keyed by the type name together with the URI of the module that declared it. A bare directory import such as `import "."` or `import "./theme"` declares no module, so that key carries an empty URI. When two modules loaded into the same host process each contain a file with the same base name, `Theme.qml` or `Card.qml` for instance, the cache can hand one module the other module's type.
 
-**Fix.** Make every QML directory you import a named module: give it a `qmldir` that declares a module name, and import it by that name.
+**Fix.** Keep your QML under a sub-directory and point `view` in `metadata.json` at it, for example `"view": "qml/Main.qml"`. When the view file sits at the project root, `logos-module-builder` 0.2.x packages that single file and nothing else, so no other QML file or directory reaches the package. Then make every QML directory you import a named module: give it a `qmldir` that declares a module name, and import it by that name.
 
 ```
-src/qml/
+qml/
 ├── Main.qml
-├── qmldir
 └── SwapTheme/
     ├── qmldir
     └── Theme.qml
 ```
 
-`src/qml/SwapTheme/qmldir`:
+`qml/SwapTheme/qmldir`:
 
 ```
 module SwapTheme
 singleton Theme 1.0 Theme.qml
 ```
 
-`src/qml/SwapTheme/Theme.qml` starts with `pragma Singleton`:
+`qml/SwapTheme/Theme.qml` starts with `pragma Singleton`:
 
 ```qml
 pragma Singleton
@@ -294,11 +302,17 @@ Launching the same scaffold profile twice in parallel is not supported. If two i
 
 **Cause.** The `lgpm` that scaffold pins for Basecamp 0.2.3 validates each package's structure and Merkle content hashes on install. Packages built by `logos-module-builder` before 0.2.0, including every `tutorial-v1`-era package, carry no hashes. The same applies to a dependency pinned to an old revision, for example `delivery_module` at a `tutorial-v1-compat` commit.
 
-**Fix.** Rebuild the module with `logos-module-builder` 0.2.0 or later, or bundle your `#lib` output with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx). For a dependency, move its `[modules.<name>]` entry, or its input in your `flake.nix`, to a release built with that tooling.
+**Fix.** Rebuild the module with `logos-module-builder` 0.2.x, or bundle your `#lib` output with a matching [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx). For a dependency, move its `[modules.<name>]` entry, or its input in your `flake.nix`, to a release built with that tooling.
 
 Downgrading `[repos.lgpm].pin` does not help: the Basecamp that the pin set builds embeds the same validating library, and it is the one that reads the installed modules. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
 
-The same tooling also rejects two other mistakes at install time: a `ui_qml` package without a 256×256 PNG icon, and `main` or `view` entries in `metadata.json` that point at files missing from the built package.
+## Install fails with `Forbidden root entry: assets`
+
+**Symptom.** `lgs basecamp install` or `launch` fails with `Package validation failed: Forbidden root entry: assets`.
+
+**Cause.** The module was built with `logos-module-builder` 0.3.x. Those releases write the package icon to an `assets/` directory at the package root, a layout the `lgpm` pinned for Basecamp 0.2.3 does not accept. The same 0.3.x releases also refuse to build a `ui_qml` package without a 256×256 PNG icon, which 0.2.x does not require.
+
+**Fix.** Pin `logos-module-builder` to a 0.2.x release, for example `github:logos-co/logos-module-builder/0.2.6`, run `nix flake update logos-module-builder`, and reinstall. A dependency built with 0.3.x needs an older revision in its `[modules.<name>]` entry.
 
 ## Install fails inside a Nix build
 

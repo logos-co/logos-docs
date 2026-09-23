@@ -36,18 +36,18 @@ Here is the recommended format for content topics:
 
 `/{application-name}/{version}/{content-topic-name}/{encoding}`
 
-- `application-name`: This is the unique name of your decentralised application (DApp) to prevent conflicts with other DApps.
+- `application-name`: This is the unique name of your decentralised application to prevent conflicts with other apps.
 - `version`: Typically starting at `1`, this field helps track breaking changes in your messages.
 - `content-topic-name`: The specific name of the content topic used for filtering.
 - `encoding`: The message encoding or serialisation format, with [Protocol Buffers](https://protobuf.dev/) (`proto`) being the recommended choice.
 
-For example, if your DApp is called `SuperCrypto` and it allows users to receive notifications and send private messages, you can consider using the following content topics:
+For example, if your app is called `SuperCrypto` and it allows users to receive notifications and send private messages, you can consider using the following content topics:
 
 - `/supercrypto/1/notification/proto`
 - `/supercrypto/1/private-message/proto`
 
 :::tip
-While you can choose any encoding format for your `Content Topic`, we highly recommend using Protocol Buffers (`proto`) because of its efficiency. Choosing a lightweight format ensures optimal performance of your DApp.
+While you can choose any encoding format for your `Content Topic`, we highly recommend using Protocol Buffers (`proto`) because of its efficiency. Choosing a lightweight format ensures optimal performance of your app.
 :::
 
 ## Naming considerations

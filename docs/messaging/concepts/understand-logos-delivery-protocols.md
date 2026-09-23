@@ -47,7 +47,7 @@ This document reflects the state of this Logos component as it will exist on mai
 [`Store` protocol](https://lip.logos.co/messaging/core/draft/13/store.html) is responsible for storing messages relayed in the network, making it possible to query and retrieve them later. This functionality benefits offline peers by enabling them to retrieve missed messages upon reconnection.
 
 :::info
-Using `Relay` and `Filter` protocols is recommended when a node is online, as `Store` does not guarantee data availability. The `Store` protocol is suitable for retrieving messages when connecting to the network, like when a DApp starts.
+Using `Relay` and `Filter` protocols is recommended when a node is online, as `Store` does not guarantee data availability. The `Store` protocol is suitable for retrieving messages when connecting to the network, like when an app starts.
 :::
  
 ## Light Push

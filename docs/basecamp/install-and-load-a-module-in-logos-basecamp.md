@@ -30,8 +30,6 @@ There are two types of modules in Logos Basecamp. [Core modules](../get-started/
 - [Basecamp installed and running](./install-logos-basecamp.md).
 - Internet access for online catalogue install.
 - [An `.lgx` file](../core/build-modules/build-and-run-a-logos-core-module.md) for local install. Make sure that the archive contains a variant matching your platform.
-    - For example, `linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`.
-
 :::
 
 ## What to expect
@@ -81,7 +79,7 @@ Confirm the module actually installed: check its status in **Package Manager**.
 - If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build flavour, or architecture.
 - If installing from a local `.lgx` file: Basecamp reports an error if the archive has no variant for your platform.
 
-Either way, confirm the archive includes a variant matching your platform (`linux-x86_64`, `linux-aarch64`, `darwin-x86_64`, or `darwin-arm64`) before reinstalling. If the package shows as installed in Package Manager but still doesn't appear in the relevant inspector, its manifest `type` may not match where you're looking—core modules only appear in Module Inspector, and UI modules (`ui_qml`) only appear in Apps Inspector.
+Either way, confirm the archive includes a variant matching your platform before reinstalling. If the package shows as installed in Package Manager but still doesn't appear in the relevant inspector, its manifest `type` may not match where you're looking—core modules only appear in Module Inspector, and UI modules (`ui_qml`) only appear in Apps Inspector.
 
 ### A QML-based UI App cannot reach the network
 

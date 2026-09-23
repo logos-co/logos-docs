@@ -60,7 +60,7 @@ Scaffold appends `.scaffold` to the project's `.gitignore`, so none of this work
 
 Two things live outside the project directory:
 
-- **The cache root** holds the pinned LEZ and `spel` checkouts and their builds, shared by every project on the machine. It defaults to `~/Library/Caches/logos-scaffold` on macOS and `$XDG_CACHE_HOME/logos-scaffold` (usually `~/.cache/logos-scaffold`) on Linux. Point it elsewhere with `--cache-root` on `lgs new`, or with the `LOGOS_SCAFFOLD_CACHE_ROOT` environment variable, which every command honours.
+- **The cache root** holds the pinned LEZ, `spel`, and Basecamp checkouts and their builds, shared by every project on the machine. It defaults to `~/Library/Caches/logos-scaffold` on macOS and `$XDG_CACHE_HOME/logos-scaffold` (usually `~/.cache/logos-scaffold`) on Linux. Point it elsewhere with `--cache-root` on `lgs new`, or with the `LOGOS_SCAFFOLD_CACHE_ROOT` environment variable, which every command honours.
 - **The Basecamp runtime directory** of each profile, `/tmp/lgs-<project-hash>-<profile>` by default, holds the Unix sockets modules open while Basecamp runs. See [Keep runtime paths short](./get-started/develop-a-logos-module-with-logos-scaffold.md#keep-runtime-paths-short).
 
 :::warning
@@ -94,7 +94,7 @@ The Basecamp and `lgpm` pins move as a set. Basecamp reads installed modules wit
 A project keeps the pins it already has in `scaffold.toml` when you upgrade scaffold. To move to new defaults, edit the pins and re-run `lgs setup` or `lgs basecamp setup`.
 
 :::info
-The `lgpm` that Basecamp 0.2.3 pins validates each package's content hashes on install. Modules must therefore be built with `logos-module-builder` 0.2.0 or later, or bundled with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx). Packages from the `tutorial-v1` era are rejected. See [Install fails with `Missing content hashes in manifest`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-missing-content-hashes-in-manifest).
+The `lgpm` that Basecamp 0.2.3 pins accepts packages built with `logos-module-builder` **0.2.x** only. It rejects `tutorial-v1`-era packages because they carry no content hashes, and 0.3.x packages because of their `assets/` directory. Pin the builder in your module's `flake.nix`; an unpinned URL resolves to the newest release. See [Install fails with `Missing content hashes in manifest`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-missing-content-hashes-in-manifest) and [Install fails with `Forbidden root entry: assets`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-forbidden-root-entry-assets).
 :::
 
 ## What Logos Scaffold does not do

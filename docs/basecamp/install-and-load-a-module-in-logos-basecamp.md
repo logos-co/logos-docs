@@ -52,24 +52,24 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 ### Install from the online catalogue
 
 1. In the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
-2. Browse and locate the module you want. Use the **Categories** and **Types** filters in the left panel, or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules.
-3. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens listing any dependency changes; click **Install** to confirm.
-4. Wait until the module's **Action** column reads **INSTALLED**. Core modules then appear in **Settings > Module Inspector**, and UI apps appear in the **Applications** view and, after a restart, in the sidebar.
+1. Browse and locate the module you want. Use the **Categories** and **Types** filters in the left panel, or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules.
+1. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens listing any dependency changes; click **Install** to confirm.
+1. Wait until the module's **Action** column reads **INSTALLED**. Core modules then appear in **Settings > Module Inspector**, and UI apps appear in the **Applications** view and, after a restart, in the sidebar.
 
 ### Install from a local `.lgx` file
 
 1. In the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
-2. Click **Install Local Package** in the toolbar.
-3. Select the `.lgx` file and click **Open**, then confirm the **Install Package?** dialogue.
-4. Core modules appear in **Settings > Module Inspector**; UI apps appear in the **Applications** view and, after a restart, in the sidebar.
+1. Click **Install Local Package** in the toolbar.
+1. Select the `.lgx` file and click **Open**, then confirm the **Install Package?** dialogue.
+1. Core modules appear in **Settings > Module Inspector**; UI apps appear in the **Applications** view and, after a restart, in the sidebar.
 
 ## Step 2: Load the module
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
 1. In the sidebar, click **Settings** (the gear icon at the bottom), then open the **Module Inspector** section.
-2. Find the module in the list. Its **Status** column reads `NOT LOADED`.
-3. Click **Load** next to the module. The status changes to `LOADED` and the CPU and memory columns start reporting.
+1. Find the module in the list. Its **Status** column reads `NOT LOADED`.
+1. Click **Load** next to the module. The status changes to `LOADED` and the CPU and memory columns start reporting.
 
 :::info
 You can click **Unload** in **Settings > Module Inspector**, or close the tab of a module, to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.

@@ -54,9 +54,9 @@ This task clones the wallet UI, starts it, and syncs it with the LEZ testnet.
     nix run
     ```
 
-:::info
-On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.
-:::
+    :::info
+    On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.
+    :::
 
 1.  In the setup screen, enter paths for the config file and the storage file.
 
@@ -64,9 +64,9 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
     - After the first run, the wallet UI remembers these paths and skips the setup screen on subsequent runs.
 
     ![Wallet setup screen](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/create-wallet.png)
-2. Choose a password.
-3. Click **Create wallet**.
-4.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](../../get-started/glossary.md#private-account) values from the genesis block.
+1. Choose a password.
+1. Click **Create wallet**.
+1.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](../../get-started/glossary.md#private-account) values from the genesis block.
 
     A progress bar shows the number of blocks processed, and this step can take a few minutes.
 
@@ -81,10 +81,10 @@ On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ an
 Unlike the predefined accounts on the wallet, accounts you create yourself are controlled only by you and aren't shared.
 
 1. Click **Create account**.
-2.  Select **Public**.
+1.  Select **Public**.
 
     ![Create account menu](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/create-account.png)
-3.  Click **Create**.
+1.  Click **Create**.
 
     The new [public account](../../get-started/glossary.md#public-account) will appear in your account list.
 
@@ -95,9 +95,9 @@ Unlike the predefined accounts on the wallet, accounts you create yourself are c
 This task moves tokens from a funded predefined account to the public account you created.
 
 1. In the **From** field, choose an account with a positive balance.
-2. Next to your newly created account, click the copy button to copy its account ID.
-3. In the recipient field, paste the account ID.
-4.  Click **Send**.
+1. Next to your newly created account, click the copy button to copy its account ID.
+1. In the recipient field, paste the account ID.
+1.  Click **Send**.
 
     ![Public transfer screen](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/public-account.png)
 
@@ -116,9 +116,9 @@ This task moves tokens from a funded predefined account to the public account yo
 Repeat the create-account and transfer tasks for the other account types and transfer flows.
 
 1. Create one or more private accounts using the same **Create account** flow, selecting **Private** instead of **Public**.
-2. Send a private transfer from a private sender to a private recipient.
-3. Send a shielded transfer from a public sender to a private recipient.
-4. Send a deshielded transfer from a private sender to a public recipient.
+1. Send a private transfer from a private sender to a private recipient.
+1. Send a shielded transfer from a public sender to a private recipient.
+1. Send a deshielded transfer from a private sender to a public recipient.
 
 ## Troubleshooting wallet UI setup
 

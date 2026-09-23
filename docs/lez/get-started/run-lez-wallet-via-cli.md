@@ -161,7 +161,7 @@ Any command that submits a transaction—`auth-transfer init`, `pinata claim`, `
    wallet pinata claim --to <sender_public_account_id>
    ```
 
-2. Check the sender account balance:
+1. Check the sender account balance:
 
    ```bash
    wallet account get --account-id <sender_public_account_id>

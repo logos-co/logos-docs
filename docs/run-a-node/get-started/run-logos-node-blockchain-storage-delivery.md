@@ -328,9 +328,9 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 1. Request funds to both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` from the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/)
 
-:::info
-The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
-:::
+   :::info
+   The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
+   :::
 
    ```bash
    # keystore.yaml
@@ -350,9 +350,9 @@ The public keys and [note](../../get-started/glossary.md#note) IDs below are exa
 
 1. Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
-:::info
-Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
-:::
+   :::info
+   Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
+   :::
 
    ```sh
    logosctl call blockchain_module blend_join_as_core_node \

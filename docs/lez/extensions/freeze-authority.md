@@ -23,7 +23,7 @@ This page tracks unreleased code. The dependency snippets pin the framework at a
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-`freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your LEZ program. A designated freeze authority can pause all program execution (program-wide freeze) and block specific accounts from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only the freeze management carve-outs (unfreeze, authority transfer and renounce, per-account freeze edits), admin operations, and instructions you marked `#[freeze_exempt]` remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
+`freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your [LEZ](../../get-started/glossary.md#lez) program. A designated freeze authority can pause all [program](../../get-started/glossary.md#program) execution (program-wide freeze) and block specific [accounts](../../get-started/glossary.md#account) from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only the freeze management carve-outs (unfreeze, authority transfer and renounce, per-account freeze edits), admin operations, and instructions you marked `#[freeze_exempt]` remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
 `freeze-authority` depends on `admin-authority`. The admin governs the freeze authority slot; the freeze authority governs the frozen flags. See [Gate program instructions with admin-authority](admin-authority.md) for the admin layer.
 
@@ -119,7 +119,7 @@ That single annotation pair (plus `#[admin_authority]`) exposes seven new instru
 
 | Instruction | Purpose |
 |---|---|
-| `freeze_initialize` | Creates the freeze Config PDA and sets the first freeze authority. Requires admin signature. Must be called once after deployment. |
+| `freeze_initialize` | Creates the freeze Config [PDA](../../get-started/glossary.md#pda) and sets the first freeze authority. Requires admin signature. Must be called once after deployment. |
 | `freeze_program` | Sets the program-wide frozen flag to true. Freeze authority only. |
 | `freeze_program_release` | Sets the program-wide frozen flag to false. Freeze authority only. Callable while frozen. |
 | `freeze_authority_transfer` | Replaces the current freeze authority with a new signer or PDA. Admin only. Callable while frozen. |
@@ -150,7 +150,7 @@ pub fn transfer(
 The injected gate performs two checks before the handler body runs:
 
 1. **Program-wide check**, reads `freeze_config.is_frozen`. Rejects if true.
-2. **Per-account check**, derives the PDA at `(program_id, "frozen", caller.account_id)` and reads `is_frozen`. Rejects if true. Missing PDA = not frozen.
+1. **Per-account check**, derives the PDA at `(program_id, "frozen", caller.account_id)` and reads `is_frozen`. Rejects if true. Missing PDA = not frozen.
 
 Both checks pass for the call to proceed.
 

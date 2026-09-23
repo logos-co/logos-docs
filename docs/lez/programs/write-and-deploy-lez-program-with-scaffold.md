@@ -60,7 +60,7 @@ This document is accurate for **Testnet v0.2.1**.
 
     This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical.
 
-2. Verify the installation:
+1. Verify the installation:
 
     ```bash
     logos-scaffold --version
@@ -77,7 +77,7 @@ This document is accurate for **Testnet v0.2.1**.
 
     This generates a project with the default template, which includes a sample guest program and runner scripts.
 
-2. Inspect the project layout:
+1. Inspect the project layout:
 
     ```text
     my-program/

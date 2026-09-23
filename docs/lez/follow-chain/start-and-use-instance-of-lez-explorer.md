@@ -37,7 +37,7 @@ If you don't want to run your own LEZ explorer instance, navigate instead to the
 ## Start the LEZ Explorer
 
 1. Navigate to your local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/).
-2.  In a new terminal window, start the LEZ Explorer:
+1.  In a new terminal window, start the LEZ Explorer:
 
     ```bash
     just run-explorer
@@ -46,7 +46,7 @@ If you don't want to run your own LEZ explorer instance, navigate instead to the
     :::info
     By default, the LEZ Explorer connects to the LEZ Indexer at `http://localhost:8779`. Set the `INDEXER_RPC_URL` environment variable or pass `--indexer-rpc-url` to use a different address.
     :::
-3.  Open `http://localhost:3000/` in your browser.
+1.  Open `http://localhost:3000/` in your browser.
 
     You will see a **No blocks found** message initially:
 
@@ -61,7 +61,7 @@ If you don't want to run your own LEZ explorer instance, navigate instead to the
 1.  Click any block in the list to view its details.
 
     ![Block detail view](../assets/start-and-use-instance-of-lez-explorer/block-details.png)
-2.  Use the search bar to look up a block, transaction, or account by ID.
+1.  Use the search bar to look up a block, transaction, or account by ID.
 
     ![Transaction search result](../assets/start-and-use-instance-of-lez-explorer/transaction-details.png)
 

@@ -45,7 +45,7 @@ The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the
 The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequencer running alongside it. For a local deployment, start each service in its own terminal.
 
 1. In the LEZ repository, run `just clean` to remove any leftover artifacts from previous runs.
-2.  Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's [channel](../../get-started/glossary.md#channel) ID. Get the channel ID from the public LEZ sequencer by running:
+1.  Replace the default value of `bedrock_config.addr` in `lez/indexer/service/configs/debug/indexer_config.json` with your Logos Blockchain endpoint and replace the default `channel_id` there with the LEZ's [channel](../../get-started/glossary.md#channel) ID. Get the channel ID from the public LEZ sequencer by running:
 
     ```bash
     curl https://testnet.lez.logos.co/ \
@@ -71,7 +71,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     ```
 
     - Test configs are located [here for the node](https://github.com/logos-blockchain/logos-execution-zone/tree/main/bedrock) and [here for the sequencer](https://github.com/logos-blockchain/logos-execution-zone/blob/main/lez/sequencer/service/configs/debug/sequencer_config.json).
-3.  In a third terminal window, start the LEZ Indexer:
+1.  In a third terminal window, start the LEZ Indexer:
 
     ```sh
     just run-indexer
@@ -103,7 +103,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     ```
 
     The `result` value should increase each time you repeat the call.
-2.  Run the health check to confirm the indexer can reconstruct the full state from the database:
+1.  Run the health check to confirm the indexer can reconstruct the full state from the database:
 
     ```sh
     curl -X POST http://localhost:8779 \
@@ -136,7 +136,7 @@ The indexer depends on the Logos Blockchain Node and benefits from an LEZ Sequen
     ```sh
     {"jsonrpc":"2.0","id":1,"result":{"program_owner":"FeYNA4PVvs1SsSuECrmQNnJqtB1jA6CbVBBSVGos7qcu","balance":20000,"data":"","nonce":1}}
     ```
-2. Run `just run-wallet --help` to see all available wallet commands.
+1. Run `just run-wallet --help` to see all available wallet commands.
 
 ## Frequently asked questions
 

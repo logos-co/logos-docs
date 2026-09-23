@@ -6,6 +6,7 @@
 [Cc]ounterparty
 [Dd]elivery
 [Dd]ev
+EmPoWering
 [Hh]ashlock
 [Hh]eadlessly
 [Ll]ogos
@@ -76,6 +77,7 @@ devnet
 dir
 dirs
 Discv5
+distributable
 Docusaurus
 downloader
 downloaders

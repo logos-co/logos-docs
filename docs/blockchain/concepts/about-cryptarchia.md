@@ -22,6 +22,10 @@ sidebar_position: 2
 - Cryptarchia maintains block production during failures, allowing the network to keep operating even if competing forks emerge temporarily.
 - Cryptarchia has low entry barriers, so validator nodes can run on a basic laptop with no minimum stake requirement.
 
+:::note
+While Cryptarchia is a fully Proof of Stake protocol, the Logos Blockchain also uses a Proof of Work mechanism to allow users to independently acquire notes. For more information, see [Mining notes](./about-mantle.md#mining-notes).
+:::
+
 ## Properties of Cryptarchia
 
 ### Resilience via liveness
@@ -62,7 +66,7 @@ The bootstrapping rule ensures that honest parties can join or rejoin the protoc
 
 ### Leadership election
 
-Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each [note](../../get-started/glossary.md#note) that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
+Cryptarchia uses Logos notes to select block proposers. Each [note](../../get-started/glossary.md#note) that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
 
 Each slot presents an opportunity for a block proposer to add a block to the chain, so long as they win the leadership election for that slot. The leadership election is run locally by each individual eligible note, without any public leadership schedule. Whether a particular note wins the leadership election for a given slot is determined by comparing a random “ticket” value to a threshold derived from the note’s relative stake. Due to the privacy properties of Cryptarchia, this relative stake relies on an estimate of the total participating stake derived from the block production rate.
 

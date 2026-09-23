@@ -75,9 +75,6 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     git checkout v0.2.2
     ```
 
-    - `v0.2.2` is the release the Basecamp catalogue ships as **Chat**, so both options run the same
-      app and match the walkthrough below. Older tags such as `v0.1.0` predate the address-based
-      contact flow in [Step 2](#step-2-start-a-conversation).
 1.  Run the standalone app:
 
     ```bash
@@ -101,21 +98,16 @@ instance's address to open a conversation from the other—referred to here as *
 **On instance A:**
 
 1. Click **New chat**, then choose **Direct message** ("One person, by address").
-2. Paste B's address into the **New DM** dialogue under **Paste the other user's address**.
-3. Click **Create**. A new conversation appears in A's conversation list.
-
-There is no intro message to type and nothing to accept on B's side: the conversation appears in
-B's list as soon as A's first message arrives, which you send in the next step.
+1. Paste B's address into the **New DM** dialogue under **Paste the other user's address**.
+1. Click **Create**. A new conversation appears in A's conversation list.
 
 ## Step 3: Send and receive messages
 
 1. On instance A, select the conversation you created in [Step 2](#step-2-start-a-conversation).
-2.  Type a message in the message input field, then press `Enter` or click the send button.
+1. Type a message in the message input field, then press `Enter` or click the send button. Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
+1. Observe instance B.
 
-    Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
-3.  Observe instance B.
-
-    **Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select it and reply; the reply appears as an incoming bubble in A.
+**Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select it and reply; the reply appears as an incoming bubble in A.
 
 ## Troubleshooting Logos Chat
 

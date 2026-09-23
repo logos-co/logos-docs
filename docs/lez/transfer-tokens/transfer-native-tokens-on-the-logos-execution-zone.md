@@ -82,16 +82,16 @@ recipient before sending.
 
     If you create a public account, the output is the account ID and its public key (`pk`). If you create a private account, the output includes the account ID, nullifier public key (`npk`), and [viewing public key](../../get-started/glossary.md#viewing-public-key) (`vpk`).
 
-:::info
-Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
-:::
+    :::info
+    Your account keys and data are stored in the local file `$HOME/.lee/wallet/storage.json`.
+    :::
 
-2.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
+1.  Use the `wallet account ls` command to confirm the accounts are created successfully. You should see a list showing all of your accounts.
 
     ```sh
     wallet account ls
     ```
-3.  Initialise the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialise.
+1.  Initialise the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialise.
 
     ```sh
     wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
@@ -103,18 +103,18 @@ Your account keys and data are stored in the local file `$HOME/.lee/wallet/stora
     wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
     ```
 
-:::info
-New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
+    :::info
+    New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
 
-The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
-:::
+    The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
+    :::
 
-4.  Fund the sender account using the Testnet [Piñata](../../get-started/glossary.md#piñata) program. Your account receives 150 tokens every time you fund it.
+1.  Fund the sender account using the Testnet [Piñata](../../get-started/glossary.md#piñata) program. Your account receives 150 tokens every time you fund it.
 
     ```sh
     wallet pinata claim --to ACCOUNT-TYPE/ACCOUNT-ID
     ```
-5.  Confirm your account balance after funding using the `wallet account get` command:
+1.  Confirm your account balance after funding using the `wallet account get` command:
 
     ```sh
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
@@ -193,7 +193,7 @@ Check your account `npk` and `vpk` using the `wallet account get --account-id AC
         --to-vpk RECIPIENT-VPK \
         --amount TOKEN-AMOUNT
     ```
-2.  Once the transaction is accepted, run the following command to scan the chain for encrypted values in the transaction and update the local state accordingly.
+1.  Once the transaction is accepted, run the following command to scan the chain for encrypted values in the transaction and update the local state accordingly.
 
     ```sh
     wallet account sync-private

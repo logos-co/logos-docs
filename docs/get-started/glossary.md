@@ -14,6 +14,10 @@ A list of some common terms and phrases specific to the Logos ecosystem.
 
 The basic organisational unit of the LEZ state, with all persistent data stored in accounts. Accounts can be either public or private, and can also represent LEZ programs. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
+### App
+
+In the context of Logos modules, a user-facing bundle of a UI package combined with its core dependencies. See [Package](#package).
+
 ---
 
 ## B

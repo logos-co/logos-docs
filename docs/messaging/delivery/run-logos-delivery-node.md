@@ -175,7 +175,7 @@ Follow the instructions for your chosen path.
    EOF
    ```
 
-## Step 3: Load the module and boot the node
+## Step 2: Load the module and boot the node
 
 Run these commands for your path.
 

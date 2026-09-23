@@ -85,6 +85,10 @@ Run these commands from the root of your module project.
 
    `init` writes `scaffold.toml`, creates `.scaffold/`, and appends `.scaffold` to `.gitignore`. It also installs AI-assistant instructions for the project under `.claude/skills/`, `.cursor/rules/`, and `AGENTS.md`. Run it once per project. If the project already has a `scaffold.toml` from an older schema, `init` migrates it in place and leaves a `scaffold.toml.bak` next to it.
 
+   :::warning
+   `init` overwrites an existing `AGENTS.md` at the project root without prompting, and unlike `scaffold.toml` it leaves no `.bak` copy. If your project already has an `AGENTS.md`, commit it or copy it somewhere safe before you run `init`, then merge your content back into the new file.
+   :::
+
 1. Pin and build the Basecamp toolchain:
 
    ```bash
@@ -176,7 +180,7 @@ Run these commands from the root of your module project.
    To keep a copy of the window's output, add `--log-file`. Bare `--log-file` writes to `.scaffold/basecamp/profiles/<profile>/basecamp.log` and still tees to your terminal; `--log-file=PATH` picks the file.
 
 :::warning
-The scrub in step 3 is deliberate: every launch starts from a clean profile, so identity keys, conversations, any other in-app state, per-module persisted state in `module_data/`, and Basecamp's own `logs/` are discarded. That is what makes runs reproducible. If you need state that survives a restart, run Basecamp yourself against a fixed base directory as described in [Step 6](#step-6-run-two-instances-side-by-side).
+Removing the profile's data on every launch is deliberate: every launch starts from a clean profile, so identity keys, conversations, any other in-app state, per-module persisted state in `module_data/`, and Basecamp's own `logs/` are discarded. That is what makes runs reproducible. If you need state that survives a restart, run Basecamp yourself against a fixed base directory as described in [Step 6](#step-6-run-two-instances-side-by-side).
 :::
 
 To see the paths a profile resolves without launching or changing anything, including the XDG directories, the runtime directory, and Basecamp's `modules/`, `plugins/`, `module_data/`, and `logs/` directories:

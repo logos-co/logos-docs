@@ -45,7 +45,7 @@ Pick the guide that matches what you are building: [Write and deploy an LEZ prog
 
 ## Project layout
 
-Scaffold works on a project directory that contains a `scaffold.toml` file at its root. Every command refuses to run outside such a project, and `lgs init` creates the file for an existing project.
+Scaffold works on a project directory that contains a `scaffold.toml` file at its root, and project-scoped commands such as `setup`, `doctor`, and the `basecamp` workflow refuse to run outside one. The exceptions are `lgs new`, which creates a project, `lgs init`, which adds `scaffold.toml` to an existing one, and `lgs basecamp docs`, which prints the module-project contract from anywhere.
 
 | Path | Purpose |
 |:---|:---|

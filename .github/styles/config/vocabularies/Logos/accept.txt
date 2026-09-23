@@ -79,6 +79,7 @@ dirs
 DID
 DIDs
 Discv5
+distributable
 Docusaurus
 downloader
 downloaders

@@ -23,13 +23,13 @@ package.lgx (tar.gz)
 ├── manifest.sig           # Optional - Ed25519 signature with DID identity
 ├── assets/                # Optional - variant-independent package assets
 │   ├── icon.png           #   Package icon: PNG, exactly 256x256
-│   └── lidl/               #   Canonical module interface documents
+│   └── lidl/              #   Canonical module interface documents
 │       └── <name>.lidl
-├── variants/               # Required - one directory per platform build
+├── variants/              # Required - one directory per platform build
 │   ├── linux-amd64/
 │   └── darwin-arm64/
-├── docs/                   # Optional - documentation
-└── licenses/                # Optional - license files
+├── docs/                  # Optional - documentation
+└── licenses/              # Optional - license files
 ```
 
 Only these entries are permitted at the archive root. Each entry under `variants/` is a platform build (for example `linux-amd64`, `darwin-arm64`); files directly under `variants/` are not allowed. Everything under `assets/` is platform-independent and stored once, so a registry can read a package's icon or `.lidl` interface documents without unpacking a platform build.

@@ -23,7 +23,7 @@ This document is accurate for **Testnet v0.2.1**.
 
 In Logos [Basecamp](../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../get-started/glossary.md#catalogue) or local `.lgx` files.
 
-There are two types of modules in Logos Basecamp. [Core modules](../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../get-started/glossary.md#ui-module) are the visual front-ends users interact with.
+There are two types of modules in Logos Basecamp. [Core modules](../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../get-started/glossary.md#ui-module) are the visual front-ends users interact with. Both kinds of modules are packaged and distributed as [packages](../get-started/glossary.md#package).
 
 :::info[Prerequisites]
 

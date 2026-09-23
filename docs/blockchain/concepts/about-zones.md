@@ -26,7 +26,7 @@ Zones are customisable, high-performance blockchains for applications built on L
 
 Zones let developers build performant applications with the freedom to define an execution environment that suits their needs, while the Logos Blockchain provides economic security and data availability that a Zone could not provide on its own. [Bedrock](about-bedrock.md) does not interpret Zone data. Instead, it provides operations through [Mantle](about-mantle.md) that let Zone sequencers inscribe their state updates permanently to the blockchain.
 
-Unlike Ethereum Layer 2s, Zones do not rely on a smart contract on the Layer 1 to ensure the correctness of their state. A Zone can ensure correctness in several ways, including publishing zero knowledge validity proofs for its validators to verify, providing a challenge window for fraud proofs, or requiring Zone nodes to re-execute the state transition function.
+Unlike Ethereum Layer 2 chains, Zones do not rely on a smart contract on the Layer 1 to ensure the correctness of their state. A Zone can ensure correctness in several ways, including publishing zero knowledge validity proofs for its validators to verify, providing a challenge window for fraud proofs, or requiring Zone nodes to re-execute the state transition function.
 
 ## Additional features
 

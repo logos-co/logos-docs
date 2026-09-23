@@ -1,70 +1,98 @@
-# Contributing to Logos documentation
+# Contributing to the Logos Documentation
 
-This guide explains how to contribute to the Logos documentation project hosted at [`logos-docs`](https://github.com/logos-co/logos-docs/). It covers the contribution process for anyone - whether you are part of the Logos organization or an external contributor.
+This guide explains how to contribute to the Logos Documentation project, hosted at the [`logos-docs`](https://github.com/logos-co/logos-docs/) repository. By following the rules delineated in this guide, both Logos Core Contributors and others can make improvements to the Logos Documentation.
 
 ## Overview
 
-Logos documentation lives in the [`docs/`](./docs/) folder of this repository. Every document follows one of five [canonical templates](./resources/templates/README.md) loosely based on [DITA standards](https://docs.oasis-open.org/dita/dita/v1.3/os/part2-tech-content/archSpec/technicalContent/dita-technicalContent-InformationTypes.html), uses a shared set of [writing rules](./resources/writing-rules/README.md), and goes through a review process before publication.
+The Logos Documentation lives in the [`docs/`](./docs) folder of this repository. Every document follows an applicable [template](./resources/templates) and goes through a review process before being published.
 
-The Docs team (Technical Writers) owns the documentation workflow. R&D teams provide technical input and review. The Red Team validates that published documentation works end-to-end in a testing environment.
-
-## Document types
-
-Every document in this project uses one of these types. Choosing the right type is mandatory before writing.
-
-<!-- TODO: Add final templates links once all resources are committed. -->
-
-| Type | Purpose | Use when... |
-|:---|:---|:---|
-| Quickstart | Get a user from zero to a working result fast. | The reader needs to try something for the first time with minimal setup. |
-| Procedure | Walk through a goal-oriented workflow step by step. | The reader needs to complete a specific task they already understand. |
-| Concept | Explain what something is and how it works. | The reader needs to understand a system, component, or idea before acting. |
-| Reference | Provide structured lookup information. | The reader needs to check a flag, parameter, API field, or config option. |
-| Troubleshooting | Diagnose and fix problems. | The reader hit an error and needs symptom-to-fix guidance. |
-
-If you are unsure which type fits, open an issue describing what you want to document and the Docs team will help you choose.
-
-## Resources
-
-| Resource | Location | Purpose |
-|:---|:---|:---|
-| Canonical templates | [`resources/templates/`](./resources/templates/README.md) | Markdown and JSON templates for each document type. Non-negotiable structure. |
-| Writing rules | [`resources/writing-rules/`](./resources/writing-rules/README.md) | Style guide covering voice, formatting, code blocks, callouts, and terminology. |
-| Doc packet template | [`resources/templates/doc-packet.md`](./resources/templates/doc-packet.md) | Template R&D teams use to provide technical input for a new document. |
-| Project board | [Logos Docs project board](https://github.com/orgs/logos-co/projects/9) | Tracks every document from intake to publication. Read access is public. |
-| Labels reference | [Repository labels](https://github.com/logos-co/logos-docs/labels) | Label taxonomy used on issues and PRs. |
+The Logos Docs team own the documentation workflow. R&D teams provide technical input and review in the form of [doc packets](./resources/templates/doc-packet.md). The Logos Red Team validates that published documentation works end-to-end in a testing environment.
 
 ## How to contribute
 
-### Report a problem or request a new document
+The procedure for contributing will differ depending on the kind of change you wish to make. Click on the link below that best describes your desired contribution to see the steps most applicable to your situation.
 
-If you found an error in an existing document, want to request a new document, or have a suggestion, [open an issue](https://github.com/logos-co/logos-docs/issues/new/choose).
+- [Report a problem or suggest a change](#report-a-problem-or-suggest-a-change)
+- [Fix or improve an existing document](#fix-or-improve-an-existing-document)
+- [Review an existing issue or PR](#review-an-existing-issue-or-pr)
+- [Request a new document](#request-a-new-document)
+- [Write a new document](#write-a-new-document)
 
-Describe what you need clearly. Include:
+### Report a problem or suggest a change
+
+If you found an error in an existing document and are not sure how to fix it (or don't have the time do to so), or you want to suggest a new document or broad changes to the style or structure of the Documentation, [open an issue](https://github.com/logos-co/logos-docs/issues/new/choose).
+
+Describe what you want to see clearly. Include:
 
 - The document path or URL (if reporting a problem with an existing doc).
 - What is wrong or missing.
-- For new document requests: the user journey or task you want documented, and why it matters.
+- For broad changes requests: justification for why your change is important, and why the current state is inadequate.
+
+> [!TIP]
+> If you see a problem in the Documentation that you could fix, create a [PR](#fix-or-improve-an-existing-document) instead!
 
 The Docs team triages issues and decides priority.
 
+### Request a new document
+
+To request the creation of a new document, open an issue and follow the steps [above](#report-a-problem-or-suggest-a-change). For a new tutorial ("procedure") type document that describes how to use some component of the stack or how to reach some desired result, open a [Doc packet issue](https://github.com/logos-co/logos-docs/issues/new?template=doc-packet.yml).
+
+> [!IMPORTANT]
+> Core contributors should follow the phased process tracked in the [Journeys repository](https://github.com/logos-co/journeys.logos.co/issues). For more information, see [Workflow for core contributors](#workflow-for-core-contributors).
+
 ### Fix or improve an existing document
 
-If you want to fix a typo, clarify a step, update a command, or make any other improvement to an existing document:
+If you want to fix a typo, clarify a step, update a command, or make any other improvement to an existing document, open a pull request:
 
-1. Fork the repository.
-1. Create a branch with a descriptive name (for example, `fix/quickstart-node-typo`).
-1. Make your changes. Follow the [writing rules](./resources/writing-rules/README.md) and preserve the existing template structure. Do not reorganize sections or change the document type.
-1. Open a pull request against `main`. In the PR description, explain what you changed and why.
-1. The Docs team reviews your PR. For technical changes (commands, config values, expected outputs), an R&D SME may also review.
+1. Create a branch with a descriptive name (for example, `fix/blockchain-node-typo`).
+1. Make your changes. Preserve the existing structure - do not reorganise sections or change the document type.
+1. Open a pull request against `main` and tag `logos-co/docs` and `logos-co/eco-dev-eng` as reviewers. In the PR description, explain what you changed and why. Make sure that all checks pass before opening your PR for review.
+1. The Docs team and others will review your PR. Further changes may be requested before the PR is merged.
 
 Keep PRs small and focused. One fix per PR is easier to review than a large batch of unrelated changes.
 
-### Write a new document (core contributors)
+### Review an existing issue or PR
 
-This section applies to Logos core contributors: R&D engineers, Docs team members, and Red Team members who are part of the full documentation workflow.
+Constructive input on suggested changes to the repo, both from humans and AI agents, is always welcome. If you see an existing issue or PR that could benefit from your opinion, follow these guidelines:
 
-Writing a new document follows a phased process tracked on the [project board](https://github.com/orgs/logos-co/projects/9). Each phase has a clear owner and a definition of done.
+- Keep comments concise but understandable.
+- If a suggestion is based on a subjective judgement, explain your reasoning.
+- AI comments should be clearly labeled as such.
+- If a human has reviewed an AI review and confirmed its conclusions, include a comment explicitly stating this fact.
+- Where practical, use "suggested changes" rather than just comments.
+- Do not commit changes to the PR branch without the permission of the author or the Docs team.
+
+### Write a new document
+
+Writing a new document is a task typically handled by the Docs team, but can be taken up by anyone. The easiest way to write a new document is to take pre-existing documentation, a [doc packet](./resources/templates/doc-packet.md), or an *ad hoc* text and use AI to make it conform with the template required for its [document type](#document-types). Once the document is written, [open a PR](#fix-or-improve-an-existing-document) to start the review process.
+
+> [!IMPORTANT]
+> Core contributors should follow the phased process tracked in the [Journeys repository](https://github.com/logos-co/journeys.logos.co/issues). For more information, see [Workflow for core contributors](#workflow-for-core-contributors).
+>
+> Other users are advised to first submit a [new document request](#request-a-new-document) and await approval before writing a new document.
+
+#### Document types
+
+To enforce a consistent style, every document in this project must follow the rules that apply to its specific type. Choosing the right type is mandatory before writing.
+
+| Type | Purpose | Use when... | Template |
+|:---|:---|:---|:---|
+| Procedure | Walk through a goal-oriented workflow step by step. | The reader needs to complete a specific task they already understand. | [Procedure template](./resources/templates/procedure-template.md) |
+| Concept | Explain what something is and how it works. | The reader needs to understand a system, component, or idea before acting. | Coming soon... |
+| Reference | Provide structured lookup information. | The reader needs to check a flag, parameter, API field, or config option. | Coming soon... |
+| Troubleshooting | Diagnose and fix problems. | The reader hit an error and needs symptom-to-fix guidance. | Coming soon... |
+
+If you are unsure which type fits, [open an issue](#request-a-new-document) describing what you want to document and the Docs team will help you choose.
+
+#### Document structure rules
+
+All documents must follow these rules regardless of who writes them.
+
+1. **Use a canonical template.** Every document must use the Markdown template for its type. Templates are in [`resources/templates/`](./resources/templates/). Do not invent your own structure.
+1. **Follow the writing rules.** The style is enforced by Vale in the PR checks. Make sure to use British English when writing.
+1. **One document, one type.** Do not mix types. If a procedure needs a long conceptual explanation, write a separate concept document and link to it.
+1. **Mark unknowns explicitly.** If you do not have the information for a required section, do not skip it. Write a clear note for the reader (for example., "Technical details pending - contact the team for status"). Track the gap in the PR or issue.
+1. **Do not break existing structure.** When editing an existing document, preserve its template structure, section IDs, and numbering. Change only what you need to change.
 
 ---
 
@@ -190,8 +218,6 @@ External blockers (`blocked-by:legal`, `blocked-by:security`, etc.) can be added
 
 The app keeps these labels in sync automatically. A ⚠ "Fix Labels" button in the header appears when any issue's labels drift from the computed state; clicking it reconciles everything in one pass (also migrates legacy `action:*` and `blocked:<team>` labels).
 
----
-
 ### Quality levels
 
 Quality labels track the document's reliability, not its position in the workflow. A document can be published at any quality level. The quality level is visible to readers and sets expectations.
@@ -202,13 +228,3 @@ Quality labels track the document's reliability, not its position in the workflo
 | Unverified | The document has structured content with steps, but no SME has confirmed correctness. Commands and outputs may be inaccurate. |
 | SME-verified | An R&D SME has confirmed that the technical content is correct for a specific repo version. |
 | Verified | An SME has confirmed correctness and the Red Team has tested the journey end-to-end. This is the highest quality bar. |
-
-## Document structure rules
-
-All documents must follow these rules regardless of who writes them.
-
-1. **Use a canonical template.** Every document must use the Markdown template for its type. Templates are in [`resources/templates/`](./resources/templates/README.md). Do not invent your own structure.
-1. **Follow the writing rules.** The style guide in [`resources/writing-rules/`](./resources/writing-rules/README.md) defines voice, formatting, terminology, and code block conventions. Read it before writing.
-1. **One document, one type.** Do not mix types. If a quickstart needs a long conceptual explanation, write a separate concept document and link to it.
-1. **Mark unknowns explicitly.** If you do not have the information for a required section, do not skip it. Write a clear note for the reader (for example., "Technical details pending - contact the [team] for status"). Track the gap in the PR or issue.
-1. **Do not break existing structure.** When editing an existing document, preserve its template structure, section IDs, and numbering. Change only what you need to change.

@@ -15,9 +15,13 @@ sidebar_position: 1
 
 #### Get started integrating Logos messaging into a C++ module.
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) (tag `v0.2.0`).
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
 
-The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.0`](https://github.com/logos-co/logos-delivery-module/tree/3258cdb0132e37228aa2519e0c01c0e7429a20dd)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
+This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) (tag `v0.2.1`).
+
+The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.1`](https://github.com/logos-co/logos-delivery-module/tree/b8b9ac2f4667bc63644b2116f64a07aa30cfd3ef)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
 
 :::info[Prerequisites]
 
@@ -25,7 +29,8 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
     - Linux: aarch64 or x86_64
     - macOS: aarch64 or x86_64
 - ~1 GB of RAM
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -38,7 +43,7 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
 - You can subscribe to a [content topic](../../get-started/glossary.md#content-topic) and receive messages.
 - You can send a message and confirm delivery by tracking `messageSent` and `messagePropagated` events.
 - You can open a reliable channel and exchange messages on it with automatic retransmission and acknowledgements.
-- You can integrate the full Logos Delivery lifecycle — create, start, subscribe, send, stop — into your C++ module.
+- You can integrate the full Logos Delivery lifecycle—create, start, subscribe, send, stop—into your C++ module.
 
 ## Step 1: Create a Logos module
 
@@ -94,7 +99,7 @@ The flake input name (`delivery_module`) must exactly match the dependency name 
    inputs = {
      logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.5";
      delivery_module = {
-       url = "github:logos-co/logos-delivery-module/v0.2.0";
+       url = "github:logos-co/logos-delivery-module/v0.2.1";
        # Your module and delivery_module must be built by the same
        # logos-module-builder: the event emitter and the consumer have to agree
        # on the binary event wire format.
@@ -167,13 +172,13 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
 
 ## Step 4: Create and start the node
 
-`createNode` builds the node from a JSON configuration and `start()` connects it to the network. Both are synchronous and return a `LogosResult` — always check `success` before continuing and surface `getError()` on failure.
+`createNode` builds the node from a JSON configuration and `start()` connects it to the network. Both are synchronous and return a `LogosResult`—always check `success` before continuing and surface `getError()` on failure.
 
 :::info
 The node is a singleton per Logos Core instance: call `createNode` exactly once per context, and expect the node to already exist when another module created it first.
 :::
 
-1. Initialise the node with `createNode`. For a complete list of node configuration keys, see the [Module Interface](https://github.com/logos-co/logos-delivery-module/blob/3258cdb0132e37228aa2519e0c01c0e7429a20dd/README.md#module-interface) section of the README.
+1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](https://logos-co.github.io/logos-delivery-module/v0.2.1/pages/api_reference.html#_CPPv4N18DeliveryModuleImpl10createNodeERKNSt6stringE) in the Delivery module API reference.
 
    ```cpp
    auto& delivery = modules().delivery_module;
@@ -237,10 +242,10 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
 Reliable Channels add end-to-end reliability on top of the Messaging API: it tracks acknowledgements with [SDS](https://lip.logos.co/anoncomms/raw/sds.html) and retransmits what peers did not acknowledge.
 
 :::warning
-The Reliable Channels API is a **Developer Preview**. It is not feature-complete and is still under testing — expect gaps in behaviour, and expect the API surface to change before general availability.
+The Reliable Channels API is a **Developer Preview**. It is not feature-complete and is still under testing—expect gaps in behaviour, and expect the API surface to change before general availability.
 :::
 
-A channel is addressed by an application-chosen `channelId`, so you never hold a channel object — every call takes the id. All four calls are synchronous and return a `LogosResult`; delivery outcomes arrive through the channel subscriptions from Step 3.
+A channel is addressed by an application-chosen `channelId`, so you never hold a channel object—every call takes the id. All four calls are synchronous and return a `LogosResult`; delivery outcomes arrive through the channel subscriptions from Step 3.
 
 :::info
 Reliable channels need the full stack, which is what `createNode` mounts by default (`"entryLayer": "channels"`). On a kernel-only node, every `channel*` call fails with `no reliable channel manager`.
@@ -257,7 +262,7 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    }
    ```
 
-   Creating a channel subscribes its content topic for you — you don't call `subscribe()` for a channel topic.
+   Creating a channel subscribes its content topic for you—you don't call `subscribe()` for a channel topic.
 
 1. Check whether a channel is currently open.
 
@@ -266,7 +271,7 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    const bool open = r.success && r.getString() == QLatin1String("true");
    ```
 
-1. Send on the channel. `channelSend()` returns a request ID — track it through `channelMessageSent` or `channelMessageError`.
+1. Send on the channel. `channelSend()` returns a request ID—track it through `channelMessageSent` or `channelMessageError`.
 
    ```cpp
    // payload is a QByteArray of raw bytes, same as channelMessageReceived delivers.
@@ -278,7 +283,7 @@ Reliable channels need the full stack, which is what `createNode` mounts by defa
    const QString requestId = r.getString();
    ```
 
-1. Receive channel messages through the `onChannelMessageReceived` subscription. Unlike `onMessageReceived`, it fires only for the other participants' messages — your own channel sends come back as `channelMessageSent`, not as a received message.
+1. Receive channel messages through the `onChannelMessageReceived` subscription. Unlike `onMessageReceived`, it fires only for the other participants' messages—your own channel sends come back as `channelMessageSent`, not as a received message.
 
 1. Close the channel when you are done with it. This stops the channel's SDS loops and unsubscribes its content topic, unless another open channel still uses that topic:
 
@@ -371,7 +376,7 @@ Reliability shows only between two participants of the same channel. Use the sam
 Messages arriving on both sides, each attributed to the sending participant, confirms the channel journey: channel creation on a shared content topic and acknowledgement through SDS.
 
 :::tip
-[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.0) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
+[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
 :::
 
 ## Troubleshooting the Logos Delivery module
@@ -394,11 +399,11 @@ The node may not be connected to peers yet, or the network layer rejected the me
 
 ### The node process dies when I re-open a channel I closed?
 
-Known issue in this release: ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone — every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
+Known issue in this release: ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone—every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
 
 ### `channelCreate` returns `channel already exists`?
 
-The channel id is already open on this node — channel ids are node-wide, so another module may hold it. Call `channelExists(channelId)` first, and reuse the open channel or pick an application-specific id.
+The channel id is already open on this node—channel ids are node-wide, so another module may hold it. Call `channelExists(channelId)` first, and reuse the open channel or pick an application-specific id.
 
 ### `channelMessageReceived` never fires on the other participant?
 
@@ -410,7 +415,7 @@ Your module was built with a `logos-module-builder` older than 0.2.5, where bina
 
 ### `channelSend` returns `no reliable channel manager`?
 
-The node was created as kernel-only (`"entryLayer": "kernel"`). Reliable channels need the default full stack — omit `entryLayer`, or set it to `"channels"`.
+The node was created as kernel-only (`"entryLayer": "kernel"`). Reliable channels need the default full stack—omit `entryLayer`, or set it to `"channels"`.
 
 ### Two instances of the same app on one host fail to start?
 

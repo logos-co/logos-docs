@@ -29,6 +29,14 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    {
+      tagName: 'script',
+      attributes: {
+        src: 'https://umami.bi.status.im/script.js',
+        defer: true,
+        'data-website-id': '0f95ea33-c693-4fe7-91dc-8effe9645fa8',
+      },
+    },
   ],
 
   future: {
@@ -170,6 +178,16 @@ const config: Config = {
             from: '/build-an-app/build-modules/readme',
             to: '/core/build-modules/build-and-run-a-logos-core-module',
           },
+          // Shortened canonical URLs. The page now lives at the short path
+          // (frontmatter `slug`), and the long path it used to own is kept
+          // alive here because it is spoken in a published demo video and
+          // embedded in in-app feedback links. Docusaurus's redirect page
+          // carries the query string and hash across, so deep links to a
+          // named step still land on that step.
+          {
+            from: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
+            to: '/basecamp/atomic-swaps-poc',
+          },
         ],
       } satisfies PluginClientRedirects.Options,
     ],
@@ -229,8 +247,7 @@ const config: Config = {
               label: 'Build an app',
             },
             {
-              type: 'docSidebar',
-              sidebarId: 'contributeSidebar',
+              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
               label: 'Contribute',
             },
           ],
@@ -298,6 +315,8 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      // see https://github.com/facebook/docusaurus/issues/3559
+      additionalLanguages: ['bash', 'cmake', 'nix'],
     },
   } satisfies Preset.ThemeConfig,
 };

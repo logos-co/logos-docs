@@ -38,13 +38,13 @@ The Logos Blockchain is implemented as two blockchain layers. Application execut
 
 ### Bedrock
 
-Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its [Private Proof of Stake](../get-started/glossary.md#private-proof-of-stake) ([PPoS](../get-started/glossary.md#ppos)) consensus protocol, [Cryptarchia](concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, token bridging, and inter-Zone messaging.
+Bedrock is a large-scale validator network that serves as the foundational layer of the Logos Blockchain. It provides consensus, data availability, and lightweight verification to Zones. Its [Private Proof of Stake](../get-started/glossary.md#private-proof-of-stake) ([PPoS](../get-started/glossary.md#ppos)) consensus protocol, [Cryptarchia](concepts/about-cryptarchia.md), keeps block proposers private while staying scalable, resilient, and accessible. Bedrock also enables decentralised sequencing for Zones, note [mining](../get-started/glossary.md#mining), token bridging, and inter-Zone messaging.
 
 Running a Bedrock validator node means leaving the [Logos node](../get-started/glossary.md#logos-node) application running in the background, with a low-maintenance approach. This makes it straightforward to contribute to the security, consensus, and interoperability of the network.
 
 ### Blend Network
 
-The Blend Network is an opt-in service that provides network-level privacy for consensus. It virtually eliminates the chance of linking a block proposer to the block they propose, so proposers cannot be targeted. Operators who join the Blend Network need more hardware than Bedrock validation alone requires.
+The Blend Network is an opt-in service that provides network-level privacy for consensus. It virtually eliminates the chance of linking a block proposer or transaction sender to their block or transaction, ensuring that they cannot be targeted. Operators who join the Blend Network need more hardware than Bedrock validation alone requires.
 
 ### Zones
 

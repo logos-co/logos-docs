@@ -24,7 +24,7 @@ sidebar_position: 3
 
 ## Discovery domain
  
-[Peer discovery](../../get-started/glossary.md#peer-discovery) in Logos Delivery facilitates locating other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](understand-peer-discovery/about-discv5.md) and [Peer Exchange](understand-peer-discovery/about-peer-exchange.md). These mechanisms allow developers to choose the most suitable option(s) for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
+[Peer discovery](../../get-started/glossary.md#peer-discovery) in Logos Delivery facilitates locating other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](understand-peer-discovery/about-discv5.md) and [Peer Exchange](understand-peer-discovery/about-peer-exchange.md). These mechanisms allow developers to choose the most suitable options for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
  
 ## Gossip domain
  

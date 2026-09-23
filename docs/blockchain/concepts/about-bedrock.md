@@ -32,6 +32,6 @@ On top of the peer-to-peer network sits [Cryptarchia](./about-cryptarchia.md), t
 
 ### Mantle
 
-[Mantle](./about-mantle.md), a Bedrock component that serves as the operating system of the Logos Blockchain, provides a minimal shared execution environment for Zones that allows them to interact with Bedrock. This includes operations like writing data to the blockchain, as well as a restricted ledger of [notes](../../get-started/glossary.md#note) to support payments and staking.
+[Mantle](./about-mantle.md), a Bedrock component that serves as the operating system of the Logos Blockchain, provides a minimal shared execution environment for Zones that allows them to interact with Bedrock. This includes operations like writing data to the blockchain, as well as a restricted ledger of [notes](../../get-started/glossary.md#note) to support [mining](../../get-started/glossary.md#mining), payments, and staking.
 
 Zones make use of Mantle operations when posting their updates to the Logos Blockchain, as well as to communicate asynchronously with other Zones. Mantle ensures that Zones state updates are correctly ordered via the use of Logos [channels](../../get-started/glossary.md#channel). Logos channels also allow for several sequencers to sequence a Zone, and enable token bridging between Zones and Bedrock.

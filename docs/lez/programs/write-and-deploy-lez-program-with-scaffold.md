@@ -86,6 +86,9 @@ Scaffold builds its own project-local sequencer and wallet, so you do not need a
     │       └── src/bin/       # Guest programs run inside the RISC0 zkVM
     ├── src/
     │   └── bin/               # Runner scripts that submit transactions
+    ├── AGENTS.md              # Guidance for AI coding assistants
+    ├── .claude/skills/        # The same guidance for Claude Code
+    ├── .cursor/rules/         # The same guidance for Cursor
     └── .scaffold/             # Local state, wallet home, and build artifacts
     ```
 

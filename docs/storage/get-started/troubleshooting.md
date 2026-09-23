@@ -19,8 +19,10 @@ This document is accurate for **Testnet v0.2.1**.
 
 [Logos Storage](../../get-started/glossary.md#logos-storage) requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
 
-- **Discovery port**: UDP, defaults to `8090`. Used for discovery and DHT operations.
-- **libp2p listen port**: TCP. Used for data transfer and peer connections. The Storage UI sets it during onboarding; the [storage module](../../get-started/glossary.md#storage-module) picks a random free port unless you set `listen-port`.
+- **Discovery port** (`disc-port`): UDP. Used for discovery and DHT operations. Defaults to `8090` for the [storage module](../../get-started/glossary.md#storage-module) and to `9090` in the Storage UI.
+- **libp2p listen port** (`listen-port`): TCP. Used for data transfer and peer connections. The Storage UI uses `8500` by default; the storage module picks a random free port unless you set `listen-port`.
+
+In the Storage UI, both values are shown as **Listen port** and **Discovery port** in the settings popup.
 
 Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
@@ -43,7 +45,7 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 **Cause**: this is typically due to discovery being unavailable: for instance, another process is already occupying its port.
 
-**Fix**: ensure that no process is using port `8090`, or change the default port value in the advanced configuration.
+**Fix**: ensure that no process is using the discovery port (`8090` by default, `9090` in the Storage UI), or change `disc-port` in your configuration (**Discovery port** in the Storage UI settings).
 
 ## Another application is using the listen port
 
@@ -63,7 +65,7 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 ## UPnP is not working
 
-**Symptom**: you selected UPnP during setup but the node remains unreachable.
+**Symptom**: UPnP is enabled on your router and `nat` is `auto` (the default), but the node remains unreachable.
 
 **Cause**: UPnP relies on your router supporting and enabling the UPnP protocol. Many routers have it disabled by default for security reasons.
 
@@ -83,11 +85,11 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 **Cause**: the machine's own firewall blocks incoming connections. Some Linux distributions (such as Fedora) enable a firewall by default.
 
-**Fix**: allow both ports through the firewall, replacing `<listen-port>` with your TCP listen port (shown during onboarding in the Storage UI, or the `listen-port` value of your config). With firewalld (Fedora):
+**Fix**: allow both ports through the firewall, replacing `<listen-port>` and `<disc-port>` with your TCP listen port and UDP discovery port (**Listen port** and **Discovery port** in the Storage UI settings, or the `listen-port` and `disc-port` values of your config). With firewalld (Fedora):
 
 ```sh
 sudo firewall-cmd --permanent --add-port=<listen-port>/tcp
-sudo firewall-cmd --permanent --add-port=8090/udp
+sudo firewall-cmd --permanent --add-port=<disc-port>/udp
 sudo firewall-cmd --reload
 ```
 
@@ -95,7 +97,7 @@ With ufw (Ubuntu):
 
 ```sh
 sudo ufw allow <listen-port>/tcp
-sudo ufw allow 8090/udp
+sudo ufw allow <disc-port>/udp
 ```
 
 ## The node was reachable, but is not anymore
@@ -104,7 +106,7 @@ sudo ufw allow 8090/udp
 
 **Cause**: most home ISPs change your public IP from time to time. If `nat` is set to `extip:<IP>`, the node keeps announcing the old address.
 
-**Fix**: check your current public IP (see [Finding your public IP](../concepts/connectivity.md#finding-your-public-ip)), update the `extip` value and restart the node. To avoid this, use `upnp` or `pmp` instead: the address is discovered automatically at startup.
+**Fix**: check your current public IP (see [Finding your public IP](../concepts/connectivity.md#finding-your-public-ip)), update the `extip` value and restart the node. To avoid this, set `nat` back to `auto` (the default) instead: the node then works out its public address by itself.
 
 ## Downloads time out when downloading from a different machine
 

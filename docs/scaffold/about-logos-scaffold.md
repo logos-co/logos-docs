@@ -19,7 +19,7 @@ sidebar_position: 1
 Scaffold ships two binaries with identical behaviour: `logos-scaffold` and the shorter alias `lgs`. Use either.
 
 :::info
-The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`. The `logos-co/logos-scaffold` URL redirects to the same repository.
+The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`, and the crate is published on [crates.io](https://crates.io/crates/logos-scaffold). The `logos-co/logos-scaffold` URL redirects to the same repository. This section is accurate for `logos-scaffold` **0.3.1**.
 :::
 
 ## What Logos Scaffold covers
@@ -28,15 +28,15 @@ Scaffold spans two workflows that a Logos project can use independently or toget
 
 | Workflow | Commands | What it does |
 |:---|:---|:---|
-| [LEZ](../get-started/glossary.md#lez) programs | `create`, `init`, `setup`, `build`, `deploy`, `localnet`, `test-node`, `wallet`, `spel`, `run` | Bootstraps a `program_deployment` project, syncs and builds the pinned LEZ and `spel` binaries, runs a local sequencer, funds wallets, and deploys guest programs. |
+| [LEZ](../get-started/glossary.md#lez) programs | `new` (alias `create`), `init`, `setup`, `build`, `deploy`, `localnet`, `test-node`, `wallet`, `spel`, `run` | Bootstraps a project from the `default` or `lez-framework` template, syncs and builds the pinned LEZ and `spel` binaries, runs a local sequencer, funds wallets, and deploys guest programs. |
 | Basecamp modules | `basecamp setup`, `modules`, `install`, `launch`, `develop`, `build`, `build-portable`, `run`, `doctor`, `paths`, `docs` | Pins and builds Basecamp and [`lgpm`](../get-started/glossary.md#lgpm), captures which modules a project installs, builds their `.lgx` packages, and launches profile-isolated Basecamp instances. |
-| Diagnostics | `doctor`, `report` | Reports environment health and bundles logs and state for a bug report. |
+| Diagnostics | `doctor`, `report`, `completions` | Reports environment health, bundles redacted logs and state for a bug report, and prints shell completions. |
 
 Both workflows are also exposed as a typed Rust API under `logos_scaffold::api`, so tests and dev tooling can drive a scaffold-managed project without shelling out to the CLI and parsing text.
 
 Each workflow has a one-command inner loop:
 
-- **LEZ programs:** `lgs run` chains build → IDL → localnet → wallet topup → deploy → post-deploy hooks. Steps 4 and 5 are skippable per profile (`topup = false`, `deploy = false`) for projects that fund or deploy themselves.
+- **LEZ programs:** `lgs run` chains build → IDL → localnet → wallet topup → deploy → post-deploy hooks. Steps 4 and 5 can be skipped per profile (`topup = false`, `deploy = false`) for projects that fund or deploy themselves.
 - **Basecamp modules:** `lgs basecamp launch <profile>` rebuilds, reinstalls, and starts a clean instance.
 
 :::info
@@ -56,7 +56,12 @@ Scaffold works on a project directory that contains a `scaffold.toml` file at it
 | `.scaffold/basecamp/profiles/<profile>/` | Per-profile Basecamp state: config, data, and cache directories for one instance. |
 | `.scaffold/basecamp/lgx/`, `.scaffold/basecamp/portable/` | Symlinks to `lgs basecamp build` output, one directory per variant, named `<NN>-<module_name>.lgx` in dependency order. |
 
-Scaffold appends `.scaffold` to the project's `.gitignore`, so none of this working state is committed. `scaffold.toml` is meant to be committed.
+Scaffold appends `.scaffold` to the project's `.gitignore`, so none of this working state is committed. `scaffold.toml` is meant to be committed: `basecamp modules` records in-project module sources as relative `path:./<dir>#lgx` references so the file stays portable across checkouts.
+
+Two things live outside the project directory:
+
+- **The cache root** holds the pinned LEZ and `spel` checkouts and their builds, shared by every project on the machine. It defaults to `~/Library/Caches/logos-scaffold` on macOS and `$XDG_CACHE_HOME/logos-scaffold` (usually `~/.cache/logos-scaffold`) on Linux. Point it elsewhere with `--cache-root` on `lgs new`, or with the `LOGOS_SCAFFOLD_CACHE_ROOT` environment variable, which every command honours.
+- **The Basecamp runtime directory** of each profile, `/tmp/lgs-<project-hash>-<profile>` by default, holds the Unix sockets modules open while Basecamp runs. See [Keep runtime paths short](./get-started/develop-a-logos-module-with-logos-scaffold.md#keep-runtime-paths-short).
 
 :::warning
 Everything under `.scaffold/wallet/` is development-only key material, unlocked by a deterministic local password unless you set `LOGOS_SCAFFOLD_WALLET_PASSWORD`. Never point it at real funds.
@@ -69,13 +74,33 @@ A profile is one isolated Basecamp instance: its own configuration, identity key
 Profile state is always project-local under `.scaffold/basecamp/profiles/`. Scaffold does not write Basecamp state into your home directory.
 
 :::warning
-`lgs basecamp launch <profile>` is clean-slate by design: every launch removes the profile's state and reinstalls the captured modules before starting Basecamp. Identities, conversations, and other in-app state do not survive a relaunch. To keep state between restarts, run Basecamp yourself against a dedicated base directory with `--user-dir`. See [Run two instances side by side](./get-started/develop-a-logos-module-with-logos-scaffold.md#step-6-run-two-instances-side-by-side).
+`lgs basecamp launch <profile>` is clean-slate by design: every launch removes the profile's state and reinstalls the captured modules before starting Basecamp. Identities, conversations, per-module persisted state (`module_data/`), and Basecamp's own `logs/` do not survive a relaunch. To keep state between restarts, run Basecamp yourself against a dedicated base directory with `--user-dir`. See [Run two instances side by side](./get-started/develop-a-logos-module-with-logos-scaffold.md#step-6-run-two-instances-side-by-side).
+:::
+
+## Pinned versions
+
+Scaffold builds every tool a project depends on from a pinned commit recorded in `scaffold.toml`, so two machines building the same project get the same toolchain. The defaults in `logos-scaffold` 0.3.1 are:
+
+| Component | Default pin | Override in `scaffold.toml` |
+|:---|:---|:---|
+| LEZ (sequencer and wallet) | `v0.1.2` | `[repos.lez]` |
+| `spel` | `v0.5.0` | `[repos.spel]` |
+| Basecamp | `0.2.3` | `[repos.basecamp]` |
+| `lgpm` | The `logos-package-manager` revision that Basecamp 0.2.3 locks | `[repos.lgpm]` |
+| `delivery_module`, when a module depends on it | `logos-delivery-module` `v0.2.0` | `[modules.delivery_module]` |
+
+The Basecamp and `lgpm` pins move as a set. Basecamp reads installed modules with the same package-manager library that the `lgpm` CLI uses to write them, so bumping one without the other leaves the two disagreeing about the package format. `lgs basecamp doctor` warns when only one of the pair is at scaffold's default.
+
+A project keeps the pins it already has in `scaffold.toml` when you upgrade scaffold. To move to new defaults, edit the pins and re-run `lgs setup` or `lgs basecamp setup`.
+
+:::info
+The `lgpm` that Basecamp 0.2.3 pins validates each package's content hashes on install. Modules must therefore be built with `logos-module-builder` 0.2.0 or later, or bundled with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx). Packages from the `tutorial-v1` era are rejected. See [Install fails with `Missing content hashes in manifest`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-missing-content-hashes-in-manifest).
 :::
 
 ## What Logos Scaffold does not do
 
 - **It does not replace [`logos-module-builder`](https://github.com/logos-co/logos-module-builder).** Module builder owns the Nix build of a module: it turns your source tree into `.lgx` packages. Scaffold calls that build and takes care of everything around it.
-- **It does not install anything on your `PATH`.** The Basecamp and `lgpm` binaries scaffold builds stay project-local and are invoked directly.
+- **It does not install anything on your `PATH`** besides its own `logos-scaffold` and `lgs`. The sequencer, wallet, `spel`, Basecamp, and `lgpm` binaries it builds stay project-local; reach them through `lgs wallet -- …`, `lgs spel -- …`, and the `basecamp` subcommands.
 - **It does not hot-reload a running Basecamp.** A rebuilt module reaches Basecamp only after it is reinstalled and Basecamp restarts.
 
 ## Related documentation
@@ -85,3 +110,4 @@ Profile state is always project-local under `.scaffold/basecamp/profiles/`. Scaf
 - [Write and deploy an LEZ program with `logos-scaffold`](../lez/programs/write-and-deploy-lez-program-with-scaffold.md)
 - [Build and run a Logos core module](../core/build-modules/build-and-run-a-logos-core-module.md)
 - [Install Logos Basecamp](../basecamp/install-logos-basecamp.md)
+- [Scaffold command reference](https://github.com/logos-co/scaffold/blob/master/docs/commands.md) and [`scaffold.toml` run configuration](https://github.com/logos-co/scaffold/blob/master/docs/configuration.md) in the scaffold repository

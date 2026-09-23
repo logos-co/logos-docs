@@ -245,3 +245,9 @@ zk
 zkSNARK
 zkSNARKs
 zsh
+localnet
+topup
+[Ss]ymlinks
+[Rr]einstall(s|ed|ing)?
+profile's
+Merkle

@@ -14,6 +14,10 @@ sidebar_position: 1
 
 #### Diagnose the failures that show up while iterating on a module.
 
+:::info
+This page describes `logos-scaffold` **0.3.1**, which pins Basecamp **0.2.3** by default. Run `lgs --version` to check yours.
+:::
+
 Most problems in the module development loop share a shape: the build succeeds, no error is printed, and the running application does not do what the source says it should. This page maps those symptoms to their causes.
 
 The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a module project set up as described in [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md).
@@ -25,14 +29,19 @@ The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a modu
 | A rebuilt module behaves as if nothing changed | [Your change is not visible after a rebuild](#your-change-is-not-visible-after-a-rebuild) |
 | A module you installed is missing from Basecamp | [An installed module is missing](#an-installed-module-is-missing) |
 | `Unix socket path too long (122 >= 104)` | [Module loading aborts with a socket path error](#module-loading-aborts-with-a-socket-path-error) |
+| `file '…/logos_token_…' has an unsupported type` during a build | [Builds fail after the first launch](#builds-fail-after-the-first-launch) |
+| `refusing to use runtime dir …` or `cannot restrict permissions on runtime dir …` | [Launch refuses the runtime directory](#launch-refuses-the-runtime-directory) |
+| `no modules captured` when launching | [Launch finds no modules](#launch-finds-no-modules) |
+| A module freezes on first click, or is dropped when Basecamp starts | [An installed module lacks the platform variant](#an-installed-module-lacks-the-platform-variant) |
 | `Invalid null URL`, or a QML singleton holding the wrong values | [A QML type or singleton resolves to the wrong module](#a-qml-type-or-singleton-resolves-to-the-wrong-module) |
 | A file you just added is absent at runtime | [A new file is missing from the built package](#a-new-file-is-missing-from-the-built-package) |
 | Two instances share identity or crash together | [Two instances collide](#two-instances-collide) |
+| `Missing content hashes in manifest` during install | [Install fails with `Missing content hashes in manifest`](#install-fails-with-missing-content-hashes-in-manifest) |
 | `no 'main' field in metadata.json` during install | [Install fails inside a Nix build](#install-fails-inside-a-nix-build) |
 | `basecamp modules` fails on an unresolved dependency | [A dependency cannot be resolved](#a-dependency-cannot-be-resolved) |
 | A sibling sub-flake builds from the wrong source | [A sibling sub-flake override is ignored](#a-sibling-sub-flake-override-is-ignored) |
 | `basecamp doctor` reports drift | [Doctor reports drift](#doctor-reports-drift) |
-| Two macOS profiles share modules and identity despite isolation | [Profiles share state on the macOS portable stack](#profiles-share-state-on-the-macos-portable-stack) |
+| Two macOS profiles share modules and identity despite isolation | [Profiles share state on macOS](#profiles-share-state-on-macos) |
 | The macOS window opens but the UI never renders | [The macOS UI stays blank](#the-macos-ui-stays-blank) |
 
 ## Your change is not visible after a rebuild
@@ -86,6 +95,8 @@ nix build .#ui-dev
 
 Installing into one of these directories has no effect on an instance reading another. Scaffold profiles are a third case again: their base directories live under `.scaffold/basecamp/profiles/<profile>/` in the project.
 
+Do not expect Basecamp's bundled modules, such as `package_manager` or `main_ui`, in a profile's `modules/` directory. Basecamp 0.2.x loads them from next to its own binary, so a profile that lists only your own modules is working correctly.
+
 **Fix.** Pass `--user-dir` explicitly whenever you run Basecamp yourself, and install into that same path:
 
 ```bash
@@ -108,9 +119,9 @@ Also check that the module was captured at all. `lgs basecamp modules --show` pr
 [SubprocessContainer] Unix socket path too long (122 >= 104)
 ```
 
-**Cause.** Loading a module opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the whole socket path at 104 bytes on macOS and 108 on Linux. A runtime root nested under a long project path, for example `~/Developer/work/logos/my-module/.scaffold/basecamp/profiles/alice/xdg-tmp`, uses up that budget before the socket name is appended. macOS hits this first, but the four extra bytes on Linux are not much headroom — a deep enough project root overflows there too.
+**Cause.** Loading a module opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the whole socket path at 104 bytes on macOS and 108 on Linux. A runtime root nested under a long path, for example a `runtime_dir` inside a deep project directory, uses up that budget before the socket name is appended.
 
-**Fix.** Point the runtime root at a short path. Scaffold defaults to `/tmp/lgs-<profile>` on macOS and exports a resolved `runtime_dir` as both `TMPDIR` and `XDG_RUNTIME_DIR`; on Linux it defaults to the in-profile `xdg-tmp` and exports no `XDG_RUNTIME_DIR` of its own. To set it yourself in `scaffold.toml`:
+**Fix.** Point the runtime root at a short path. Scaffold's default, `/tmp/lgs-<project-hash>-<profile>`, stays well under the limit on every platform, and scaffold exports it as both `TMPDIR` and `XDG_RUNTIME_DIR`. If you configured `runtime_dir` yourself, shorten it or remove it:
 
 ```toml
 [basecamp.profiles.alice]
@@ -126,6 +137,55 @@ mkdir -p "$TMPDIR"
 ```
 
 Keep any override short. A project-relative or deeply nested directory can exceed the budget again once the socket name is appended.
+
+## Builds fail after the first launch
+
+**Symptom.** The first `lgs basecamp launch` works. Every later `lgs basecamp install` or `launch`, or a second profile launched while the first is running, fails inside `nix build` with:
+
+```
+error: file '/.scaffold/basecamp/profiles/alice/xdg-tmp/logos_token_package_manager' has an unsupported type
+```
+
+**Cause.** The profile's runtime directory is inside the project tree. When the module flake is the project root, `nix build` copies that tree into the store and refuses to copy the Unix sockets a running Basecamp leaves in the runtime directory. Scaffold releases before 0.3.1 used the in-profile `xdg-tmp` directory by default on Linux; a `runtime_dir` that points inside the project has the same effect.
+
+**Fix.** Upgrade scaffold to 0.3.1 or later, and remove any `runtime_dir` that points inside the project. The default runtime directory is now `/tmp/lgs-<project-hash>-<profile>`, outside the project. The next `launch` also clears the legacy `xdg-tmp` directory, so an affected project recovers without manual clean-up.
+
+## Launch refuses the runtime directory
+
+**Symptom.** `lgs basecamp launch` stops before building anything, with `refusing to use runtime dir <path> — it is a symlink`, `… it exists but is not a directory`, or `cannot restrict permissions on runtime dir <path> — it is owned by another user`.
+
+**Cause.** The runtime directory holds the sockets of running modules, so scaffold only uses a directory it owns and can restrict to mode `0700`. The default `/tmp/lgs-<project-hash>-<profile>` name is predictable, so on a shared machine another user can create it first.
+
+**Fix.** Remove the offending path if it is yours, or point the profile somewhere you control:
+
+```toml
+[basecamp.profiles.alice]
+runtime_dir = "/tmp/lgs-myname-alice"
+```
+
+The check runs before the profile is scrubbed, so nothing is lost.
+
+## Launch finds no modules
+
+**Symptom.** `lgs basecamp launch` fails with ``no modules captured — run `logos-scaffold basecamp modules` before launching.``
+
+**Cause.** `[modules]` in `scaffold.toml` is empty. Every launch scrubs the profile and reinstalls only what that table captures, so launching with an empty table would start a Basecamp with none of your modules.
+
+**Fix.** Capture the modules, check the result, and launch again:
+
+```bash
+lgs basecamp modules
+lgs basecamp modules --show
+lgs basecamp launch alice
+```
+
+## An installed module lacks the platform variant
+
+**Symptom.** A module is installed, but it freezes the first time you click it in a development Basecamp, or a portable Basecamp drops it while scanning modules at start-up. Before starting Basecamp, `launch` printed a line such as `launch: profile alice has 3 module(s); 1 missing linux-amd64-dev variant (my_module)` instead of `all linux-amd64-dev variants present ✓`.
+
+**Cause.** The module's `manifest.json` `main` object has no entry for the platform and stack Basecamp runs on. Development builds of Basecamp need the `-dev` key, for example `linux-amd64-dev` or `darwin-arm64-dev`. Portable builds need the bare key, for example `linux-amd64`. A `.lgx` built from the `lgx` output carries `-dev` keys, and one built from `lgx-portable` carries bare keys.
+
+**Fix.** Build the variant that matches the Basecamp you run. Scaffold profiles use the `lgx` output unless `[repos.basecamp].attr` selects a portable stack. For a released AppImage or DMG, use `lgs basecamp build-portable`. `lgs basecamp doctor` repeats the variant check for every seeded profile.
 
 ## A QML type or singleton resolves to the wrong module
 
@@ -151,7 +211,7 @@ module SwapTheme
 singleton Theme 1.0 Theme.qml
 ```
 
-`src/qml/SwapTheme/Theme.qml` starts with the singleton pragma:
+`src/qml/SwapTheme/Theme.qml` starts with `pragma Singleton`:
 
 ```qml
 pragma Singleton
@@ -203,7 +263,7 @@ git status --short     # anything marked ?? is invisible to the build
 
 **Symptom.** Two Basecamp windows show the same identity or the same message history, or one instance crashes shortly after the second starts.
 
-**Cause.** The two instances share a base directory, a temp directory, or both. Shared state means a shared identity; a shared temp root means both instances try to bind the same module socket, and the second bind takes the socket from the first.
+**Cause.** The two instances share a base directory, a runtime directory, or both. Shared state means a shared identity; a shared temp root means both instances try to bind the same module socket, and the second bind takes the socket from the first.
 
 **Fix.** Give each instance its own base directory and its own short runtime directory.
 
@@ -228,18 +288,30 @@ TMPDIR=/tmp/bc-b XDG_RUNTIME_DIR=/tmp/bc-b LogosBasecamp --user-dir /tmp/basecam
 
 Launching the same scaffold profile twice in parallel is not supported. If two instances still collide on a port after isolation, that is a module-level issue worth reporting against the module that owns the port.
 
+## Install fails with `Missing content hashes in manifest`
+
+**Symptom.** `lgs basecamp install` or `launch` fails when installing a package, with `Package validation failed: Missing content hashes in manifest`, followed by a scaffold hint about rebuilding the package.
+
+**Cause.** The `lgpm` that scaffold pins for Basecamp 0.2.3 validates each package's structure and Merkle content hashes on install. Packages built by `logos-module-builder` before 0.2.0, including every `tutorial-v1`-era package, carry no hashes. The same applies to a dependency pinned to an old revision, for example `delivery_module` at a `tutorial-v1-compat` commit.
+
+**Fix.** Rebuild the module with `logos-module-builder` 0.2.0 or later, or bundle your `#lib` output with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx). For a dependency, move its `[modules.<name>]` entry, or its input in your `flake.nix`, to a release built with that tooling.
+
+Downgrading `[repos.lgpm].pin` does not help: the Basecamp that the pin set builds embeds the same validating library, and it is the one that reads the installed modules. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
+
+The same tooling also rejects two other mistakes at install time: a `ui_qml` package without a 256×256 PNG icon, and `main` or `view` entries in `metadata.json` that point at files missing from the built package.
+
 ## Install fails inside a Nix build
 
 **Symptom.** `lgs basecamp install` fails inside `nix build` with an error such as `no 'main' field in metadata.json`, while `cd <sub-flake> && nix build .#lgx` succeeds.
 
-**Cause.** A sub-flake pulls in a module that itself depends on `logos-module-builder`. Without a `follows` entry, its `flake.lock` ends up with two `logos-module-builder` nodes: your pin, and a second one dragged in transitively. A direct build in that directory uses the sub-flake's own lock and never dereferences the extra node. When scaffold builds with `--override-input`, the stale node wins.
+**Cause.** A sub-flake pulls in a module that itself depends on `logos-module-builder`. Without a `follows` entry, its `flake.lock` ends up with two `logos-module-builder` nodes: your pin, and a second one dragged in transitively. A direct build in that directory uses the sub-flake's own lock and never reads the extra node. When scaffold builds with `--override-input`, the stale node wins.
 
 **Fix.** In each sub-flake that declares both `logos-module-builder` and a dependency that pulls it in, unify them:
 
 ```nix
 {
   inputs = {
-    logos-module-builder.url = "github:logos-co/logos-module-builder/tutorial-v1";
+    logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.6";
     delivery_module.url = "github:logos-co/logos-delivery-module/<pinned-rev>";
 
     # Force the transitive reference onto our pin.
@@ -254,7 +326,7 @@ Then run `nix flake update` in that sub-flake and confirm the lock holds a singl
 
 **Symptom.** `lgs basecamp modules` fails, naming a dependency it could not resolve to a flake reference.
 
-**Cause.** A module's `metadata.json` declares a dependency that is not already in `[modules]`, is not one of the modules Basecamp preinstalls, is not an input of the declaring module's `flake.lock`, and is not in scaffold's built-in table. Scaffold fails rather than dropping it silently, because a missing runtime dependency surfaces much later as an unexplained failure inside Basecamp.
+**Cause.** A module's `metadata.json` declares a dependency that is not already in `[modules]`, is not one of the modules Basecamp ships with, is not an input of the declaring module's `flake.lock`, and is not in scaffold's built-in table. Scaffold fails rather than dropping it silently, because a missing runtime dependency surfaces much later as an unexplained failure inside Basecamp.
 
 **Fix.** Either declare the dependency as a flake input in the module that needs it, which is the better option because the lock then pins the exact revision your module was built against:
 
@@ -296,32 +368,33 @@ Only `path:../<sibling>` inputs are rewritten. `path:./sub`, `github:`, and `git
 
 ## Doctor reports drift
 
-**Symptom.** `lgs basecamp doctor` reports a difference between the captured module set and what is installed in a profile.
+**Symptom.** `lgs basecamp doctor` reports a warning about drift or about the pin set.
 
-**Cause.** `[modules]` in `scaffold.toml` changed, or a source changed, without a reinstall.
+**Cause and fix.** Doctor reports three kinds of drift, each with its own remedy:
 
-**Fix.** Reinstall, then re-check:
+| Warning | Cause | Fix |
+|:---|:---|:---|
+| Modules not captured | A module source that `basecamp modules` would discover today is missing from `[modules]`. | Run `lgs basecamp modules`. It adds new sources and keeps existing entries. |
+| Dependency pin drift | A captured `role = "dependency"` entry points at a different revision from scaffold's default for that module. | Nothing, if the revision is intentional. Otherwise update the entry in `scaffold.toml`. |
+| Basecamp pin set | Exactly one of `[repos.basecamp]` and `[repos.lgpm]` is at scaffold's default. | Pin both to a matching pair, then run `lgs basecamp setup`. See [Pinned versions](../about-logos-scaffold.md#pinned-versions). |
 
-```bash
-lgs basecamp install
-lgs basecamp doctor
-```
+Scaffold releases before 0.3.1 also reported a module captured at the project root as not captured, permanently, because they compared the relative reference in `scaffold.toml` with the absolute one discovery produced. Upgrade scaffold if that warning does not clear after `basecamp modules`.
 
-If a command tells you Basecamp is not set up in this project, run the one-time `lgs basecamp setup` first.
+If doctor reports that the Basecamp or `lgpm` binary is missing, or a command tells you Basecamp is not set up in this project, run `lgs basecamp setup`.
 
-## Profiles share state on the macOS portable stack
+## Profiles share state on macOS
 
 **Symptom.** On macOS, two profiles that should be isolated show the same installed modules, the same identity, or the same history. `lgs basecamp paths <profile>` reports distinct directories, and the profile directories on disk really are separate.
 
-**Cause.** The macOS portable bundle does not honour `XDG_DATA_HOME`, so the per-profile XDG isolation `launch` sets never reaches it. It locates its data tree through an environment override instead, and without one every profile collapses onto the shared `~/Library/Application Support/Logos/LogosBasecamp/`. The override changed name between generations: Basecamp 0.1.x reads `LOGOS_DATA_DIR`, and 0.2.x reads `LOGOS_USER_DIR` (the env equivalent of `--user-dir`) and ignores the old name entirely.
+**Cause.** On macOS, Basecamp does not honour `XDG_DATA_HOME`, so the per-profile XDG isolation `launch` sets never reaches it. It locates its data tree through an environment override instead, and without one every profile collapses onto the shared `~/Library/Application Support/Logos/LogosBasecamp` (or `LogosBasecampDev` for a development build). In Basecamp 0.2.x this affects development builds as well as the portable bundle. The override changed name between generations: Basecamp 0.1.x reads `LOGOS_DATA_DIR`, and 0.2.x reads `LOGOS_USER_DIR` (the environment-variable equivalent of `--user-dir`) and ignores the old name entirely.
 
-**Fix.** Let `launch` set them. It writes **both** keys, as absolute per-profile paths, whenever the host is macOS and `[repos.basecamp].attr` selects a portable stack (`bin-macos-app`, `bin-appimage`, `bin-bundle-dir`) — so it stays correct across both generations. Confirm what a profile resolves with:
+**Fix.** Let `launch` set them, and upgrade scaffold if it is older than 0.3.1. `launch` always sets `LOGOS_USER_DIR` to an absolute per-profile path, on every host and stack, and additionally sets `LOGOS_DATA_DIR` when the host is macOS and `[repos.basecamp].attr` selects a portable stack (`bin-macos-app`, `bin-appimage`, `bin-bundle-dir`). Confirm what a profile resolves with:
 
 ```bash
 lgs basecamp paths alice --json
 ```
 
-If you declare either key yourself in `[basecamp.env]` or `[basecamp.profiles.<name>.env]`, your value wins and the two keys are resolved independently — so setting only one leaves the other at the profile default, and the two can end up pointing at different trees. Set both, or neither. On a pinned 0.2.x Basecamp, setting only `LOGOS_DATA_DIR` is the same as setting nothing.
+If you declare either key yourself in `[basecamp.env]` or `[basecamp.profiles.<name>.env]`, your value wins and the two keys are resolved independently, so setting only one leaves the other at the profile default and the two can end up pointing at different trees. On a pinned 0.2.x Basecamp, `LOGOS_USER_DIR` is the one that matters: setting only `LOGOS_DATA_DIR` is the same as setting nothing.
 
 ## The macOS UI stays blank
 
@@ -329,7 +402,7 @@ If you declare either key yourself in `[basecamp.env]` or `[basecamp.profiles.<n
 
 **Cause.** A relative value for the module-root override. Backend modules still load, but the dynamically loaded UI libraries fail to resolve their paths, so the shell never appears.
 
-**Fix.** Use an absolute path, or let scaffold set it. `launch` points both `LOGOS_DATA_DIR` and `LOGOS_USER_DIR` at the profile's module root, and rewrites a relative value from `[basecamp.env]` or `[basecamp.profiles.<name>.env]` to an absolute one against the project root. An empty or whitespace-only value counts as unset and falls back to the profile default.
+**Fix.** Use an absolute path, or let scaffold set it. `launch` points `LOGOS_USER_DIR` (and, on the macOS portable stack, `LOGOS_DATA_DIR`) at the profile's module root, and rewrites a relative value from `[basecamp.env]` or `[basecamp.profiles.<name>.env]` to an absolute one against the project root. An empty or whitespace-only value counts as unset and falls back to the profile default.
 
 ## Collect diagnostics
 
@@ -340,7 +413,7 @@ lgs basecamp doctor --json
 lgs report --tail 500
 ```
 
-`report` bundles the relevant logs and state from `.scaffold/logs/`. Inspect the archive with `tar -tzf <path>` before sharing it publicly.
+`report` writes a `.tar.gz` bundle for a GitHub issue. It collects only a fixed list of logs and state, redacts what it collects, and lists anything it skipped. Inspect the archive with `tar -tzf <path>` before sharing it publicly, and file the issue with the template in [`logos-co/scaffold`](https://github.com/logos-co/scaffold/issues/new/choose).
 
 Per-run build logs live under `.scaffold/logs/`, one file per `install`. To watch a build as it happens instead:
 

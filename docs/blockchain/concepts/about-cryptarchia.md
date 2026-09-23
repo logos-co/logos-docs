@@ -22,6 +22,10 @@ sidebar_position: 2
 - Cryptarchia maintains block production during failures, allowing the network to keep operating even if competing forks emerge temporarily.
 - Cryptarchia has low entry barriers, so validator nodes can run on a basic laptop with no minimum stake requirement.
 
+:::note
+While Cryptarchia is a fully Proof of Stake protocol, the Logos Blockchain also uses a Proof of Work mechanism to allow users to independently acquire notes. For more information, see [Mining notes](./about-mantle.md#mining-notes).
+:::
+
 ## Properties of Cryptarchia
 
 ### Resilience via liveness
@@ -52,9 +56,9 @@ Following the [Ouroboros](https://www.drwx.org/papers/crypsinous.pdf) model, Cry
 
 As mentioned earlier, Cryptarchia’s preference for liveness produces competing forks fairly often - even under honest behaviour. The way Logos nodes decide on which fork represents the correct, or canonical, blockchain depends on how long that node has been offline. The node will compare parallel chains it sees on the network to its own preferred chain, switching to the observed chain if it is selected by the fork choice rule.
 
-When a Logos node is connected to the broader network and sees new honest blocks relatively quickly, it will use the online fork choice rule to select the honest chain. Under this rule, the node will select the chain with the most blocks - the “longest chain” - as long as it diverges from the node’s chain less than $k$ blocks ago. This $k$ parameter, known as the security parameter, describes how many blocks deep a transaction needs to be before it is considered immutable.
+When a Logos node is connected to the broader network and sees new honest blocks relatively quickly, it will use the online fork choice rule to select the honest chain. Under this rule, the node will select the chain with the most blocks - the “longest chain” - as long as it diverges from the node’s chain less than **k** blocks ago. This **k** parameter, known as the security parameter, describes how many blocks deep a transaction needs to be before it is considered immutable.
 
-When a Logos node is joining the network for the first time, or after a prolonged absence, it must use the boostrapping fork choice rule. Like the online rule, the [bootstrapping](../../get-started/glossary.md#bootstrapping) rule selects the longest chain when competing chains diverged from the node’s preferred chain less than $k$ blocks ago. However, forks diverging more than $k$ blocks ago are not dismissed. On the contrary, such a chain is selected if it has the most blocks (i.e. is the most dense) in the period immediately after the fork. The contrast between these two rules can be seen in the diagram below.
+When a Logos node is joining the network for the first time, or after a prolonged absence, it must use the bootstrapping fork choice rule. Like the online rule, the [bootstrapping](../../get-started/glossary.md#bootstrapping) rule selects the longest chain when competing chains diverged from the node’s preferred chain less than **k** blocks ago. However, forks diverging more than **k** blocks ago are not dismissed. On the contrary, such a chain is selected if it has the most blocks (that is, is the most dense) in the period immediately after the fork. The contrast between these two rules can be seen in the diagram below.
 
 ![The Cryptarchia bootstrapping fork choice rule.](../assets/about-cryptarchia/fork-choice.png)
 
@@ -62,7 +66,7 @@ The bootstrapping rule ensures that honest parties can join or rejoin the protoc
 
 ### Leadership election
 
-Cryptarchia uses Logos notes (fungible assets) to select block proposers. Each [note](../../get-started/glossary.md#note) that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
+Cryptarchia uses Logos notes to select block proposers. Each [note](../../get-started/glossary.md#note) that has existed since the beginning of the previous epoch is eligible to win the Cryptarchia slot lottery. The owner of a winning note can then propose a block. Notes held by anyone can be used for consensus, with no minimum value requirement.
 
 Each slot presents an opportunity for a block proposer to add a block to the chain, so long as they win the leadership election for that slot. The leadership election is run locally by each individual eligible note, without any public leadership schedule. Whether a particular note wins the leadership election for a given slot is determined by comparing a random “ticket” value to a threshold derived from the note’s relative stake. Due to the privacy properties of Cryptarchia, this relative stake relies on an estimate of the total participating stake derived from the block production rate.
 

@@ -17,6 +17,10 @@ import YouTube from '@site/src/components/YouTube';
 
 #### Get Logos Basecamp running on your desktop.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and apps using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
@@ -33,7 +37,8 @@ You can install Logos Basecamp in two ways:
     - macOS aarch64 (recent versions)
     - WSL2 Ubuntu on Windows 11 (or Windows 10 21H2+ with WSLg for GUI support) is also supported
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
-- For the source build only: **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- For the source build only: **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix

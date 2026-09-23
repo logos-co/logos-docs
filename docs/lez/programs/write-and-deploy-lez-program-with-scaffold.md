@@ -17,7 +17,11 @@ sidebar_position: 1
 
 #### Use `logos-scaffold` to create, build, and deploy a guest program on the Logos Execution Zone testnet.
 
-[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program) — from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
+[`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
 
 This guide walks each stage separately so you can see what the tool does. Once the pieces are familiar, [`logos-scaffold run`](#use-logos-scaffold-run-for-the-inner-loop) chains them into a single command. For what else scaffold manages, including Basecamp modules, see [About Logos Scaffold](../../scaffold/about-logos-scaffold.md).
 
@@ -30,7 +34,8 @@ This guide walks each stage separately so you can see what the tool does. Once t
 - [Docker](https://docs.docker.com/get-docker/) or Podman installed.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
     - To install, run `rzup install rust`
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -57,7 +62,7 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
     This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical.
 
-2. Verify the installation:
+1. Verify the installation:
 
     ```bash
     logos-scaffold --version
@@ -74,7 +79,7 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
     This generates a project with the default template, which includes a sample guest program and runner scripts.
 
-2. Inspect the project layout:
+1. Inspect the project layout:
 
     ```text
     my-program/
@@ -154,7 +159,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id` — a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id`—a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
 
 1. To deploy a specific program by name:
 

@@ -36,6 +36,12 @@ Mantle maintains a restricted ledger that keeps track of fungible assets known a
 
 Note transfers are effected by using transfer operations, which are based on the UTXO model. To transfer value, a sender spends their note and creates an equivalent new note belonging to the recipient. A spent note can never be spent again. These notes each have their own secret key for spending, and a corresponding public key for receiving new notes.
 
+### Mining notes
+
+Owning notes is a prerequisite to meaningful involvement in the Logos Blockchain, allowing users to participate in consensus, join the Blend Network, and post transactions. To allow users to independently acquire notes in a private, decentralised way, Mantle supports mining notes via a Proof of Work mechanism known as *[EmPoWering](../../get-started/glossary.md#empowering)*. Notes are mined by solving a cryptographic "puzzle" - similar to how Bitcoin is mined.
+
+To mine a new note, a user chooses a value and hashes it together with the consensus randomness value for the current or previous [epoch](../../get-started/glossary.md#epoch). This hash is compared to a threshold value derived from a recent canonical block selected by the user - if the hash is below the threshold, the user is eligible to claim some notes from Mantle's reward pool. The difficulty of solving the puzzle (that is, how many tries it would take on average to find a winning value) is adjusted periodically to target an average of 10 claims per block. A user with a winning hash can submit their claim transaction via the Blend Network to make it infeasible to link the transaction with their identity.
+
 ## Logos channels
 
 Logos channels, or channels for short, are lightweight virtual chains overlaid on top of the Logos Blockchain. The purpose of channels is to immediately enforce the correct ordering of transactions from Zones. These channels are implemented as permissioned, ordered logs of messages signed by a sequencer. These messages usually take the form of state updates from a particular Zone. Channels also provide several key features to Zones, which are described below.

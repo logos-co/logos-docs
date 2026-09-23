@@ -15,11 +15,15 @@ sidebar_position: 2
 
 #### Try the wallet CLI against the live LEZ testnet.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.
 
 :::info[Prerequisites]
 
-- **Rust and `cargo`** — install with [`rustup`](https://rustup.rs).
+- **Rust and `cargo`**—install with [`rustup`](https://rustup.rs).
    - The wallet pins its toolchain via `rust-toolchain.toml`, so the correct version is selected automatically.
 - **System build dependencies** for compiling the wallet from source:
 
@@ -86,9 +90,9 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 
 ## Complete a minimal wallet flow
 
-In this flow, you create and initialise an account, claim testnet funds, send a transfer, and confirm resulting balances.
+In this flow, you create and initialise an [account](../../get-started/glossary.md#account), claim testnet funds, send a transfer, and confirm resulting balances.
 
-In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting [account](../../get-started/glossary.md#account) state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
+In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
 
 ### Create and initialise the sender public account
 
@@ -143,7 +147,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet pinata claim --to <sender_public_account_id>
    ```
 
-2. Check the sender account balance:
+1. Check the sender account balance:
 
    ```bash
    wallet account get --account-id <sender_public_account_id>

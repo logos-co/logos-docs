@@ -15,6 +15,10 @@ sidebar_position: 4
 
 #### Learn how to get rewarded for having your Logos Blockchain node propose blocks
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). It is intended for node operators running their node via the Blockchain UI app.
 
 :::info[Prerequisites]

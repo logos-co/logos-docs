@@ -34,7 +34,7 @@ const choosePath: CardItem[] = [
   {
     title: 'Contribute',
     description: 'Improve the protocol, the docs, or the tooling',
-    to: '/contribute/welcome',
+    to: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
     icon: '/img/home/contribute.png',
   },
 ];
@@ -68,7 +68,7 @@ const exploreLogos: CardItem[] = [
   {
     title: 'λ Storage',
     description: 'Decentralised, content-addressed file storage and retrieval',
-    to: '/storage/get-started/run-logos-storage-node',
+    to: '/storage',
   },
   {
     title: 'λ Mixnet',

@@ -15,6 +15,10 @@ sidebar_position: 1
 
 #### Connect your blockchain node to Blend to contribute to proposer privacy.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 Joining the [Blend Network](../../get-started/glossary.md#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](../../get-started/glossary.md#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
 
 :::note
@@ -43,7 +47,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 1.  Start the node and poll until the mode switches to `"Online"`. This takes approximately one hour:
 
     ```bash
-    logoscore call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .mode
+    logosctl call blockchain_module get_cryptarchia_info | jq -r .result.value | jq .mode
     # > "Bootstrapping"
 
     # ... Wait ~1h, then re-run until you see:
@@ -65,7 +69,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`. You may need to repeat the faucet requests since only one drip is allowed per block:
 
     ```bash
-    logoscore call blockchain_module wallet_get_notes <ADDRESS> "" \
+    logosctl call blockchain_module wallet_get_notes <ADDRESS> "" \
       | jq -r .result.value | jq .notes
     # > [
     # >   {
@@ -75,27 +79,27 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     # > ]
     ```
 
-    - Note the `id` of a note held by the `BlendZk` key — you need it in the next step.
+    - Note the `id` of a note held by the `BlendZk` key—you need it in the next step.
 
 1.  Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
-:::info
-Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
-:::
+    :::info
+    Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
+    :::
 
-   ```sh
-   logoscore call blockchain_module blend_join_as_core_node \
-      "/ip4/<YOUR_IP>/udp/<YOUR_BLEND_PORT>/quic-v1" \
-      "<BLEND_ZK_NOTE_ID>"
+    ```sh
+    logosctl call blockchain_module blend_join_as_core_node \
+       "/ip4/<YOUR_IP>/udp/<YOUR_BLEND_PORT>/quic-v1" \
+       "<BLEND_ZK_NOTE_ID>"
 
     # A successful call will return the declaration id:
     # > {"method":"blend_join_as_core_node","module":"blockchain_module","result":{"error":null,"success":true,"value":"2691821bd61394cc18939626de4e9231c699e8ddefd1ebf9e6c35b32229bdc65"},"status":"ok"}
-   ```
+    ```
 
-   - `<YOUR_IP>`: Must be your external IP address
-   - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
-   - `<BLEND_ZK_NOTE_ID>`: The note ID of one of the notes held by your `BlendZk` key, as queried above.
-   - The Blend core listener starts only after the node's declaration becomes active.
+    - `<YOUR_IP>`: Must be your external IP address
+    - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
+    - `<BLEND_ZK_NOTE_ID>`: The note ID of one of the notes held by your `BlendZk` key, as queried above.
+    - The Blend core listener starts only after the node's declaration becomes active.
 
 1.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:
 
@@ -120,7 +124,7 @@ Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before run
 
     - The response is a JSON **object keyed by declaration id** (not a list). Find your entry by its `provider_id` (your `BlendSigning` key) or `zk_id` (your `BlendZk` key).
     - `service_type: "BN"` identifies this as a [Blend node](../../get-started/glossary.md#blend-node) declaration.
-    - `created` is the epoch your declaration was included; it takes effect about two epochs later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it **advances over time** — it equals `created + 2` right after activation and grows on a long-running node.
+    - `created` is the epoch your declaration was included; it takes effect about two epochs later. `active` is the most recent epoch your node has re-attested activity for (via the periodic Active message), so it **advances over time**—it equals `created + 2` right after activation and grows on a long-running node.
     - If your declaration is not yet listed, retry after your transaction is included in a block.
 
 1. Check the configured Blend UDP listener:
@@ -151,8 +155,8 @@ Check the node log for the Blend service lifecycle:
 grep -aE "blend::service" <node-log> | tail
 ```
 
-- `Waiting for chain to become Online mode` — not yet; the node is still bootstrapping.
-- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …` — proposals will be routed through Blend, whether your node is a core node or not.
-- `current membership is ready members=N` — the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
+- `Waiting for chain to become Online mode`—not yet; the node is still [bootstrapping](../../get-started/glossary.md#bootstrapping).
+- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …`—proposals will be routed through Blend, whether your node is a core node or not.
+- `current membership is ready members=N`—the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
 
 There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend Network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so it is better to use the log check during sync.

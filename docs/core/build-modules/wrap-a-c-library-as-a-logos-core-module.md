@@ -15,7 +15,11 @@ sidebar_position: 3
 
 #### Expose functions from a C shared library through a Logos core module.
 
-This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logoscore`. You write one plain C++ class — no Qt, no plugin boilerplate — and the build system generates the Qt plugin around it.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
+This tutorial walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](../../get-started/glossary.md#module). By the end, you will have a `calc_module` that compiles, loads, and responds to method calls via `logosctl`. You write one plain C++ class—no Qt, no plugin boilerplate—and the build system generates the Qt plugin around it.
 
 For an example used in production, refer to [logos-lib2p2-module](https://github.com/logos-co/logos-libp2p-module) - a module that wraps the `nim-libp2p` library (compiled to a C shared library).
 
@@ -27,7 +31,10 @@ For an example used in production, refer to [logos-lib2p2-module](https://github
 - RAM: 4 GB minimum, 8 GB recommended.
 - Disk: ~2 GB free for the application + installed modules.
 - **A C compiler** (gcc or clang) for building the C library. Only needed if you are building the `.so`/`.dylib` yourself rather than using a pre-built library.
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -39,7 +46,7 @@ For an example used in production, refer to [logos-lib2p2-module](https://github
 ## What to expect
 
 - You will write a `calc_module` that exposes arithmetic functions to Logos using the pure C++ (`interface: universal`) pattern.
-- You will build, inspect, and call the module with `lm` and `logoscore`, seeing your `int64_t` methods appear as Qt-typed signals.
+- You will build, inspect, and call the module with `lm` and `logosctl`, seeing your `int64_t` methods appear as Qt-typed signals.
 - You will unit-test the module directly against a link-time mock of the C library.
 
 ## Step 1: Scaffold the module project
@@ -64,7 +71,7 @@ Before writing any C code, scaffold the Logos module project using the official 
     As the time of writing, `nix flake init` scaffolds a hand-written Qt plugin (`*_interface.h` + `*_plugin.h` + `*_plugin.cpp`). This tutorial uses the newer **pure-C++ pattern** instead: you write one plain `*_impl.h` / `*_impl.cpp` class with no Qt, set `"interface": "universal"` in `metadata.json`, and the build generates the Qt plugin wrapper for you. The steps below replace the template's `src/` files entirely. The `nix flake init` command is still used to get the `flake.nix` / `CMakeLists.txt` skeleton and directory layout.
     :::
 
-1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files — this tutorial supplies its own pure-C++ `src/` files:
+1. Remove the template's example sources. The `with-external-lib` template ships an example Qt plugin (`external_lib_*`). Delete those files—this tutorial supplies its own pure-C++ `src/` files:
 
    ```bash
    rm -f src/external_lib_interface.h src/external_lib_plugin.h src/external_lib_plugin.cpp
@@ -112,7 +119,7 @@ Create the C library that your module will wrap. Place the header and implementa
    #endif /* LIBCALC_H */
    ```
 
-   The `extern "C"` block is essential — it prevents C++ name mangling so the Logos module can find the symbols.
+   The `extern "C"` block is essential—it prevents C++ name mangling so the Logos module can find the symbols.
 
 1. Create `lib/libcalc.c`:
 
@@ -195,12 +202,12 @@ Create the C library that your module will wrap. Place the header and implementa
    ```
 
    :::info
-   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code — just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
+   If you are wrapping an existing library (for example, from a system package or a GitHub repo), you don't need to write the C code—just place the pre-built `.so`/`.dylib` and its header file in `lib/`.
    :::
 
 ## Step 3: Configure the Logos module
 
-Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class — `metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesises the Qt plugin wrapper.
+Write the files that turn your C library into a Logos module. With the pure-C++ (`universal`) pattern you only hand-write a single C++ class—`metadata.json`, `CMakeLists.txt`, and `flake.nix` tell the build system the rest, and `logos-cpp-generator` synthesises the Qt plugin wrapper.
 
 After this step, your project will look like this:
 
@@ -257,7 +264,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
 
    | Field                          | What it does                                                                                                                                                                                                       |
    | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-   | `name`                         | Module name — must be a valid C identifier (used in filenames, method calls)                                                                                                                                       |
+   | `name`                         | Module name—must be a valid C identifier (used in filenames, method calls)                                                                                                                                       |
    | `main`                         | The generated plugin's name, `<name>_plugin`. You don't write this file; the builder produces `calc_module_plugin.so` / `.dylib`                                                                                   |
    | `interface`                    | `"universal"` selects the pure-C++ pattern. The builder runs `logos-cpp-generator --from-header` over `src/calc_module_impl.h` and emits the Qt plugin, so you never touch Qt directly                        |
    | `nix.external_libraries`       | Declares C/C++ libraries vendored in the repo. Each entry has a `name` (the CMake target) and `vendor_path` (directory with the source/binary). The build compiles the library and links it into the plugin        |
@@ -294,11 +301,11 @@ To fetch and build external libraries from source, add `"build_command": "make s
 
    Keep these three fields in sync with `metadata.json`:
 
-   - **`NAME`** — your module name (must match `name` in `metadata.json`, e.g., `calc_module`)
-   - **`SOURCES`** — your implementation files (`src/calc_module_impl.h`, `src/calc_module_impl.cpp`)
-   - **`EXTERNAL_LIBS`** — external libraries to link (must match `nix.external_libraries[].name` in `metadata.json`)
+   - **`NAME`**—your module name (must match `name` in `metadata.json`, for example, `calc_module`)
+   - **`SOURCES`**—your implementation files (`src/calc_module_impl.h`, `src/calc_module_impl.cpp`)
+   - **`EXTERNAL_LIBS`**—external libraries to link (must match `nix.external_libraries[].name` in `metadata.json`)
 
-   The `if/elseif/else` block is boilerplate — don't change it.
+   The `if/elseif/else` block is boilerplate—don't change it.
 
 1. Create `flake.nix` and change `description`. External libraries can be added in `inputs`, allowing `nix` to fetch and build them from source.
 
@@ -329,7 +336,7 @@ To fetch and build external libraries from source, add `"build_command": "make s
     When adding module dependencies, the flake input attribute name must match the `name` field in that dependency's `metadata.json`. For example, if you depend on a module whose `metadata.json` has `"name": "waku_module"`, your flake input must be `waku_module.url = "github:logos-co/logos-waku-module"`.
     :::
 
-1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logoscore`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
+1. Create `src/calc_module_impl.h`. This is the only interface you need to write. It allows every `public` method becomes callable by other modules and by `logosctl`. The code generator parses this header as text to derive the wire signatures, so keep it to the supported types (see the table below). Inheriting `LogosModuleContext` lets the class emit events and call other modules without touching the raw `LogosAPI`.
 
    ```cpp
    #pragma once
@@ -385,9 +392,9 @@ To fetch and build external libraries from source, add `"build_command": "make s
      | `std::vector<std::string>`  | `QStringList`                                                      |
      | `std::vector<uint8_t>`      | `QByteArray`                                                       |
      | `LogosMap` / `LogosList`    | `QVariantMap` / `QVariantList` (from `<logos_json.h>`)             |
-     | `StdLogosResult`            | `LogosResult` (from `<logos_result.h>`) — `{ success, value, error }` |
+     | `StdLogosResult`            | `LogosResult` (from `<logos_result.h>`)—`{ success, value, error }` |
 
-1. Create `src/calc_module_impl.cpp`. Each method calls the corresponding C function and converts the result. No Qt types appear anywhere — you work in plain C++ and the generated glue handles the conversion.
+1. Create `src/calc_module_impl.cpp`. Each method calls the corresponding C function and converts the result. No Qt types appear anywhere—you work in plain C++ and the generated glue handles the conversion.
 
    ```cpp
    #include "calc_module_impl.h"
@@ -571,23 +578,24 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    ]
    ```
 
-## Step 6: Test with logoscore
+## Step 6: Test with `logosctl`
 
-1. Build [logoscore](../../get-started/glossary.md#logoscore):
-
-   ```bash
-   nix build 'github:logos-co/logos-logoscore-cli/0.2.0' --out-link ./logos
-   ```
-
-1. Set up the modules directory. `logoscore` expects modules in subdirectories, each with a `manifest.json`. Use the Nix derivation to create an LGX package and install it with the package manager:
+1. Build the LGX package:
 
    ```bash
    nix build '.#lgx'
-   nix build 'github:logos-co/logos-package-manager/0.2.0#cli' --out-link ./pm
-   
-   mkdir -p modules
-   
-   ./pm/bin/lgpm --modules-dir ./modules install --file result/*.lgx
+   ```
+
+1. Start the daemon, detached so this terminal stays free:
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+1. Install the LGX package. `logosctl` expects modules in subdirectories, each with a `manifest.json`; `package install` handles that layout automatically, unpacking into the current session's `modules/` directory.
+
+   ```bash
+   logosctl package install --file result/*.lgx
    ```
 
    This extracts the plugin, external libraries, and manifest into the correct directory structure:
@@ -600,20 +608,17 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
    └── variant                    # Platform variant identifier
    ```
 
-1. Start the daemon and call methods:
+1. Load the module and call its methods:
 
    ```bash
-   ./logos/bin/logoscore -D -m ./modules &
-   sleep 3
+   logosctl module load calc_module
 
-   ./logos/bin/logoscore load-module calc_module
-   
-   ./logos/bin/logoscore call calc_module add 3 5
-   ./logos/bin/logoscore call calc_module factorial 5
-   ./logos/bin/logoscore call calc_module fibonacci 10
-   ./logos/bin/logoscore call calc_module libVersion
+   logosctl call calc_module add 3 5
+   logosctl call calc_module factorial 5
+   logosctl call calc_module fibonacci 10
+   logosctl call calc_module libVersion
 
-   ./logos/bin/logoscore stop
+   logosctl daemon stop
    ```
 
 ## Step 7: Unit-test the module
@@ -795,7 +800,7 @@ Ensure `libcalc.so` / `libcalc.dylib` is in the same directory as the plugin. Th
 
 Check that the event is declared in a `logos_events:` section and that the class inherits `LogosModuleContext`. Events only fire when the module is loaded by a host; constructed standalone (for example in unit tests), emission is a safe no-op. The subscriber must use the exact event name string, for example `logos.onModuleEvent("calc_module", "versionReady")`.
 
-### Plugin not discovered by logoscore
+### Plugin not discovered by `logosctl`
 
 Verify that the module is in a subdirectory of the modules dir (for example `modules/calc_module/`), that the subdirectory contains a `manifest.json` with a valid `main` object, and that the platform key in `main` matches your OS/arch (for example `linux-aarch64`, `darwin-arm64`).
 
@@ -805,7 +810,7 @@ Some shells (notably zsh) treat `#` as a comment character. Always put the flake
 
 ### First build is slow
 
-The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and other dependencies. This is a one-time cost — subsequent builds use the Nix cache and are fast (usually under 30 seconds).
+The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and other dependencies. This is a one-time cost—subsequent builds use the Nix cache and are fast (usually under 30 seconds).
 
 ### Symbol not found errors
 

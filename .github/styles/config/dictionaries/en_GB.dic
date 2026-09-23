@@ -1,4 +1,4 @@
-47563
+47564
 0/nm
 0th/pt
 1/n1
@@ -10979,7 +10979,7 @@ addition/SM
 additional/Y
 additive/S
 addle/GDS
-address/AGDS
+address/AGDSM
 addressable
 addressed/U
 addressee/SM
@@ -11648,6 +11648,7 @@ amoeba/MS
 amoebic
 amoeboid
 amok
+among
 amongst
 amontillado/S
 amoral/Y
@@ -17747,7 +17748,7 @@ conventioneer/SM
 convergence/S
 convergent
 conversant
-conversation/S
+conversation/SM
 conversational/Y
 conversationalist/SM
 converse/Y
@@ -19316,7 +19317,7 @@ dependable/U
 dependably
 dependant/M
 dependence/IM
-dependency/S
+dependency/SM
 dependent/IY
 depict/GDS
 depiction/S
@@ -21474,7 +21475,7 @@ entrepreneurial
 entrepreneurship
 entropy
 entrust/SGD
-entry/AS
+entry/ASM
 entryphone/S
 entryway/S
 entwine/DSG
@@ -23491,7 +23492,7 @@ frame/ADSG
 framed/U
 frameless
 framer/SM
-framework/S
+framework/SM
 franc/S
 franchise's
 franchise/EDSG
@@ -27426,7 +27427,7 @@ install/UBZRSDG
 installation's
 installation/AS
 instalment/MS
-instance/GD
+instance/GDM
 instant/MRYS
 instantaneous/Y
 instantiate/DSG
@@ -30580,7 +30581,7 @@ meson/S
 mesosphere/S
 mesquite/SM
 mess/DSG
-message/GDS
+message/GDSM
 messeigneurs
 messenger/SM
 messiah/M
@@ -43444,7 +43445,7 @@ temperateness
 temperature/S
 tempest/S
 tempestuous/YP
-template/S
+template/SM
 temple/SM
 tempo/S
 temporal/Y

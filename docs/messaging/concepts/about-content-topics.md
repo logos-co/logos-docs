@@ -54,7 +54,7 @@ When choosing a content topic, it is essential to consider the privacy implicati
 
 The `Filter`, `Store`, and `Light Push` protocols share content topics with peers, allowing them to link IP and content topic interests. The `Relay` protocol, using `GossipSub`, provides recipient anonymity, which can be compromised if the content topic exposes user information.
 
-For example, instead of using Personally Identifiable Information (PII) in the content topic (e.g., a public key), you can create buckets (e.g., based on the first 4 bytes of the public key hash).
+For example, instead of using Personally Identifiable Information (PII) in the content topic (for example, a public key), you can create buckets (for example, based on the first 4 bytes of the public key hash).
 
 :::info
 [Logos Delivery](../../get-started/glossary.md#logos-delivery) is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
@@ -84,7 +84,7 @@ message Payload {
 
 ### Creating buckets help in distributing traffic
 
-When an application uses a single content topic, all users using [request/response protocols](../concepts/about-network-domains.md#requestresponse-domain) (`Filter`, `Store`) receive all its messages. For heavy traffic, developers can create buckets by hashing a unique identifier (e.g., recipient's ID, public key, or app domain topic) and adding its first byte to the content topic, like `/my-app/0/a/proto`.
+When an application uses a single content topic, all users using [request/response protocols](../concepts/about-network-domains.md#requestresponse-domain) (`Filter`, `Store`) receive all its messages. For heavy traffic, developers can create buckets by hashing a unique identifier (for example, recipient's ID, public key, or app domain topic) and adding its first byte to the content topic, like `/my-app/0/a/proto`.
 
 This approach divides traffic into multiple topics, reducing the messages users have to download. Developers can add more first bytes to the content topic over time to improve efficiency and privacy based on messages and user needs.
 

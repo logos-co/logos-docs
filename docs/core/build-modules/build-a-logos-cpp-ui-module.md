@@ -15,13 +15,18 @@ sidebar_position: 4
 
 #### Get started building a ui\_qml module with a C++ backend that runs in a separate process.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**.
+:::
+
 This guide covers building a [module](../../get-started/glossary.md#module) that pairs a QML user interface with a C++ backend plugin. The backend runs in a separate `ui-host` process while the QML view loads inside the host app (`logos-basecamp` or `logos-standalone-app`), so a backend crash cannot bring down the host. This guide is intended for developers who have completed [Part 1](wrap-a-c-library-as-a-logos-core-module.md) and want typed, process-isolated inter-module calls from their UI layer.
 
 :::info[Prerequisites]
 
 - A [working core module](wrap-a-c-library-as-a-logos-core-module.md).
 - Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html).
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+- **Nix** with flakes enabled.
+    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
     ```bash
     mkdir -p ~/.config/nix
@@ -44,17 +49,17 @@ Create a new directory and initialise it from the C++ backend UI template.
     ```bash
     mkdir logos-calc-ui-cpp && cd logos-calc-ui-cpp
     ```
-2.  Initialise from the template:
+1.  Initialise from the template:
 
     ```bash
     nix flake init -t github:logos-co/logos-module-builder/0.2.0#ui-qml-backend
     ```
-3.  Initialise a Git repository and stage all generated files:
+1.  Initialise a Git repository and stage all generated files:
 
     ```bash
     git init && git add -A
     ```
-4.  Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
+1.  Remove the template's example sources. The scaffolded template includes `ui_example` files with mismatched class names and IIDs; leaving them causes build errors or plugin-load failures at runtime:
 
     ```bash
     rm -f src/ui_example.rep src/ui_example_interface.h src/ui_example_plugin.h src/ui_example_plugin.cpp
@@ -76,7 +81,7 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
       "version": "1.0.0",
       "type": "ui_qml",
       "category": "tools",
-      "description": "Calculator C++ UI — QML view with process-isolated backend for calc_module",
+      "description": "Calculator C++ UI—QML view with process-isolated backend for calc_module",
       "main": "calc_ui_cpp_plugin",
       "view": "qml/Main.qml",
       "icon": "icons/calc.png",
@@ -97,11 +102,11 @@ The `calc_module.url` input attribute name in `flake.nix` must match the depende
 
     Key fields:
 
-    - `"type": "ui_qml"` — tells the builder this is a QML view module.
-    - `"main": "calc_ui_cpp_plugin"` — the backend Qt plugin library name (without extension).
-    - `"view": "qml/Main.qml"` — the QML entry point.
-    - `"dependencies": ["calc_module"]` — [core modules](../../get-started/glossary.md#core-module) the backend calls.
-2.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
+    - `"type": "ui_qml"`—tells the builder this is a QML view module.
+    - `"main": "calc_ui_cpp_plugin"`—the backend Qt plugin library name (without extension).
+    - `"view": "qml/Main.qml"`—the QML entry point.
+    - `"dependencies": ["calc_module"]`—core modules the backend calls.
+1.  Create the icons directory and add a placeholder icon (displayed in the `logos-basecamp` sidebar when the module is loaded):
 
     ```bash
     mkdir -p icons
@@ -128,8 +133,8 @@ The `.rep` file is the single source of truth for the interface between the QML 
 
     `repc` generates two headers from this file:
 
-    - `rep_calc_ui_cpp_source.h` — `CalcUiCppSimpleSource` with virtual slots the backend overrides.
-    - `rep_calc_ui_cpp_replica.h` — `CalcUiCppReplica` with typed methods the QML view calls.
+    - `rep_calc_ui_cpp_source.h`:`CalcUiCppSimpleSource` with virtual slots the backend overrides.
+    - `rep_calc_ui_cpp_replica.h`:`CalcUiCppReplica` with typed methods the QML view calls.
 
 ## Step 4: Write the interface header
 
@@ -185,9 +190,9 @@ logos_module(
 
 The backend plugin inherits three base classes:
 
-- `CalcUiCppSimpleSource` — generated from `.rep`, provides the typed source for Qt Remote Objects.
-- `CalcUiCppInterface` — standard Logos plugin interface (`name()`, `version()`).
-- `CalcUiCppViewPluginBase` — generated, provides `setBackend()` and `enableRemoting()`.
+- `CalcUiCppSimpleSource`—generated from `.rep`, provides the typed source for Qt Remote Objects.
+- `CalcUiCppInterface`—standard Logos plugin interface (`name()`, `version()`).
+- `CalcUiCppViewPluginBase`—generated, provides `setBackend()` and `enableRemoting()`.
 
 1.  Create `src/calc_ui_cpp_plugin.h`:
 
@@ -221,7 +226,7 @@ The backend plugin inherits three base classes:
 
         Q_INVOKABLE void initLogos(LogosAPI* api);
         
-        // Slots from calc_ui_cpp.rep — return values directly. The QML replica
+        // Slots from calc_ui_cpp.rep—return values directly. The QML replica
         // receives QRemoteObjectPendingReply; use logos.watch() in QML to get the value.
         int add(int a, int b) override;
         int multiply(int a, int b) override;
@@ -243,7 +248,7 @@ The backend plugin inherits three base classes:
     :::info
     If the interface filename or IID symbol here doesn't match the names in `src/calc_ui_cpp_interface.h`, you will get build errors or plugin-load failures at runtime.
     :::
-2.  Create `src/calc_ui_cpp_plugin.cpp`:
+1.  Create `src/calc_ui_cpp_plugin.cpp`:
 
     ```cpp
     #include "calc_ui_cpp_plugin.h"
@@ -296,7 +301,7 @@ The backend plugin inherits three base classes:
         // The ui-host backend connects asynchronously, so the replica isn't
         // immediately usable. Track readiness reactively: isViewModuleReady()
         // is a Q_INVOKABLE (not a property), so we re-check it on the
-        // onViewModuleReadyChanged signal and once at startup — never via a
+        // onViewModuleReadyChanged signal and once at startup—never via a
         // plain property binding, which would not re-evaluate.
         property bool ready: false
 
@@ -395,9 +400,9 @@ The backend plugin inherits three base classes:
 
     Key patterns:
 
-    - `logos.module("calc_ui_cpp")` — gets the typed replica, with auto-synced properties.
-    - `logos.watch(backend.add(1, 2), ...)` — delivers a `SLOT` return value as a JS Promise.
-    - The `logos` object is injected by the host at runtime — no `QtRemoteObjects` import is needed.
+    - `logos.module("calc_ui_cpp")`—gets the typed replica, with auto-synced properties.
+    - `logos.watch(backend.add(1, 2), ...)`—delivers a `SLOT` return value as a JS Promise.
+    - The `logos` object is injected by the host at runtime—no `QtRemoteObjects` import is needed.
 
 ### Step 7.5: Use the Logos Design System in your QML (Optional)
 
@@ -436,7 +441,7 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
         LogosText { text: qsTr("Result"); color: Theme.palette.text }
     }
     ```
-2.  Explore available components by running the design system storybook in the logos-design-system repo:
+1.  Explore available components by running the design system storybook in the logos-design-system repo:
 
     ```bash
     git clone https://github.com/logos-co/logos-design-system.git
@@ -445,15 +450,15 @@ The QML view runs inside the [`logos-standalone-app`](https://github.com/logos-c
 
     The sidebar splits components into:
 
-    - **Controls** — designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
-    - **Controls (not designed)** — placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
+    - **Controls**—designed per Figma, production-ready (`LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField`, `LogosToolTip`, …).
+    - **Controls (not designed)**—placeholders with stable APIs but unstyled visuals (`LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea`, `LogosSwitch`, …). You can ship with them; they'll get the polished look applied later without you having to change your QML.
 
     **Theme tokens** (use these instead of hex literals or manual font sizes):
 
-    - `Theme.palette.-` — `background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
-    - `Theme.spacing.*` — `tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
-    - `Theme.typography.*` — `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
-    - `Logos.Icons.LogosIcons.*` — `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
+    - `Theme.palette.-`:`background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, …
+    - `Theme.spacing.*`:`tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge`
+    - `Theme.typography.*`: `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12); `weightRegular` / `weightMedium` / `weightBold`; `publicSans`
+    - `Logos.Icons.LogosIcons.*`:`arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, …
 
 ## Step 8: Configure the Nix flake
 
@@ -505,19 +510,19 @@ Before building, confirm the `calc_module` shared library is present from [Part 
     # gcc -shared -fPIC -o libcalc.dylib libcalc.c  # macOS
     cd ../../logos-calc-ui-cpp
     ```
-2.  Stage all files, then lock `calc_module` to your local Part 1 checkout. The `--override-input` flag resolves `../logos-calc-module` to an absolute path and records it in `flake.lock`:
+1.  Stage all files, then lock `calc_module` to your local Part 1 checkout. The `--override-input` flag resolves `../logos-calc-module` to an absolute path and records it in `flake.lock`:
 
     ```bash
     git add -A
     nix flake update --override-input calc_module path:../logos-calc-module
     git add flake.lock
     ```
-3.  Build and run the app. After the lock is in place, no override flag is needed on subsequent commands:
+1.  Build and run the app. After the lock is in place, no override flag is needed on subsequent commands:
 
     ```bash
     nix run
     ```
-4.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
+1.  Confirm the view loads with all controls visible, then click **Add** with values in the input fields to test it out:
 
     ![Operation buttons visible](../assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
 
@@ -565,7 +570,7 @@ Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logo
 
     run();
     ```
-2.  Stage the test file and run the hermetic CI test:
+1.  Stage the test file and run the hermetic CI test:
 
     ```bash
     git add tests/
@@ -573,11 +578,11 @@ Add automated UI tests using the [logos-qt-mcp](https://github.com/logos-co/logo
     ```
 
     The `integration-test` output launches `logos-standalone-app` with `QT_QPA_PLATFORM=offscreen` (no display needed), connects to the QML inspector, and runs all `.mjs` files in `tests/`.
-3.  To run tests interactively against an already-running app, build the test framework and run the app and tests in separate terminals:
+1.  To run tests interactively against an already-running app, build the test framework and run the app and tests in separate terminals:
 
     ```bash
     nix build .#test-framework -o result-mcp
-    nix run .                    # terminal 1 — app with inspector on :3768
+    nix run .                    # terminal 1—app with inspector on :3768
     node tests/ui-tests.mjs      # terminal 2
     ```
 
@@ -593,4 +598,4 @@ Confirm `../logos-calc-module/lib/libcalc.so` for Linux (or `.dylib` on macOS) e
 
 ### `DEV_QML_PATH` does not seem to take effect
 
-Confirm the path points at the directory containing `Main.qml` directly — not a parent directory. The host looks for the basename from `"view"` in `metadata.json` inside the directory you provide.
+Confirm the path points at the directory containing `Main.qml` directly—not a parent directory. The host looks for the basename from `"view"` in `metadata.json` inside the directory you provide.

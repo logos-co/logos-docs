@@ -14,6 +14,10 @@ sidebar_position: 1
 
 #### Understand the modular protocols that let applications balance anonymity, scalability, and latency.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Logos Delivery](../../get-started/glossary.md#logos-delivery) takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
 
 ## The basics

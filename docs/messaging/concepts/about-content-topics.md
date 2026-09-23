@@ -13,6 +13,10 @@ sidebar_position: 2
 # About content topics
  
 #### Understand how content topics filter and route messages, and how naming choices affect privacy.
+
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
  
 `Content Topics` are metadata strings set by developers on outgoing messages to facilitate protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-delivery-protocols.md#relay) or [Filter](../concepts/understand-logos-delivery-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-delivery-protocols.md#store)) that meet specific filtering criteria.
 

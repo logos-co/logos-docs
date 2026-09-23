@@ -260,7 +260,7 @@ The process of obtaining notes via Proof of Work. See [About Mantle](../blockcha
 
 ### Mix
 
-Traffic obfuscation used to improve privacy guarantees.
+Traffic obfuscation used to improve privacy properties.
 
 ### Module
 
@@ -310,7 +310,6 @@ A key pair used to sign transactions and verify token ownership on the LEZ. See 
 
 A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
-
 ### Nullifier Secret Key
 
 A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
@@ -329,7 +328,7 @@ Exchanging information through a separate, secure channel distinct from the main
 
 ### Package
 
-The distributable unit for a Logos [module](#module): a `.lgx` archive bundling the module's platform-specific binaries with a manifest describing its metadata, dependencies, and optional signature. A [catalogue](#catalogue) lists packages, and `lgpm`/`lgpd` install them. See [LGX package format and bundling reference](../core/reference/lgx-package-format-and-bundling-reference.md).
+The distributable unit for a Logos [module](#module): a `.lgx` archive bundling the module's platform-specific binaries with a manifest describing its metadata, dependencies, and optional signature. A [catalogue](#catalogue) lists packages, and `logosctl`/`lgpm`/`lgpd` install them. See [LGX package format and bundling reference](../core/reference/lgx-package-format-and-bundling-reference.md).
 
 ### PDA
 

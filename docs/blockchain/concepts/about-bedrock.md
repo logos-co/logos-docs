@@ -14,6 +14,10 @@ sidebar_position: 1
 
 #### Understand how Bedrock provides the consensus and shared context that Zones build on.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 The [Bedrock](../../get-started/glossary.md#bedrock) layer is the basis on top of which the broader [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is built, operating as a large and decentralised peer-to-peer blockchain network. Bedrock functions as a solid foundation for [Zones](./about-zones.md) built on Logos, allowing Zone applications to leverage the Logos Blockchain's consensus guarantees. Bedrock also facilitates interoperability between Zones and Bedrock itself with support for asynchronous messaging and token bridging. By handling the logic allowing several parties to participate in sequencing a Zone, Bedrock contributes to the decentralisation of the Logos stack.
 
 ## The basics
@@ -28,7 +32,7 @@ Bedrock is organised into three key components. The most basic of these is the p
 
 ### Cryptarchia
 
-On top of the peer-to-peer network sits [Cryptarchia](./about-cryptarchia.md), the Logos Blockchain’s consensus protocol used to reach an agreement about the state of the blockchain. As a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) protocol, Cryptarchia gives all participants a proportional chance to propose a block, while ensuring that blocks cannot be linked to their proposers both before and after the proposal.
+On top of the peer-to-peer network sits [Cryptarchia](./about-cryptarchia.md), the Logos Blockchain’s consensus protocol used to reach an agreement about the state of the blockchain. As a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) protocol, Cryptarchia gives all participants a proportional chance to propose a block, while making it infeasible to link blocks to their proposers both before and after the proposal.
 
 ### Mantle
 

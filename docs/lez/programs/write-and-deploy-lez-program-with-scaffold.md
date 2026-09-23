@@ -30,17 +30,13 @@ This guide walks each stage separately so you can see what the tool does. Once t
 - A supported OS:
     - Linux: x86_64
     - macOS
-- An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
-- [Docker](https://docs.docker.com/get-docker/) or Podman installed.
+- `git`, and Rust 1.81 or newer with `cargo`.
+- The Unix process helpers `lsof`, `ps`, and `kill`, and `curl`.
+- [Docker](https://docs.docker.com/get-docker/) or Podman installed, for guest program builds.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
     - To install, run `rzup install rust`
-- **Nix** with flakes enabled.
-    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
-    ```bash
-    mkdir -p ~/.config/nix
-    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-    ```
+Scaffold builds its own project-local sequencer and wallet, so you do not need a separately installed LEZ wallet for this guide. Nix is only needed for scaffold's `basecamp` commands.
 :::
 
 ## What to expect
@@ -52,15 +48,13 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
 ## Step 1: Install logos-scaffold
 
-1. Clone the logos-scaffold repository and install the CLI:
+1. Install the CLI from crates.io:
 
     ```bash
-    git clone https://github.com/logos-co/scaffold.git
-    cd scaffold
-    cargo install --path .
+    cargo install logos-scaffold
     ```
 
-    This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical.
+    This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical. To build from source instead, clone [`logos-co/scaffold`](https://github.com/logos-co/scaffold) and run `cargo install --path .` in it.
 
 1. Verify the installation:
 
@@ -77,7 +71,9 @@ This guide walks each stage separately so you can see what the tool does. Once t
     cd my-program
     ```
 
-    This generates a project with the default template, which includes a sample guest program and runner scripts.
+    This generates a project with the `default` template, which includes sample guest programs and runner scripts. For an Anchor-style framework with IDL and generated client bindings, pass `--template lez-framework` instead; this guide follows the default template.
+
+    `new` also clones the pinned LEZ source into scaffold's shared cache, about 1.1 GB. To keep it somewhere else, pass `--cache-root <path>` or set `LOGOS_SCAFFOLD_CACHE_ROOT`.
 
 1. Inspect the project layout:
 
@@ -102,7 +98,13 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
     This step can take several minutes on a cold cache as it builds the sequencer from source.
 
-    How the default wallet is seeded depends on the pinned LEZ version. When the pinned debug wallet config ships preconfigured public accounts, `setup` adopts the first one, which is deterministic. LEZ v0.2.0 ships none, so `setup` instead runs the wallet CLI once, which creates the wallet storage and generates fresh key material. Either way the resulting address is recorded in `.scaffold/state/wallet.state` as the default top-up destination.
+    Then check the project's environment. `doctor` reports missing tools and configuration problems, with a next step for each:
+
+    ```bash
+    logos-scaffold doctor
+    ```
+
+    How the default wallet is seeded depends on the pinned LEZ version. When the pinned debug wallet config ships public accounts, `setup` adopts the first one, which is deterministic. LEZ v0.2.0 ships none, so `setup` instead runs the wallet CLI once, which creates the wallet storage and generates fresh key material. Either way the resulting address is recorded in `.scaffold/state/wallet.state` as the default top-up destination.
 
     :::warning
     Scaffold unlocks that wallet with a deterministic local password so the onboarding flow needs no prompts. To use your own, export it **before the first `setup`** (or the first `run`, which chains `setup`):
@@ -111,7 +113,7 @@ This guide walks each stage separately so you can see what the tool does. Once t
     export LOGOS_SCAFFOLD_WALLET_PASSWORD='<your-local-dev-password>'
     ```
 
-    If the storage was already created under the default password, export the override and re-seed with `logos-scaffold run --reset`. These are development-only keys — never use them for real funds.
+    If the storage was already created under the default password, export the override and re-seed with `logos-scaffold run --reset`. These are development-only keys; never use them for real funds.
     :::
 
 ## Step 4: Write your guest program
@@ -149,7 +151,9 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold localnet start
     ```
 
-    The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
+    `start` returns once the sequencer process is alive and its RPC port answers. The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
+
+    If `start` fails, read the sequencer log with `logos-scaffold localnet logs --tail 200`. If `status` reports `ownership: foreign`, another process already holds the sequencer port, `127.0.0.1:3040`; stop it first. To wipe chain state and start over, run `logos-scaffold localnet reset --yes`.
 
 ## Step 7: Deploy your program
 
@@ -159,7 +163,9 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After a successful deployment, `logos-scaffold` prints a per-program summary; when the vendored `spel` tooling is available it also prints a `program_id`—a hex-encoded RISC0 image ID computed from the submitted ELF. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    After each successful submission, `logos-scaffold` prints `program_id: <hex>`, the RISC0 image ID computed locally from the submitted ELF. It prints `program_id: unavailable` if the project's `spel` binary has not been built yet. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+
+    `deploy` checks that the sequencer is reachable before submitting, and stops with a hint if it is not.
 
 1. To deploy a specific program by name:
 
@@ -177,6 +183,8 @@ Use the project-local wallet CLI to submit transactions to your deployed program
     logos-scaffold wallet topup
     logos-scaffold wallet list
     ```
+
+    `topup` initialises the account first if it is new, then claims from the Piñata faucet. To confirm the wallet can reach the sequencer, run `logos-scaffold wallet -- check-health`. Everything after `--` goes to the project's wallet binary unchanged.
 
 1. Run one of the example runner scripts that submit transactions to your program:
 
@@ -249,12 +257,25 @@ Hooks run through `sh -c` from the project root with these variables set:
 
 ## Deploy to the testnet
 
-To deploy to the LEZ public testnet instead of a local sequencer, ensure your wallet has test tokens (use `logos-scaffold wallet topup` to request from the faucet) and remove the `RISC0_DEV_MODE=1` prefix from the build and deploy commands. Full ZK proof generation can take significantly longer than dev mode.
+`deploy` and the `wallet` commands submit to the sequencer named by `sequencer_addr` in the project wallet configuration, `.scaffold/wallet/wallet_config.json`. `setup` points it at the local sequencer, `http://127.0.0.1:3040`. To deploy to the LEZ public testnet instead:
 
-```bash
-logos-scaffold build
-logos-scaffold deploy
-```
+1. Check that the LEZ version the project pins is compatible with the testnet. Scaffold 0.3.1 pins LEZ `v0.1.2` by default, and the pin is recorded under `[repos.lez]` in `scaffold.toml`. If the testnet runs a newer release, move `[repos.lez]` and `[repos.spel]` to matching releases and run `logos-scaffold setup` again; `logos-scaffold doctor` checks that the two pins agree.
+
+1. Point the project wallet at the testnet sequencer:
+
+    ```bash
+    logos-scaffold wallet -- config set sequencer_addr https://testnet.lez.logos.co/
+    ```
+
+1. Fund the account and deploy without `RISC0_DEV_MODE`. Full ZK proof generation takes significantly longer than dev mode.
+
+    ```bash
+    logos-scaffold wallet topup
+    logos-scaffold build
+    logos-scaffold deploy
+    ```
+
+While the wallet points at the testnet, `logos-scaffold doctor` warns that the wallet may point to a non-local sequencer. Do not use `logos-scaffold run` in this state: it starts and tops up against the local sequencer as part of its pipeline. To return to local development, set `sequencer_addr` back to `http://127.0.0.1:3040`.
 
 Add `--json` to `deploy` for machine-readable output. `--program-path … --json` prints one program object; the discovery path prints `{"deploys": [...]}` with an object per program.
 
@@ -263,3 +284,5 @@ Add `--json` to `deploy` for machine-readable output. `--program-path … --json
 - [About Logos Scaffold](../../scaffold/about-logos-scaffold.md)
 - [Develop a Logos module with Logos Scaffold](../../scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md)
 - [Troubleshoot Logos module development with Basecamp](../../scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md)
+- [Run the LEZ wallet via CLI](../get-started/run-lez-wallet-via-cli.md)
+- [Scaffold command reference](https://github.com/logos-co/scaffold/blob/master/docs/commands.md) and [`scaffold.toml` run configuration](https://github.com/logos-co/scaffold/blob/master/docs/configuration.md) in the scaffold repository

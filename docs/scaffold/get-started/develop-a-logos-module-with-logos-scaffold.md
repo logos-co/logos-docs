@@ -15,14 +15,19 @@ sidebar_position: 1
 
 #### Build a module, install it into Basecamp, and iterate on it.
 
+:::info
+This page describes `logos-scaffold` **0.3.1**, which pins Basecamp **0.2.3** by default. Run `lgs --version` to check yours.
+:::
+
 [Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats all day: build the [`.lgx`](../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide covers that loop, including running two instances side by side to exercise peer-to-peer features.
 
 Before you start, make sure you have the following:
 
 - Linux (x86_64 or aarch64) or macOS (arm64 or x86_64). Scaffold is Unix-only.
 - [Nix](https://nixos.org/download.html) with flakes enabled. Required by every `basecamp` subcommand.
-- `git`, `rustc`, and `cargo` to install scaffold.
-- A module project that exposes `packages.<system>.lgx` from a `flake.nix`, as produced by [`logos-module-builder`](https://github.com/logos-co/logos-module-builder). See [Build and run a Logos core module](../../core/build-modules/build-and-run-a-logos-core-module.md) if you do not have one yet.
+- `git`, and Rust 1.81 or newer with `cargo`, to install scaffold.
+- The Unix process helpers `lsof`, `ps`, and `kill`, which scaffold uses to track the processes it starts.
+- A module project that exposes `packages.<system>.lgx` from a `flake.nix`, built with [`logos-module-builder`](https://github.com/logos-co/logos-module-builder) 0.2.0 or later. Older, `tutorial-v1`-era packages carry no content hashes and the pinned `lgpm` rejects them. See [Build and run a Logos core module](../../core/build-modules/build-and-run-a-logos-core-module.md) if you do not have a module yet.
 - A graphical environment. Basecamp is a desktop application.
 
 ## What to expect
@@ -34,21 +39,20 @@ Before you start, make sure you have the following:
 
 ## Step 1: Install Logos Scaffold
 
-1. Clone the repository and install both binaries:
+1. Install both binaries from crates.io:
 
    ```bash
-   git clone https://github.com/logos-co/scaffold.git
-   cd scaffold
-   cargo install --path .
+   cargo install logos-scaffold
    ```
 
    This installs `logos-scaffold` and its shorter alias `lgs`. They are functionally identical; this guide uses `lgs`.
 
-1. Confirm the install and check the environment:
+   To build from source instead, clone [`logos-co/scaffold`](https://github.com/logos-co/scaffold) and run `cargo install --path .` in it.
+
+1. Confirm the install:
 
    ```bash
    lgs --version
-   lgs doctor
    ```
 
 :::tip
@@ -73,21 +77,24 @@ Run these commands from the root of your module project.
    lgs basecamp setup
    ```
 
-   `setup` pins the Basecamp and [`lgpm`](../../get-started/glossary.md#lgpm) versions the project builds against, builds both with Nix, and seeds the `alice` and `bob` profile directories under `.scaffold/basecamp/profiles/`. The first run downloads and builds a lot; later runs are cheap and do nothing when the pin has not changed.
+   `setup` pins the Basecamp and [`lgpm`](../../get-started/glossary.md#lgpm) versions the project builds against, builds both with Nix, and seeds the `alice` and `bob` profile directories under `.scaffold/basecamp/profiles/`. The first run downloads and builds a lot; later runs are cheap and do nothing when the pin has not changed. Build output goes to `.scaffold/logs/<timestamp>-setup-*.log`.
+
+   The two pins move as a set: scaffold's default `lgpm` is the revision the pinned Basecamp release locks, because Basecamp reads installed modules with that same library. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
 
    Neither binary lands on your `PATH`. Scaffold invokes the project-local copies directly.
 
-1. Capture the set of modules to install:
+1. Capture the set of modules to install, then review what was captured:
 
    ```bash
+   lgs basecamp modules
    lgs basecamp modules --show
    ```
 
-   Without `--show`, `basecamp modules` discovers every `flake.nix` at the project root and in immediate sub-directories that exposes `packages.<system>.lgx`, resolves the runtime dependencies each module declares in `metadata.json`, and writes the result to the `[modules]` table in `scaffold.toml`:
+   `basecamp modules` discovers the `flake.nix` at the project root that exposes `packages.<system>.lgx`, or, when the root has none, every immediate sub-directory flake that does. It resolves the runtime dependencies each module declares in `metadata.json` and writes the result to the `[modules]` table in `scaffold.toml`. `--show` prints the current table without changing it:
 
    ```toml
    [modules.tictactoe]
-   flake = "path:/abs/path/to/tictactoe#lgx"
+   flake = "path:./tictactoe#lgx"
    role = "project"
 
    [modules.delivery_module]
@@ -95,7 +102,9 @@ Run these commands from the root of your module project.
    role = "dependency"
    ```
 
-   `role = "project"` marks a module you build locally, `role = "dependency"` a runtime companion. The table is hand-editable, and re-running `basecamp modules` never overwrites an entry you wrote yourself.
+   `role = "project"` marks a module you build locally, `role = "dependency"` a runtime companion. Sources inside the project are recorded as relative `path:./…` references, so the committed file works in any checkout. The table is hand-editable, and re-running `basecamp modules` never overwrites an existing entry.
+
+   Modules that Basecamp bundles itself (`capability_module`, `main_ui`, `package_downloader`, `package_manager`, and `package_manager_ui`) are never captured. Basecamp 0.2.x loads them from next to its own binary, so they do not appear in a profile's `modules/` directory either. A profile listing only your own modules is expected.
 
 :::info
 `lgs basecamp docs` prints the full module-project contract, including the dependency-resolution rules and the `[modules]` schema. It works outside a scaffold project too, so you can read the contract before running `lgs init`.
@@ -109,15 +118,25 @@ Run these commands from the root of your module project.
    lgs basecamp install
    ```
 
-   Each source is built through Nix and installed with `lgpm`. Output goes to a timestamped log under `.scaffold/logs/`; pass `--print-output` to stream the Nix output to your terminal instead.
+   Dependencies are built and installed first, then project modules; the first failure stops the run. Each source is built through Nix and installed with `lgpm`, which validates the package structure and content hashes. Output goes to a timestamped log under `.scaffold/logs/`, with a one-line status per build; pass `--print-output`, or set `LOGOS_SCAFFOLD_PRINT_OUTPUT=1`, to stream the Nix output to your terminal instead.
 
-1. Check that the installed state matches what the project captured:
+   If `[modules]` is empty, `install` runs `basecamp modules` first and prints what it captured.
+
+1. Check the project's Basecamp health:
 
    ```bash
    lgs basecamp doctor
    ```
 
-   `doctor` reports the captured module set, the manifest variant each profile resolves, and any drift between `[modules]` in `scaffold.toml` and what is actually installed. Drift means you changed the table or the sources without reinstalling.
+   `doctor` checks that `setup` built Basecamp and `lgpm` and seeded the profiles, and reports:
+
+   - The Basecamp and `lgpm` pin set, warning when only one of the pair is at scaffold's default.
+   - The captured modules, with the tag or commit of each remote reference.
+   - A manifest variant check per profile, flagging installed modules whose `manifest.json` lacks an entry for the current platform.
+   - Dependency pin drift: a captured `role = "dependency"` revision that differs from scaffold's default.
+   - Discovery drift: module sources that `basecamp modules` would discover today but that are missing from `[modules]`.
+
+   Add `--json` for machine-readable output.
 
 ## Step 4: Launch Basecamp
 
@@ -127,17 +146,24 @@ Run these commands from the root of your module project.
    lgs basecamp launch alice
    ```
 
-   `launch` performs four steps in order: it kills any leftover processes for that profile, removes the profile's state, replays the install of every captured module, and then starts Basecamp with the profile's environment.
+   `launch` performs these steps in order:
+
+   1. Stops the Basecamp instance this profile started last time, if it is still running.
+   1. Fails straight away if `[modules]` is empty, or if the profile's runtime directory cannot be used, before anything is deleted.
+   1. Removes the profile's data and cache.
+   1. Rebuilds and reinstalls every captured module into the profile.
+   1. Prints a one-line variant check of the installed modules, for example `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`.
+   1. Starts Basecamp with the profile's environment.
 
 1. Confirm your module appears in the Basecamp window and behaves as expected.
 
    To keep a copy of the window's output, add `--log-file`. Bare `--log-file` writes to `.scaffold/basecamp/profiles/<profile>/basecamp.log` and still tees to your terminal; `--log-file=PATH` picks the file.
 
 :::warning
-The scrub in step 3 is deliberate: every launch starts from a clean profile, so identity keys, conversations, and any other in-app state are discarded. That is what makes runs reproducible. If you need state that survives a restart, run Basecamp yourself against a fixed base directory as described in [Step 6](#step-6-run-two-instances-side-by-side).
+The scrub in step 3 is deliberate: every launch starts from a clean profile, so identity keys, conversations, any other in-app state, per-module persisted state in `module_data/`, and Basecamp's own `logs/` are discarded. That is what makes runs reproducible. If you need state that survives a restart, run Basecamp yourself against a fixed base directory as described in [Step 6](#step-6-run-two-instances-side-by-side).
 :::
 
-To see the paths a profile resolves without launching or changing anything:
+To see the paths a profile resolves without launching or changing anything, including the XDG directories, the runtime directory, and Basecamp's `modules/`, `plugins/`, `module_data/`, and `logs/` directories:
 
 ```bash
 lgs basecamp paths alice --json
@@ -150,12 +176,19 @@ lgs basecamp paths alice --json
 | Variable | Value | Set when |
 |:---|:---|:---|
 | `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_CACHE_HOME` | `<profile-dir>/xdg-config`, `xdg-data`, `xdg-cache` | Always |
-| `TMPDIR` | The resolved `runtime_dir`, otherwise `<profile-dir>/xdg-tmp` | Always |
-| `XDG_RUNTIME_DIR` | The resolved `runtime_dir` | Only when one resolves: a configured `runtime_dir`, or the `/tmp/lgs-<profile>` macOS default |
+| `TMPDIR`, `XDG_RUNTIME_DIR` | The profile's runtime directory: a configured `runtime_dir`, otherwise `/tmp/lgs-<project-hash>-<profile>` | Always |
 | `LOGOS_PROFILE` | The profile name | Always |
-| `LOGOS_DATA_DIR`, `LOGOS_USER_DIR` | `<profile-dir>/xdg-data/Logos/LogosBasecamp` | macOS **and** a portable `[repos.basecamp].attr` (`bin-macos-app`, `bin-appimage`, `bin-bundle-dir`) |
+| `LOGOS_USER_DIR` | `<profile-dir>/xdg-data/Logos/LogosBasecamp`, with `Dev` appended for a non-portable Basecamp build. This is Basecamp's base directory for the profile. | Always |
+| `LOGOS_DATA_DIR` | The same default as `LOGOS_USER_DIR`, resolved independently of it | macOS **and** a portable `[repos.basecamp].attr` (`bin-macos-app`, `bin-appimage`, `bin-bundle-dir`) |
 
-Values you declare in `[basecamp.env]` or `[basecamp.profiles.<name>.env]` win over these defaults. The last row is the exception: an absolute value you set is kept, a relative one is rewritten to absolute against the project root, and an empty one counts as unset and falls back to the profile default.
+You can layer your own variables on top in `scaffold.toml`. They apply in this order, last writer wins:
+
+1. `[basecamp.env_append]`, whose lists are `:`-joined onto the value `lgs` inherited, for path variables such as `QT_PLUGIN_PATH` or `LD_LIBRARY_PATH`.
+1. The profile's `env_file`, a dotenv-style `KEY=VALUE` file.
+1. `[basecamp.env]`, applied to every profile.
+1. The profile's inline `env` in `[basecamp.profiles.<name>]`.
+
+`LOGOS_USER_DIR` and `LOGOS_DATA_DIR` are post-processed after that layering: an absolute value you set is kept, a relative one is rewritten to absolute against the project root, and an empty one counts as unset and falls back to the profile default.
 
 ## Step 5: Iterate on a source change
 
@@ -191,6 +224,8 @@ lgpm --modules-dir /tmp/basecamp-a/modules \
 # Then close and restart the Basecamp instance that uses /tmp/basecamp-a.
 ```
 
+Use an `lgpm` built from the same `logos-package-manager` revision as the Basecamp you run. Basecamp reads installed modules with that library, so a mismatched `lgpm` can write packages the app cannot load.
+
 You can also install a `.lgx` through the Package Manager UI inside Basecamp, which installs into the base directory of the instance you clicked in. The restart requirement is unchanged.
 
 To produce artifacts without installing them anywhere, use `lgs basecamp build`. It builds the captured project modules and writes load-ordered symlinks under `.scaffold/basecamp/lgx/` and `.scaffold/basecamp/portable/`:
@@ -203,7 +238,7 @@ lgs basecamp build --variant lgx --module swap  # one variant, one module
 :::tip
 Two faster loops skip a full Basecamp launch while you work on a single module:
 
-- `lgs basecamp run <module>` runs a captured module through `nix run` in its own standalone app, so you exercise the module without the rest of the stack.
+- `lgs basecamp run <module>` runs a captured module through `nix run` in its own standalone app, so you exercise the module without the rest of the stack. It runs the flake's default app, or the app named by `standalone_app` in the module's `[modules.<name>]` entry. A module captured from a prebuilt `.lgx` file has no app to run.
 - For QML-only changes, `logos-module-builder` exposes a `ui-dev` target that hot-reloads QML on save:
 
   ```bash
@@ -254,14 +289,14 @@ env      = { SWAP_UI_AUTO_ROLE = "taker" }
 
 ### With `--user-dir`
 
-When you run Basecamp yourself instead of through scaffold, isolate the instances with `--user-dir` (short form `-u`), which sets the base directory holding `plugins/`, `modules/`, `module_data/`, and `logs/`:
+When you run Basecamp 0.2.x yourself instead of through scaffold, isolate the instances with `--user-dir` (short form `-u`), which sets the base directory holding `plugins/`, `modules/`, `module_data/`, and `logs/`:
 
 ```bash
 LogosBasecamp --user-dir /tmp/basecamp-a &
 LogosBasecamp --user-dir /tmp/basecamp-b &
 ```
 
-The path is used verbatim. Setting the `LOGOS_USER_DIR` environment variable is equivalent.
+Basecamp creates the directory if it is missing and resolves the flag to an absolute path. Setting the `LOGOS_USER_DIR` environment variable is equivalent, except that the variable is used exactly as given, so give it an absolute path.
 
 The executable name depends on how you installed Basecamp: `./result/bin/LogosBasecamp` for a Nix build, `./logos-basecamp.AppImage` for the Linux release, or the application bundle on macOS. The flag is the same in all cases.
 
@@ -280,27 +315,30 @@ If you pass no override, the base directory depends on how Basecamp was built. A
 This trips people up in one specific way: you install a module, launch the other build, and the module is not there. Both builds behaved correctly; they simply looked in different directories. Passing `--user-dir` explicitly removes the ambiguity.
 
 :::info
-The macOS portable bundle does not honour `XDG_DATA_HOME`: it finds its modules and plugins through an environment override instead, and falls back to the shared `~/Library/Application Support/Logos/LogosBasecamp/` when none is set. Basecamp 0.1.x reads `LOGOS_DATA_DIR` for this; 0.2.x renamed it to `LOGOS_USER_DIR`, the env equivalent of `--user-dir`. `lgs basecamp launch` sets **both**, as absolute per-profile paths, so it works whichever generation the project pins. Set them yourself only if you need a different tree, and always use an absolute path — a relative value scatters state and can leave the UI unable to resolve its libraries.
+On macOS, Basecamp does not honour `XDG_DATA_HOME`: without an override, every instance of a build falls back to the shared `~/Library/Application Support/Logos/LogosBasecamp` (or `LogosBasecampDev`). In 0.2.x this applies to development builds as well as the portable bundle. Basecamp 0.2.x reads the override from `LOGOS_USER_DIR`, the environment-variable equivalent of `--user-dir`; 0.1.x read `LOGOS_DATA_DIR`. `lgs basecamp launch` always sets `LOGOS_USER_DIR` to an absolute per-profile path, and also sets `LOGOS_DATA_DIR` on the macOS portable stack, so it works whichever generation the project pins. Set them yourself only if you need a different tree, and always use an absolute path: a relative value scatters state and can leave the UI unable to resolve its libraries.
 :::
 
 ### Keep runtime paths short
 
-When a module loads, the Logos runtime opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the full socket path — 104 bytes on macOS, 108 on Linux — and a long runtime root overflows that budget before the socket name is even appended. Module loading then aborts with:
+When a module loads, the Logos runtime opens a Unix domain socket named `logos_token_<module>` under the temp root, which is `TMPDIR`. The operating system caps the full socket path at 104 bytes on macOS and 108 on Linux, and a long runtime root overflows that budget before the socket name is even appended. Module loading then aborts with:
 
 ```
 [SubprocessContainer] Unix socket path too long (122 >= 104)
 ```
 
-Keep the runtime root short, `/tmp/...` rather than a path under a deep project directory. Scaffold resolves it in this order and exports a resolved value as both `TMPDIR` and `XDG_RUNTIME_DIR`:
+Scaffold gives every profile its own short runtime directory and exports it as both `TMPDIR` and `XDG_RUNTIME_DIR`:
 
-1. `[basecamp.profiles.<name>].runtime_dir`, if set.
-1. `/tmp/lgs-<profile>`, the automatic default on macOS.
-1. Otherwise the in-profile `xdg-tmp`, which is what Linux gets by default. Its four extra bytes are not much headroom, so set `runtime_dir` explicitly if a deep project path trips the limit there too.
+1. `[basecamp.profiles.<name>].runtime_dir`, if set. A relative path is joined to the project root.
+1. Otherwise `/tmp/lgs-<project-hash>-<profile>` on every platform, where `<project-hash>` is the first eight hex characters of a SHA-256 of the project's path. The hash keeps two checkouts of the same project from sharing a directory.
 
 ```toml
 [basecamp.profiles.alice]
 runtime_dir = "/tmp/lgs-alice"
 ```
+
+The default lives outside the project on purpose. A module flake is often the project root itself, and `nix build` copies that tree into the store; it refuses to copy the sockets a running Basecamp leaves behind. A runtime directory inside the project therefore breaks every build after the first launch. If you set `runtime_dir`, keep it short and outside the project tree.
+
+Scaffold creates the directory with mode `0700` before it touches the profile. It refuses to use a runtime directory that is a symbolic link, is not a directory, or belongs to another user and cannot be restricted to `0700`, because the sockets in it give access to running modules.
 
 A distinct runtime root per instance matters for a second reason on every platform: two instances sharing one temp root collide on the same `logos_token_<module>` socket, and the second instance to bind takes the socket away from the first.
 
@@ -317,6 +355,14 @@ lgs basecamp build-portable
 This builds `.#lgx-portable` for every `role = "project"` entry, orders the artifacts by their declared dependencies, and symlinks them into `.scaffold/basecamp/portable/` as `<NN>-<module_name>.lgx`. Load them into the released Basecamp through its install button in the printed order. `role = "dependency"` entries are skipped, because the released build ships its own copies. Add `--module <name>` to build one module instead of all of them.
 
 Portable builds never fall back to the regular `#lgx` output. If a flake does not expose `lgx-portable`, the command fails and tells you so, rather than installing a package that cannot run in a portable host.
+
+To run a portable Basecamp stack in your scaffold profiles instead, set the flake output in `[repos.basecamp]`. The attribute can be mapped per host, with the scalar form as the fallback:
+
+```toml
+[repos.basecamp.attr]
+aarch64-darwin = "bin-macos-app"
+x86_64-linux   = "bin-appimage"
+```
 
 ## Next steps
 

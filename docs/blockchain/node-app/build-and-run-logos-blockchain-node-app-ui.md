@@ -50,7 +50,10 @@ By the end of this tutorial:
     ```sh
     git clone https://github.com/logos-blockchain/logos-blockchain-ui.git
     cd logos-blockchain-ui
+    git checkout 0.2.1
     ```
+
+    `0.2.1` is the release Logos Basecamp ships as **Blockchain**, and the one the other Logos Blockchain app guides describe. The default branch is ahead of it and has a different **Operations** layout (for example, no **Leader Rewards** section).
 1.  Build and run the standalone app:
 
     ```sh
@@ -66,7 +69,7 @@ By the end of this tutorial:
 1. In the app, click **Generate Config**.
 
     ![Initial screen](../assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
-1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
+1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), open the `Initialize Your Node` section and copy the `/ip4/…/quic-v1/p2p/…` addresses listed under `initial_peers`.
 1. In the app, paste the peer set information into **Initial peers (one per line)** and click the generate button at the bottom. The generated file becomes the active user config, shown as **User Config: … (Generated)**. (To use an existing config file instead, choose **Set path to config**.)
 1.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
 
@@ -92,7 +95,7 @@ By the end of this tutorial:
     Example response:
 
     ```json
-    {"lib":"3d0c...4e6d","tip":"f44d...e2f5","slot":70899,"height":120,"mode":"Bootstrapping"}
+    {"cryptarchia_info":{"lib":"3d0c...4e6d","lib_slot":0,"tip":"f44d...e2f5","slot":70899,"height":120,"state":"Bootstrapping"},"phase":"ProlongedBootstrapPeriod"}
     ```
 
     Expect `height` to increase at an average rate of one block every 10 seconds. The timing is probabilistic, so some variance is normal.

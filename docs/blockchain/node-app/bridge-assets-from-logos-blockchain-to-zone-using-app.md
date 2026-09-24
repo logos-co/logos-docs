@@ -62,7 +62,7 @@ The UI collects the deposit payload across three input steps, then submits it on
 
 1. On **Step 2–Fields**, enter the deposit parameters:
 
-   - **Channel ID (hex)**—the target channel.
+   - **Channel ID hex**—the target channel.
    - **Change public key**—prefilled from the selected wallet; receives leftover value.
    - **Funding public keys**—one per line, prefilled; for paying the gas fee.
    - **Max tx fee**—Maximum fee allowed to spend

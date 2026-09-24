@@ -46,7 +46,7 @@ The **Operations** tab is disabled until the node is running and synced. Start t
 
    - The **Transfer funds** panel appears.
 
-1. Select a sender address in the **From address** dropdown.
+1. Select a sender address in the address dropdown at the top of the form.
 
    - The address's current balance is shown read-only next to the dropdown.
    - A balance that could not be fetched is displayed as `---`.

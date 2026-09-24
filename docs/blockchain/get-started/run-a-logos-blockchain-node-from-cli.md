@@ -47,13 +47,16 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) from the [catalogue](../../get-started/glossary.md#catalogue), then load it in `logosctl`.
 
-1.  Start `logosctl`:
+1.  Start `logosctl` from the directory where you want the node's files to live, for example your home directory:
 
     ```sh
+    cd ~
     logosctl daemon start
     ```
 
-1.  In a new terminal window with the same user, refresh the official module catalogue:
+    - The blockchain module writes `user_config.yaml`, `keystore.yaml`, the `state/` directory and the node log files to the daemon's working directory, and resolves relative config paths against it.
+
+1.  In a new terminal window with the same user, change to the same directory and refresh the official module catalogue:
 
     ```sh
     logosctl catalog refresh
@@ -87,7 +90,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files (written to `$HOME`) by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.4:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files (written to the directory where you started the daemon) by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.4:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{
@@ -110,18 +113,19 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     | Field | Purpose | Guidance |
     |-------|---------|----------|
-    | `network.initial_peers` | Bootstrap peers | Use the current network document |
-    | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-    | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
+    | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
+    | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
     | `state.base_folder` | State directory | Use a persistent local path |
     | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
 1.  Start the node:
 
     ```sh
-    logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+    logosctl call blockchain_module start user_config.yaml ""
     ```
 
+    - A relative path is resolved against the daemon's working directory. If you started the daemon elsewhere, pass the absolute path to `user_config.yaml`.
     - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
 
     :::info
@@ -289,6 +293,18 @@ If the module shows `not_loaded` again after a successful `load-module`, or call
 If the count is greater than `0`, the crash has a different cause. Collect the complete `FATAL` lines from the daemon output, including the backtrace addresses, together with the last lines of the newest node log file in the directory where the daemon runs, and report them to the Logos team.
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
+
+### My node stays in `Bootstrapping` for hours and its height stops increasing?
+
+Check the node log (the `<number>.latest` file in the directory where you started the daemon). If it repeats `failed to process block; cancelling the download err=BlockProcessing(Cryptarchia(FutureBlock { block_slot: ..., current_slot: ... }))`, the initial block download has stalled. Restart the module; it keeps its state and resumes from the blocks it already stored:
+
+```sh
+logosctl module unload blockchain_module
+logosctl module load blockchain_module
+logosctl call blockchain_module start user_config.yaml ""
+```
+
+The `start` call can return `RPC call failed` while the node replays its stored blocks. Wait a few minutes, then check `get_cryptarchia_info` again: `height` should be increasing towards the network tip.
 
 ### The testnet explorer shows an error when I click on a transaction?
 

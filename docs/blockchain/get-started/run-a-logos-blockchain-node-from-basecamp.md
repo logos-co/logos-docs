@@ -47,7 +47,7 @@ By the end of this procedure:
 
 ## Step 1: Install and launch the blockchain app
 
-1. In Basecamp, press **Install now** or the top left button on the bottom of the sidebar (highlighted in the image below) to open the **Applications** section. In the **Blockchain** category, select **Blockchain**.
+1. In Basecamp, press **Discover Applications** on the home screen or the top button of the group at the bottom of the sidebar (highlighted in the image below) to open the **Applications** section. In the **Blockchain** category, select **Blockchain**.
 
    ![Blockchain node application](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-app.png)
 
@@ -70,7 +70,7 @@ By the end of this procedure:
 
 In the Blockchain app, add a node configuration.
 
-1. Click **Generate a config**.
+1. Click **Generate config**.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 
@@ -107,7 +107,7 @@ The status moves to *Starting*, then *[Bootstrapping](../../get-started/glossary
 
 ## Step 4: Verify that your node is syncing
 
-In the consensus tab, you will see the consensus status of your node. A syncing node returns a `Tip` that is not genesis and a `Height` that increases over time. The block list in the UI also begins filling within a minute or two.
+In the **Consensus** panel of the **Node** tab, you will see the consensus status of your node. A syncing node returns a `Tip` that is not genesis and a `Height` that increases over time. The block list in the UI also begins filling within a minute or two.
 
    :::note
    If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current [slot](../../get-started/glossary.md#slot) during initial sync is normal.
@@ -163,7 +163,7 @@ If the consensus info on the **Node** page shows an advancing height, the node i
 
 ### Height stays at 0
 
-Your Initial peers are empty. Quit Basecamp, delete `user_config.yaml`, `db/`, and `state/` inside `module_data/blockchain_module/<id>/` (leave `keystore.yaml`), relaunch, and redo Step 5 with the peers present.
+Your Initial peers are empty. Quit Basecamp, delete `user_config.yaml`, `db/`, and `state/` inside `module_data/blockchain_module/<id>/` (leave `keystore.yaml`), relaunch, and redo [Step 2](#step-2-configure-the-node) with the peers present.
 
 ### I need my wallet address but the Accounts panel is blank
 

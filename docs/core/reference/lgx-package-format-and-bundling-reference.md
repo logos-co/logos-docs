@@ -13,7 +13,7 @@ slug: lgx-package-format-and-bundling-reference
 
 An LGX file (`.lgx`) is the [package](../../get-started/glossary.md#package) format for distributing a Logos [module](../../get-started/glossary.md#module): a deterministic, gzip-compressed tar archive that bundles one or more platform-specific builds of the module with a signed manifest describing its metadata and dependencies. `lgx` is the CLI that creates, inspects, and signs these archives; `lgpm` and `lgpd` install them on a running system or from a [catalogue](../../get-started/glossary.md#catalogue).
 
-This page summarises the format. The [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md) is the authoritative reference for the manifest schema, CLI commands, and signing details; the [catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/master/docs/catalog-format.md) covers how packages are listed and verified for download.
+This page summarises the format. The [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md) is the authoritative reference for the manifest schema, CLI commands, and signing details; the [catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md) covers how packages are listed and verified for download.
 
 ## Package structure
 
@@ -42,6 +42,7 @@ Building a package with `lgx` is deterministic: identical inputs always produce 
 
 | Field | Type | Purpose |
 |---|---|---|
+| `manifestVersion` | string | Manifest schema version, currently `0.6.0`. Gates the version-dependent rules on this page: the icon contract (`0.4.0`+) and `optional_dependencies` (`0.6.0`+) |
 | `name`, `version` | string | Canonical lowercase package identity |
 | `type` | string | Package classification, for example `core`, `library`, or `ui_qml` |
 | `dependencies` | array | Other packages this one requires to run |
@@ -49,7 +50,7 @@ Building a package with `lgx` is deterministic: identical inputs always produce 
 | `main` | object | Map of platform variant name to the entry point path for that variant |
 | `display_name` | string | Human-readable label shown by UI consumers (Package Manager, App Manager) and CLI tools. Falls back to `name` when absent |
 | `provides` | array | App-to-app intents the package can service, for example `chat.group.open` |
-| `icon` | string | Path to the package's `assets/icon.png`. Required for `type: "ui_qml"` |
+| `icon` | string | Path to the package's `assets/icon.png`. Required for `type: "ui_qml"` at `manifestVersion` `0.4.0`+; optional for every other type |
 
 See the [full field reference](https://github.com/logos-co/logos-package/blob/master/docs/spec.md#manifest-schema) for the complete schema, including dependency version ranges and signer pins.
 
@@ -58,7 +59,7 @@ See the [full field reference](https://github.com/logos-co/logos-package/blob/ma
 A package's `type` distinguishes a [core module](../../get-started/glossary.md#core-module) from a [UI module](../../get-started/glossary.md#ui-module):
 
 - A **core module** package uses `main` as its per-variant entry point, same as most other package types.
-- A **UI module** package sets `type: "ui_qml"` and adds a `view` field: the relative path to its QML entry point, identical across variants. `main` becomes optional for this type—when present, it points at a per-variant backend Qt plugin that the host runs in an isolated process and bridges to the QML view; when absent, the QML view loads directly in-process. `type: "ui_qml"` packages must also ship a 256x256 `assets/icon.png`, since these are the packages rendered as tiles in Basecamp's app grid and sidebar.
+- A **UI module** package sets `type: "ui_qml"` and adds a `view` field: the relative path to its QML entry point, identical across variants. `main` becomes optional for this type—when present, it points at a per-variant backend Qt plugin that the host runs in an isolated process and bridges to the QML view; when absent, the QML view loads directly in-process and the package's variant directories carry only its QML files. `variants/` is required either way: it is the directory that is mandatory, not its contents, so a package with no native binary is still valid. From `manifestVersion` `0.4.0` onward, `type: "ui_qml"` packages must also ship a 256x256 `assets/icon.png`, since these are the packages rendered as tiles in Basecamp's app grid and sidebar.
 
 ## Signing and verification
 

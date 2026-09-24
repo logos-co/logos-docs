@@ -482,7 +482,7 @@ Create the storage config and start the module.
    Verify with a test download:
 
    ```sh
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false false 65536
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 false false
    ```
 
    _If using mix config_, try downloading again using private downloads over [the Logos mix network](https://docs.logos.co/storage/concepts/mix):
@@ -490,7 +490,7 @@ Create the storage config and start the module.
    # remove file from node
    logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
    # download again, this time using mix
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf true false 65536
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 true false
    ```
 
 ## Step 7: Configure and start the delivery module

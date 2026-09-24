@@ -69,6 +69,10 @@ Clone the [Logos SQL Zone](https://github.com/logos-blockchain/logos-sql-zone) r
 
    The complete demo is available in the `master` branch.
 
+:::warning
+The `tutorial` branch pins a Zone SDK from before `logos-blockchain` 0.2.4. Against a 0.2.4 node (the current testnet release), the sequencer (and the indexer) never becomes ready and logs ``Failed to fetch consensus info: Internal server error: Failed to parse response: missing field `mode` `` every few seconds: the node's `/cryptarchia/info` response now carries `phase` instead of `mode`. Until the branch is updated, the tutorial builds but cannot run against the testnet.
+:::
+
 ## Sequencer
 
 The sequencer is the node that accepts user transactions, batches them, and posts them as inscriptions to the Logos Blockchain. The steps in this section implement the sequencer using the Zone SDK, using the password manager Zone as the example.

@@ -23,7 +23,7 @@ This document is accurate for **Testnet v0.2.1**.
 
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
-The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
+The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/0.2.4/deployment/tui-zone).
 
 :::tip
 You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
@@ -42,17 +42,20 @@ You can try out a working version of the TUI Zone used in this tutorial directly
 
 ## Step 1: Clone the Logos Blockchain repository
 
-Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. A more comprehensive implementation, which also supports decentralised sequencing, can be found in the `master` branch.
+Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. A more comprehensive implementation, which also supports decentralised sequencing, can be found in `deployment/tui-zone` at the [`0.2.4`](https://github.com/logos-blockchain/logos-blockchain/tree/0.2.4/deployment/tui-zone) release tag. The `master` branch no longer contains `deployment/tui-zone`.
 
 1.  Run the following in your desired path to clone the repository and switch to the tutorial branch:
 
     ```bash
     git clone https://github.com/logos-blockchain/logos-blockchain.git
-    cd logos-blockchain/deployment/tui-zone
+    cd logos-blockchain
 
     # To follow along with the tutorial
     git checkout tui-zone-tutorial
+    cd deployment/tui-zone
     ```
+
+    Check out the branch before changing into `deployment/tui-zone`: the directory exists only on `tui-zone-tutorial`, so `cd logos-blockchain/deployment/tui-zone` straight after cloning fails with `No such file or directory`.
 
 ## Step 2: Initialise the `ZoneSequencer` struct
 
@@ -385,11 +388,26 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
 ## Step 5: Build and run the sequencer
 
+1.  In `src/ui.rs`, replace the `render_state` function with the version below. The skeleton's `render_state` still calls `channel_view()` and `adopted()`, which the tutorial branch removed from `ZoneState`, so without this change the build fails with `error[E0599]: no method named 'channel_view' found for reference '&InMemoryZoneState'`:
+
+    ```rust
+    /// Print current state as two sections: Finalized and Published.
+    pub fn render_state(state: &InMemoryZoneState) {
+        eprintln!();
+        print_section("Finalized", state.finalized());
+        print_section("Published", state.published());
+    }
+    ```
+
 1.  With the code filled in, build and run the sequencer from the `deployment/tui-zone` directory. The binary is named `tui-sequencer`:
 
     ```bash
     cargo run --bin tui-sequencer -- --node-url <Your Node URL>
     ```
+
+    :::warning
+    The `tui-zone-tutorial` branch pins a Zone SDK from before `logos-blockchain` 0.2.4. Against a 0.2.4 node (the current testnet release), the sequencer never becomes ready and logs ``Failed to fetch consensus info: Internal server error: Failed to parse response: missing field `mode` `` every few seconds: the node's `/cryptarchia/info` response now carries `phase` instead of `mode`. Until the branch is updated, the tutorial builds but cannot run against the testnet.
+    :::
 
     The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
 

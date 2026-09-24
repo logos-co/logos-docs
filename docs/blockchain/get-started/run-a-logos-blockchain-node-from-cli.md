@@ -58,11 +58,14 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) from the [catalogue](../../get-started/glossary.md#catalogue), then load it in `logosctl`.
 
-1.  Start `logosctl`:
+1.  Start `logosctl` from the directory where you want the node's files to live, for example your home directory:
 
     ```sh
+    cd ~
     logosctl daemon start
     ```
+
+    - The blockchain module writes `user_config.yaml`, `keystore.yaml`, the `state/` directory and the node log files to the daemon's working directory, and resolves relative config paths against it.
 
 1.  In a new terminal window with the same user, refresh the official module catalogue. Run this even if the daemon was already running, because it does not see packages published after it last refreshed:
 
@@ -133,6 +136,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     logosctl call blockchain_module start "$HOME/user_config.yaml" ""
     ```
 
+    - A relative path is resolved against the daemon's working directory. If you started the daemon elsewhere, pass the absolute path to `user_config.yaml`.
     - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
 
     :::info
@@ -337,6 +341,18 @@ If the module shows `not_loaded` again after a successful `load-module`, or call
 If the count is greater than `0`, the crash has a different cause. Collect the complete `FATAL` lines from the daemon output, including the backtrace addresses, together with the last lines of the newest node log file in the directory where the daemon runs, and report them to the Logos team.
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
+
+### My node stays in `Bootstrapping` for hours and its height stops increasing?
+
+Check the node log (the `<number>.latest` file in the directory where you started the daemon). If it repeats `failed to process block; cancelling the download err=BlockProcessing(Cryptarchia(FutureBlock { block_slot: ..., current_slot: ... }))`, the initial block download has stalled. Restart the module; it keeps its state and resumes from the blocks it already stored:
+
+```sh
+logosctl module unload blockchain_module
+logosctl module load blockchain_module
+logosctl call blockchain_module start user_config.yaml ""
+```
+
+The `start` call can return `RPC call failed` while the node replays its stored blocks. Wait a few minutes, then check `get_cryptarchia_info` again: `height` should be increasing towards the network tip.
 
 ### How do I look up a transaction on the testnet explorer?
 

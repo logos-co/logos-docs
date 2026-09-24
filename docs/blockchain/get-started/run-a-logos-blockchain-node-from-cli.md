@@ -259,6 +259,52 @@ Your tokens become eligible for consensus after 3.5 hours. Confirm that your nod
 Block proposal is probabilistic. Your node will not propose on every [slot](../../get-started/glossary.md#slot); participation depends on your stake relative to total active stake in the network.
 :::
 
+## Step 5: Claim leader rewards
+
+Each block your node leads mints a **leader-reward voucher**. On a CLI node vouchers are not credited automatically; you claim them to turn them into spendable balance.
+
+1.  Check what is currently claimable. The `value` field is a JSON string, so extract and re-parse it:
+
+    ```sh
+    logosctl call blockchain_module wallet_get_claimable_vouchers | jq -r .result.value | jq .
+    ```
+
+    Example response:
+
+    ```json
+    {
+      "tip": "e5f28df8...9153e",
+      "vouchers": []
+    }
+    ```
+
+2.  Claim an available voucher:
+
+    ```sh
+    logosctl call blockchain_module leader_claim
+    ```
+
+    On success the call returns `success: true` with the claim transaction hash in `value`. When there is nothing to claim, it returns:
+
+    ```json
+    {
+      "method": "leader_claim",
+      "module": "blockchain_module",
+      "result": {
+        "error": "Failed to claim leader rewards: Chain leader service error: Wallet API error: No claimable voucher found",
+        "success": false,
+        "value": null
+      },
+      "status": "ok"
+    }
+    ```
+
+:::info
+`leader_claim` claims **one** voucher per call. To drain several, check `wallet_get_claimable_vouchers` and call `leader_claim` once per listed voucher, pausing a few seconds between calls to avoid a burst of failures.
+
+A voucher becomes claimable only once it is provable against the current tip, so a claim can be a temporary no-op (`No claimable voucher found`) shortly after a block is led; retry on the next check. `leader_claim` currently returns only the transaction hash, not the voucher it consumed or the fee paid.
+:::
+
 ## Troubleshooting the Logos Blockchain node
 
 ### `logosctl call` fails with `RPC call failed`?

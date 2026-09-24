@@ -258,6 +258,45 @@ Your tokens become eligible for consensus after 3.5 hours. Confirm that your nod
 
 Block proposal is probabilistic. Your node will not propose on every [slot](../../get-started/glossary.md#slot); participation depends on your stake relative to total active stake in the network.
 :::
+## Step 5: Claim leader-reward vouchers
+
+Once your node is `Online` and funded for at least 3.5 hours, it participates in the consensus lottery. Each time it proposes a block, a claimable leader-reward voucher is recorded against your `voucher_master_key_id`.
+
+### Prerequisites
+
+- Your node is `Online` (see Step 3).
+- Your wallet is funded (see Step 4) and stake has matured (3.5 hours after funding).
+- Your `LeaderFunding` key also needs a balance — `leader_claim` uses it for the transaction fee. If it returns `Wallet does not have enough funds`, fund the `LeaderFunding` key from the faucet too.
+
+### Check for claimable vouchers
+
+Replace `<voucher-master-key>` with the `voucher_master_key_id` from your `user_config.yaml`:
+
+```bash
+logosctl call blockchain_module wallet_get_claimable_vouchers <voucher-master-key>
+```
+
+An empty `vouchers` array means no blocks proposed yet or all vouchers already claimed.
+
+### Claim vouchers
+
+```bash
+logosctl call blockchain_module leader_claim <voucher-master-key>
+```
+
+A successful claim returns a transaction hash. Wait 1-2 minutes then verify:
+
+```bash
+logosctl call blockchain_module wallet_get_notes <voucher-master-key> ""
+```
+
+:::note
+
+If `leader_claim` returns `no claimable voucher found`, wait for the next epoch and retry.
+
+:::
+
+
 
 ## Troubleshooting the Logos Blockchain node
 

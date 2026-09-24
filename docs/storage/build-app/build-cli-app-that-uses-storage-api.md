@@ -398,11 +398,9 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 Package installs are handled by a module bundled inside the daemon, so the daemon has to be running before you install anything.
 
-1.  Start `logosctl`, using a project-local session so everything this tutorial installs stays under `./config-dir`:
+1.  From the `storage_cli` project directory you have been working in since Step 1, start `logosctl`, using a project-local session so everything this tutorial installs stays under `./config-dir`:
 
     ```bash
-    cd ./storage_cli
-
     logosctl daemon start --detach --config-dir ./config-dir
     ```
 
@@ -420,8 +418,10 @@ The Storage module is a dependency of your module, so install it first.
 1.  Install your own module package from the local `.lgx` file:
 
     ```bash
-    logosctl --config-dir ./config-dir package install --file ./result/logos-storage_cli-module-lib.lgx
+    logosctl --config-dir ./config-dir package install --file ./result/logos-storage_cli-module-lib.lgx --yes
     ```
+
+    - Without `--yes`, `package install` asks for confirmation (`Proceed? [y/N]`), and fails with `Refusing to proceed without confirmation` when it cannot prompt (for example, in a script).
 
     - `package install` re-scans and unpacks into the session's own `modules/` directory (`./config-dir/modules/` here), so the daemon picks up both modules immediately—no restart needed.
 
@@ -442,10 +442,12 @@ The Storage module is a dependency of your module, so install it first.
         Uptime:       0s
         Version:      v1.0.0
 
-      Modules: 1 loaded, 0 crashed, 2 not loaded
-        storage_module     v2.1.2  not_loaded  -
-        storage_cli        v1.0.0  not_loaded  -
-        capability_module  v1.0.0  loaded      14s
+      Modules: 3 loaded, 0 crashed, 2 not loaded
+        storage_cli         v1.0.0  not_loaded  -
+        package_manager     v1.0.0  loaded      20s
+        storage_module      v2.1.2  not_loaded  -
+        package_downloader  v1.0.0  loaded      20s
+        capability_module   v1.0.0  loaded      21s
       ```
 
 1.  Load the CLI module:
@@ -477,7 +479,7 @@ The Storage module is a dependency of your module, so install it first.
         "error": null,
         "success": true,
         "value": {
-          "cid": "zDvZRwzm9g47yb761bU9ZRsteTiAxgTdgKz81NndDu5ESgmGfYWZ",
+          "cid": "zDvZRwzkx14BXkvr6MBpY7e29GgP3QBYM671u1P1kiLGYxt2iyHA",
           "sessionId": "0",
           "success": true
         }
@@ -487,7 +489,7 @@ The Storage module is a dependency of your module, so install it first.
     - Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's own log file (`./config-dir/logs/daemon.log`), not here. For a small file like this, progress is a single line:
 
       ```text
-      [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (13 of 13 bytes)
+      [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (14 of 14 bytes)
       ```
 
 ## Step 12: Download a file
@@ -516,9 +518,9 @@ The Storage module is a dependency of your module, so install it first.
     - The daemon logs show the download progressing, e.g.:
 
       ```text
-      [2026-08-19 19:04:53.920] [out] [storage_cli] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/giuliano/logos-v0.2.1/./farewell-to-westphalia.pdf
+      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/giuliano/logos-v0.2.1/./farewell-to-westphalia.pdf
       [2026-08-19 19:04:53.920] [out] [storage_cli] Waiting for node to start.
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Node is started.
+      [2026-08-19 19:04:53.920] [out] [storage_cli] Node is started, attempting to run download operation.
       [2026-08-19 19:04:53.922] [out] [storage_cli]  65536 bytes
       [2026-08-19 19:04:53.922] [out] [storage_cli]  131072 bytes
       ...

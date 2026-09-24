@@ -403,7 +403,6 @@ Create the storage config and start the module.
      "data-dir": "./storage-data",
      "log-level": "INFO",
      "listen-port": 8091,
-     "disc-port": 8090,
      "network": "logos.test"
    }
    EOF
@@ -416,10 +415,9 @@ Create the storage config and start the module.
    | `data-dir` | Storage repository path |
    | `log-level` | Log verbosity |
    | `listen-port` | Public TCP libp2p port |
-   | `disc-port` | Public UDP discovery port |
    | `network` | Storage network preset |
 
-   - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
+   - Use a fixed `listen-port`; do not leave public nodes on random ports.
    - The `logos.test` preset provides the storage bootstrap settings.
 
    :::info
@@ -455,7 +453,6 @@ Create the storage config and start the module.
      "data-dir": "${data_dir}",
      "log-level": "INFO",
      "listen-port": 8091,
-     "disc-port": 8090,
      "network": "logos.test",
      "mix-enabled": true,
      "dht-mix-proxy": ${dht_proxy_sprs},
@@ -482,11 +479,18 @@ Create the storage config and start the module.
    logosctl call storage_module start
    ```
 
-   _If using the mix config_, also enable private queries and verify with a test download:
+   Verify with a test download:
 
    ```sh
-   logosctl call storage_module togglePrivateQueries true
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false false 65536
+   ```
+
+   _If using mix config_, try downloading again using private downloads over [the Logos mix network](https://docs.logos.co/storage/concepts/mix):
+   ```sh
+   # remove file from node
+   logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
+   # download again, this time using mix
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf true false 65536
    ```
 
 ## Step 7: Configure and start the delivery module

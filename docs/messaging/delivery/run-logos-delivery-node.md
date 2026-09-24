@@ -140,9 +140,13 @@ Follow the instructions for your chosen path.
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git
    cd logos-delivery-module
+   git checkout v0.2.1
 
-   nix build '.#lgx' -o delivery-lgx
+   nix build '.#lgx-portable' -o delivery-lgx
    ```
+
+   - `v0.2.1` is the release Path B installs, so both paths run the same module.
+   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `linux-amd64-dev`) that `logosctl package install` rejects with `Package does not contain variant for platform: linux-x86_64`.
 
 1. Start `logosctl`:
 
@@ -153,7 +157,7 @@ Follow the instructions for your chosen path.
 1. In a new terminal window with the same user, install the module:
 
    ```bash
-   logosctl package install delivery-lgx/*.lgx
+   logosctl package install delivery-lgx/*.lgx --yes
    ```
 
 1. Write the testnet config:
@@ -206,7 +210,7 @@ Run these commands for your path.
    - Path C:
 
      ```bash
-     logosctl call delivery_module createNode @conf/logos-test.json
+     logosctl call delivery_module createNode @logos-test.json
      ```
 
 1. Start the node:

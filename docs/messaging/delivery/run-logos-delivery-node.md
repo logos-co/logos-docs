@@ -74,10 +74,6 @@ Follow the instructions for your chosen path.
    docker compose up -d --build
    ```
 
-   :::info
-   The first Docker build downloads `logosctl` and the release packages; subsequent starts are fast.
-   :::
-
 **Path B—Prebuilt binaries**
 
 1. Start `logosctl`:

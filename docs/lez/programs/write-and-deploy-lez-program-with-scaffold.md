@@ -49,10 +49,9 @@ Nix is not needed for this guide, only for scaffold's `basecamp` commands. If it
 
 ## What to expect
 
-- You can create a new LEZ program project with logos-scaffold.
-- You can write a guest program that runs inside the RISC0 zkVM.
+- You can create an LEZ program project and write a guest program that runs inside the RISC0 zkVM.
 - You can build your program and deploy it to a project-local LEZ sequencer.
-- You can interact with your deployed program using the wallet CLI.
+- You can call your deployed program and repeat the whole loop with one command.
 
 ## Step 1: Install logos-scaffold
 
@@ -139,7 +138,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     $EDITOR methods/guest/src/bin/hello_world.rs
     ```
 
-1. The program receives a `ProgramInput` struct via the zkVM environment, applies your logic, and writes a `ProgramOutput` struct to the journal. The sequencer verifies the proof and updates the on-chain [account](../../get-started/glossary.md#account) state.
+1. Read how the program works. It receives a `ProgramInput` struct via the zkVM environment, applies your logic, and writes a `ProgramOutput` struct to the journal. The sequencer verifies the proof and updates the on-chain [account](../../get-started/glossary.md#account) state.
 
     Key concepts:
     - **Instructions** are passed as bytes. `hello_world` takes its instruction as a raw `Vec<u8>` and appends it to the account's data.
@@ -166,27 +165,10 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
     `start` returns once the sequencer process is alive and its RPC port answers. The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
 
-    :::info
-    If `start` fails, read the sequencer log with `logos-scaffold localnet logs --tail 200`. If `status` reports `ownership: foreign`, another process already holds the sequencer port, `127.0.0.1:3040`; stop it first. To wipe chain state and start over, run `logos-scaffold localnet reset --yes`.
-    :::
-
     :::warning
-    The local sequencer always uses port `3040`. If something else is already listening there—another
-    scaffold project, or a sequencer left running by an earlier session—`localnet start` fails with:
+    The local sequencer always uses port `3040`. If something else already listens there, such as another scaffold project's sequencer, `localnet start` fails with `Address already in use (os error 98)`, and `localnet status` reports `ownership: foreign`. Stop the other process first. Changing `port` under `[localnet]` in `scaffold.toml` does not help in `logos-scaffold` 0.4.0: the sequencer still binds `3040` and the wallet keeps pointing at it, so `deploy` and `wallet topup` would talk to the other sequencer.
 
-    ```text
-    Error: Failed to build RPC server
-
-    Caused by:
-        Address already in use (os error 98)
-    ```
-
-    Free port `3040` before starting. Changing `port` under `[localnet]` in `scaffold.toml` is not a
-    workaround in `logos-scaffold` 0.4.0: it moves the readiness check and the generated
-    `sequencer_config.json`, but the sequencer binary still binds `3040` (its `--port` default) and
-    `.scaffold/wallet/wallet_config.json` keeps pointing at `http://127.0.0.1:3040`. The result is
-    that `deploy` and `wallet topup` silently talk to whatever is already on `3040` instead of your
-    own sequencer.
+    For any other failure, read the sequencer log with `logos-scaffold localnet logs --tail 200`. To wipe chain state and start over, run `logos-scaffold localnet reset --yes`.
     :::
 
 ## Step 7: Deploy your program
@@ -199,6 +181,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
     - After each successful submission, `logos-scaffold` prints `program_id: <hex>`, the RISC0 image ID computed locally from the submitted ELF. It prints `program_id: unavailable` if the project's `spel` binary has not been built yet. The example runner scripts in [Step 8](#step-8-interact-with-your-program) load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
     - `deploy` checks that the sequencer is reachable before submitting, and stops with a hint if it is not. It submits one program per block, so deploying the five sample programs takes about a minute.
+    - Add `--json` for machine-readable output: one object per program under `{"deploys": [...]}`, or a single object with `--program-path … --json`.
 
     :::info
     `deploy` confirms submission, not inclusion. Redeploying a program that is already on the sequencer still reports `submitted`, while the sequencer skips the transaction and logs `ProgramAlreadyExists`, which you can see with `logos-scaffold localnet logs`.
@@ -319,8 +302,6 @@ Hooks run through `sh -c` from the project root with these variables set:
 The public testnet runs a newer LEZ release than the `v0.1.2` that scaffold 0.4.0 pins by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` stops with `Local ID for authenticated transfer program is different from remote`, and `logos-scaffold doctor` reports the wallet as unusable.
 
 To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.2.4` passes against the testnet and one built from `v0.2.1` does not.
-
-Add `--json` to `deploy` for machine-readable output. `--program-path … --json` prints one program object; the discovery path prints `{"deploys": [...]}` with an object per program.
 
 ## Related documentation
 

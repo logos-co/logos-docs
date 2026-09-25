@@ -187,7 +187,7 @@ Run these commands for your path.
 
    ```bash
    # Path A (Docker)
-   docker exec logos-node logosctl module load delivery_module
+   docker exec logos-node logosctl module load delivery_module --json
 
    # Paths B and C
    logosctl module load delivery_module
@@ -198,7 +198,7 @@ Run these commands for your path.
    - Path A (config is mounted at `/conf` in the container):
 
      ```bash
-     docker exec logos-node logosctl call delivery_module createNode @/conf/logos-test.json
+     docker exec logos-node logosctl call delivery_module createNode @/conf/logos-test.json --json
      ```
 
    - Path B:
@@ -217,7 +217,7 @@ Run these commands for your path.
 
    ```bash
    # Path A
-   docker exec logos-node logosctl call delivery_module start
+   docker exec logos-node logosctl call delivery_module start --json
 
    # Paths B and C
    logosctl call delivery_module start
@@ -231,7 +231,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
    ```bash
    # Path A
-   docker exec logos-node logosctl daemon status
+   docker exec logos-node logosctl daemon status --json
 
    # Paths B and C
    logosctl daemon status

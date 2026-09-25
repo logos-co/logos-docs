@@ -81,7 +81,7 @@ The Zone SDK queues inscriptions locally when it is not your sequencer's turn an
 
    ```rust
    // From the drive task, once `Event::Ready` has fired.
-   let (result, checkpoint) = sequencer.handle().publish(zone_block)?;
+   let (result, checkpoint) = sequencer.handle().publish(zone_block).await?;
    // `result.tx` is a `PendingTx::Inscription(...)`.
    // `checkpoint` is up to date with the new pending entry.
    // The post may not have hit the node yet if it is not our turn.
@@ -142,7 +142,7 @@ Two sequencers can race on the same parent slot during rotation transitions or a
    if let Event::BlocksProcessed { channel_update, .. } = event {
        for entry in channel_update.orphaned {
            if let ChannelUpdateTx::Inscription(info) = entry {
-               let (result, checkpoint) = sequencer.handle().publish(info.payload)?;
+               let (result, checkpoint) = sequencer.handle().publish(info.payload).await?;
                // Persist `result` + `checkpoint` exactly as on the original publish.
            }
        }
@@ -168,19 +168,19 @@ Submit a `ChannelConfigOp` to add or remove sequencers from `accredited_keys`. B
    use lb_core::mantle::channel::{SlotTimeframe, SlotTimeout};
    use lb_core::mantle::ops::channel::config::Keys;
 
-   let new_keys = Keys::from(vec![
+   let new_keys = Keys::try_from(vec![
        admin_pk,
        new_sequencer_b_pk,
        new_sequencer_c_pk,
-   ]);
+   ])?;
 
-   let (result, checkpoint, signed_tx) = sequencer.handle().channel_config(
+   let ((result, checkpoint), signed_tx) = sequencer.handle().channel_config(
        new_keys,
        SlotTimeframe::from(60),   // ~3 blocks per turn at 20 slots/block
        SlotTimeout::from(180),    // skip after 3 turn windows of inactivity
        1,                          // configuration_threshold (still single-admin)
-       1,                          // withdraw_threshold
-   )?;
+       1,                          // transfer_threshold
+   ).await?;
    ```
 
    On finalisation, `refresh_channel_state` picks up the new config and the next `BlocksProcessed` event recomputes `our_turn_to_write` for every running sequencer.
@@ -213,7 +213,7 @@ Multi-admin config changes are not yet exercised by integration tests; treat the
        posting_timeframe,
        posting_timeout,
        configuration_threshold,
-       withdraw_threshold,
+       transfer_threshold,
    };
    let (tx, msg_id, own_sig) = sequencer.handle().prepare_tx(
        [Op::ChannelConfig(config)].into(),
@@ -228,14 +228,15 @@ Multi-admin config changes are not yet exercised by integration tests; treat the
    ).await?;
 
    // 4. Assemble the threshold proof and submit.
-   let config_proof = ChannelMultiSigProof::new(signatures)?;
+   let config_proof = ChannelMultiSigProof::try_new(signatures.try_into()?)?;
    let signed_tx = SignedMantleTx::new(
        tx,
-       vec![
+       [
            OpProof::ChannelMultiSigProof(config_proof),
            OpProof::Ed25519Sig(own_sig),
-       ],
-   )?;
+       ]
+       .into(),
+   );
    let (result, checkpoint) = sequencer
        .handle()
        .submit_signed_tx(signed_tx, msg_id)?;

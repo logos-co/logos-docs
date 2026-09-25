@@ -127,6 +127,10 @@ A deposit happens when a Bedrock user submits a transaction with a [`ChannelDepo
 
 The process of withdrawing funds is different for single-sequencer Zones and multiple-sequencer Zones with a withdraw threshold greater than one.
 
+:::warning
+Withdrawals cannot be completed with the latest Zone SDK release (`logos-blockchain` 0.2.4). In that release, `publish_atomic_withdraw` always returns `Error::Network("atomic withdraw is unsupported until channel notes are tracked")`, and `ChannelWithdrawOp` takes the channel's `inputs` rather than the `outputs` and `withdraw_nonce` used in Option 2, so the Option 2 code and the Step 4 recovery code do not compile against it. The withdrawal API is being reworked on `master`. Treat Steps 3 and 4 as a description of the intended flow until a release supports it.
+:::
+
 ### Option 1: Submit a single-sequencer withdrawal
 
 A withdrawal is initiated inside the zone and lands on-chain as a signed [`ChannelWithdraw`](https://lip.logos.co/blockchain/raw/bedrock-v1.1-mantle-specification.html#channel_withdraw) operation. This step applies only when `ChannelState.withdraw_threshold == 1`.
@@ -150,7 +154,7 @@ A withdrawal is initiated inside the zone and lands on-chain as a signed [`Chann
    let (result, checkpoint) = sequencer.handle().publish_atomic_withdraw(
        inscription_payload,   // the Zone block this withdraw goes with
        vec![withdraw],
-   )?;
+   ).await?;
    ```
 
    Because the inscription and the withdrawal share one transaction, they become adopted, orphaned, or finalised as a unit, so the Zone block recording the withdrawal and the on-chain debit cannot drift apart.

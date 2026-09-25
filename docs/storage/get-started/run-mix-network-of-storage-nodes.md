@@ -77,7 +77,6 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
       "data-dir": "$(pwd)/storage-data/node-1",
       "log-file": "$(pwd)/storage-data/node-1/storage.log",
       "nat": "extip:127.0.0.1",
-      "disc-port": 9091,
       "listen-port": 8081,
       "mix-enabled": true,
       "no-bootstrap-node": true
@@ -125,7 +124,6 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
       "data-dir": "$(pwd)/storage-data/node-$id",
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
       "nat": "extip:127.0.0.1",
-      "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
       "mix-enabled": true,
       "bootstrap-node": ["$BOOTSTRAP"]
@@ -201,10 +199,10 @@ Since this is a local network, every relay is reachable at `127.0.0.1` on its fi
     done | jq -s '{version: 1, relays: .}' > mix-pool.json
     ```
 
-1.  Collect the relays' proxy SPRs (`providerRecord`) into a JSON array:
+1.  Collect the relays' proxy SPRs (`spr`) into a JSON array:
 
     ```sh
-    jq -s -c '[.[].result.value.providerRecord]' debug-*.json > mix-proxies.json
+    jq -s -c '[.[].result.value.spr]' debug-*.json > mix-proxies.json
     ```
 
 ## Start the storage nodes (5 and 6)
@@ -223,7 +221,6 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
       "log-level": "DEBUG",
       "data-dir": "$(pwd)/storage-data/node-$id",
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
-      "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
       "nat": "extip:127.0.0.1",
       "mix-enabled": true,
@@ -273,7 +270,7 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 
     ```sh
     echo "Hello through Mix from the storage doc-test." > hello.txt
-    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
+    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536 true
     ```
 
 1.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
@@ -286,7 +283,7 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 1.  Download the CID through node 6:
 
     ```sh
-    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536
+    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536 true false
     # Wait a few seconds for the download to complete
     ```
 

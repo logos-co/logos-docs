@@ -391,107 +391,49 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-Create the storage config and start the module.
+1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config:
 
-1. Create the storage config:
-
-   ```sh
-   cd /var/lib/logos-node/storage-module
-   mkdir -p storage-data
-   cat > config.json <<EOF
-   {
-     "data-dir": "/var/lib/logos-node/storage-module/storage-data",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "disc-port": 8090,
-     "network": "logos.test"
-   }
-   EOF
-   ```
-
-   - `config.json` includes the following fields:
-
-   | Field | Purpose |
-   |-------|---------|
-   | `data-dir` | Storage repository path |
-   | `log-level` | Log verbosity |
-   | `listen-port` | Public TCP libp2p port |
-   | `disc-port` | Public UDP discovery port |
-   | `network` | Storage network preset |
-
-   - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
-   - The `logos.test` preset provides the storage bootstrap settings.
-   - Use an absolute `data-dir`. A relative path resolves against the Logos node's working directory (`/var/lib/logos-node`), not against the directory that holds `config.json`.
-
-   :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (for example `storage-config.sh`):
-
-   ```sh
-   #!/usr/bin/env bash
-   # Copy the contents of this file into a script named storage-config.sh
-   set -euo pipefail
-
-   if ! command -v jq &> /dev/null; then
-     echo "Please install jq first"
-     exit 1
-   fi
-
-   data_dir="${1:-./logos-storage-data}"
-
-   raw_data=$(curl -s -fsSL https://fleets.logos.co/logos-test/storage-network.json)
-   mp_json=$(echo $raw_data | jq -c '{
-     "version": 1,
-     "relays": map({
-       "peerId": .peerId,
-       "mixPubKey": .mixPubKey,
-       "libp2pPubKey": .libp2pPubKey,
-       "multiAddr": "/ip4/\(.address)/tcp/\(.port)"
-     })
-   } | tostring')
-
-   dht_proxy_sprs=$(echo $raw_data | jq '[.[].tcpSpr]')
-
-   cat <<EOF | jq .
-   {
-     "data-dir": "${data_dir}",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "disc-port": 8090,
-     "network": "logos.test",
-     "mix-enabled": true,
-     "dht-mix-proxy": ${dht_proxy_sprs},
-     "mix-pool-json": ${mp_json}
-   }
-   EOF
-   ```
-   Then make it executable and run it:
-
-   ```sh
-   chmod +x storage-config.sh
-   ./storage-config.sh /var/lib/logos-node/storage-module/storage-data > config.json
-   ```
-
-   The script accepts an optional storage data directory as its first argument. Pass an absolute path, as above. Without one, it writes the relative path `./logos-storage-data`, which resolves against the Logos node's working directory.
-   :::
-
-1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
-
-   ```sh
-   cd /var/lib/logos-node/storage-module
+   ```bash
    logosctl module load storage_module
-   logosctl call storage_module init @config.json
-   logosctl call storage_module start
+   logosctl call storage_module loadConfigOrDefault | jq -r '.result.value | fromjson' > config.json
    ```
 
-   _If using the mix config_, also enable private queries and verify with a test download:
+   You can inspect the configuration and modify it as required (see the list of valid configuration attributes [here](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl4initERKNSt6stringE)).
+
+2. Start the module:
+
+   ```bash
+   logosctl call storage_module init @./config.json
+   ```
+
+3. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
    ```sh
-   logosctl call storage_module togglePrivateQueries true
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ "$(pwd)/farewell-to-westphalia.pdf" false 65536
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
+   ```
+   
+   After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
+
+4. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
+internet from learning that you are downloading the book. Try it out:
+
+   ```sh
+   # remove file from disk
+   rm ./farewell-to-westphalia.pdf
+   # remove file from node
+   logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
+   # download again, this time using mix
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 true false
    ```
 
-   - Pass an absolute destination path. A relative path resolves against the Logos node's working directory (`/var/lib/logos-node`), not the current directory.
+   In contrast to direct downloads, downloads over mix can take on the order of minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
+
+   :::tip
+   - Use **absolute paths** when feeding file paths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.
    - On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
+   :::
 
 ## Step 7: Configure and start the delivery module
 

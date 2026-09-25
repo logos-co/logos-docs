@@ -173,7 +173,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     ```
 
     Free port `3040` before starting. Changing `port` under `[localnet]` in `scaffold.toml` is not a
-    workaround in `logos-scaffold` 0.3.0: it moves the readiness check and the generated
+    workaround in `logos-scaffold` 0.4.0: it moves the readiness check and the generated
     `sequencer_config.json`, but the sequencer binary still binds `3040` (its `--port` default) and
     `.scaffold/wallet/wallet_config.json` keeps pointing at `http://127.0.0.1:3040`. The result is
     that `deploy` and `wallet topup` silently talk to whatever is already on `3040` instead of your
@@ -225,9 +225,12 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 1. Run one of the example runner scripts that submit transactions to your program:
 
     ```bash
+    export NSSA_WALLET_HOME_DIR="$(pwd)/.scaffold/wallet"
     export LEE_WALLET_HOME_DIR="$(pwd)/.scaffold/wallet"
     RISC0_DEV_MODE=1 cargo run --bin run_hello_world -- <ID>
     ```
+
+    The LEZ `v0.1.2` wallet that scaffold pins by default reads `NSSA_WALLET_HOME_DIR`, and LEZ v0.2.0 and later read `LEE_WALLET_HOME_DIR`. Exporting both keeps the runner working on either pin.
 
     The runner prints the transaction hash. Once the next block is produced, the account holds the greeting `Hola mundo!`:
 
@@ -287,7 +290,7 @@ Hooks run through `sh -c` from the project root with these variables set:
 | Variable | Value |
 |:---|:---|
 | `SEQUENCER_URL` | The localnet RPC URL. |
-| `LEE_WALLET_HOME_DIR` | The project wallet directory. |
+| `NSSA_WALLET_HOME_DIR`, `LEE_WALLET_HOME_DIR` | The project wallet directory, under both the name LEZ `v0.1.2` reads and the one v0.2.0 and later read. |
 | `SCAFFOLD_PROJECT_ROOT`, `SCAFFOLD_IDL_DIR` | Absolute paths to the project root and the IDL output directory. |
 | `SCAFFOLD_TOPUP_SKIPPED`, `SCAFFOLD_DEPLOY_SKIPPED` | `1` or `0`. Always set, so branch on the value rather than on whether the variable exists. |
 | `SCAFFOLD_PROGRAM_ID`, `SCAFFOLD_GUEST_BIN` | The deployed program's image ID and guest binary. Set only when the project has exactly one deployable program, so a multi-program project fails loudly instead of picking the wrong one. |
@@ -297,10 +300,10 @@ Hooks run through `sh -c` from the project root with these variables set:
 ## Deploy to the testnet
 
 :::warning
-`logos-scaffold` 0.3.1 cannot deploy to the current LEZ public testnet. Use the local sequencer from this guide.
+`logos-scaffold` 0.4.0 cannot deploy to the current LEZ public testnet. Use the local sequencer from this guide.
 :::
 
-The public testnet runs a newer LEZ release than the `v0.1.2` that scaffold 0.3.1 pins by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` stops with `Local ID for authenticated transfer program is different from remote`, and `logos-scaffold doctor` reports the wallet as unusable.
+The public testnet runs a newer LEZ release than the `v0.1.2` that scaffold 0.4.0 pins by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` stops with `Local ID for authenticated transfer program is different from remote`, and `logos-scaffold doctor` reports the wallet as unusable.
 
 To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.2.4` passes against the testnet and one built from `v0.2.1` does not.
 

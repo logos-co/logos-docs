@@ -431,7 +431,7 @@ internet from learning that you are downloading the book. Try it out:
    In contrast to direct downloads, downloads over mix can take on the order of minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
 
    :::tip
-   - Use **absolute paths** when feeding filepaths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.
+   - Use **absolute paths** when feeding file paths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.
    - On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
    :::
 

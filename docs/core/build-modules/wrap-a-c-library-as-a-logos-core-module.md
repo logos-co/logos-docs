@@ -583,8 +583,10 @@ Use the `lm` CLI tool (from `logos-module`) to inspect the compiled module binar
 1. Build the LGX package:
 
    ```bash
-   nix build '.#lgx'
+   nix build '.#lgx-portable'
    ```
+
+   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `linux-amd64-dev`) that `logosctl package install` rejects with `Package does not contain variant for platform: linux-x86_64`.
 
 1. Start the daemon, detached so this terminal stays free:
 

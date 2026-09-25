@@ -55,10 +55,12 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    git clone https://github.com/logos-co/logos-accounts-module.git
    cd logos-accounts-module
 
-   nix build '.#lgx'
+   nix build '.#lgx-portable'
 
    cd ..
    ```
+
+   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `linux-amd64-dev`) that `logosctl package install` rejects with `Package does not contain variant for platform: linux-x86_64`.
 
 1. Start the daemon, detached so this terminal stays free:
 

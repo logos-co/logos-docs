@@ -52,6 +52,7 @@ Transfers are irreversible. Double-check all details before proceeding.
 ## What to expect
 
 - The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
+  - Unlike the [token program](create-and-transfer-custom-tokens-on-the-logos-execution-zone.md), the authenticated-transfers program is built into LEZ rather than published in [`lez-programs`](https://github.com/logos-blockchain/lez-programs) with an IDL, so the [SPEL CLI](https://github.com/logos-co/spel) can't drive it.
 - You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
 - You can transfer native tokens to public accounts and verify balances on-chain.
 - Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.

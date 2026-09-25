@@ -56,8 +56,8 @@ Being unreachable is no longer a dead end. A node behind a relay can still
 share content, but the performance will be lower than for a reachable node.
 
 :::info
-The port mapping is currently being tested, so it is not available for now.
-The node will try to use a relay if it is unreachable.
+Port mapping only works if UPnP, NAT-PMP or PCP is enabled on the router.
+If it fails, the node log shows `TCP port mapping failed` and the node uses a relay instead.
 :::
 
 :::warning
@@ -94,7 +94,7 @@ To use `extip:<IP>` you need your public IP. Two easy ways:
 
 ### Enabling UPnP on your router
 
-With `nat` set to `any` or `upnp`, the node asks the router to open its ports by itself—but only if UPnP is enabled on the router. Router interfaces differ, but the steps are always the same:
+With `nat` set to `auto` (the default), the node asks the router to open its ports by itself—but only if UPnP is enabled on the router. Router interfaces differ, but the steps are always the same:
 
 1. Open your router's admin page in a browser. Its address is your default gateway, often `192.168.1.1`. On Linux, find it with `ip route | grep default`.
 1. Find the *UPnP* setting, usually under the NAT, network, or advanced settings, and enable it.

@@ -66,7 +66,7 @@ By the end of this tutorial:
 1. In the app, click **Generate Config**.
 
     ![Initial screen](../assets/build-and-run-logos-blockchain-node-app-ui/01-config-setup.png)
-1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest), find the `Initialize Your Node` section and copy the `/ip4/…/quic-v1/p2p/…` addresses listed under `initial_peers`. These are the testnet bootstrap peers.
+1. In the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases), search for "testnet bootstrap peers" and copy the initial trusted peer set.
 1. In the app, paste the peer set information into **Initial peers (one per line)** and click the generate button at the bottom. The generated file becomes the active user config, shown as **User Config: … (Generated)**. (To use an existing config file instead, choose **Set path to config**.)
 1.  Click **Start Node**. A green indicator shows the node is running, and the wallet appears with a balance of `0`.
 
@@ -92,7 +92,7 @@ By the end of this tutorial:
     Example response:
 
     ```json
-    {"cryptarchia_info":{"lib":"3d0c...4e6d","lib_slot":0,"tip":"f44d...e2f5","slot":70899,"height":120,"state":"Bootstrapping"},"phase":"InitialBlockDownload"}
+    {"lib":"3d0c...4e6d","tip":"f44d...e2f5","slot":70899,"height":120,"mode":"Bootstrapping"}
     ```
 
     Expect `height` to increase at an average rate of one block every 10 seconds. The timing is probabilistic, so some variance is normal.

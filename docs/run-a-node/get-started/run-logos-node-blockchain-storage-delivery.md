@@ -285,11 +285,10 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 
    | Field | Purpose | Guidance |
    |-------|---------|----------|
-   | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
-   | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-   | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
-   | `blend.core.backend.listening_address` | Public Blend listener | Only needed for the Blend Network, normally `/ip4/0.0.0.0/udp/3400/quic-v1` |
-   | `state.base_folder` | State directory | Defaults to the relative path `./state`, which resolves against the daemon working directory. Set an absolute path for unattended operation |
+   | `network.initial_peers` | Bootstrap peers | Use the current network document |
+   | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+   | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
+   | `state.base_folder` | State directory | Use a persistent local path |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
 1. Start the blockchain module:
@@ -401,7 +400,7 @@ Create the storage config and start the module.
    mkdir -p storage-data
    cat > config.json <<EOF
    {
-     "data-dir": "$(pwd)/storage-data",
+     "data-dir": "./storage-data",
      "log-level": "INFO",
      "listen-port": 8091,
      "disc-port": 8090,
@@ -410,18 +409,11 @@ Create the storage config and start the module.
    EOF
    ```
 
-   :::warning
-   Use an absolute path for `data-dir`. In daemon mode the storage module runs as its own process
-   whose working directory is the daemon's (`/var/lib/logos-node` in this layout), not the
-   directory you are typing in, so a relative `./storage-data` writes to
-   `/var/lib/logos-node/storage-data` and leaves the directory you created here empty.
-   :::
-
    - `config.json` includes the following fields:
 
    | Field | Purpose |
    |-------|---------|
-   | `data-dir` | Storage repository path (absolute) |
+   | `data-dir` | Storage repository path |
    | `log-level` | Log verbosity |
    | `listen-port` | Public TCP libp2p port |
    | `disc-port` | Public UDP discovery port |
@@ -569,8 +561,6 @@ Run health checks against the Logos node and all three loaded modules to confirm
    ```
 
    Expected modules in the output: `blockchain_module`, `capability_module`, `delivery_module`, `package_downloader`, `package_manager`, `storage_module`.
-
-   - Check each module's own `status` field reads `loaded`, not just that the module is listed. Every installed module appears in the output whether or not it is running, and a module whose process has exited drops back to `"status": "not_loaded"` without `modules_summary.crashed` moving off `0`. If a module reads `not_loaded` after you started it, read the daemon output for its `FATAL` block rather than trusting the summary counts.
 
 1. Verify all ports are bound correctly:
 

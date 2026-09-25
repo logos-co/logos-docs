@@ -55,7 +55,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    git clone https://github.com/logos-co/logos-accounts-module.git
    cd logos-accounts-module
 
-   nix build '.#lgx-portable'
+   nix build '.#lgx'
 
    cd ..
    ```

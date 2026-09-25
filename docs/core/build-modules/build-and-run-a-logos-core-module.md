@@ -78,7 +78,7 @@ The `logos-module-builder` provides four scaffolding templates for different mod
 
 ## Step 2: Adapt the template for your module
 
-The template generates files with placeholder names like `minimal`/`Minimal` and example methods (`greet`, `getStatus`). Replace these in every generated file to match your module's name and methods.
+The template generates files with placeholder names like `minimal`/`Minimal` and `doSomething`. Replace these in every generated file to match your module's name and methods.
 
 1. Edit `metadata.json` and set `name`, `version`, `description`, and `main` to match your module.
    - `name` must be a valid C identifier; it is used in filenames, method calls, and module loading.
@@ -193,27 +193,21 @@ The `lm` tool (from `logos-module`) lets you inspect compiled module binaries wi
    ```json
    [
       {
-         "name": "greet",
-         "signature": "greet(QString)",
-         "returnType": "QString",
-         "isInvokable": true,
-         "parameters": [
-            { "name": "name", "type": "QString" }
-         ]
-      },
-      {
-         "name": "getStatus",
-         "signature": "getStatus()",
-         "returnType": "QString",
-         "isInvokable": true
-      },
-      {
          "name": "initLogos",
          "signature": "initLogos(LogosAPI*)",
          "returnType": "void",
          "isInvokable": true,
          "parameters": [
             { "name": "logosAPIInstance", "type": "LogosAPI*" }
+         ]
+      },
+      {
+         "name": "doSomething",
+         "signature": "doSomething(QString)",
+         "returnType": "QString",
+         "isInvokable": true,
+         "parameters": [
+            { "name": "input", "type": "QString" }
          ]
       }
    ]
@@ -266,19 +260,6 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
 
    :::info
    `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logosctl`—including the one the `install-logosctl.sh` helper script downloads—only install portable variants, while dev builds of the tool and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
-   :::
-
-   :::warning
-   At the `tutorial-v1` pin, both `.#lgx` and `.#lgx-portable` write a `manifestVersion 0.1.0`
-   manifest with no `hashes` block, which the released `lgpm` `0.2.1` from the prerequisites
-   rejects:
-
-   ```text
-   Error: Package validation failed: Missing content hashes in manifest
-   ```
-
-   Until the builder pin is refreshed, package with the `nix bundle` command described in the next
-   section, which emits a `manifestVersion 0.2.0` manifest that `lgpm` `0.2.1` accepts.
    :::
 
 ### Use the `nix bundle` command
@@ -412,16 +393,16 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
     ./logos-basecamp/bin/logos-basecamp
    ```
 
-   - Look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/LogosBasecampDev/` (macOS) or `~/.local/share/Logos/LogosBasecampDev/` (Linux). The `Dev` suffix is what a development build of `logos-basecamp` uses; a portable or released build drops it and uses `LogosBasecamp/` instead. On Linux, `~/.config/Logos/` holds only the `LogosBasecamp.conf` settings file.
+   - Look for the directory containing `modules/` and `plugins/` subdirectories at `~/Library/Application Support/Logos/LogosBasecamp/` (macOS) or `~/.config/Logos/LogosBasecamp/` (Linux).
 
 1. Set the `BASECAMP_DIR` variable to your platform's path.
 
    ```bash
    # macOS
-   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecampDev"
+   BASECAMP_DIR="$HOME/Library/Application Support/Logos/LogosBasecamp"
 
    # Linux
-   BASECAMP_DIR="$HOME/.local/share/Logos/LogosBasecampDev"
+   BASECAMP_DIR="$HOME/.config/Logos/LogosBasecamp"
    ```
 
 1. Install the module's dev LGX package into basecamp's modules directory. The package must contain a `-dev` variant for your platform; build it with `nix bundle --bundler github:logos-co/nix-bundle-lgx/tutorial-v3#dual .#lib` as described in Step 5.

@@ -185,7 +185,7 @@ Building a module does not update a running Basecamp. Basecamp loads modules onc
     ```
 
     :::warning
-    A Nix flake whose `src = ./.` only sees files that git tracks, and that holds for scaffold's own builds too. A new file that you have not staged is silently absent from the build: the build succeeds, the `.lgx` is produced, and the module misbehaves at runtime. This includes `qmldir` files, QML assets, and configuration files.
+    `nix build .#lgx`, `lgs basecamp build`, and `build-portable` only see files that git tracks, so a new file you have not staged is silently left out of the package they produce. `lgs basecamp install` and `launch` build from the directory instead and do include it, which means a module can work in your profiles while the package you ship is missing a `qmldir`, a QML file, or a configuration file. Stage every new file before you build a package to share. See [A new file is missing from the built package](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#a-new-file-is-missing-from-the-built-package).
     :::
 
 1. Relaunch every profile you are testing. `launch` rebuilds the module, reinstalls it into the profile, and starts a fresh instance:

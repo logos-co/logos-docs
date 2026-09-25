@@ -31,17 +31,17 @@ Sections follow the development loop: setup, capturing modules, building and ins
 | `lgs basecamp setup` fails with `signal: 9 (SIGKILL)` | [Basecamp setup is killed](#basecamp-setup-is-killed) |
 | `basecamp was set up for pin … but scaffold.toml now pins …` | [Setup was built for another pin](#setup-was-built-for-another-pin) |
 | `module dependencies on packages basecamp no longer ships` | [A module depends on `main_ui`](#a-module-depends-on-main_ui) |
-| `basecamp modules` fails on an unresolved dependency | [A dependency cannot be resolved](#a-dependency-cannot-be-resolved) |
+| `unresolved module dependencies (declared in metadata.json but not resolvable)` | [A dependency cannot be resolved](#a-dependency-cannot-be-resolved) |
 | A sibling sub-flake builds from the wrong source | [A sibling sub-flake override is ignored](#a-sibling-sub-flake-override-is-ignored) |
 | A file you just added is absent at runtime | [A new file is missing from the built package](#a-new-file-is-missing-from-the-built-package) |
 | `Missing content hashes in manifest` during install | [Install fails with `Missing content hashes in manifest`](#install-fails-with-missing-content-hashes-in-manifest) |
 | `Forbidden root entry: assets` during install | [Install fails with `Forbidden root entry: assets`](#install-fails-with-forbidden-root-entry-assets) |
 | `no 'main' field in metadata.json` during install | [Install fails inside a Nix build](#install-fails-inside-a-nix-build) |
-| `the .lgx has no variant for this stack` during install | [An installed module lacks the platform variant](#an-installed-module-lacks-the-platform-variant) |
+| `has no variant for this stack` during install | [An installed module lacks the platform variant](#an-installed-module-lacks-the-platform-variant) |
 | `no modules captured` when launching | [Launch finds no modules](#launch-finds-no-modules) |
 | `refusing to use runtime dir …` or `cannot restrict permissions on runtime dir …` | [Launch refuses the runtime directory](#launch-refuses-the-runtime-directory) |
 | `Unix socket path too long (122 >= 104)` | [Module loading aborts with a socket path error](#module-loading-aborts-with-a-socket-path-error) |
-| `file '…/logos_token_…' has an unsupported type` during a build | [Builds fail after the first launch](#builds-fail-after-the-first-launch) |
+| `file '…/logos_…' has an unsupported type` during a build | [Builds fail after the first launch](#builds-fail-after-the-first-launch) |
 | A rebuilt module behaves as if nothing changed | [Your change is not visible after a rebuild](#your-change-is-not-visible-after-a-rebuild) |
 | A module you installed is missing from Basecamp | [An installed module is missing](#an-installed-module-is-missing) |
 | `Invalid null URL`, or a QML singleton holding the wrong values | [A QML type or singleton resolves to the wrong module](#a-qml-type-or-singleton-resolves-to-the-wrong-module) |
@@ -90,7 +90,7 @@ lgs basecamp setup
 
 ## A dependency cannot be resolved
 
-**Symptom.** `lgs basecamp modules` fails, naming a dependency it could not resolve to a flake reference.
+**Symptom.** `lgs basecamp modules` fails with `unresolved module dependencies (declared in metadata.json but not resolvable)`, naming each dependency it could not resolve to a flake reference.
 
 **Cause.** A module's `metadata.json` declares a dependency that is not already in `[modules]`, is not one of the modules Basecamp ships with, is not an input of the declaring module's `flake.lock`, and is not in scaffold's built-in table. Scaffold fails rather than dropping it silently, because a missing runtime dependency surfaces much later as an unexplained failure inside Basecamp.
 
@@ -134,15 +134,15 @@ Only `path:../<sibling>` inputs are rewritten. `path:./sub`, `github:`, and `git
 
 ## A new file is missing from the built package
 
-**Symptom.** You add a file, the build succeeds, and at runtime the file is not there. A `qmldir` is ignored, an asset does not load, or a configuration file falls back to defaults.
+**Symptom.** You add a file, the build succeeds, and at runtime the file is not there. A `qmldir` is ignored, an asset does not load, or a configuration file falls back to defaults. Often the module works in a profile started with `lgs basecamp launch` but not from a package built with `lgs basecamp build`, `build-portable`, or `nix build .#lgx`.
 
-**Cause.** A flake with `src = ./.` builds from the git tree of your project. Files that git does not track are not part of that tree, so they never reach the build. Nothing warns you: the build succeeds and produces a `.lgx` that is quietly incomplete.
+**Cause.** A flake with `src = ./.` referenced as `.` builds from the git tree of your project, and files that git does not track are not part of that tree. `nix build .#lgx`, `lgs basecamp build`, and `build-portable` build that way. `lgs basecamp install` and `launch` build the same flake by path (`nix build path:<dir>#lgx`), which copies the whole directory and does include files git does not track. Nothing warns you: each build succeeds, and only the git-based ones produce a `.lgx` that is quietly incomplete.
 
 **Fix.** Stage new files before building:
 
 ```bash
 git add -A
-nix build .#lgx
+lgs basecamp build
 ```
 
 The files must be tracked, not necessarily committed. Staging is enough.
@@ -195,7 +195,7 @@ Then run `nix flake update` in that sub-flake and confirm the lock holds a singl
 
 ## An installed module lacks the platform variant
 
-**Symptom.** `lgs basecamp install` or `launch` fails with `the .lgx has no variant for this stack`, followed by `lgpm`'s `Package does not contain variant for platform: linux-x86_64-dev (package provides: linux-amd64)`. With a package installed by other means, the module instead freezes the first time you click it in a development Basecamp, or a portable Basecamp drops it at start-up; `launch` then prints `… missing linux-amd64-dev variant (<module>)` instead of `all linux-amd64-dev variants present ✓`.
+**Symptom.** `lgs basecamp install` or `launch` fails with ``the `.lgx` has no variant for this stack``, followed by `lgpm`'s `Package does not contain variant for platform: linux-x86_64-dev (package provides: linux-amd64)`. With a package installed by other means, the module instead freezes the first time you click it in a development Basecamp, or a portable Basecamp drops it at start-up; `launch` then prints `… missing linux-amd64-dev variant (<module>)` instead of `all linux-amd64-dev variants present ✓`.
 
 **Cause.** The package has no variant for the platform and stack Basecamp runs on. Development builds of Basecamp need the `-dev` key, for example `linux-amd64-dev` or `darwin-arm64-dev`. Portable builds need the bare key, for example `linux-amd64`. A `.lgx` built from the `lgx` output carries `-dev` keys, and one built from `lgx-portable` carries bare keys.
 
@@ -262,7 +262,7 @@ Keep any override short. A project-relative or deeply nested directory can excee
 **Symptom.** The first `lgs basecamp launch` works. Every later `lgs basecamp install` or `launch`, or a second profile launched while the first is running, fails inside `nix build` with:
 
 ```
-error: file '/.scaffold/basecamp/profiles/alice/xdg-tmp/logos_token_package_manager' has an unsupported type
+error: file '/nix/store/…-source/<runtime-dir>/logos_capability_module_<id>' has an unsupported type
 ```
 
 **Cause.** The profile's runtime directory is inside the project tree. The socket name in the error depends on the Basecamp release. When the module flake is the project root, `nix build` copies that tree into the store and refuses to copy the Unix sockets a running Basecamp leaves in the runtime directory. Scaffold releases before 0.3.1 put it there by default on Linux; with 0.3.1 and later it happens only when `runtime_dir` points inside the project.
@@ -406,7 +406,7 @@ If you declare `LOGOS_USER_DIR` yourself in `[basecamp.env]` or `[basecamp.profi
 
 | Warning | Cause | Fix |
 |:---|:---|:---|
-| Modules not captured | A module source that `basecamp modules` would discover today is missing from `[modules]`. | Run `lgs basecamp modules`. It adds new sources and keeps existing entries. |
+| `basecamp drift: uncaptured` | A module source that `basecamp modules` would discover today is missing from `[modules]`. | Run `lgs basecamp modules`. It adds new sources and keeps existing entries. |
 | Dependency pin drift | A captured `role = "dependency"` entry points at a different revision from scaffold's default for that module. | Nothing, if the revision is intentional. Otherwise update the entry in `scaffold.toml`. |
 | Basecamp pin set | Exactly one of `[repos.basecamp]` and `[repos.lgpm]` is at scaffold's default, or Basecamp is still on a retired scaffold default such as 0.2.3. | For a retired default, run `lgs basecamp setup`, which moves both pins. Otherwise pin both to a matching pair, then run `setup`. See [Pinned versions](../about-logos-scaffold.md#pinned-versions). |
 

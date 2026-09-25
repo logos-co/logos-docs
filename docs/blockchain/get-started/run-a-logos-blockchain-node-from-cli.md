@@ -261,7 +261,7 @@ Block proposal is probabilistic. Your node will not propose on every [slot](../.
 
 ## Step 5: Claim leader rewards
 
-Each block your node leads mints a **leader-reward voucher**. On a CLI node vouchers are not credited automatically; you claim them to turn them into spendable balance.
+Each block your node proposers mints a **leader-reward voucher**. On a CLI node, vouchers are not credited automatically; you claim them to turn them into spendable balance.
 
 1.  Check what is currently claimable. The `value` field is a JSON string, so extract and re-parse it:
 

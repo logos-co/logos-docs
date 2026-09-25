@@ -69,7 +69,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of packages, and Basecamp re-reads it whenever the index changes.
 
-1. In the sidebar, click **Package Manager**, then click **Repositories** in the toolbar.
+1. In the sidebar, click **Package Manager**, then click **Manage Repositories** in the toolbar.
 
     This opens **Settings** at the **Package Repositories** page, which lists the repositories you're drawing packages from.
 
@@ -87,17 +87,17 @@ Basecamp arrives with the official Logos catalogue configured, and it merges tha
 
 1. Go back to **Package Manager** and search for `swap`.
 
-    **Expected:** two packages from the new repository, `swap` and `swap_ui`, both shown as **ETH ↔ LEZ Atomic Swap** and both at the same version. The catalogue always serves the current release, so take whatever version it offers rather than looking for a particular number.
+    **Expected:** two packages from the new repository, `swap` and `swap_ui`, both shown as **ETH ↔ LEZ Atomic Swap** and both at the same version. Tell them apart by the **Type** column: `core` is `swap` and `ui_qml` is `swap_ui`. The catalogue always serves the current release, so take whatever version it offers rather than looking for a particular number.
 
 1. Install `swap` first, then install `swap_ui`.
 
-    Each opens an **Add Application** window listing **Required Packages**. Confirm with **Install** and wait for the stage label to reach `Installed`.
+    Click **INSTALL** on the package's row. An **Install Package?** dialogue opens. Confirm with **Install** and wait for the row's **Action** column to read `INSTALLED`.
 
     :::warning
     Install `swap` before `swap_ui`. The UI package declares a dependency on the backend, and taking them the other way round leaves the interface with no backend to talk to.
     :::
 
-1. Restart Basecamp, then open **ETH ↔ LEZ Atomic Swap** from the sidebar.
+1. Open **ETH ↔ LEZ Atomic Swap** from the sidebar, where its tile reads `SW`. If the tile isn't there, restart Basecamp.
 
     **Expected:** a row of six tabs across the top: **Market**, **Swap**, and **History**, then, after a divider, **Sell**, **Refund**, and **Setup**. Beneath the tabs runs a strip with your `ETH` and `LEZ` addresses and balances, which keep themselves up to date, and a connection chip that settles on `Connected` once the app finds a peer, gaining a peer count—`Connected · 1 peer` and up—as it counts them.
 
@@ -121,7 +121,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     **Expected:** a page headed **Get set up**, subtitled `Four steps, then you're trading. No keys to type.`, with four numbered sections: **1. Ethereum key**, **2. LEZ account**, **3. Activate your LEZ account**, and **4. Get test ETH**. Each section's border turns green and its heading gains a `done` marker as you complete it.
 
-    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two collapsed sections follow it: **Get test LEZ without trading**, described in [Get test LEZ without trading](#get-test-lez-without-trading) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration).
+    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and described in [Get test LEZ without trading](#get-test-lez-without-trading) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
 
 1. Under **1. Ethereum key**, click **Generate a key**.
 
@@ -163,7 +163,7 @@ You do need it to *sell* LEZ, because a sell offer has to be backed by LEZ you a
 
 **Advanced settings**, at the foot of the **Setup** tab, holds every endpoint, address, and key the app uses, grouped under **Ethereum**, **LEZ**, **Swap Parameters**, and **Developer**. It is the former **Config** tab, folded into **Setup** so there is one place to set the app up rather than two. After the guided sections above it, the key fields are already filled and the network values ship pre-filled, so this step is a check rather than a data-entry exercise. You can skip it and still complete a swap; it's here so you can see what **Setup** did and confirm nothing is off.
 
-1. Open the **Setup** tab and expand **Advanced settings**.
+1. Open the **Setup** tab and scroll to **Advanced settings**. Expand it if it's collapsed. It opens by itself when a field needs attention, so it's often open already, and clicking its heading then collapses it.
 
 1. Under **Ethereum**, confirm **RPC URL** is `wss://ethereum-sepolia-rpc.publicnode.com` and **HTLC Contract Address** is `0x351B0EA07739FA9F6769213927D7836a790A5FAF`.
 
@@ -203,11 +203,11 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
 1. Click the offer.
 
-    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **Hashlock**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH.
+    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then the time left on both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH. There's no **Hashlock** row yet: your app creates the secret, and with it the hashlock, only when you accept.
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 
-    If the button is disabled, the app shows why immediately beneath it, such as `Finish setting up first — open Setup` or `This offer has expired`.
+    If the button is disabled, the app shows why just above it, such as `Finish setting up first — open Setup`, `This offer has expired`, or, while your Sepolia ETH hasn't arrived, `You don't have enough ETH for this swap`.
 
 1. Switch to the **Swap** tab and watch it run.
 
@@ -235,9 +235,9 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 
     **Expected:** the LEZ explorer shows the matching claim. The URL looks like `https://explorer.testnet.lez.logos.co/transaction/` followed by a 64-character hash with no `0x` prefix.
 
-1. Compare the **Hashlock** on the receipt with the hashlock the offer advertised in [Step 4](#step-4-take-a-live-offer).
+1. Look at the **Hashlock** on the receipt. It's the hash of the secret your app generated when you accepted the offer in [Step 4](#step-4-take-a-live-offer), and the row for this swap in the **History** list carries the same value.
 
-    They match, which is the point. The same hash bound both locks, and the preimage now published on the LEZ chain is what released both.
+    The same hash bound both locks, which is the point, and the preimage now published on the LEZ chain is what released both.
 
 :::warning
 A Basecamp app can't open your browser for you. Logos app interfaces run inside a sandboxed QML engine that silently ignores requests to open an external URL, as reported in [eth-lez-atomic-swaps#84](https://github.com/logos-co/eth-lez-atomic-swaps/issues/84). That's why every row on the receipt carries copy buttons instead of clickable links—**⧉** for the value itself, **↗** for a block-explorer link—and why every instruction here says to paste the link into your browser yourself.
@@ -257,7 +257,7 @@ If you never got as far as a receipt, [open an issue](https://github.com/logos-c
 
 ### The app doesn't appear after installing it
 
-Restart Basecamp. A newly installed app reaches the sidebar only after a restart. If it's still missing, check your platform: the catalogue publishes `darwin-arm64`, `linux-amd64`, and `linux-arm64` builds only, and Basecamp installs nothing at all on a platform with no matching build, which is what happens on Intel macOS.
+Restart Basecamp. Current Basecamp releases add a newly installed app to the sidebar straight away, but older ones only do so after a restart. If it's still missing, check your platform: the catalogue publishes `darwin-arm64`, `linux-amd64`, and `linux-arm64` builds only, and Basecamp installs nothing at all on a platform with no matching build, which is what happens on Intel macOS.
 
 ### The Market tab is empty
 

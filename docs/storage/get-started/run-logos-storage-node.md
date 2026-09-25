@@ -178,10 +178,10 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
     logosctl call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
     ```
 
-    :::tip
+    :::note
     - Setting `advertise` to `true` when you run an ephemeral node; that is, a node that runs briefly and is then shut down,
-      can be detrimental to network performance as your node announces itself then leaves the network, leaving an
-      advertisement pointing to a (now) departed node behind.
+      can be detrimental to network performance as your node announces itself and then leaves an
+      advertisement pointing to a departed node behind.
     - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that
       would reveal to other nodes that you've downloaded the file, defeating the purpose of the using mix in the first place.
     - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.

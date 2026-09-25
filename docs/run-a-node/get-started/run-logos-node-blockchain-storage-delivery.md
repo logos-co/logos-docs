@@ -410,7 +410,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
    ```sh
    logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
-      ./farewell-to-westphalia.pdf false 65536 false false
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
    ```
    
    After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
@@ -425,13 +425,14 @@ internet from learning that you are downloading the book. Try it out:
    logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
    # download again, this time using mix
    logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
-      ./farewell-to-westphalia.pdf false 65536 true false
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 true false
    ```
 
    In contrast to direct downloads, downloads over mix can take on the order of minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
 
    :::tip
-   On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
+   - Use **absolute paths** when feeding filepaths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.
+   - On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
    :::
 
 ## Step 7: Configure and start the delivery module

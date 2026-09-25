@@ -35,7 +35,10 @@ Choose one of the three installation paths based on your environment:
    - Linux
    - macOS
 - Network access so both node instances can reach each other.
-- Inbound TCP and UDP open on the P2P port (`30303`) and UDP open on the discovery port (`9000`). The node uses QUIC by default, on UDP at the TCP port number; if you cannot open that UDP port, add `"quicSupport": false` next to the port settings in the node config.
+- Inbound ports open:
+   - TCP `30303`: P2P (`tcpPort`).
+   - UDP `30303`: P2P over QUIC, on by default at the `tcpPort` number. If you cannot open it, add `"quicSupport": false` next to the port settings in the node config.
+   - UDP `9000`: discv5 discovery (`discv5UdpPort`).
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - Some prerequisites differ between paths:

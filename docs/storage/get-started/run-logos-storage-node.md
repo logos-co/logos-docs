@@ -58,7 +58,7 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
     logosctl catalog refresh
     ```
 
-1.  Install the Logos storage module package version 2.1.2. The root hash ensures you select the published package identity that exactly matches the pinned version:
+1.  Install the Logos storage module package, pinned to version 2.1.2:
 
     ```sh
     logosctl package install storage_module \
@@ -74,7 +74,7 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
 
     ```bash
     logosctl module load storage_module
-    logosctl ls --loaded
+    logosctl module ls
     ```
 
     - A `module load` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
@@ -83,7 +83,7 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
 
 Initialise and start the storage module with `logosctl`.
 
-Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logosctl call` client does not subscribe to them, so they do **not** appear in `logs.txt`. Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
+Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logosctl call` client does not subscribe to them, so they do **not** appear in the daemon log (`~/.logosctl/logs/daemon.log`). Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
 :::tip
 To see every method the module exposes (the same methods you can `call`), run `logosctl module-info storage_module`.
@@ -128,7 +128,7 @@ To see every method the module exposes (the same methods you can `call`), run `l
     logosctl call storage_module init @config.json
     ```
 
-1.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to `logs.txt`):
+1.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to the daemon log):
 
     ```sh
     logosctl call storage_module start
@@ -216,7 +216,7 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
     # false
     ```
 
-1.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to `logs.txt`). The node can be started and stopped multiple times:
+1.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to the daemon log). The node can be started and stopped multiple times:
 
     ```sh
     logosctl call storage_module stop

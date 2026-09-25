@@ -391,7 +391,7 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 
 ### Why do peers not connect or messages not propagate?
 
-The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the [key-package registry](https://devnet.chat-kc.logos.co), where key material is published during `init()` and looked up by `create_conversation`. For delivery-level detail, check the log file named by `get_log_path()`.
+The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the key-package registry at `https://devnet.chat-kc.logos.co` over HTTPS, where key material is published during `init()` and looked up by `create_conversation`. The registry is an API endpoint: opening its root URL in a browser returns `404 Not Found` even when it is working. For delivery-level detail, check the log file named by `get_log_path()`.
 
 ### Why hasn't an invited member joined the group yet?
 

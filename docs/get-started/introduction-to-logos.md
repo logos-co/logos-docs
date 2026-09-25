@@ -14,9 +14,9 @@ sidebar_position: 1
 
 #### Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
 
-Logos is a modular, microkernel-based stack for decentralised infrastructure, built for privacy, composability, and resilience. Its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
+**Logos is a toolbox for building decentralised applications requiring privacy, composability, and resilience.** As a modular, microkernel-based technology stack, its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
 
-Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](glossary.md#peer-discovery), connection management, and privacy-preserving communication through a mixnet. Above that sit the **[modules](glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **dApps** that compose these modules into applications.
+Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](glossary.md#peer-discovery), connection management, and privacy-preserving communication through a mixnet. Above that sit the **[modules](glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **apps** that compose these modules into applications.
 
 Logos ships with a default configuration consisting of the runtime plus storage, messaging, and blockchain modules. This configuration is not fixed: developers can assemble other distributions from a different selection of modules.
 
@@ -38,7 +38,7 @@ Sovereignty refers to the operator's control over the infrastructure they run. A
 
 ## Architecture
 
-Logos is organised into distinct layers, each with a defined responsibility: the runtime, the networking layer, modules, and dApps.
+Logos is organised into distinct layers, each with a defined responsibility: the runtime, the networking layer, modules, and apps.
 
 ![The Logos architecture.](./assets/introduction-to-logos/logos-tech-diagram.png)
 
@@ -76,8 +76,8 @@ The [**Storage**](../storage/get-started/run-logos-storage-node.md) module provi
 
 **User modules** extend the architecture beyond the foundational set. Any developer can build a module that integrates with the same infrastructure. The runtime loads user modules, manages their lifecycle, and enables them to communicate with other modules, whether those modules are provided by Logos or by third parties.
 
-### Dapps
+### Apps
 
-Dapps are the decentralised applications that compose the modules described above. A chat application could use the messaging and storage modules; a decentralised finance application could use the blockchain module and the LEZ; a file-sharing application could use the storage module.
+Apps are the decentralised applications that compose the modules described above. A chat application could use the messaging and storage modules; a decentralised finance application could use the blockchain module and the LEZ; a file-sharing application could use the storage module.
 
 The [Logos Basecamp](../basecamp/install-logos-basecamp.md), is the default launcher for the stack. It starts the runtime, loads the configured module profile, and provides a unified interface. By default, it includes a set of applications for each foundational module: a wallet for managing tokens, a chat interface for encrypted messaging, a file-sharing tool, and an explorer for inspecting blockchain and LEZ activity. The [Logos Node](/run-a-node) provides an alternative entry point, starting the same runtime without a user interface. Because a distribution is defined by its selected modules rather than by its launcher, developers can assemble distributions for purposes other than the default configuration.

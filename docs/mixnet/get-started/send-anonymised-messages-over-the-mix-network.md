@@ -89,7 +89,7 @@ Never run two instances in the same working directory. The app stages credential
    CHAT_DEMO_USER=2 CHAT_PORT=62002 nix run ../logos-chat-ui --accept-flake-config
    ```
 
-   - `CHAT_DEMO_USER` pre-selects a different demo user (use any index other than the one chosen in the first instance).
+   - `CHAT_DEMO_USER` pre-selects a different demo user (use any index other than the one chosen in the first instance). The startup popup still opens with that user selected: click **Start** to connect.
    - `CHAT_PORT` sets the libp2p listen port to avoid a port conflict with the first instance (`0` selects a random port).
    - Wait for this instance's status bar to also reach **`MIX 5/4`** before sending.
 

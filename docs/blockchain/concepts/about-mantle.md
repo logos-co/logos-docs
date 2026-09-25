@@ -14,6 +14,10 @@ sidebar_position: 3
 
 #### Understand how Mantle lets nodes and Zones interact with Bedrock.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Mantle](../../get-started/glossary.md#mantle) is a [Bedrock](../../get-started/glossary.md#bedrock) component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](./about-the-blend-network.md), as well as to enable [Zones](./about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
 
 ## The basics

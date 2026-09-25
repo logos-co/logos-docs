@@ -33,7 +33,7 @@ On LEZ, public and private accounts differ in where their state lives and how tr
 - Private accounts
   - Structurally identical to public accounts, but their values are stored off-chain.
   - Use two keypairs: [nullifier keys](../../get-started/glossary.md#nullifier-keys) for privacy-preserving executions and [viewing keys](../../get-started/glossary.md#viewing-keys) for encrypting and decrypting values.
-  - The [private account](../../get-started/glossary.md#private-account) ID is derived from the [nullifier public key](../../get-started/glossary.md#nullifier-public-key).
+  - The [private account](../../get-started/glossary.md#private-account) ID is derived from the [nullifier public key](../../get-started/glossary.md#nullifier-public-key), the viewing public key, and an identifier.
   - Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
 - Transfers involving any private account
   - The execution is privacy-preserving.

@@ -14,6 +14,10 @@ sidebar_position: 7
 
 #### Understand what Logos Delivery adds on top of libp2p and where the two differ.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 Since [Logos Delivery](../../get-started/glossary.md#logos-delivery) is built on top of libp2p, they share a lot of concepts and terminologies between them. However, there are key differences between them that are worth noting.
 
 ## The basics

@@ -14,7 +14,11 @@ sidebar_position: 0
 
 #### Understand how the Logos Execution Zone runs general-purpose applications with selective privacy.
 
-The [Logos Execution Zone](../get-started/glossary.md#logos-execution-zone) ([LEZ](../get-started/glossary.md#lez)) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../blockchain/concepts/about-zones.md) on the [Logos Blockchain](../get-started/glossary.md#logos-blockchain) and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the [Logos Execution Environment](../get-started/glossary.md#logos-execution-environment) ([LEE](../get-started/glossary.md#lee)), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE guarantees privacy and correctness.
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
+The [Logos Execution Zone](../get-started/glossary.md#logos-execution-zone) ([LEZ](../get-started/glossary.md#lez)) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../blockchain/concepts/about-zones.md) on the [Logos Blockchain](../get-started/glossary.md#logos-blockchain) and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the [Logos Execution Environment](../get-started/glossary.md#logos-execution-environment) ([LEE](../get-started/glossary.md#lee)), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE enforces privacy and correctness.
 
 ## The basics
 
@@ -28,8 +32,8 @@ To achieve separation between public and private state while allowing for full p
 
 Private accounts, by contrast, are stored locally on the account-holder’s node, which publishes [commitments](https://en.wikipedia.org/wiki/Commitment_scheme) to the account state onto the chain whenever the state is updated. The latest commitment binds the current account state to the chain without revealing its data, while nullifiers for previous commitments ensure that old commitments are not used for program execution. Private accounts are created with two associated key pairs.
 
--  [Nullifier keys](../get-started/glossary.md#nullifier-keys): The private nullifier key is used by the account owner to sign transactions and authorise executions. The public nullifier key is used as the account ID for verifying ownership.
--  [Viewing keys](../get-started/glossary.md#viewing-keys): The private viewing key is used by the account owner to create ZK proofs. The public viewing key is used to verify proofs without revealing the account owner.
+-  [Nullifier keys](../get-started/glossary.md#nullifier-keys): The private nullifier key is used by the account owner to authorise executions: inside the ZK proof it produces the nullifier that marks the previous commitment as spent. The public nullifier key, together with the public viewing key and an identifier, derives the account ID.
+-  [Viewing keys](../get-started/glossary.md#viewing-keys): The public viewing key is used by anyone updating the account to encrypt its new state for the owner. The private viewing key lets the owner decrypt that state.
 
 :::info
 A program must obtain a [private account](../get-started/glossary.md#private-account)’s [nullifier public key](../get-started/glossary.md#nullifier-public-key), as well as its [viewing public key](../get-started/glossary.md#viewing-public-key), in order to modify a private account state. Therefore, you cannot transfer tokens to a private account without being provided this information by the owner.
@@ -43,7 +47,7 @@ The LEZ operates as a Zone, with updates to its state (both public and private) 
 
 ## Use Cases
 
-The LEZ is a ready-made platform for privacy-preserving applications built using the Logos stack. Since the same LEE program can be executed over both public and private accounts, computationally costly private executions can be used only when necessary to speed up execution. Together with Solana-style parallel execution, this feature makes the LEZ uniquely suited to applications requiring high throughput as well as private application state.
+The LEZ is a ready-made execution environment for privacy-preserving applications built using the Logos stack. Since the same LEE program can be executed over both public and private accounts, computationally costly private executions can be used only when necessary to speed up execution. Together with Solana-style parallel execution, this feature makes the LEZ uniquely suited to applications requiring high throughput as well as private application state.
 
 As an example, the LEZ could be used to host private DeFi applications. With support for privacy built-in, the LEZ could be used to build protocols where transaction details, user balances, or trading strategies are kept confidential by default, only revealing necessary information to authorised parties. This is especially so when high volumes of transactions are expected by these applications. Examples may include:
 

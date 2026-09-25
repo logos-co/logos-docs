@@ -44,7 +44,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
 ## Download and install the storage module
 
-All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's daemon is then pointed at that directory with `--modules-dir`, so there's no need to repeat the install per node.
+All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's session is then configured to also scan that directory (the `modules_dirs` key of its daemon configuration), so there's no need to repeat the install per node.
 
 1.  Start a throwaway session and install the storage module package into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
 
@@ -85,10 +85,12 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     EOF
     ```
 
-1.  Start a `logosctl` daemon for node 1, detached, with its own session and pointed at the shared module directory. Its logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
+1.  Point node 1's session at the shared module directory, then start a `logosctl` daemon for it, detached. `logosctl` has no `--modules-dir` flag: extra module directories are set with `modules_dirs` in the session's daemon configuration, which `daemon config set -` reads from standard input. The daemon's logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
 
     ```sh
-    logosctl daemon start --detach --config-dir ./logosctl-1 --modules-dir ./install-session/modules
+    printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+      | logosctl --config-dir ./logosctl-1 daemon config set -
+    logosctl daemon start --detach --config-dir ./logosctl-1
     ```
 
 1.  Load the module, initialise it, and start the node:
@@ -132,11 +134,13 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     done
     ```
 
-1.  Start one daemon per node, each detached with its own session, pointed at the shared module directory:
+1.  Point each node's session at the shared module directory and start one daemon per node, each detached:
 
     ```sh
     for id in 2 3 4; do
-      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
     done
     ```
 
@@ -231,11 +235,13 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     done
     ```
 
-1.  Start one daemon per storage node, each detached with its own session, pointed at the shared module directory:
+1.  Point each storage node's session at the shared module directory and start one daemon per node, each detached:
 
     ```sh
     for id in 5 6; do
-      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
     done
     ```
 

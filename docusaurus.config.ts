@@ -188,6 +188,11 @@ const config: Config = {
             from: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
             to: '/basecamp/atomic-swaps-poc',
           },
+          // renamed page
+          {
+            from: '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
+            to: '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
+          },
         ],
       } satisfies PluginClientRedirects.Options,
     ],

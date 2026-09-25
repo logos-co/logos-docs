@@ -36,9 +36,10 @@ You can install the application through Logos Basecamp (Option A), or build it f
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
 1. In the left bar, select **Package Manager**.
-1. Select `Storage` in `Categories` then click **Install**.
-1. Wait until a green **Installed** label appears next to both [modules](../../get-started/glossary.md#module).
-1. In the left bar, select **storage** to launch the Logos Storage UI.
+1. Select `Storage` in `Categories`, then click **INSTALL** in the **Storage** row.
+1. In the **Install Package?** dialogue, which lists the `storage_module` [module](../../get-started/glossary.md#module) as a dependency to install alongside the UI, click **Install**.
+1. Wait until the **Action** column of the **Storage** row reads **INSTALLED**. A new **Storage** icon appears in the left bar.
+1. In the left bar, select the **Storage** icon to launch the Logos Storage UI.
 
 ### Option B—Build and run locally with Nix
 
@@ -235,9 +236,9 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
 ## Step 8: Manage the node lifecycle
 
-1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns grey, the node reports **Stopped**, and peer connections drop.
+1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns red, the node reports **Stopped**, and peer connections drop.
 
-1. Click **Start** to bring the node back to **Running**.
+1. Click **Start** to start the node again. The status goes back to the reachability check (**Unknown**, then **Reachable** or **Not reachable**) and peers reconnect.
 
    - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
 

@@ -65,45 +65,40 @@ Build and run the self-contained two-node demo to confirm the module and its C b
    The first-run Nix build can take 5–20 minutes to fetch dependencies; subsequent builds are cached. Estimated total time is 15–25 minutes.
    :::
    
-1. Vendor the C-binding header and shared library that `logos_module()` expects in `./lib`:
+1. Build the service discovery tutorial from the root project and run it. The Nix development shell provides the C-binding header and library, so nothing needs to be copied into `./lib`:
 
    ```sh
-   CBIND=$(find /nix/store -maxdepth 4 -name libp2p.h -path '*cbind*' | head -1 | xargs dirname)
-   mkdir -p lib
-   cp "$CBIND/libp2p.h" lib/
-   find /nix/store -name libp2p.so -path '*cbind*' -exec cp {} lib/ \;
+   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target tutorial_9_service_discovery -j'
+   nix develop --command ./build/tutorial/tutorial_9_service_discovery
    ```
 
-1. Build the example target from the root project and run it:
-
-   ```sh
-   nix develop --command bash -c 'cmake -B build -S . && cmake --build build --target example_service_discovery -j'
-   ./build/examples/example_service_discovery
-   ```
-
-   Expected output:
+   Expected output (between the node's log lines):
 
    ```
-   Starting nodes...
-   Advertiser: advertising demo-service
-   Discoverer: registering interest in demo-service
-   Discoverer: looking up demo-service
-   Discoverer found 1 peer(s) advertising demo-service
-     peer: 16Uiu2HAk... seq: 1359 addrs: 1
-   Discoverer matched the advertiser: 16Uiu2HAk...
-   Advertiser: random lookup
-   Random lookup returned 2 peer(s)
-   Advertiser: building a signed Extended Peer Record
-   Signed XPR is 288 bytes
-   Discoverer: unregistering interest in demo-service
-   Advertiser: stopping advertising demo-service
-   Done
+   === Tutorial 9: Service Discovery ===
+
+   Bootstrap node started: 12D3KooW...
+   Advertiser connected to bootstrap
+   Discoverer connected to bootstrap
+
+   Advertiser advertising: "demo-chat-service"
+   Advertising started
+   Discoverer registering interest in "demo-chat-service"
+   Discoverer looking up "demo-chat-service"...
+   Discoverer found 1 provider(s):
+     Peer: 12D3KooW...
+       Service: demo-chat-service (data: version=1.0;capacity=100)
+
+   Random lookup by advertiser...
+   Found 2 random peer(s):
+   ...
+   === Tutorial 9 Complete ===
    ```
 
    - [Peer IDs](../../get-started/glossary.md#peer-id) are non-deterministic across runs.
 
    :::info
-   The demo runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 peer(s)` and `matched the advertiser`. Exact peer counts, IDs, and the XPR byte size vary per run.
+   The tutorial runs a bootstrap node plus an advertiser and a discoverer, so the discoverer finds the advertiser through the DHT—a successful run prints `found 1 provider(s)`. Exact peer counts and IDs vary per run.
    :::
 
 ## Step 2: Scaffold the new Logos Core module
@@ -178,8 +173,9 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
    std::string MyServiceModuleImpl::advertise(const std::string& serviceId,
                                               const std::string& serviceData) {
-       // discoStartAdvertising requires BOTH serviceId and serviceData.
-       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData);
+       // discoStartAdvertising takes serviceId, serviceData and an optional
+       // base64 advertisement (a signed XPR); "" lets the module build it.
+       auto r = modules().libp2p_module.discoStartAdvertising(serviceId, serviceData, "");
        if (!r.success) return "advertise failed: " + r.error;
        return "advertising " + serviceId;
    }
@@ -222,13 +218,13 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
 
 ## Step 3: Build both modules
 
-The `.#install` target runs `lgpm` internally and produces the directory structure `logosctl` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically.
+The `.#install-portable` target runs `lgpm` internally and produces the directory structure `logosctl` requires. You only write `metadata.json`; the install target generates `manifest.json`, `variant`, and co-locates all `.so` files automatically. Use `install-portable`, not `install`: `.#install` produces a development build (variant `linux-amd64-dev`) that the released `logosctl` skips with `was installed for variant 'linux-amd64-dev' which is not supported on this platform`, and `module load` then fails with `MODULE_LOAD_FAILED`.
 
 1. In `logos-my-service-module`, initialise a Git repository and run the install build:
 
    ```sh
    git init && git add -A
-   nix build .#install -L
+   nix build .#install-portable -L
    ```
 
    This produces:
@@ -244,7 +240,7 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 
    ```sh
    cd ../logos-libp2p-module
-   nix build .#install -L
+   nix build .#install-portable -L
    ```
 
    This produces:
@@ -254,10 +250,11 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
      ├── manifest.json
      ├── variant
      ├── libp2p_module_plugin.so
-     └── libp2p.so
+     ├── liblibp2p.so
+     └── …                        # bundled runtime libraries (OpenSSL, Boost, TinyCBOR)
    ```
 
-   - `libp2p.so` is co-located automatically so the `$ORIGIN` RUNPATH resolves at runtime.
+   - `liblibp2p.so` is co-located automatically so the `$ORIGIN` RUNPATH resolves at runtime.
 
 ## Step 4: Load the modules and verify the single-node flow
 
@@ -271,9 +268,10 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
 1. Start the daemon, detached so this terminal stays free, pointing at both module directories:
 
    ```sh
-   logosctl daemon start --detach \
-     --modules-dir ../logos-libp2p-module/result/modules \
-     --modules-dir ./result/modules
+   printf 'modules_dirs:\n  - %s\n  - %s\n' \
+     "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
+     | logosctl daemon config set -
+   logosctl daemon start --detach
    ```
 
 1. Load both modules:
@@ -290,19 +288,19 @@ The `.#install` target runs `lgpm` internally and produces the directory structu
    # → discovery started
 
    logosctl call my_service_module getPeerInfo
-   # → {"peerId":"16Uiu2…","addrs":["/ip4/127.0.0.1/tcp/9000"]}
+   # → {"addrs":["/ip4/127.0.0.1/tcp/9000"],"peerId":"12D3KooW…"}
 
    logosctl call my_service_module advertise myservice/v1 version=1
    # → advertising myservice/v1
 
    logosctl call my_service_module discover myservice/v1
-   # → []   (single node: no second advertiser)
+   # → [{"addrs":["/ip4/127.0.0.1/tcp/9000"],"peerId":"12D3KooW…",…}]   (single node: only its own advertisement)
 
    logosctl call my_service_module stopDiscovery
    # → discovery stopped
    ```
 
-   - `discover` returning `[]` is expected with a single node. `getPeerInfo` prints this node's `peerId` and listen address, which you need in [Step 5](#step-5-run-three-node-local-discovery) to bootstrap other instances.
+   - With a single node, `discover` returns only this node's own advertisement. `getPeerInfo` prints this node's `peerId` and listen address, which you need in [Step 5](#step-5-run-three-node-local-discovery) to bootstrap other instances.
 
 1. Shut down the daemon:
 
@@ -321,8 +319,10 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
-   logosctl daemon start --detach --config-dir ~/.logosctl-bootstrap \
-     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   printf 'modules_dirs:\n  - %s\n  - %s\n' \
+     "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
+     | logosctl --config-dir ~/.logosctl-bootstrap daemon config set -
+   logosctl daemon start --detach --config-dir ~/.logosctl-bootstrap
    logosctl --config-dir ~/.logosctl-bootstrap module load libp2p_module
    logosctl --config-dir ~/.logosctl-bootstrap module load my_service_module
    logosctl --config-dir ~/.logosctl-bootstrap call my_service_module startDiscovery
@@ -337,8 +337,10 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
-   logosctl daemon start --detach --config-dir ~/.logosctl-advertiser \
-     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   printf 'modules_dirs:\n  - %s\n  - %s\n' \
+     "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
+     | logosctl --config-dir ~/.logosctl-advertiser daemon config set -
+   logosctl daemon start --detach --config-dir ~/.logosctl-advertiser
    logosctl --config-dir ~/.logosctl-advertiser module load libp2p_module
    logosctl --config-dir ~/.logosctl-advertiser module load my_service_module
    logosctl --config-dir ~/.logosctl-advertiser call my_service_module startDiscovery
@@ -350,8 +352,10 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
    ```sh
    cd ../logos-my-service-module
    export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
-   logosctl daemon start --detach --config-dir ~/.logosctl-discoverer \
-     --modules-dir ../logos-libp2p-module/result/modules --modules-dir ./result/modules
+   printf 'modules_dirs:\n  - %s\n  - %s\n' \
+     "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
+     | logosctl --config-dir ~/.logosctl-discoverer daemon config set -
+   logosctl daemon start --detach --config-dir ~/.logosctl-discoverer
    logosctl --config-dir ~/.logosctl-discoverer module load libp2p_module
    logosctl --config-dir ~/.logosctl-discoverer module load my_service_module
    logosctl --config-dir ~/.logosctl-discoverer call my_service_module startDiscovery
@@ -362,11 +366,11 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```json
    {"method":"discover","module":"my_service_module",
-    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"version=1\",\"id\":\"myservice/v1\"}]}]",
+    "result":"[{\"addrs\":[\"/ip4/127.0.0.1/tcp/9001\"],\"peerId\":\"<ADVERTISER_PEER_ID>\",\"seqNo\":1536,\"services\":[{\"data\":\"dmVyc2lvbj0x\",\"id\":\"myservice/v1\"}]}]",
     "status":"ok"}
    ```
 
-   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` (`version=1`) that A advertised.
+   - The returned `peerId` is the advertiser's, and `addrs` shows its listen port (`9001`), even though the discoverer only knew about the bootstrapping node. The `services` entry carries the `serviceData` that the advertiser published, base64-encoded (`dmVyc2lvbj0x` is `version=1`).
 
    :::info
    A first `discover` returning `[]` means the advertisement has not yet propagated. Repeat the call after a few seconds.

@@ -19,10 +19,12 @@ EmPoWering
 [Pp]rebuilt
 [Pp]reimage
 [Pp]seudonymity
+[Rr]einstall(s|ed|ing)?
 [Rr]escan
 [Rr]escans
 [Ss]andboxed
 [Ss]torage
+[Ss]ymlinks
 [Tt]imelock
 [Tt]imelocks
 [Ww]aku
@@ -133,6 +135,7 @@ lifecycle
 linkable
 lioness_blockcipher
 liveness
+localnet
 Logos Execution Zone
 logoscore
 lookups
@@ -172,6 +175,7 @@ preinstall
 prepended
 prepends
 proc
+profile's
 programmability
 Proxmox
 Qt
@@ -222,6 +226,7 @@ TOKENA
 tokenomics
 toolchain
 toolchains
+topup
 Tribler
 Trilemma
 tutorial's

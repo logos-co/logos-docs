@@ -14,7 +14,11 @@ sidebar_position: 0
 
 #### Understand how the Logos Execution Zone runs general-purpose applications with selective privacy.
 
-The [Logos Execution Zone](../get-started/glossary.md#logos-execution-zone) ([LEZ](../get-started/glossary.md#lez)) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../blockchain/concepts/about-zones.md) on the [Logos Blockchain](../get-started/glossary.md#logos-blockchain) and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the [Logos Execution Environment](../get-started/glossary.md#logos-execution-environment) ([LEE](../get-started/glossary.md#lee)), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE guarantees privacy and correctness.
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
+The [Logos Execution Zone](../get-started/glossary.md#logos-execution-zone) ([LEZ](../get-started/glossary.md#lez)) is the primary execution layer for applications built on the Logos stack. It is implemented as a [Zone](../blockchain/concepts/about-zones.md) on the [Logos Blockchain](../get-started/glossary.md#logos-blockchain) and uses zero knowledge proofs to ensure the correctness of its operations. The LEZ runs a Risc0-based virtual machine, the [Logos Execution Environment](../get-started/glossary.md#logos-execution-environment) ([LEE](../get-started/glossary.md#lee)), which separates state into public and private components that LEE programs can use and modify seamlessly. This selective privacy lets developers write generic programs while the LEE enforces privacy and correctness.
 
 ## The basics
 
@@ -43,7 +47,7 @@ The LEZ operates as a Zone, with updates to its state (both public and private) 
 
 ## Use Cases
 
-The LEZ is a ready-made platform for privacy-preserving applications built using the Logos stack. Since the same LEE program can be executed over both public and private accounts, computationally costly private executions can be used only when necessary to speed up execution. Together with Solana-style parallel execution, this feature makes the LEZ uniquely suited to applications requiring high throughput as well as private application state.
+The LEZ is a ready-made execution environment for privacy-preserving applications built using the Logos stack. Since the same LEE program can be executed over both public and private accounts, computationally costly private executions can be used only when necessary to speed up execution. Together with Solana-style parallel execution, this feature makes the LEZ uniquely suited to applications requiring high throughput as well as private application state.
 
 As an example, the LEZ could be used to host private DeFi applications. With support for privacy built-in, the LEZ could be used to build protocols where transaction details, user balances, or trading strategies are kept confidential by default, only revealing necessary information to authorised parties. This is especially so when high volumes of transactions are expected by these applications. Examples may include:
 

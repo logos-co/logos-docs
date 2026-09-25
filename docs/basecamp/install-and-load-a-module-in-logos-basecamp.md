@@ -23,22 +23,20 @@ This document is accurate for **Testnet v0.2.1**.
 
 In Logos [Basecamp](../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../get-started/glossary.md#catalogue) or local `.lgx` files.
 
-There are two types of modules in Logos Basecamp. [Core modules](../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../get-started/glossary.md#ui-module) are the visual front-ends users interact with.
+There are two types of modules in Logos Basecamp. [Core modules](../get-started/glossary.md#core-module) are the headless background services that provide capabilities like messaging or storage, while [UI modules](../get-started/glossary.md#ui-module) are the visual front-ends users interact with. Both kinds of modules are packaged and distributed as [packages](../get-started/glossary.md#package).
 
 :::info[Prerequisites]
 
 - [Basecamp installed and running](./install-logos-basecamp.md).
 - Internet access for online catalogue install.
 - [An `.lgx` file](../core/build-modules/build-and-run-a-logos-core-module.md) for local install. Make sure that the archive contains a variant matching your platform.
-    - For example, `linux-amd64`, `linux-arm64`, or `darwin-arm64`.
-
 :::
 
 ## What to expect
 
 - You can install a [module](../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
-- You can load or unload a core module from **Settings > Module Inspector**.
-- You can read a loaded module's status, CPU, and memory in **Settings > Module Inspector**.
+- You can load or unload a module from **Settings**: core modules under **Module Inspector**, UI modules under **Apps Inspector**.
+- You can read a loaded module's status, CPU, and memory in **Settings > Module Inspector**. **Apps Inspector** shows a UI module's status and version, without live resource usage.
 
 :::tip
 An introduction to modules in Logos Basecamp is available in video form:
@@ -51,14 +49,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalogue
 
-1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. At the bottom of the sidebar, click **Package Manager**.
 1. Browse and locate the module you want. Use the **Categories** and **Types** filters or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules. Click a row to open its **Details** panel on the right.
 1. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens and lists any dependency changes. Click **Install** to confirm.
 1. Wait until the row's **Action** column reads `INSTALLED`. Core modules then appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
 
 ### Install from a local `.lgx` file
 
-1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. At the bottom of the sidebar, click **Package Manager**.
 1. Click **Install Local Package**.
 1. Select the `.lgx` file, click **Open**, then click **Install** in the **Install Package?** dialogue.
 1. Core modules appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
@@ -67,7 +65,7 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
-1. At the bottom of the sidebar, click **Settings** ![](./assets/install-and-load-a-module-in-logos-basecamp/settings-icon.png), then click **Module Inspector**.
+1. At the bottom of the sidebar, click **Settings** ![](./assets/install-and-load-a-module-in-logos-basecamp/settings-icon.png), then click **Module Inspector**, or **Apps Inspector** for a UI module.
 1. Find the module in the list. Its **Status** column reads `NOT LOADED`.
 1. Click **Load** next to the module. The status changes to `LOADED` and the **CPU** and **Memory** columns start reporting.
 
@@ -79,9 +77,14 @@ You can click **Unload** in **Settings > Module Inspector** or close the tab of 
 
 ## Troubleshooting
 
-### The installed module doesn't appear in the Module Inspector
+### The installed module doesn't appear in Module Inspector or Apps Inspector
 
-The `.lgx` file probably does not contain a variant for your platform, or it was copied to a directory that Logos Basecamp doesn't scan. Confirm the archive includes a variant matching your platform (`linux-amd64`, `linux-arm64`, or `darwin-arm64`), then reinstall using **Install Local Package** in the **Package Manager** rather than copying files manually so the package manager copies the files to the correct user modules directory.
+Confirm the module actually installed: check its status in **Package Manager**.
+
+- If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build flavour, or architecture.
+- If installing from a local `.lgx` file: Basecamp reports an error if the archive has no variant for your platform.
+
+Either way, confirm the archive includes a variant matching your platform before reinstalling. If the package shows as installed in Package Manager but still doesn't appear in the relevant inspector, its manifest `type` may not match where you're looking—core modules only appear in Module Inspector, and UI modules (`ui_qml`) only appear in Apps Inspector.
 
 ### A QML-based UI App cannot reach the network
 

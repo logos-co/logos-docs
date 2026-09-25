@@ -5,7 +5,11 @@ sidebar_position: 0
 
 # Introduction to Logos Messaging
 
-#### Learn how Logos provides private, censorship-resistant communication for decentralised applications.
+#### Learn how Logos can be used to build private, censorship-resistant communication applications.
+
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
 
 [Logos Messaging](../get-started/glossary.md#logos-messaging) is the messaging layer of the Logos technology stack. It lets applications send messages, relay data, and coordinate with one another without relying on centralised servers or exposing metadata to surveillance. It uses a peer-to-peer relay network where messages propagate across nodes with no central broker, supporting private one-to-one messaging, group messaging, and public broadcast channels.
 

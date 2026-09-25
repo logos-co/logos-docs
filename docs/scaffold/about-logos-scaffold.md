@@ -19,7 +19,7 @@ sidebar_position: 1
 Scaffold ships two binaries with identical behaviour: `logos-scaffold` and the shorter alias `lgs`. Use either.
 
 :::info
-The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`, and the crate is published on [crates.io](https://crates.io/crates/logos-scaffold). The `logos-co/logos-scaffold` URL redirects to the same repository. This section is accurate for `logos-scaffold` **0.3.1**.
+The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`, and the crate is published on [crates.io](https://crates.io/crates/logos-scaffold). The `logos-co/logos-scaffold` URL redirects to the same repository. This section is accurate for `logos-scaffold` **0.4.0**, which supports Basecamp **0.3.0** only.
 :::
 
 ## What Logos Scaffold covers
@@ -79,22 +79,22 @@ Profile state is always project-local under `.scaffold/basecamp/profiles/`. Scaf
 
 ## Pinned versions
 
-Scaffold builds every tool a project depends on from a pinned commit recorded in `scaffold.toml`, so two machines building the same project get the same toolchain. The defaults in `logos-scaffold` 0.3.1 are:
+Scaffold builds every tool a project depends on from a pinned commit recorded in `scaffold.toml`, so two machines building the same project get the same toolchain. The defaults in `logos-scaffold` 0.4.0 are:
 
 | Component | Default pin | Override in `scaffold.toml` |
 |:---|:---|:---|
 | LEZ (sequencer and wallet) | `v0.1.2` | `[repos.lez]` |
 | `spel` | `v0.5.0` | `[repos.spel]` |
-| Basecamp | `0.2.3` | `[repos.basecamp]` |
-| `lgpm` | The `logos-package-manager` revision that Basecamp 0.2.3 locks | `[repos.lgpm]` |
-| `delivery_module`, when a module depends on it | `logos-delivery-module` `v0.2.0` | `[modules.delivery_module]` |
+| Basecamp | `0.3.0` | `[repos.basecamp]` |
+| `lgpm` | The `logos-package-manager` revision that Basecamp 0.3.0 locks | `[repos.lgpm]` |
+| `delivery_module`, when a module depends on it | The newest `logos-delivery-module` commit built with `logos-module-builder` 0.3.0 | `[modules.delivery_module]` |
 
 The Basecamp and `lgpm` pins move as a set. Basecamp reads installed modules with the same package-manager library that the `lgpm` CLI uses to write them, so bumping one without the other leaves the two disagreeing about the package format. `lgs basecamp doctor` warns when only one of the pair is at scaffold's default.
 
-A project keeps the pins it already has in `scaffold.toml` when you upgrade scaffold. To move to new defaults, edit the pins and re-run `lgs setup` or `lgs basecamp setup`.
+`lgs basecamp setup` moves a project off pins that an earlier scaffold release wrote as its defaults: Basecamp 0.2.3 or 0.1.1, their `lgpm` pins, and the old default `delivery_module`. It rewrites `scaffold.toml` and prints one line per changed value. The match is on those exact revisions, so a pin you chose yourself is left alone, unless it happens to equal a retired default. To move any other pin, edit it and re-run `lgs setup` or `lgs basecamp setup`.
 
 :::info
-The `lgpm` that Basecamp 0.2.3 pins accepts packages built with `logos-module-builder` **0.2.x** only. It rejects `tutorial-v1`-era packages because they carry no content hashes, and 0.3.x packages because of their `assets/` directory. Pin the builder in your module's `flake.nix`; an unpinned URL resolves to the newest release. See [Install fails with `Missing content hashes in manifest`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-missing-content-hashes-in-manifest) and [Install fails with `Forbidden root entry: assets`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-forbidden-root-entry-assets).
+Build modules with `logos-module-builder` **0.3.0**, the release that links exactly the `logos-protocol` and `logos-cpp-sdk` revisions Basecamp 0.3.0 does. Pin it in your module's `flake.nix`: an unpinned URL resolves to the newest release, and 0.3.1 is already ahead of Basecamp 0.3.0. The pinned `lgpm` rejects `tutorial-v1`-era packages, which carry no content hashes, but it does not check the builder version. A module with a C++ backend built by 0.2.x can therefore install cleanly and still have its calls refused once Basecamp loads it. See [Install fails with `Missing content hashes in manifest`](./troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#install-fails-with-missing-content-hashes-in-manifest).
 :::
 
 ## What Logos Scaffold does not do

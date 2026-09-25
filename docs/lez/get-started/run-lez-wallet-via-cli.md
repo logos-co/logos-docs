@@ -30,10 +30,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```bash
   # Ubuntu / Debian
   sudo apt update
-  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev libpcsclite-dev
 
   # Fedora
-  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs pcsc-lite-devel
   
   # macOS
   xcode-select --install
@@ -53,8 +53,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.1
+   git checkout v0.2.4
    ```
+
+   - The tag must match the programs the testnet runs. With an older tag such as `v0.2.1`, `wallet check-health` panics with `Local ID for authenticated transfer program is different from remote`.
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
@@ -126,7 +128,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet auth-transfer init --account-id <sender_public_account_id>
    ```
 
-   In the output, you should see the transaction hash printed as `Transaction hash is <hash>`.
+   In the output, you should see `Transaction is included in block <number>`, followed by the transaction data.
 
 1. Check the account updated state:
 
@@ -147,6 +149,8 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet pinata claim --to <sender_public_account_id>
    ```
 
+   - If the command prints `Transaction hash is <hash>` and then `Error: All pollers failed`, the wallet stopped waiting before the transaction was included, not the transaction itself. Wait a minute and check the balance in the next step before claiming again.
+
 1. Check the sender account balance:
 
    ```bash
@@ -162,6 +166,14 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```bash
    wallet account new public
    ```
+
+1. Initialise the recipient account under the authenticated-transfer program:
+
+   ```bash
+   wallet auth-transfer init --account-id <recipient_public_account_id>
+   ```
+
+   - Do not skip this. A transfer to a recipient that was never initialised is discarded without an error: the send prints a transaction hash, the sender's balance does not change, and the recipient stays `Uninitialized`.
 
 1. Send 37 tokens from sender to recipient:
 

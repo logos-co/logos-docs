@@ -49,14 +49,14 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalogue
 
-1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. At the bottom of the sidebar, click **Package Manager**.
 1. Browse and locate the module you want. Use the **Categories** and **Types** filters or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules. Click a row to open its **Details** panel on the right.
 1. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens and lists any dependency changes. Click **Install** to confirm.
 1. Wait until the row's **Action** column reads `INSTALLED`. Core modules then appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
 
 ### Install from a local `.lgx` file
 
-1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. At the bottom of the sidebar, click **Package Manager**.
 1. Click **Install Local Package**.
 1. Select the `.lgx` file, click **Open**, then click **Install** in the **Install Package?** dialogue.
 1. Core modules appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.

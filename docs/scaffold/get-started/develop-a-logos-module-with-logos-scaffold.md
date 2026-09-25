@@ -15,39 +15,37 @@ sidebar_position: 1
 
 #### Build a module, install it into Basecamp, and iterate on it.
 
-:::info
-This page describes `logos-scaffold` **0.4.0**, which supports Basecamp **0.3.0** only. Run `lgs --version` to check yours.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, and Basecamp **0.3.0**.
 :::
 
 [Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats all day: build the [`.lgx`](../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide covers that loop, including running two instances side by side to exercise peer-to-peer features.
 
-Before you start, make sure you have the following:
+:::info[Prerequisites]
 
 - Linux (x86_64 or aarch64) or macOS (arm64 or x86_64). Scaffold is Unix-only.
 - [Nix](https://nixos.org/download.html) with flakes enabled. Required by every `basecamp` subcommand.
 - `git`, and Rust 1.81 or newer with `cargo`, to install scaffold.
 - The Unix process helpers `lsof`, `ps`, and `kill`, which scaffold uses to track the processes it starts.
 - A module project that exposes `packages.<system>.lgx` from a `flake.nix`, built with [`logos-module-builder`](https://github.com/logos-co/logos-module-builder) **0.3.0**, the release whose SDK matches Basecamp 0.3.0. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
+    - If you do not have a module yet, start from a 0.3.0 template and pin the builder in the generated `flake.nix`, whose URL the template leaves unpinned:
+
+        ```bash
+        mkdir my_ui && cd my_ui && git init
+        nix flake init -t github:logos-co/logos-module-builder/0.3.0#ui-qml
+        sed -i 's#github:logos-co/logos-module-builder"#github:logos-co/logos-module-builder/0.3.0"#' flake.nix
+        git add -A
+        ```
+
+    - The `ui-qml` template produces a QML-only module that shows up in the Basecamp sidebar, with the 256×256 icon builder 0.3.x requires in `src/icons/icon.png`. Set `name` and `display_name` in `metadata.json`, and move `Main.qml` into a sub-directory such as `qml/` (updating `view`) if the module will have more than one QML file.
+    - The same release has `default` (a minimal core module), `with-external-lib`, `ui-qml-backend`, `rust`, and `rust-with-external-lib` templates.
 - About 5 GB of free memory for the first `lgs basecamp setup`, which evaluates the Basecamp 0.3.0 flake before building anything. On a smaller machine, fetch the prebuilt Basecamp first as described in [Basecamp setup is killed](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#basecamp-setup-is-killed).
 - A graphical environment. Basecamp is a desktop application.
-
-:::tip
-If you do not have a module yet, start from a `logos-module-builder` 0.3.0 template and pin the builder in the generated `flake.nix`. The template leaves the URL unpinned, which resolves to the newest release:
-
-```bash
-mkdir my_ui && cd my_ui && git init
-nix flake init -t github:logos-co/logos-module-builder/0.3.0#ui-qml
-sed -i 's#github:logos-co/logos-module-builder"#github:logos-co/logos-module-builder/0.3.0"#' flake.nix
-git add -A
-```
-
-The `ui-qml` template produces a QML-only module that shows up in the Basecamp sidebar, with a placeholder 256×256 icon in `src/icons/icon.png`; builder 0.3.x refuses to package a `ui_qml` module without one. Set `name` and `display_name` in `metadata.json` before you build, and move `Main.qml` into a sub-directory such as `qml/` (updating `view`) if the module will have more than one QML file. The same release also has `default` (a minimal core module), `with-external-lib`, `ui-qml-backend`, `rust`, and `rust-with-external-lib` templates.
 :::
 
 ## What to expect
 
-- You can install Logos Scaffold and prepare a module project for Basecamp.
-- You can build your module and install it into isolated Basecamp profiles.
+- You can build your module and run it in isolated Basecamp profiles.
 - You can apply a source change and see it in a running Basecamp.
 - You can run two Basecamp instances at once and exercise peer-to-peer features between them.
 
@@ -227,27 +225,29 @@ Write each `env` as its own `[… .env]` table, as above. `logos-scaffold` 0.4.0
 
 ## Step 5: Iterate on a source change
 
-This is the part that surprises most newcomers.
+Building a module does not update a running Basecamp. Basecamp loads modules once, at startup, from the copies installed in its base directory, so a rebuilt `.lgx` reaches a running instance only after it is reinstalled there and Basecamp restarts.
 
-**Building a module does not update a running Basecamp.** `nix build .#lgx` produces a new package in the Nix store and points `result` at it. It does not touch the copy that was installed into a Basecamp base directory, and Basecamp loads modules once, at startup. A rebuilt module therefore reaches a running instance only after two more things happen: the new `.lgx` is installed into that instance's base directory, and Basecamp restarts.
+1. Edit your source. If you add a file, stage it before the next build:
 
-The loop is always the same three moves:
+    ```bash
+    git add -A
+    ```
 
-1. Rebuild the `.lgx`.
-1. Reinstall it into **every** base directory you are testing against.
-1. Restart Basecamp.
+    :::warning
+    A Nix flake whose `src = ./.` only sees files that git tracks, and that holds for scaffold's own builds too. A new file that you have not staged is silently absent from the build: the build succeeds, the `.lgx` is produced, and the module misbehaves at runtime. This includes `qmldir` files, QML assets, and configuration files. See [A new file is missing from the built package](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#a-new-file-is-missing-from-the-built-package).
+    :::
 
-With scaffold, `launch` collapses all three, because it rebuilds, reinstalls, and starts a fresh instance:
+1. Relaunch every profile you are testing. `launch` rebuilds the module, reinstalls it into the profile, and starts a fresh instance:
 
-```bash
-# 1. Edit your source.
-# 2. Relaunch. Rebuild and reinstall happen automatically.
-lgs basecamp launch alice
-```
+    ```bash
+    lgs basecamp launch alice
+    ```
 
-If you are testing with two instances, repeat the relaunch for each profile. Reinstalling into one profile leaves the other running the previous build.
+    - Repeat it for each profile. Relaunching `alice` leaves a running `bob` on the previous build.
 
-Without scaffold, do the three moves by hand for each base directory, using an [`lgpm`](../../get-started/glossary.md#lgpm) on your `PATH`:
+### Iterate without scaffold
+
+Without scaffold, do the same three moves by hand: rebuild the `.lgx`, reinstall it into **every** base directory you test against with an [`lgpm`](../../get-started/glossary.md#lgpm) on your `PATH`, and restart Basecamp:
 
 ```bash
 nix build .#lgx
@@ -270,8 +270,9 @@ lgs basecamp build                              # both variants (the default)
 lgs basecamp build --variant lgx --module swap  # one variant, one module
 ```
 
-:::tip
-Faster loops skip a full Basecamp launch while you work on a single module:
+### Iterate faster on a single module
+
+These loops skip a full Basecamp launch while you work on one module. Use them for iteration, then go back to Basecamp to verify the module in its real host.
 
 - `lgs basecamp run <module>` runs a captured module through `nix run` in its own standalone app, so you exercise the module without the rest of the stack. It runs the flake's default app, or the app named by `standalone_app` in the module's `[modules.<name>]` entry. A module captured from a prebuilt `.lgx` file has no app to run.
 - For QML-only changes, `logos-module-builder` 0.3.0 has a `ui-dev` target that reloads QML from your working tree on every save:
@@ -282,19 +283,13 @@ Faster loops skip a full Basecamp launch while you work on a single module:
   ```
 
   It prints `hot-reloading QML from <project>/qml` and then `QML reloaded …` after each edit. Rebuild only when you change something other than QML.
-
-Use them for iteration, then go back to Basecamp to verify the module in its real host. `lgs basecamp develop <module>` drops you into that module's Nix dev shell when you need to build by hand.
-:::
-
-:::warning
-A Nix flake whose `src = ./.` only sees files that git tracks, and that holds for scaffold's own builds too. A new file that you have not staged is silently absent from the build: the build succeeds, the `.lgx` is produced, and the module misbehaves at runtime. Run `git add -A` before you build after adding any file, including `qmldir` files, QML assets, and configuration files. See [A new file is missing from the built package](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#a-new-file-is-missing-from-the-built-package).
-:::
+- `lgs basecamp develop <module>` drops you into that module's Nix dev shell when you need to build by hand.
 
 ## Step 6: Run two instances side by side
 
-Peer-to-peer features need two instances. Each one needs its own base directory, otherwise both write to the same state.
+Peer-to-peer features need two instances. Each one needs its own base directory, otherwise both write to the same state. Choose one of the two options below: scaffold profiles, or Basecamp instances you start yourself.
 
-### With scaffold profiles
+### Option A—Scaffold profiles
 
 Open two terminals, both at the project root:
 
@@ -330,7 +325,7 @@ SWAP_UI_AUTO_ROLE = "taker"
 
 `log_file` makes every launch of that profile tee its output, as `--log-file` does.
 
-### With `--user-dir`
+### Option B—Your own Basecamp with `--user-dir`
 
 When you run Basecamp yourself instead of through scaffold, isolate the instances with `--user-dir` (short form `-u`), which sets the base directory holding `plugins/`, `modules/`, `module_data/`, and `logs/`:
 
@@ -387,15 +382,21 @@ A distinct runtime root per instance matters for a second reason on every platfo
 
 ## Step 7: Test against a released Basecamp
 
-Profiles run the Basecamp build that `basecamp setup` pinned. To test your module against a released AppImage or DMG instead, build the portable variant:
+Profiles run the Basecamp build that `basecamp setup` pinned. To test your module against a released AppImage or DMG instead, build the portable variant and load it by hand.
 
-```bash
-lgs basecamp build --variant lgx-portable
-# or the back-compatible alias:
-lgs basecamp build-portable
-```
+1. Build the portable variant of every project module:
 
-This builds `.#lgx-portable` for every `role = "project"` entry, orders the artifacts by their declared dependencies, and symlinks them into `.scaffold/basecamp/portable/` as `<NN>-<module_name>.lgx`. Load them into the released Basecamp through its install button in the printed order. `role = "dependency"` entries are skipped, because the released build ships its own copies. Add `--module <name>` to build one module instead of all of them.
+    ```bash
+    lgs basecamp build --variant lgx-portable
+    ```
+
+    - `lgs basecamp build-portable` is the back-compatible alias.
+    - Add `--module <name>` to build one module instead of all of them.
+    - `role = "dependency"` entries are skipped, because the released build ships its own copies.
+
+    **Expected result:** scaffold prints the built packages in load order and links them into `.scaffold/basecamp/portable/` as `<NN>-<module_name>.lgx`.
+
+1. In the released Basecamp, install each package through its install button, in the printed order.
 
 Portable builds never fall back to the regular `#lgx` output. If a flake does not expose `lgx-portable`, the command fails and tells you so, rather than installing a package that cannot run in a portable host.
 

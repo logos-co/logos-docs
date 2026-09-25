@@ -59,7 +59,7 @@ This tutorial is also available in video form:
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
-- On macOS, drag the `.dmg` file into `/Applications`. Then launch Basecamp from `/Applications`.
+- On macOS, open the `.dmg` file and drag the Basecamp app inside it into `/Applications`. Then launch Basecamp from `/Applications`.
 - On Linux and WSL, install some prerequisites, then grant execute permission to the downloaded AppImage and launch it:
 
     ```bash
@@ -68,8 +68,10 @@ This tutorial is also available in video form:
     # On Ubuntu 22.04 and earlier, use libfuse2 instead of libfuse2t64
 
     chmod +x LogosBasecamp-Desktop-*.AppImage
-    ./LogosBasecamp-Desktop-x86_64.AppImage  # or logos-basecamp-aarch64.AppImage
+    ./LogosBasecamp-Desktop-*-x86_64.AppImage  # or ./LogosBasecamp-Desktop-*-aarch64.AppImage
     ```
+
+    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.0-bbe5da-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
 
 ## Build and run Logos Basecamp from source
 
@@ -107,9 +109,12 @@ in which case the command should be changed to enable flakes:
 nix build --extra-experimental-features 'nix-command flakes' '.#bin-appimage'
 ```
 
-### I see an `libEGL.so.1 / libOpenGL.so.0 missing` error when trying to launch the AppImage on Linux?
-Try running the following command:
+### I see an `error while loading shared libraries` error when trying to launch the AppImage on Linux?
+The AppImage relies on a few graphics and font libraries from your system. On a minimal Ubuntu install, such as WSL or a server image, some of them may be missing, for example `libEGL.so.1`, `libOpenGL.so.0`, or `libharfbuzz.so.0`. Install them with:
 
 ```bash
-sudo apt-get install -y fuse libegl1 libopengl0
+sudo apt-get install -y libfuse2t64 libegl1 libopengl0 libharfbuzz0b
+# On Ubuntu 22.04 and earlier, use libfuse2 instead of libfuse2t64
 ```
+
+Don't install the `fuse` package on Ubuntu 22.04 or later. It replaces `fuse3`, which other system packages depend on.

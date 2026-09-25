@@ -60,7 +60,7 @@ This task uses the [LEZ Wallet CLI](https://github.com/logos-blockchain/logos-ex
 1. Set your wallet's sequencer address to the testnet endpoint.
 
    ```bash
-   wallet config set sequencer_addr https://testnet.lez.logos.co/
+   wallet change-network testnet
    ```
 
 ## Step 3: Build and deploy the AMM programs

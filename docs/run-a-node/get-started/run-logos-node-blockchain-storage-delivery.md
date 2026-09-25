@@ -58,7 +58,7 @@ To run a Blend node, make sure you have:
 
 ## Step 1: Install `logosctl`
 
-Install the system dependencies and download the three Logos CLI tools.
+Install the system dependencies and download the `logosctl` CLI.
 
 1. Install `curl`, `jq`, `tar`, and FUSE support for AppImage binaries:
 
@@ -79,7 +79,7 @@ Install the system dependencies and download the three Logos CLI tools.
 
    ```sh
    sha256sum --check <<'EOF'
-   baa6e24522833c6b6e33146a9d44f7428660e465158be2d723575f62409ad851  logosctl-x86_64-linux.tar.gz
+   41c2dffd080c6720c82ed4d0663dd39cbfc1c6aa114434179764732f2ade3096  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +89,7 @@ Install the system dependencies and download the three Logos CLI tools.
 
    ```sh
    sha256sum --check <<'EOF'
-   3ee96869d6a873cddd19c05eaa86d258e156a69635b10811b77cda149899dd1e logosctl-x86_64.AppImage
+   63b5d72138f448fa2b95ab7ea2ad6ff7f11486339042771d0b3c79eb4ff27fbb  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -99,7 +99,7 @@ Install the system dependencies and download the three Logos CLI tools.
    install -m755 logosctl-x86_64.AppImage /usr/local/bin/logosctl
    ```
 
-1. Verify all three tools are accessible:
+1. Verify the tool is accessible:
 
    ```sh
    logosctl --version
@@ -229,7 +229,7 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
    logosctl daemon start
    ```
 
-- Keep this terminal open. Use another `logos` user shell for all module commands.
+   - Keep this terminal open. Use another `logos` user shell for all module commands.
 
    :::tip
    For unattended operation, use a [systemd service](#optional-run-the-node-unattended-with-systemd) rather than a manually started daemon.
@@ -285,9 +285,9 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 
    | Field | Purpose | Guidance |
    |-------|---------|----------|
-   | `network.initial_peers` | Bootstrap peers | Use the current network document |
-   | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-   | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
+   | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
+   | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+   | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
    | `state.base_folder` | State directory | Use a persistent local path |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
@@ -310,7 +310,7 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
 
    ```sh
-   grep -A6 known_keys user_config.yaml
+   grep -A6 known_keys /var/lib/logos-node/user_config.yaml
    ```
 
 1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
@@ -393,41 +393,46 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config (requires [jq](https://jqlang.org/)):
 
-```bash
-logosctl module load storage_module
-logosctl call storage_module loadConfigOrDefault | jq -r '.result.value | fromjson' > config.json
-```
+   ```bash
+   logosctl module load storage_module
+   logosctl call storage_module loadConfigOrDefault | jq -r '.result.value | fromjson' > config.json
+   ```
 
-You can inspect the configuration and modify it as required (see the [list of valid configuration attributes here](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl4initERKNSt6stringE)).
+   You can inspect the configuration and modify it as required (see the list of valid configuration attributes [here](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl4initERKNSt6stringE)).
 
 2. Start the module:
 
-```bash
-logosctl call storage_module init @./config.json
-```
+   ```bash
+   logosctl call storage_module init @./config.json
+   ```
 
 3. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
-```sh
-logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 false false
-```
-
-After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
+   ```sh
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      ./farewell-to-westphalia.pdf false 65536 false false
+   ```
+   
+   After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
 
 4. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
 internet from learning that you are downloading the book. Try it out:
 
-```sh
-# remove file from disk
-rm ./farewell-to-westphalia.pdf
-# remove file from node
-logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
-# download again, this time using mix
-logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 true false
-```
+   ```sh
+   # remove file from disk
+   rm ./farewell-to-westphalia.pdf
+   # remove file from node
+   logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
+   # download again, this time using mix
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      ./farewell-to-westphalia.pdf false 65536 true false
+   ```
 
-In contrast to direct downloads, this can take a few minutes. You should see the file streaming to your disk, though, and eventually the download
-should complete.
+   In contrast to direct downloads, downloads over mix can take on the order of minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
+
+   :::tip
+   On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
+   :::
 
 ## Step 7: Configure and start the delivery module
 
@@ -536,7 +541,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
 1. Check the delivery module bound ports:
 
    ```sh
-   logosctl call delivery_module getNodeInfo MyMultiaddresses
+   logosctl call delivery_module getNodeInfo MyBoundPorts
    ```
 
 ### Optional: Run the node unattended with systemd

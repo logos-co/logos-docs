@@ -391,7 +391,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config (requires [jq](https://jqlang.org/)):
+1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config:
 
    ```bash
    logosctl module load storage_module

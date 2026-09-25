@@ -14,8 +14,8 @@ sidebar_position: 1
 
 #### Diagnose the failures that show up while iterating on a module.
 
-:::info
-This page describes `logos-scaffold` **0.4.0**, which supports Basecamp **0.3.0** only. Run `lgs --version` to check yours.
+:::tip[Version]
+This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, and Basecamp **0.3.0**.
 :::
 
 Most problems in the module development loop share a shape: the build succeeds, no error is printed, and the running application does not do what the source says it should. This page maps those symptoms to their causes.

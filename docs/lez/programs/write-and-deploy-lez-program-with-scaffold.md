@@ -32,10 +32,19 @@ This guide walks each stage separately so you can see what the tool does. Once t
     - macOS
 - `git`, and Rust 1.81 or newer with `cargo`.
 - The Unix process helpers `lsof`, `ps`, and `kill`, and `curl`.
-- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
-    - To install, run `rzup install rust`
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup`:
+
+    ```bash
+    curl -L https://risczero.com/install | bash   # installs rzup; restart your shell afterwards
+    rzup install rust
+    rzup install cargo-risczero 3.0.5
+    ```
+
+    `rust` builds the guest programs. `cargo-risczero` provides `r0vm`, which the sequencer needs to execute transactions, and it must be the version LEZ `v0.1.2` pins, `3.0.5`: scaffold only looks for that version. Without it, `localnet start` still reports `localnet ready`, with a warning about `RISC0_SERVER_PATH`, and `deploy` then fails.
 - Optionally, [Docker](https://docs.docker.com/get-docker/) or Podman. `logos-scaffold doctor` checks for one, but guest programs build with the local RISC Zero toolchain.
 - About 5 GB of free disk space for the pinned LEZ and `spel` builds.
+
+Nix is not needed for this guide, only for scaffold's `basecamp` commands. If it is not installed, `logos-scaffold doctor` reports a `tool nix` warning that you can ignore.
 :::
 
 ## What to expect
@@ -96,22 +105,8 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
 1. Run `setup` to sync the LEZ and SPEL repositories to their pinned commits, build the project-local sequencer and wallet binaries, and seed the default wallet:
 
-    ```bash
-    logos-scaffold setup
-    ```
-
-    On a cold cache this step builds the sequencer, wallet, and `spel` from source, which takes about 20 minutes on a four-core machine. Later runs reuse the build.
-
-1. check the project's environment. `doctor` reports missing tools and configuration problems, with a next step for each:
-
-    ```bash
-    logos-scaffold doctor
-    ```
-
-    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. [Step 6](#step-6-start-a-local-sequencer) clears them.
-
     :::warning
-    Scaffold unlocks that wallet with a deterministic local password so the onboarding flow needs no prompts. To use your own, export it **before the first `setup`** (or the first `run`, which chains `setup`):
+    Scaffold unlocks the wallet it seeds with a deterministic local password, so the onboarding flow needs no prompts. To use your own, export it **before the first `setup`** (or the first `run`, which chains `setup`):
 
     ```bash
     export LOGOS_SCAFFOLD_WALLET_PASSWORD='<your-local-dev-password>'
@@ -119,6 +114,20 @@ This guide walks each stage separately so you can see what the tool does. Once t
 
     If the storage was already created under the default password, export the override and re-seed with `logos-scaffold run --reset`. These are development-only keys; never use them for real funds.
     :::
+
+    ```bash
+    logos-scaffold setup
+    ```
+
+    On a cold cache this step builds the sequencer, wallet, and `spel` from source, which takes about 20 minutes on a four-core machine. Later runs reuse the build.
+
+1. Check the project's environment. `doctor` reports missing tools and configuration problems, with a next step for each:
+
+    ```bash
+    logos-scaffold doctor
+    ```
+
+    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. [Step 6](#step-6-start-a-local-sequencer) clears them.
 
 ## Step 4: Write your guest program
 
@@ -232,10 +241,14 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 
     The LEZ `v0.1.2` wallet that scaffold pins by default reads `NSSA_WALLET_HOME_DIR`, and LEZ v0.2.0 and later read `LEE_WALLET_HOME_DIR`. Exporting both keeps the runner working on either pin.
 
-    The runner prints the transaction hash. Once the next block is produced, the account holds the greeting `Hola mundo!`:
+    The runner prints the transaction hash. Once the next block is produced, the account holds the greeting `Hola mundo!`, hex-encoded in `data`:
 
     ```bash
     logos-scaffold wallet -- account get --account-id Public/<ID>
+    ```
+
+    ```json
+    {"balance":0,"program_owner":"...","data":"486f6c61206d756e646f21","nonce":1}
     ```
 
     The runner scripts in `src/bin/` demonstrate how to construct and sign a `PublicTransaction`, set the `program_id`, encode an instruction, and submit the transaction via the sequencer RPC.

@@ -14,6 +14,10 @@ sidebar_position: 5
 
 #### Understand how Zones run custom, high-performance applications on the Logos Blockchain.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 Zones are customisable, high-performance blockchains for applications built on Logos. A [Zone](../../get-started/glossary.md#zone) defines its own state and execution environment, while relying on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) for consensus and data availability. Zones can also use optional [Bedrock](about-bedrock.md) features such as token bridging and cross-Zone messaging. A sequencer updates a Zone's state by submitting state updates to the blockchain. Zones suit applications that need speed and customisation more than they need interoperability.
 
 ## The basics
@@ -60,7 +64,7 @@ In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has alr
 
 - Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
   - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.
-  - Secure Communication Channels: The Logos ecosystem provides encrypted and censorship-resistant collaboration tools for citizens of network states.
+  - Secure Communication Channels: The Logos ecosystem can be used to build encrypted and censorship-resistant collaboration tools for citizens of network states.
   - Decentralised Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
 - Gaming Applications: Games often rely on rapid state changes to function correctly, making them ideal for implementation as Zone applications on Logos.
 - Small-scale Networked Applications: Networked applications can use the Logos Blockchain to store their state updates on-chain, with users recreating the state locally based on these updates. This makes the Logos Blockchain a low cost, easy alternative for self-hosting - especially for small-scale applications.

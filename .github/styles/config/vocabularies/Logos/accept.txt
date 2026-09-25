@@ -76,6 +76,8 @@ deshielded
 devnet
 dir
 dirs
+DID
+DIDs
 Discv5
 distributable
 Docusaurus
@@ -97,6 +99,7 @@ frontmatter
 Gb
 gcc
 glibc
+gzip
 hardcoding
 heredoc
 HTLC
@@ -113,6 +116,8 @@ Kademlia
 keyholder
 keypair
 keypairs
+keyring
+keyrings
 keystore
 kwarg
 kwargs
@@ -134,6 +139,7 @@ lookups
 mainnet
 Mantle
 marker's
+Merkle
 MDX
 mempool
 microkernel

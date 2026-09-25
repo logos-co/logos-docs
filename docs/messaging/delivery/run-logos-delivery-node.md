@@ -16,16 +16,16 @@ sidebar_position: 2
 #### Use the Logos Delivery module to run a Logos delivery node
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.2). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available—Docker, prebuilt binaries, and Nix—so you can choose the one that fits your environment.
+This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.3). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available—Docker, prebuilt binaries, and Nix—so you can choose the one that fits your environment.
 
 Choose one of the three installation paths based on your environment:
 
 | Path | Method | Best for |
 |:-----|:-------|:---------|
-| **A** | Docker with Compose | Quickest start; first build takes 30–45 min |
+| **A** | Docker with Compose | Quickest start |
 | **B** | Prebuilt binaries | No build, no clone required |
 | **C** | Nix | From source; most reproducible |
 
@@ -35,6 +35,10 @@ Choose one of the three installation paths based on your environment:
    - Linux
    - macOS
 - Network access so both node instances can reach each other.
+- Inbound ports open:
+   - TCP `30303`: P2P (`tcpPort`).
+   - UDP `30303`: P2P over QUIC, on by default at the `tcpPort` number.
+   - UDP `9000`: discv5 discovery (`discv5UdpPort`).
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - Some prerequisites differ between paths:
@@ -70,10 +74,6 @@ Follow the instructions for your chosen path.
    docker compose up -d --build
    ```
 
-   :::info
-   The first Docker build runs Nix and downloads release packages. It can take 30–45 minutes; subsequent starts are fast.
-   :::
-
 **Path B—Prebuilt binaries**
 
 1. Start `logosctl`:
@@ -92,12 +92,12 @@ Follow the instructions for your chosen path.
 
    ```bash
    logosctl package install delivery_module \
-   --version 0.2.1 \
+   --version 0.3.0 \
    --yes
    ```
 
    :::note
-   Individual module package versions (for example, delivery module version 0.2.1) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+   Individual module package versions (for example, delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
    :::
 
 1. Write the testnet config:
@@ -140,9 +140,13 @@ Follow the instructions for your chosen path.
    ```bash
    git clone https://github.com/logos-co/logos-delivery-module.git
    cd logos-delivery-module
+   git checkout v0.3.0
 
-   nix build '.#lgx' -o delivery-lgx
+   nix build '.#lgx-portable' -o delivery-lgx
    ```
+
+   - `v0.3.0` is the release Path B installs, so both paths run the same module.
+   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `linux-amd64-dev`) that `logosctl package install` rejects with `Package does not contain variant for platform: linux-x86_64`.
 
 1. Start `logosctl`:
 
@@ -153,7 +157,7 @@ Follow the instructions for your chosen path.
 1. In a new terminal window with the same user, install the module:
 
    ```bash
-   logosctl package install delivery-lgx/*.lgx
+   logosctl package install delivery-lgx/*.lgx --yes
    ```
 
 1. Write the testnet config:
@@ -175,7 +179,7 @@ Follow the instructions for your chosen path.
    EOF
    ```
 
-## Step 3: Load the module and boot the node
+## Step 2: Load the module and boot the node
 
 Run these commands for your path.
 
@@ -183,7 +187,7 @@ Run these commands for your path.
 
    ```bash
    # Path A (Docker)
-   docker exec logos-node logoscore load-module delivery_module --json
+   docker exec logos-node logosctl module load delivery_module --json
 
    # Paths B and C
    logosctl module load delivery_module
@@ -194,7 +198,7 @@ Run these commands for your path.
    - Path A (config is mounted at `/conf` in the container):
 
      ```bash
-     docker exec logos-node logoscore call delivery_module createNode @/conf/logos-test.json --json
+     docker exec logos-node logosctl call delivery_module createNode @/conf/logos-test.json --json
      ```
 
    - Path B:
@@ -206,14 +210,14 @@ Run these commands for your path.
    - Path C:
 
      ```bash
-     logosctl call delivery_module createNode @conf/logos-test.json
+     logosctl call delivery_module createNode @logos-test.json
      ```
 
 1. Start the node:
 
    ```bash
    # Path A
-   docker exec logos-node logoscore call delivery_module start --json
+   docker exec logos-node logosctl call delivery_module start --json
 
    # Paths B and C
    logosctl call delivery_module start
@@ -227,7 +231,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
    ```bash
    # Path A
-   docker exec logos-node logoscore status --json
+   docker exec logos-node logosctl daemon status --json
 
    # Paths B and C
    logosctl daemon status
@@ -237,7 +241,7 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
    ```bash
    # Path A
-   docker exec logos-node logoscore call delivery_module getNodeInfo MyENR --json | jq
+   docker exec logos-node logosctl call delivery_module getNodeInfo MyENR --json | jq
 
    # Paths B and C
    logosctl call delivery_module getNodeInfo MyENR --json | jq
@@ -268,10 +272,6 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
 ## Troubleshooting delivery node setup
 
-### Why does the first `docker compose up` appear stuck?
+### Why does `logosctl call` return an error after `module load`?
 
-The first build runs Nix and downloads release packages, which takes 30–45 minutes on a typical connection. The process is not hung—let it finish. Subsequent starts use the cached layers and complete in seconds.
-
-### Why does `logosctl call` or `logoscore call` return an error after `module load`/`load-module`?
-
-The daemon may not have finished starting. Wait a few seconds after `logosctl daemon start` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logoscore …`.
+The daemon may not have finished starting. Wait a few seconds after `logosctl daemon start` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logosctl …`.

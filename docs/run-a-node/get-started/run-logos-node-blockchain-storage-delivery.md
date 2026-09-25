@@ -391,107 +391,43 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-Create the storage config and start the module.
+1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config (requires [jq](https://jqlang.org/)):
 
-1. Create the storage config:
+```bash
+logosctl module load storage_module
+logosctl call storage_module loadConfigOrDefault | jq -r '.result.value | fromjson' > config.json
+```
 
-   ```sh
-   cd /var/lib/logos-node/storage-module
-   mkdir -p storage-data
-   cat > config.json <<EOF
-   {
-     "data-dir": "./storage-data",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "network": "logos.test"
-   }
-   EOF
-   ```
+You can inspect the configuration and modify it as required (see the [list of valid configuration attributes here](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl4initERKNSt6stringE)).
 
-   - `config.json` includes the following fields:
+2. Start the module:
 
-   | Field | Purpose |
-   |-------|---------|
-   | `data-dir` | Storage repository path |
-   | `log-level` | Log verbosity |
-   | `listen-port` | Public TCP libp2p port |
-   | `network` | Storage network preset |
+```bash
+logosctl call storage_module init @./config.json
+```
 
-   - Use a fixed `listen-port`; do not leave public nodes on random ports.
-   - The `logos.test` preset provides the storage bootstrap settings.
+3. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
-   :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (for example `storage-config.sh`):
+```sh
+logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 false false
+```
 
-   ```sh
-   #!/usr/bin/env bash
-   # Copy the contents of this file into a script named mix-config.sh
-   set -euo pipefail
+After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
 
-   if ! command -v jq &> /dev/null; then
-     echo "Please install jq first"
-     exit 1
-   fi
+4. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
+internet from learning that you are downloading the book. Try it out:
 
-   data_dir="${1:-./logos-storage-data}"
+```sh
+# remove file from disk
+rm ./farewell-to-westphalia.pdf
+# remove file from node
+logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
+# download again, this time using mix
+logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 true false
+```
 
-   raw_data=$(curl -s -fsSL https://fleets.logos.co/logos-test/storage-network.json)
-   mp_json=$(echo $raw_data | jq -c '{
-     "version": 1,
-     "relays": map({
-       "peerId": .peerId,
-       "mixPubKey": .mixPubKey,
-       "libp2pPubKey": .libp2pPubKey,
-       "multiAddr": "/ip4/\(.address)/tcp/\(.port)"
-     })
-   } | tostring')
-
-   dht_proxy_sprs=$(echo $raw_data | jq '[.[].tcpSpr]')
-
-   cat <<EOF | jq .
-   {
-     "data-dir": "${data_dir}",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "network": "logos.test",
-     "mix-enabled": true,
-     "dht-mix-proxy": ${dht_proxy_sprs},
-     "mix-pool-json": ${mp_json}
-   }
-   EOF
-   ```
-   Then make it executable and run it:
-
-   ```sh
-   chmod +x storage-config.sh
-   ./storage-config.sh > config.json
-   ```
-
-   The script accepts an optional storage data directory as its first argument. Without one, it uses `logos-storage-data` under the current directory.
-   :::
-
-1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
-
-   ```sh
-   cd /var/lib/logos-node/storage-module
-   logosctl module load storage_module
-   logosctl call storage_module init @config.json
-   logosctl call storage_module start
-   ```
-
-   Verify with a test download:
-
-   ```sh
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 false false
-   ```
-
-   _If using mix config_, try downloading again using private downloads over [the Logos mix network](https://docs.logos.co/storage/concepts/mix):
-   ```sh
-   # remove file from node
-   logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
-   # download again, this time using mix
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf false 65536 true false
-   ```
+In contrast to direct downloads, this can take a few minutes. You should see the file streaming to your disk, though, and eventually the download
+should complete.
 
 ## Step 7: Configure and start the delivery module
 

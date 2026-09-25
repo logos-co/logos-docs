@@ -179,7 +179,7 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
     ```
 
     :::tip
-    - Setting `advertise` to `true` when you run an ephemeral node; i.e., a node that runs briefly and is then shut down,
+    - Setting `advertise` to `true` when you run an ephemeral node; that is, a node that runs briefly and is then shut down,
       can be detrimental to network performance as your node announces itself then leaves the network, leaving an
       advertisement pointing to a (now) departed node behind.
     - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that

@@ -48,7 +48,7 @@ Building a package with `lgx` is deterministic: identical inputs always produce 
 | `dependencies` | array | Other packages this one requires to run |
 | `optional_dependencies` | array | Packages this one can call but does not require |
 | `main` | object | Map of platform variant name to the entry point path for that variant |
-| `display_name` | string | Human-readable label shown by UI consumers (Package Manager, App Manager) and CLI tools. Falls back to `name` when absent |
+| `display_name` | string | Human-readable label shown by UI consumers (Package Manager, Apps Inspector) and CLI tools. Falls back to `name` when absent |
 | `provides` | array | App-to-app intents the package can service, for example `chat.group.open` |
 | `icon` | string | Path to the package's `assets/icon.png`. Required for `type: "ui_qml"` at `manifestVersion` `0.4.0`+; optional for every other type |
 
@@ -59,7 +59,7 @@ See the [full field reference](https://github.com/logos-co/logos-package/blob/ma
 A package's `type` distinguishes a [core module](../../get-started/glossary.md#core-module) from a [UI module](../../get-started/glossary.md#ui-module):
 
 - A **core module** package uses `main` as its per-variant entry point, same as most other package types.
-- A **UI module** package sets `type: "ui_qml"` and adds a `view` field: the relative path to its QML entry point, identical across variants. `main` becomes optional for this type—when present, it points at a per-variant backend Qt plugin that the host runs in an isolated process and bridges to the QML view; when absent, the QML view loads directly in-process and the package's variant directories carry only its QML files. `variants/` is required either way: it is the directory that is mandatory, not its contents, so a package with no native binary is still valid. From `manifestVersion` `0.4.0` onward, `type: "ui_qml"` packages must also ship a 256x256 `assets/icon.png`, since these are the packages rendered as tiles in Basecamp's app grid and sidebar.
+- A **UI module** package sets `type: "ui_qml"` and adds a `view` field: the relative path to its QML entry point, identical across variants. `main` becomes optional for this type—when present, it points at a per-variant backend Qt plugin that the host runs in an isolated process and bridges to the QML view; when absent, the QML view loads directly in-process and the package's variant directories carry only its QML files. `variants/` is required either way: it is the directory that is mandatory, not its contents, so a package with no native binary is still valid. From `manifestVersion` `0.4.0` onwards, `type: "ui_qml"` packages must also ship a 256x256 `assets/icon.png`, since these are the packages rendered as tiles in Basecamp's app grid and sidebar.
 
 ## Signing and verification
 

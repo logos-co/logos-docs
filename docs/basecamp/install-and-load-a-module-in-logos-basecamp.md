@@ -34,9 +34,9 @@ There are two types of modules in Logos Basecamp. [Core modules](../get-started/
 
 ## What to expect
 
-- You can install a [module](../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file, using **Package Manager**.
+- You can install a [module](../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
 - You can load or unload a module from **Settings**: core modules under **Module Inspector**, UI modules under **Apps Inspector**.
-- **Module Inspector** also shows a loaded core module's status, CPU, and memory. **Apps Inspector** shows a UI module's status and version, without live resource usage.
+- You can read a loaded module's status, CPU, and memory in **Settings > Module Inspector**. **Apps Inspector** shows a UI module's status and version, without live resource usage.
 
 :::tip
 An introduction to modules in Logos Basecamp is available in video form:
@@ -49,25 +49,30 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### Install from the online catalogue
 
-1. In the sidebar, click **Package Manager**.
-1. Find the module you want: search by name, or browse the **All** / **Installed** / **Not Installed** tabs. Both core modules and UI modules are listed together here—the **Type** column tells them apart.
-1. Click **Install** on its row. If installing it also requires changes to other packages already on disk, Basecamp shows a confirmation dialogue listing those changes before it proceeds.
+1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. Browse and locate the module you want. Use the **Categories** and **Types** filters or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules. Click a row to open its **Details** panel on the right.
+1. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens and lists any dependency changes. Click **Install** to confirm.
+1. Wait until the row's **Action** column reads `INSTALLED`. Core modules then appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
 
 ### Install from a local `.lgx` file
 
-1. In the sidebar, click **Package Manager**.
-1. Click **Install Local Package**, then select your `.lgx` file.
+1. At the bottom of the sidebar, click **Package Manager** ![](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-icon.png).
+1. Click **Install Local Package**.
+1. Select the `.lgx` file, click **Open**, then click **Install** in the **Install Package?** dialogue.
+1. Core modules appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
 
 ## Step 2: Load the module
 
 Loading a module turns an installed module into a running service you can actually use. Each loaded Logos module runs in its own `logos_host` process, so memory usage increases with the number of loaded modules.
 
-1. In the sidebar, click **Settings**.
-1. Open **Module Inspector** for a core module, or **Apps Inspector** for a UI module.
-1. Find the module in the list and click **Load** next to it.
+1. At the bottom of the sidebar, click **Settings** ![](./assets/install-and-load-a-module-in-logos-basecamp/settings-icon.png), then click **Module Inspector**, or **Apps Inspector** for a UI module.
+1. Find the module in the list. Its **Status** column reads `NOT LOADED`.
+1. Click **Load** next to the module. The status changes to `LOADED` and the **CPU** and **Memory** columns start reporting.
+
+To open a UI module, click its icon in the sidebar.
 
 :::info
-Click **Unload** next to a module in the same inspector, or close its panel in the workspace, to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.
+You can click **Unload** in **Settings > Module Inspector** or close the tab of a module to unload it. Unloading stops the module's host process but not its dependencies, which may still be in use by other modules or UI Apps.
 :::
 
 ## Troubleshooting

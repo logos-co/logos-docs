@@ -68,7 +68,7 @@ Create an account to hold your LP tokens, then deposit tokens A and B to initial
 
    # Output:
    Holding account owned by token program
-   {"Fungible":{"definition_id":"7BeDS3e28MA5Err7gBswmR1fUKdHXqmUpTefNPu3pJ9i","balance":100}}
+   {"Fungible":{"definition_id":"7BeDS3e28MA5Err7gBswmR1fUKdHXqmUpTefNPu3pJ9i","balance":141}}
    ```
 
    - If you inspect the `user-holding-a` and `user-holding-b` accounts, you will see that 100 and 200 tokens were deducted. Those tokens now reside in the pool and are available for swaps by any user.

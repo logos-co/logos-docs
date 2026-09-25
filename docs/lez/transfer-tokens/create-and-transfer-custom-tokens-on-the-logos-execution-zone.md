@@ -137,6 +137,10 @@ When transferring custom tokens using the `wallet token send` command, you speci
 Transfers involving private accounts may take a few minutes because the wallet needs to generate a local proof.
 :::
 
+:::warning
+The recipient must already hold this token. A transfer to a brand-new public account is discarded without an error: `wallet token send` prints a transaction hash, the supply account's balance does not change, and the recipient stays `Uninitialized`.
+:::
+
 1.  Use the `wallet token send` command to transfer custom tokens. Replace `ACCOUNT-TYPE` with the type of the account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
     ```sh

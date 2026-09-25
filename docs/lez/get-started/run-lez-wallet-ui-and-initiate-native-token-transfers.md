@@ -58,14 +58,13 @@ This task clones the wallet UI, starts it, and syncs it with the LEZ testnet.
     On a cold Nix cache, the first run compiles the wallet UI from source (Qt/C++ and Rust dependencies). This can take 20–60 minutes. Subsequent runs are instant from cache.
     :::
 
-1.  In the setup screen, enter paths for the config file and the storage file.
+1.  Click **Set up your wallet**, then follow the four setup steps:
 
-    - The wallet UI creates these files at the paths you enter if they don't already exist.
-    - After the first run, the wallet UI remembers these paths and skips the setup screen on subsequent runs.
+    1. **Setup**: select **Create a new wallet** and click **Continue**. To reuse wallet files you already have, select **I already have a wallet** instead.
+    1. **Network**: keep the **Testnet** preset (`https://testnet.lez.logos.co`) and click **Continue**.
+    1. **Password**: enter a password in both fields and click **Create Wallet**. The password encrypts the wallet on this machine; it is not your recovery phrase.
+    1. **Keys**: write down the 24-word recovery phrase, which is shown only once, tick **I've written down my recovery phrase and stored it safely**, and click **Open wallet**.
 
-    ![Wallet setup screen](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/create-wallet.png)
-1. Choose a password.
-1. Click **Create wallet**.
 1.  The wallet UI ships with a set of predefined, funded public and private accounts that are shared between all wallet UI users on the testnet and act as a common faucet. Wait for the wallet UI to sync these [private account](../../get-started/glossary.md#private-account) values from the genesis block.
 
     A progress bar shows the number of blocks processed, and this step can take a few minutes.

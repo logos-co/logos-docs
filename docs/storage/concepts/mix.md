@@ -14,6 +14,10 @@ sidebar_position: 2
 
 #### Understand how Mix hides who is looking up content on the storage network.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Mix](../../get-started/glossary.md#mix) is a privacy layer. When it is enabled, the node hides *who* is asking for content when it looks up where to find data on the network.
 
 Normally, when a node searches the network to find where some content lives, the peers it asks can see its identity. With Mix, those lookups are routed through other relays first, so the peer that answers cannot tell who originally asked.

@@ -24,7 +24,6 @@ These repositories explain what Logos is building and how to take part, with no 
 |:---|:---|
 | [logos-docs](https://github.com/logos-co/logos-docs) | Documentation, standards, and templates for Logos projects. |
 | [roadmap](https://github.com/logos-co/roadmap) | A Markdown-based view of the Logos roadmap. |
-| [ideas](https://github.com/logos-co/ideas) | Community-sourced project ideas to build on top of Logos. |
 | [rfp](https://github.com/logos-co/rfp) | Grants for building in the Logos ecosystem. |
  
 ## Logos Basecamp
@@ -60,7 +59,6 @@ Modules plug into Logos Core to provide specific capabilities, and user-interfac
 | [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos [Core module](glossary.md#core-module) that exposes [Logos Chat](glossary.md#logos-chat). |
 | [logos-chat-ui](https://github.com/logos-co/logos-chat-ui) | UI application for the Logos Chat SDK proof of concept. |
 | [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early stage wallet module built on go-wallet-sdk. |
-| [logos-accounts-module](https://github.com/logos-co/logos-accounts-module) | Early stage [account](glossary.md#account)-management module built on go-wallet-sdk. |
 | [logos-blockchain-module](https://github.com/logos-blockchain/logos-blockchain-module) | Core module wrapping logos-blockchain-c. |
 | [logos-blockchain-ui](https://github.com/logos-blockchain/logos-blockchain-ui) | Blockchain UI application for Logos Core. |
 | [logos-execution-zone-module](https://github.com/logos-blockchain/logos-execution-zone-module) | [Logos Execution Zone](glossary.md#logos-execution-zone) module for Logos Core. No official description; purpose inferred. |
@@ -103,8 +101,7 @@ The Logos Execution Zone ([LEZ](glossary.md#lez)) is the primary execution layer
 | [nim-sds](https://github.com/logos-messaging/nim-sds) | Nim implementation of the end-to-end reliability protocol. |
 | [nim-segmentation](https://github.com/logos-messaging/nim-segmentation) | Message segmentation. No official description; purpose inferred. |
 | [logos-delivery-rlnv2-contract](https://github.com/logos-messaging/logos-delivery-rlnv2-contract) | RLN-v2 smart contracts, written in Solidity. |
-| [specs](https://github.com/logos-messaging/specs) | Protocol specifications. No official description; purpose inferred. |
-| [logos-delivery-compose](https://github.com/logos-messaging/logos-delivery-compose) | Docker-compose files to deploy a node. |
+| [logos-lips](https://github.com/logos-co/logos-lips) | Protocol specifications. |
 | [logos-delivery-simulator](https://github.com/logos-messaging/logos-delivery-simulator) | Simulates a network with multiple nodes, traffic, and users. |
 | [logos-delivery-interop-tests](https://github.com/logos-messaging/logos-delivery-interop-tests) | Interoperability tests. No official description; purpose inferred. |
 | [libchat](https://github.com/logos-messaging/libchat) | Supporting library for Logos Chat, written in Rust. |

@@ -12,13 +12,17 @@ sidebar_position: 0
 
 # Introduction to the Logos Blockchain
 
-#### Learn how Logos provides a private, resilient foundation for decentralised applications.
+#### Learn how Logos provides a private, resilient foundation for building decentralised applications.
 
-The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the foundational infrastructure of the Logos technology stack. It hosts decentralised applications and social institutions that require high privacy and resilience, gives those applications a common context for interaction, and guarantees they operate correctly and without corruption. Nodes can participate with consumer hardware and any amount of stake.
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
+The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the foundational infrastructure of the Logos technology stack. It is designed to be used for building decentralised applications and social institutions that require high privacy and resilience, gives those applications a common context for interaction, and allows them to leverage the consensus guarantees provided by the entire network. Nodes can participate with consumer hardware and any amount of stake.
 
 ## The basics
 
-- The Logos Blockchain is designed to decentralised applications and institutions that require high levels of privacy and resilience.
+- The Logos Blockchain is used for building decentralised applications and institutions that require high levels of privacy and resilience.
 - Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low.
 - Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) service is used to improve the privacy of the network.
 
@@ -26,11 +30,11 @@ The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the found
 
 The Logos Blockchain was designed around three principles: privacy, neutrality, and resilience.
 
-Privacy means the network protects information about all participants, regardless of their role. At the infrastructure level, nodes can propose blocks with a very low probability of being traced. Logos also gives developers tools to build applications with programmable privacy, so those applications can keep personal data hidden.
+**Privacy** means the network protects information about all participants, regardless of their role. At the infrastructure level, nodes can propose blocks without having their identity linked to the blocks' content. Logos also gives developers tools to build applications with programmable privacy, so those applications can keep personal data hidden.
 
-Neutrality means activity is handled without compromising the public neutrality of nodes. Nodes can process transactions without having to make their inclusion public.
+**Neutrality** means activity is handled in a consistent way, without nodes having to make active decisions about which transactions to include in a block. Nodes process transactions according to simple criteria, without making their decisions about transaction inclusion public. As a result, nodes cannot effectively be pressured to exclude transactions originating from a certain party or containing certain information from a block, and are able to process all activity in an unbiased fashion.
 
-Resilience means the network stays operational and protects privacy under difficult conditions, including a partitioned internet, heavy censorship, and hostile government action. Running a node is meant to be easy enough to do on a laptop, which attracts more nodes and reduces points of failure. A consensus protocol that prioritises liveness lets the network keep operating in the worst conditions.
+**Resilience** means the network stays operational and protects privacy under difficult conditions, including a partitioned internet, heavy censorship, and adversarial attacks. Running a node is meant to be easy enough to do on a laptop, which attracts more nodes and reduces points of failure. A consensus protocol that prioritises liveness lets the network keep operating in the worst conditions.
 
 ## Architecture
 

@@ -36,8 +36,6 @@ This guide walks each stage separately so you can see what the tool does. Once t
     - To install, run `rzup install rust`
 - Optionally, [Docker](https://docs.docker.com/get-docker/) or Podman. `logos-scaffold doctor` checks for one, but guest programs build with the local RISC Zero toolchain.
 - About 5 GB of free disk space for the pinned LEZ and `spel` builds.
-
-Scaffold builds its own project-local sequencer and wallet, so you do not need a separately installed LEZ wallet for this guide. Nix is only needed for scaffold's `basecamp` commands.
 :::
 
 ## What to expect
@@ -74,7 +72,9 @@ Scaffold builds its own project-local sequencer and wallet, so you do not need a
 
     This generates a project with the `default` template, which includes sample guest programs and runner scripts. For an Anchor-style framework with IDL and generated client bindings, pass `--template lez-framework` instead; this guide follows the default template.
 
-    `new` also clones the pinned LEZ source into scaffold's shared cache; with the builds from Step 3 the cache grows to about 3.5 GB. To keep it somewhere else, pass `--cache-root <path>` or set `LOGOS_SCAFFOLD_CACHE_ROOT`.
+    :::info
+    `new` also clones the pinned LEZ source into scaffold's shared cache; with the builds from [Step 3](#step-3-set-up-the-project) the cache grows to about 3.5 GB. To keep it somewhere else, pass `--cache-root <path>` or set `LOGOS_SCAFFOLD_CACHE_ROOT`.
+    :::
 
 1. Inspect the project layout:
 
@@ -102,15 +102,13 @@ Scaffold builds its own project-local sequencer and wallet, so you do not need a
 
     On a cold cache this step builds the sequencer, wallet, and `spel` from source, which takes about 20 minutes on a four-core machine. Later runs reuse the build.
 
-    Then check the project's environment. `doctor` reports missing tools and configuration problems, with a next step for each:
+1. check the project's environment. `doctor` reports missing tools and configuration problems, with a next step for each:
 
     ```bash
     logos-scaffold doctor
     ```
 
-    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. Step 6 clears them.
-
-    How the default wallet is seeded depends on the pinned LEZ version. When the pinned debug wallet config ships public accounts, `setup` adopts the first one, which is deterministic. LEZ v0.2.0 ships none, so `setup` instead runs the wallet CLI once, which creates the wallet storage and generates fresh key material. Either way the resulting address is recorded in `.scaffold/state/wallet.state` as the default top-up destination.
+    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. [Step 6](#step-6-start-a-local-sequencer) clears them.
 
     :::warning
     Scaffold unlocks that wallet with a deterministic local password so the onboarding flow needs no prompts. To use your own, export it **before the first `setup`** (or the first `run`, which chains `setup`):
@@ -159,7 +157,9 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
     `start` returns once the sequencer process is alive and its RPC port answers. The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
 
+    :::info
     If `start` fails, read the sequencer log with `logos-scaffold localnet logs --tail 200`. If `status` reports `ownership: foreign`, another process already holds the sequencer port, `127.0.0.1:3040`; stop it first. To wipe chain state and start over, run `logos-scaffold localnet reset --yes`.
+    :::
 
 ## Step 7: Deploy your program
 
@@ -169,11 +169,12 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold deploy
     ```
 
-    After each successful submission, `logos-scaffold` prints `program_id: <hex>`, the RISC0 image ID computed locally from the submitted ELF. It prints `program_id: unavailable` if the project's `spel` binary has not been built yet. The example runner scripts in Step 8 load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    - After each successful submission, `logos-scaffold` prints `program_id: <hex>`, the RISC0 image ID computed locally from the submitted ELF. It prints `program_id: unavailable` if the project's `spel` binary has not been built yet. The example runner scripts in [Step 8](#step-8-interact-with-your-program) load the program from its embedded ELF, so you do not need to copy a `program_id` to complete this guide.
+    - `deploy` checks that the sequencer is reachable before submitting, and stops with a hint if it is not. It submits one program per block, so deploying the five sample programs takes about a minute.
 
-    `deploy` checks that the sequencer is reachable before submitting, and stops with a hint if it is not. It submits one program per block, so deploying the five sample programs takes about a minute.
-
+    :::info
     `deploy` confirms submission, not inclusion. Redeploying a program that is already on the sequencer still reports `submitted`, while the sequencer skips the transaction and logs `ProgramAlreadyExists`, which you can see with `logos-scaffold localnet logs`.
+    :::
 
 1. To deploy a specific program by name:
 
@@ -185,7 +186,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
 Use the project-local wallet CLI to submit transactions to your deployed program. The wallet is available at `logos-scaffold wallet`.
 
-1. With the sequencer from Step 6 running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
+1. With the sequencer from [Step 6](#step-6-start-a-local-sequencer) running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
 
     ```bash
     logos-scaffold wallet topup
@@ -205,7 +206,6 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 1. Run one of the example runner scripts that submit transactions to your program:
 
     ```bash
-    export NSSA_WALLET_HOME_DIR="$(pwd)/.scaffold/wallet"
     export LEE_WALLET_HOME_DIR="$(pwd)/.scaffold/wallet"
     RISC0_DEV_MODE=1 cargo run --bin run_hello_world -- <ID>
     ```
@@ -216,13 +216,11 @@ Use the project-local wallet CLI to submit transactions to your deployed program
     logos-scaffold wallet -- account get --account-id Public/<ID>
     ```
 
-    Both variables point at the same directory. LEZ up to v0.1.2 reads `NSSA_WALLET_HOME_DIR`, and v0.2.0 reads `LEE_WALLET_HOME_DIR`; exporting both keeps the runner working on either pin. Scaffold sets both for `post_deploy` hooks, so this export is only needed when you run a binary yourself.
-
     The runner scripts in `src/bin/` demonstrate how to construct and sign a `PublicTransaction`, set the `program_id`, encode an instruction, and submit the transaction via the sequencer RPC.
 
 ## Use `logos-scaffold run` for the inner loop
 
-Steps 5 to 8 are the cycle you repeat all day. `logos-scaffold run` chains them into one command, and works with no configuration:
+Steps 5 to 8 are often repeated when working on developing an LEZ program. `logos-scaffold run` chains them into one command, and works with no configuration:
 
 ```bash
 RISC0_DEV_MODE=1 logos-scaffold run
@@ -259,7 +257,7 @@ deploy = false
 post_deploy = ["scripts/demo.sh"]
 ```
 
-`topup = false` suits a project that funds its own accounts, and `deploy = false` one that deploys from a hook. Both default to `true`.
+- `topup = false` suits a project that funds its own accounts, and `deploy = false` one that deploys from a hook. Both default to `true`.
 
 :::warning
 A named profile is used as-is: selecting one shadows the inline `[run]` values instead of inheriting them. A key the profile does not state falls back to its own default, not to your `[run]` value. Set every key you need in each profile.
@@ -270,7 +268,7 @@ Hooks run through `sh -c` from the project root with these variables set:
 | Variable | Value |
 |:---|:---|
 | `SEQUENCER_URL` | The localnet RPC URL. |
-| `NSSA_WALLET_HOME_DIR`, `LEE_WALLET_HOME_DIR` | The project wallet directory, under both the name LEZ v0.1.2 reads and the one v0.2.0 reads. |
+| `LEE_WALLET_HOME_DIR` | The project wallet directory. |
 | `SCAFFOLD_PROJECT_ROOT`, `SCAFFOLD_IDL_DIR` | Absolute paths to the project root and the IDL output directory. |
 | `SCAFFOLD_TOPUP_SKIPPED`, `SCAFFOLD_DEPLOY_SKIPPED` | `1` or `0`. Always set, so branch on the value rather than on whether the variable exists. |
 | `SCAFFOLD_PROGRAM_ID`, `SCAFFOLD_GUEST_BIN` | The deployed program's image ID and guest binary. Set only when the project has exactly one deployable program, so a multi-program project fails loudly instead of picking the wrong one. |
@@ -284,8 +282,6 @@ Hooks run through `sh -c` from the project root with these variables set:
 :::
 
 The public testnet runs a newer LEZ release than the `v0.1.2` that scaffold 0.3.1 pins by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` stops with `Local ID for authenticated transfer program is different from remote`, and `logos-scaffold doctor` reports the wallet as unusable.
-
-Moving the pins in `scaffold.toml` does not close the gap. `logos-scaffold new` writes the LEZ revision it was created with into the project's `Cargo.toml`, so the guest programs and runner scripts keep building against `v0.1.2`. Newer wallet releases also store the sequencer address in a different configuration layout, which `deploy` does not read: it keeps checking `http://127.0.0.1:3040` and refuses to submit.
 
 To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.2.4` passes against the testnet and one built from `v0.2.1` does not.
 

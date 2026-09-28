@@ -19,7 +19,7 @@ sidebar_position: 3
 #### Stand up a local Mix network and download a file through it, with the content lookup anonymised.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure stands up a small local [Mix](../concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
@@ -31,7 +31,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.0) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
@@ -51,7 +51,7 @@ All six nodes below share one already-unpacked copy of `storage_module`, install
     ```sh
     logosctl daemon start --detach --config-dir ./install-session
     logosctl --config-dir ./install-session catalog refresh
-    logosctl --config-dir ./install-session package install storage_module --version 2.1.2 --yes
+    logosctl --config-dir ./install-session package install storage_module --version 3.0.0 --yes
     ```
 
 1.  Confirm the module landed, then stop this session—its only job was the install:

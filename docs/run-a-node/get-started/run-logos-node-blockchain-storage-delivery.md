@@ -451,7 +451,16 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
    ```bash
    logosctl call storage_module init @./config.json
+   logosctl call storage_module start
    ```
+
+   Startup is asynchronous. Check readiness:
+
+   ```bash
+   logosctl call storage_module isRunning
+   ```
+
+   Wait until `result` is `true` before downloading. Startup can take a few minutes.
 
 3. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 

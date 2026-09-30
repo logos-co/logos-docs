@@ -329,12 +329,23 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
 
 The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
 
-1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core:
+1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core. Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
 
-   ```sh
-   sed -i 's/^    max_threads: null$/    max_threads: 2/' /var/lib/logos-node/user_config.yaml
+   ```yaml
+   pow:
+     mining:
+       max_threads: 2
+       max_tickets_per_block: 4
+     auto_claim:
+       targets:
+       - public_key: <your PoWClaim key>
+         threshold: 18446744073709551615
+       tick:
+         unit: seconds
+         value: 10
    ```
 
+   - Leave the rest of the `pow` section as generated. `auto_claim.targets` is already filled with your node's `PoWClaim` key.
    - Restart the blockchain module for the change to take effect.
 
 1. After your node reaches `Online` mode, start mining:

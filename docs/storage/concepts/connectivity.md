@@ -10,6 +10,10 @@ slug: connectivity
 sidebar_position: 1
 ---
 
+:::tip[Version]
+This document is accurate for **Testnet v0.3**.
+:::
+
 # Connectivity
 
 #### Understand how a storage node joins a network and becomes reachable from the internet.
@@ -18,64 +22,92 @@ sidebar_position: 1
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-A node is useful only when it can reach other nodes. This page explains how a node joins a network and how to make it reachable from the outside.
+A node is useful only when it can reach - and be reached from - other nodes.
+This page explains how a node joins a network and how to make it reachable from
+the outside.
 
 ## Joining a network
 
-You can share files once you are part of a network formed by entry points called bootstrap nodes. Once connected, the node discovers other peers on its own. You have two choices.
+To share files, you need to be part of a _storage network_ with other peers. To
+join a storage network, you need to know at least one other node that is already
+part of that storage network; that is, you need a _bootstrap peer_ for that
+storage network. Once connected to a suitable bootstrap peer, your node should
+be able to look up any other peers that are also part of the same storage
+network. With Logos storage, currently, you have two main choices.
 
-**Join an existing network.** The easiest way is to set the `network` option to a preset name. The preset already contains that network's bootstrap nodes, so you need nothing else.
+**Join an existing public storage network.** We provide two sets of public
+bootstrap peers which define two logically separate, public storage networks.
+Bootstrap addresses for those storage networks are shipped with the storage
+module by default, and you can access them by setting the `network` option to a
+preset name. Since presets already contain the storage network's bootstrap
+nodes, you need nothing else. If nothing is specified, storage will always join
+`logos.test` by default.
 
 | Preset       | Description                       |
 | ------------ | --------------------------------- |
 | `logos.test` | Logos testnet (default)           |
 | `logos.dev`  | Logos devnet                      |
-| `codex.dev`  | [Codex](../../get-started/glossary.md#codex) legacy devnet (deprecated)  |
 
-**Create your own network.** Start the first node with `no-bootstrap-node` set to `true`: it bootstraps from no one and becomes the entry point. Read its address with the `spr` method, then use that address as the `bootstrap-node` of every other node you want in the network.
+**Create your own storage network.** If you start your node with
+`no-bootstrap-node` set to `true`, it will bootstrap from no-one, effectively
+becoming the bootstrap peer and only member of a new storage network. You can
+read your node's address with the `spr` method, then use that address in the
+`bootstrap-node` option of other nodes to get them to join your storage network.
+
+:::note
+Any node that joins a storage network can be a bootstrap peer for that
+network. Public bootstrap peers are convenient because their addresses are
+well-known and they are highly available, but they a convenience more than a
+necessity.
+:::
 
 ## Being reachable: NAT
 
-On a home network, your node usually sits behind a router (NAT), so it is
+On a home network, your node usually sits behind a router which shares your
+external IP with other devices using Network Address Translation (NAT), so it is
 not reachable from the internet by default.
 
-With NAT traversal, the node will try different ways to become reachable.
-After checking the reachability of its listen port, the node will try
-the following actions in order if it is unreachable:
+With NAT traversal, the node will try different ways to become reachable. After
+checking the reachability of its listen port, the node will try the following
+actions, in this order, if it is unreachable:
 
 1. Try to open the ports: if the router has UPnP, NAT-PMP or PCP enabled,
    the node asks it to open the listen port for incoming connections.
    If that works, the node becomes reachable.
-1. Go through a relay: if it fails, the node will use another peer as a
-   relay. When a peer tries to connect to this node, it will be redirected
-   to the relay, which will forward the connection to the node.
-1. Escape the relay: ideally, when a peer arrives through the relay, the node
+1. Go through a relay: if the previous step fails, the node will use another
+   peer as a relay. When another peer tries to connect to this node, it will be
+   redirected to the relay, which will forward the connection to the node.
+1. Bypass the relay: ideally, when a peer arrives through the relay, the node
    tries to open a direct connection with it anyway (hole punching). If it
    works, the relay is dropped and the two nodes talk directly.
 
 The reachability check is done regularly, every 2 minutes by default
 (depending on the configuration).
 
-Being unreachable is no longer a dead end. A node behind a relay can still
-share content, but the performance will be lower than for a reachable node.
+Being unreachable is not a dead end. Unreachable nodes will sit behind the relay
+and can still share content, but the performance will be lower than for a
+reachable node.
 
 :::info
-Port mapping only works if UPnP, NAT-PMP or PCP is enabled on the router.
-If it fails, the node log shows `TCP port mapping failed` and the node uses a relay instead.
+* Port mapping only works if UPnP, NAT-PMP or PCP is enabled on the router. If
+it fails, the node log shows `TCP port mapping failed` and the node uses a relay
+instead. 
+* Relay resources are limited. You should always do your best to configure your
+network in a way that does not require utilising a relay.
 :::
 
 :::warning
-
-If you are using [Mix](../../get-started/glossary.md#mix) with `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries.
-
+If you are using [Mix](../../get-started/glossary.md#mix) with `nat:auto`, the
+node first needs to get a reachability status, `Reachable` or `Unreachable`,
+before it can do private downloads.
 :::
 
-The `nat` option controls how the node finds the address to announce:
+The `nat` option controls how the node handles NAT traversal:
 
 | Value        | When to use it                                                                                                                                                                                       |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `auto`       | Default. Everything described above.                                                                                                                                                                   |
-| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know your public IP and have opened your listen port on the router yourself, or on a machine with a public IP (a cloud server or VPS). |
+| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know the public IP under which your node is reachable from; for example, when you have opened your listen port on the router yourself, or in a machine with a public IP (a cloud server or VPS). |
 
 :::warning
 
@@ -108,22 +140,21 @@ With `nat` set to `auto` (the default), the node asks the router to open its por
 
 If your router does not support UPnP, or you prefer not to enable it, map the ports yourself and announce your public IP with `extip`:
 
-1. Set fixed values for `listen-port` and `disc-port` (see [Ports](#ports)): you cannot forward a random port.
+1. Set a fixed value for `listen-port` (see [Ports](#ports)): you cannot forward a random port.
 1. Find your machine's address on the local network, for example with `ip -4 addr`.
-1. In your router's admin page, find the *Port forwarding* section (sometimes called *NAT rules* or *Virtual server*) and add two rules pointing to your machine's local address: one TCP rule for `listen-port`, one UDP rule for `disc-port`. Use the same external and internal port numbers.
+1. In your router's admin page, find the *Port forwarding* section (sometimes
+   called *NAT rules* or *Virtual server*) and add a rule pointing to your
+   machine's local address and port.
 1. Set the `nat` option to `extip:<your-public-IP>` (see [Finding your public IP](#finding-your-public-ip)).
 
-:::info
-
-Give your machine a fixed address on the local network (a *DHCP reservation* or *static lease* in the router settings). Otherwise the forwarding rules break when the router assigns your machine a different address.
-
+:::info Give your machine a fixed address on the local network (a *DHCP
+reservation* or *static lease* in the router settings). Otherwise forwarding
+rules may break if the router assigns a different address to your machine.
 :::
 
 ## Ports
 
-The node does two different jobs on the network: *discovering* peers (finding who is out there and where content lives) and *transferring* data. Each job has its own protocol and its own port:
-
-- `disc-port`: the UDP port used for discovery (default `8090`). Peers and content are located through a distributed hash table (DHT) that runs over UDP.
-- `listen-port`: the TCP port other peers use to connect to you and transfer files. The default `0` picks a random free port. Set a fixed value if you want to open it on your router or firewall.
-
-If you run a reachable node, fix both ports and allow them through your firewall.
+Storage requires a single TCP port, configurable through the `listen-port`
+option, to be open for it to work. This is set to `0` by default, which means
+picking a random free port. Set it to a fixed value if you want to open it on
+your router or firewall; for example, when manually setting up forwarding rules.

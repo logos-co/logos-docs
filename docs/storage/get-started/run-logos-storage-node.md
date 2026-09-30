@@ -18,10 +18,10 @@ sidebar_position: 1
 #### Get started running a Logos storage node and uploading your first file to the Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.2 who want to contribute storage capacity to the Logos network.
+This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.3 who want to contribute storage capacity to the Logos network.
 
 :::info[Prerequisites]
 
@@ -30,7 +30,7 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.0) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
@@ -58,16 +58,16 @@ Download the Logos storage [module](../../get-started/glossary.md#module) from t
     logosctl catalog refresh
     ```
 
-1.  Install the Logos storage module package, pinned to version 2.1.2:
+1.  Install the Logos storage module package, pinned to version 3.0.0:
 
     ```sh
     logosctl package install storage_module \
-    --version 2.1.2 \
+    --version 3.0.0 \
     --yes
     ```
 
     :::note
-    Individual module package versions (for example, storage module version 2.1.2) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+    Individual module package versions (for example, storage module version 3.0.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
     :::
 
 1.  Load the Logos storage module and confirm that it loaded:
@@ -89,37 +89,20 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 To see every method the module exposes (the same methods you can `call`), run `logosctl module-info storage_module`.
 :::
 
-1.  Create a minimal storage config. Use **absolute** paths: in daemon mode the module runs as its own process, whose working directory is not the one you are typing in, so relative paths resolve to the wrong place. The `$(pwd)` in the heredoc takes care of it:
+1.  Ask the Storage module to produce a suitable default configuration:
 
     ```sh
-    mkdir -p "$(pwd)/storage-data"
-    cat > config.json <<EOF
-    {
-        "data-dir": "$(pwd)/storage-data",
-        "log-file": "$(pwd)/storage-data/storage.log",
-        "log-level": "INFO",
-        "listen-port": 8091,
-        "disc-port": 8090,
-        "network": "logos.test"
-    }
-    EOF
+    ./logosctl call storage_module loadConfigOrDefault | jq ".result.value | fromjson" > config.json
     ```
 
-    - `config.json` includes the following fields:
+    Now edit the configuration and modify:
 
-    | Field | Purpose |
-    |-------|---------|
-    | `data-dir` | Storage repository path (absolute) |
-    | `log-file` | Node log destination (absolute) |
-    | `log-level` | Log verbosity |
-    | `listen-port` | Public TCP libp2p port |
-    | `disc-port` | Public UDP discovery port |
-    | `network` | Storage network preset |
-
-    - The default settings for Logos storage should be enough to get your node properly connected onto the Logos testnet. In case you want more control over port allocation, or want to learn more about how Logos storage operates, see [Connectivity](../concepts/connectivity.md).
+      * `data-dir`: should point to an absolute path on your disk, to which you have write access;
+      * `listen-port`: should contain a valid TCP port which is currently free on your local machine.
 
     :::tip
-    If you plan on running a node for longer, consider helping the network by setting up port mapping on your router (see [Connectivity](../concepts/connectivity.md) for details).
+    - The default settings for Logos storage should be enough to get your node properly connected onto the Logos testnet. In case you want more control over port allocation, or want to learn more about how Logos storage operates, see [Connectivity](../concepts/connectivity.md).
+    - If you plan on running a node for longer, consider helping the network by setting up port mapping on your router (see [Connectivity](../concepts/connectivity.md) for details).
     :::
 
 1.  Initialise the storage module. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
@@ -157,7 +140,7 @@ We will now publish a file to the Logos storage network. We create a simple file
 1.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
 
     ```sh
-    logosctl call storage_module uploadUrl "$(pwd)/hello.txt" 65536
+    logosctl call storage_module uploadUrl "$(pwd)/hello.txt" false 65536 false false
     ```
 
     :::info
@@ -176,15 +159,32 @@ We will now publish a file to the Logos storage network. We create a simple file
 
 We will now download the Logos book, [Farewell to Westphalia](https://logos.co/book), from the Logos storage network.
 
-1. We will use `downloadToUrl` to download the file from the network and place it into your local disk. It takes the CID, an **absolute** destination path, a `local` flag, and a chunk size in bytes. We set `local` to `false` as this file is not currently available in your node. Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
+1. We will use `downloadToUrl` to download the file from the network and place it into your local disk. It takes:
+    * the CID;
+    * an **absolute** destination path;
+    * a `local` flag;
+    * a chunk size in bytes;
+    * an `isPrivate` flag, and;
+    * an `advertise` flag.
+
+   We set `local` to `false` as this file is not currently available in your node; `isPrivate` to false so we download directly
+   from a storage provider instead of using the [Logos mix network](../concepts/mix.md), and `advertise` to false so we do not
+   advertise ourselves as providers to the file.
+
+   Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
 
     ```sh
     CID="zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ"
-    logosctl call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536
+    logosctl call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
     ```
 
-    :::tip
-    The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
+    :::note
+    - Setting `advertise` to `true` when you run an ephemeral node; that is, a node that runs briefly and is then shut down,
+      can be detrimental to network performance as your node announces itself and then leaves an
+      advertisement pointing to a departed node behind.
+    - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that
+      would reveal to other nodes that you've downloaded the file, defeating the purpose of the using mix in the first place.
+    - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
     :::
 
 1.  Wait for a while for the file to download. After a few seconds, check if the downloaded file is present at the destination path. You should try to open the pdf, and it should contain the whole book.

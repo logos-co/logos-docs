@@ -67,19 +67,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.2.3. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.0. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.0/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   41c2dffd080c6720c82ed4d0663dd39cbfc1c6aa114434179764732f2ade3096  logosctl-x86_64-linux.tar.gz
+   04d078ebea2e2f247e0c9bb2a6f48526fea05aab2b0dc48db2ce3235fd5bc911  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +89,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   63b5d72138f448fa2b95ab7ea2ad6ff7f11486339042771d0b3c79eb4ff27fbb  logosctl-x86_64.AppImage
+   b32c30a6083c72716ca4147dba3aebad635d4de3cd1b57e79b84c17eb2173cee  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -166,8 +166,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.2.4 \
-   --root-hash 2e57268c4ec1fdcf07e4b6bf1b33b5ac99705c071f879e6ca1c41b4e543cc674 \
+   --version 0.3.0 \
+   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
    --yes
    logosctl package install storage_module \
    --version 2.1.2 \
@@ -192,7 +192,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.2.4
+   blockchain_module 0.3.0
    delivery_module 0.2.1
    storage_module 2.1.2
    ```
@@ -246,9 +246,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.2.4` release starts a new blockchain with a new genesis. Despite this, the Logos node testnet release remains `v0.2.1`, and other module versions are unchanged.
+The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
 
-Blockchain nodes must start with an empty blockchain state directory. Existing `0.2.3` blockchain configuration and wallet keys can be retained, but balances and Blend declarations from the previous blockchain do not carry over.
+Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
 :::
 
 1. Create the peer bootstrap file:
@@ -307,6 +307,10 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
+   :::warning
+   Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+   :::
+
 1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
 
    ```sh
@@ -320,6 +324,35 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
    ```sh
    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
    ```
+
+### Optional: Earn PoW mining rewards
+
+The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
+
+1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core:
+
+   ```sh
+   sed -i 's/^    max_threads: null$/    max_threads: 2/' /var/lib/logos-node/user_config.yaml
+   ```
+
+   - Restart the blockchain module for the change to take effect.
+
+1. After your node reaches `Online` mode, start mining:
+
+   ```sh
+   logosctl call blockchain_module pow_start_mining
+   ```
+
+   - Mining is off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
+   - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
+
+1. Check the mining and auto-claim status:
+
+   ```sh
+   logosctl call blockchain_module pow_status | jq -r .result.value | jq .
+   ```
+
+   - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
 
 ### Optional: Join the Blend Network
 

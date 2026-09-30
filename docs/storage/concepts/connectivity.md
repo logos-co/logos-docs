@@ -30,7 +30,7 @@ the outside.
 
 To share files, you need to be part of a _storage network_ with other peers. To
 join a storage network, you need to know at least one other node that is already
-part of that storage network; that is, you need a _boostrap peer_ for that
+part of that storage network; that is, you need a _bootstrap peer_ for that
 storage network. Once connected to a suitable bootstrap peer, your node should
 be able to look up any other peers that are also part of the same storage
 network. With Logos storage, currently, you have two main choices.
@@ -93,7 +93,7 @@ reachable node.
 it fails, the node log shows `TCP port mapping failed` and the node uses a relay
 instead. 
 * Relay resources are limited. You should always do your best to configure your
-network in a way that does not require utilizing a relay.
+network in a way that does not require utilising a relay.
 :::
 
 :::warning
@@ -102,12 +102,12 @@ node first needs to get a reachability status, `Reachable` or `Unreachable`,
 before it can do private downloads.
 :::
 
-The `nat` option controls how the node approaches NATs:
+The `nat` option controls how the node handles NAT traversal:
 
 | Value        | When to use it                                                                                                                                                                                       |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `auto`       | Default. Everything described above.                                                                                                                                                                   |
-| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know the public IP under which your node is reachable from; e.g., when you have opened your listen port on the router yourself, or in a machine with a public IP (a cloud server or VPS). |
+| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know the public IP under which your node is reachable from; for example, when you have opened your listen port on the router yourself, or in a machine with a public IP (a cloud server or VPS). |
 
 :::warning
 
@@ -157,4 +157,4 @@ rules may break if the router assigns a different address to your machine.
 Storage requires a single TCP port, configurable through the `listen-port`
 option, to be open for it to work. This is set to `0` by default, which means
 picking a random free port. Set it to a fixed value if you want to open it on
-your router or firewall; e.g., when manually setting up forwarding rules.
+your router or firewall; for example, when manually setting up forwarding rules.

@@ -64,7 +64,7 @@ set), you can set the `isPrivate` flag in download operations like
 `downloadToUrl` and `downloadChunks` (see [API
 reference](https://logos-co.github.io/logos-storage-module/v3.0.0-rc1/api_reference.html))
 so that downloads happen over mix. This in practice makes your download
-anonymous; i.e., other actors on the internet will not be able to tell that you
+anonymous; that is, other actors on the internet will not be able to tell that you
 are downloading a file, even if they are serving the file to you themselves.
 
 **Advertisements.** Logos storage's download operations expose a second option,

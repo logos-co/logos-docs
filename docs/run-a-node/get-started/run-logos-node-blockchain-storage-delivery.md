@@ -36,7 +36,7 @@ The default paths used throughout this procedure are:
 :::info[Prerequisites]
 
 - Linux host with a public IPv4 address.
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall.
+- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, `30303/tcp`, and `30303/udp` open on the host firewall.
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
@@ -129,7 +129,10 @@ Create a new user that will run the Logos node, as well as the `logosctl` sessio
    8091/tcp
    9000/udp
    30303/tcp
+   30303/udp
    ```
+
+   If the node is behind NAT, forward these ports to the node using the listed protocols.
 
 ## Step 3: Install modules
 
@@ -174,8 +177,8 @@ Download and install the three module packages from the configured module [catal
    --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 \
    --yes
    logosctl package install delivery_module \
-   --version 0.2.1 \
-   --root-hash 0bccd85b4702c01a2c227df8aa55b3f5159a9fe009d57ae8bb8b3a7c20dfcbbe \
+   --version 0.3.0 \
+   --root-hash '<DELIVERY_0_3_0_ROOT_HASH>' \
    --yes
    ```
 
@@ -193,7 +196,7 @@ Download and install the three module packages from the configured module [catal
 
    ```text
    blockchain_module 0.3.0
-   delivery_module 0.2.1
+   delivery_module 0.3.0
    storage_module 2.1.2
    ```
 
@@ -570,7 +573,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    | `kernelConf.preset` | Network preset |
    | `kernelConf.relay` | Enable the [Relay](../../get-started/glossary.md#relay) protocol |
    | `kernelConf.logLevel` | Log verbosity |
-   | `kernelConf.tcpPort` | Public TCP P2P port |
+   | `kernelConf.tcpPort` | Public TCP P2P port; QUIC uses the same port number over UDP by default |
    | `kernelConf.discv5UdpPort` | Public UDP discovery port |
    | `kernelConf.discv5Discovery` | Enable discv5 discovery |
    | `kernelConf.nat` | Public IP advertisement mode |
@@ -578,6 +581,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    - The kernel-only entry layer intentionally omits the messaging client and reliable channel manager.
    - Calls to `send`, `subscribe`, and `channel*` are unavailable, while `getNodeInfo`, `storeQuery`, and metrics remain available.
    - Use fixed `tcpPort` and `discv5UdpPort`; do not leave public nodes on random ports.
+   - Delivery `0.3.0` enables QUIC by default. Open and, if needed, forward both TCP and UDP on `tcpPort` (`30303` here), plus UDP on `discv5UdpPort` (`9000`).
    - The `logos.test` preset provides the delivery network bootstrap settings.
 
 1. Load and start the [delivery module](../../get-started/glossary.md#delivery-module):
@@ -624,6 +628,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
    0.0.0.0:8091/tcp
    0.0.0.0:9000/udp
    0.0.0.0:30303/tcp
+   0.0.0.0:30303/udp
    127.0.0.1:8080/tcp
    ```
 

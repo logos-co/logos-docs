@@ -57,10 +57,11 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### How Basecamp downloads a package
 
-Basecamp ships with the `storage_module` core module, which runs a Logos Storage node. A catalogue can publish a package version on Logos Storage, with a `logos:` address, and over HTTPS.
+Basecamp ships with the `storage_module` module, which runs a Logos Storage node. A catalogue can publish a package version on Logos Storage, with a `logos:` address, and over HTTPS.
 
-- When the version is on Logos Storage and the node is running, Basecamp downloads it from the Logos Storage network.
+- When the version is on Logos Storage and the node is running, Basecamp downloads it from Logos Storage.
 - When the node is stopped, `storage_module` is not loaded, or the node is on another network than the catalogue, Basecamp downloads it from the HTTPS URL.
+- When the Logos Storage download takes too long, Basecamp stops it and downloads the package from the HTTPS URL.
 
 The **Source** column of **Package Manager** shows where a package comes from. For a package that is not installed, it shows an icon for each source the package is available from. For an installed package, it shows the source it was downloaded from. Hover an icon to read the name of the sources it shows.
 
@@ -71,12 +72,12 @@ The **Source** column of **Package Manager** shows where a package comes from. F
 1. At the bottom of the sidebar, click **Settings** ![](./assets/install-and-load-a-module-in-logos-basecamp/settings-icon.png), then click **Package Repositories**.
 1. Under **Download source**, pick one value:
     - **Any**: Logos Storage when possible, HTTPS otherwise.
-    - **Logos only**: only the Logos Storage network.
+    - **Logos only**: only Logos Storage.
     - **HTTP only**: only the HTTPS URL.
 
     ![The Download source selector in Package Repositories](./assets/install-and-load-a-module-in-logos-basecamp/download-source.png)
 
-Versions that the selected source cannot serve show as **Not available** in **Package Manager**, and the install dialogue does not offer them.
+If the selected source cannot serve a version, **Package Manager** shows it as **Not available** and you cannot install it.
 
 ### Install from a local `.lgx` file
 
@@ -105,7 +106,7 @@ You can click **Unload** in **Settings > Module Inspector** or close the tab of 
 
 Confirm the module actually installed: check its status in **Package Manager**.
 
-- If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build flavour, or architecture, or the [download source](#choose-the-download-source) you selected cannot serve it.
+- If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build type (dev, portable, or release), or architecture, or the [download source](#choose-the-download-source) you selected cannot serve it.
 - If installing from a local `.lgx` file: Basecamp reports an error if the archive has no variant for your platform.
 
 Either way, confirm the archive includes a variant matching your platform before reinstalling. If the package shows as installed in Package Manager but still doesn't appear in the relevant inspector, its manifest `type` may not match where you're looking—core modules only appear in Module Inspector, and UI modules (`ui_qml`) only appear in Apps Inspector.
@@ -114,7 +115,7 @@ Either way, confirm the archive includes a variant matching your platform before
 
 Basecamp uses Logos Storage only when the Logos Storage node can serve the package.
 
-1. Open **Settings > Package Repositories** and check that **Download source** is **Any** or **Logos only**.
+1. Open **Settings > Package Repositories** and check that **Download source** is not **HTTP only**.
 1. Open **Settings > Module Inspector** and check that **Storage Module** (`storage_module`) reads `LOADED`. If it doesn't, click **Load**.
 
     ![Storage Module loaded in Module Inspector](./assets/install-and-load-a-module-in-logos-basecamp/module-inspector-storage.png)

@@ -13,10 +13,10 @@ sidebar_position: 1
 
 # Run a Logos node with blockchain, storage, and delivery
 
-#### Get started running a full Logos node with all three core modules on testnet v0.2.1.
+#### Get started running a full Logos node with all three core modules on testnet v0.3.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
@@ -36,7 +36,7 @@ The default paths used throughout this procedure are:
 :::info[Prerequisites]
 
 - Linux host with a public IPv4 address.
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall.
+- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, `30303/tcp`, and `30303/udp` open on the host firewall.
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
@@ -67,19 +67,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.2.3. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.0. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.0/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   41c2dffd080c6720c82ed4d0663dd39cbfc1c6aa114434179764732f2ade3096  logosctl-x86_64-linux.tar.gz
+   04d078ebea2e2f247e0c9bb2a6f48526fea05aab2b0dc48db2ce3235fd5bc911  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +89,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   63b5d72138f448fa2b95ab7ea2ad6ff7f11486339042771d0b3c79eb4ff27fbb  logosctl-x86_64.AppImage
+   b32c30a6083c72716ca4147dba3aebad635d4de3cd1b57e79b84c17eb2173cee  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -129,7 +129,10 @@ Create a new user that will run the Logos node, as well as the `logosctl` sessio
    8091/tcp
    9000/udp
    30303/tcp
+   30303/udp
    ```
+
+   If the node is behind NAT, forward these ports to the node using the listed protocols.
 
 ## Step 3: Install modules
 
@@ -166,16 +169,16 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.2.4 \
-   --root-hash 2e57268c4ec1fdcf07e4b6bf1b33b5ac99705c071f879e6ca1c41b4e543cc674 \
+   --version 0.3.0 \
+   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
    --yes
    logosctl package install storage_module \
    --version 2.1.2 \
    --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 \
    --yes
    logosctl package install delivery_module \
-   --version 0.2.1 \
-   --root-hash 0bccd85b4702c01a2c227df8aa55b3f5159a9fe009d57ae8bb8b3a7c20dfcbbe \
+   --version 0.3.0 \
+   --root-hash '<DELIVERY_0_3_0_ROOT_HASH>' \
    --yes
    ```
 
@@ -192,8 +195,8 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.2.4
-   delivery_module 0.2.1
+   blockchain_module 0.3.0
+   delivery_module 0.3.0
    storage_module 2.1.2
    ```
 
@@ -246,9 +249,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.2.4` release starts a new blockchain with a new genesis. Despite this, the Logos node testnet release remains `v0.2.1`, and other module versions are unchanged.
+The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
 
-Blockchain nodes must start with an empty blockchain state directory. Existing `0.2.3` blockchain configuration and wallet keys can be retained, but balances and Blend declarations from the previous blockchain do not carry over.
+Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
 :::
 
 1. Create the peer bootstrap file:
@@ -307,6 +310,10 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
+   :::warning
+   Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+   :::
+
 1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
 
    ```sh
@@ -320,6 +327,46 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
    ```sh
    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
    ```
+
+### Optional: Earn PoW mining rewards
+
+The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
+
+1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core. Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
+
+   ```yaml
+   pow:
+     mining:
+       max_threads: 2
+       max_tickets_per_block: 4
+     auto_claim:
+       targets:
+       - public_key: <your PoWClaim key>
+         threshold: 18446744073709551615
+       tick:
+         unit: seconds
+         value: 10
+   ```
+
+   - Leave the rest of the `pow` section as generated. `auto_claim.targets` is already filled with your node's `PoWClaim` key.
+   - Restart the blockchain module for the change to take effect.
+
+1. After your node reaches `Online` mode, start mining:
+
+   ```sh
+   logosctl call blockchain_module pow_start_mining
+   ```
+
+   - Mining is off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
+   - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
+
+1. Check the mining and auto-claim status:
+
+   ```sh
+   logosctl call blockchain_module pow_status | jq -r .result.value | jq .
+   ```
+
+   - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
 
 ### Optional: Join the Blend Network
 
@@ -468,7 +515,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    | `kernelConf.preset` | Network preset |
    | `kernelConf.relay` | Enable the [Relay](../../get-started/glossary.md#relay) protocol |
    | `kernelConf.logLevel` | Log verbosity |
-   | `kernelConf.tcpPort` | Public TCP P2P port |
+   | `kernelConf.tcpPort` | Public TCP P2P port; QUIC uses the same port number over UDP by default |
    | `kernelConf.discv5UdpPort` | Public UDP discovery port |
    | `kernelConf.discv5Discovery` | Enable discv5 discovery |
    | `kernelConf.nat` | Public IP advertisement mode |
@@ -476,6 +523,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    - The kernel-only entry layer intentionally omits the messaging client and reliable channel manager.
    - Calls to `send`, `subscribe`, and `channel*` are unavailable, while `getNodeInfo`, `storeQuery`, and metrics remain available.
    - Use fixed `tcpPort` and `discv5UdpPort`; do not leave public nodes on random ports.
+   - Delivery `0.3.0` enables QUIC by default. Open and, if needed, forward both TCP and UDP on `tcpPort` (`30303` here), plus UDP on `discv5UdpPort` (`9000`).
    - The `logos.test` preset provides the delivery network bootstrap settings.
 
 1. Load and start the [delivery module](../../get-started/glossary.md#delivery-module):
@@ -522,6 +570,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
    0.0.0.0:8091/tcp
    0.0.0.0:9000/udp
    0.0.0.0:30303/tcp
+   0.0.0.0:30303/udp
    127.0.0.1:8080/tcp
    ```
 

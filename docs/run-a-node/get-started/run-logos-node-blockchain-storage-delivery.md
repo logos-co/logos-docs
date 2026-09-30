@@ -173,8 +173,8 @@ Download and install the three module packages from the configured module [catal
    --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
    --yes
    logosctl package install storage_module \
-   --version 2.1.2 \
-   --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 \
+   --version 3.0.0 \
+   --root-hash 167ad21b8f3cc1b43f64df0ac5970c4583ad5e7efc3266eb6323415d32d318b4 \
    --yes
    logosctl package install delivery_module \
    --version 0.3.0 \
@@ -197,7 +197,7 @@ Download and install the three module packages from the configured module [catal
    ```text
    blockchain_module 0.3.0
    delivery_module 0.3.0
-   storage_module 2.1.2
+   storage_module 3.0.0
    ```
 
 1. Stop the Logos node after installation:

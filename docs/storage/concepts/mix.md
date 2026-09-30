@@ -16,6 +16,10 @@ This document is accurate for **Testnet v0.3**.
 
 # Mix
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Mix](../../get-started/glossary.md#mix) (short for [mix
 network](https://en.wikipedia.org/wiki/Mix_network)) is a privacy layer. When
 enabled, it makes it harder for actors on the internet to figure out who is

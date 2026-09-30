@@ -1,5 +1,5 @@
 ---
-title: Build a dApp with the Logos Zone SDK
+title: Build an App with the Logos Zone SDK
 doc_type: procedure
 product: blockchain
 topics: [channels, zones]
@@ -7,10 +7,10 @@ steps_layout: sectioned
 authors: kashepavadan
 owner: logos
 doc_version: 1
-slug: build-dapp-with-logos-zone-sdk
+slug: build-app-with-logos-zone-sdk
 ---
 
-# Build a dApp with the Logos Zone SDK
+# Build an App with the Logos Zone SDK
 
 #### Learn how to use the Zone SDK to implement a decentralised password manager application.
 

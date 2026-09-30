@@ -14,6 +14,10 @@ A list of some common terms and phrases specific to the Logos ecosystem.
 
 The basic organisational unit of the LEZ state, with all persistent data stored in accounts. Accounts can be either public or private, and can also represent LEZ programs. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
+### App
+
+In the context of Logos modules, a user-facing bundle of a UI package combined with its core dependencies. See [Package](#package).
+
 ---
 
 ## B
@@ -48,7 +52,7 @@ The process a Logos Blockchain or Delivery node undergoes when first connected t
 
 ### Catalogue
 
-A repository that includes a list of Logos modules. Installing a module repo on Basecamp allows you to install the latest version of all these modules together. Also known as a **module repo**.
+A repository that lists the [packages](#package) available to install in Basecamp, identified by a `logos-repo.json` file. Basecamp ships with the official Logos catalogue configured and merges in any others you add.
 
 ### Channel
 
@@ -160,15 +164,15 @@ The **Logos Execution Zone** - the primary execution layer for general-purpose a
 
 ### `lgpm`
 
-The official package manager used for Logos modules.
+The official package manager used for Logos modules. See [Package](#package).
 
 ### `lgpd`
 
-The official package downloader for Logos modules.
+The official package downloader for Logos modules. See [Package](#package).
 
 ### `.lgx`
 
-A module file type which allows it to be loaded with `logoscore` and Basecamp.
+The file extension for a Logos [package](#package): a gzip-compressed archive bundling a module's platform-specific binaries with a manifest, loadable by Basecamp.
 
 ### Light node
 
@@ -260,15 +264,11 @@ The process of obtaining notes via Proof of Work. See [About Mantle](../blockcha
 
 ### Mix
 
-Traffic obfuscation used to improve privacy guarantees.
+Traffic obfuscation used to improve privacy properties.
 
 ### Module
 
-A self-contained, reusable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application.
-
-### Module repo
-
-A repository that includes a list of Logos modules. Installing a module repo on Basecamp allows you to install the latest version of all these modules together. Also known as a **catalogue**.
+A self-contained, reusable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application. A module is typically distributed as a [package](#package).
 
 ### Mostly offline
 
@@ -314,7 +314,6 @@ A key pair used to sign transactions and verify token ownership on the LEZ. See 
 
 A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
-
 ### Nullifier Secret Key
 
 A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
@@ -330,6 +329,10 @@ Exchanging information through a separate, secure channel distinct from the main
 ---
 
 ## P
+
+### Package
+
+The distributable unit for a Logos [module](#module): a `.lgx` archive bundling the module's platform-specific binaries with a manifest describing its metadata, dependencies, and optional signature. A [catalogue](#catalogue) lists packages, and `logosctl`/`lgpm`/`lgpd` install them. See [LGX package format and bundling reference](../core/reference/lgx-package-format-and-bundling-reference.md).
 
 ### PDA
 

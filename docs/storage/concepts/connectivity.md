@@ -18,6 +18,10 @@ This document is accurate for **Testnet v0.3**.
 
 #### Understand how a storage node joins a network and becomes reachable from the internet.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 A node is useful only when it can reach - and be reached from - other nodes.
 This page explains how a node joins a network and how to make it reachable from
 the outside.

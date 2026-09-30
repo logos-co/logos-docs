@@ -14,6 +14,10 @@ sidebar_position: 3
  
 #### Understand the discovery, gossip, and request/response domains that structure how peers interact.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Logos Delivery](../../get-started/glossary.md#logos-delivery) is a unified and cohesive entity that offers a rich ecosystem with three distinct network interaction domains. These domains serve specialised purposes and contribute to the robust functionality of Logos Delivery, forming its foundation.
 
 ## The basics

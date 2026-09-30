@@ -355,7 +355,7 @@ The generated `user_config.yaml` includes a `pow` section that automatically cla
    ```
 
    :::tip
-   The node stays in `Bootstrapping` mode for the prolonged bootstrap period (one hour by default) before it switches to `Online`. To skip this wait, first let the node sync: its `height` in `get_cryptarchia_info` must match the [testnet dashboard](https://testnet.blockchain.logos.co/web/). Then stop the blockchain module:
+   The node stays in `Bootstrapping` mode for the prolonged bootstrap period (one hour by default) before it switches to `Online`. To skip this wait, stop the blockchain module:
 
    ```sh
    logosctl call blockchain_module stop

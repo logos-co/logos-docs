@@ -354,6 +354,29 @@ The generated `user_config.yaml` includes a `pow` section that automatically cla
    logosctl call blockchain_module pow_start_mining
    ```
 
+   :::tip
+   The node stays in `Bootstrapping` mode for the prolonged bootstrap period (one hour by default) before it switches to `Online`. To skip this wait, first let the node sync: its `height` in `get_cryptarchia_info` must match the [testnet dashboard](https://testnet.blockchain.logos.co/web/). Then stop the blockchain module:
+
+   ```sh
+   logosctl call blockchain_module stop
+   ```
+
+   Set `prolonged_bootstrap_period` to zero in `/var/lib/logos-node/user_config.yaml`:
+
+   ```yaml
+   cryptarchia:
+     service:
+       bootstrap:
+         prolonged_bootstrap_period: '0.000000000'
+   ```
+
+   Start the module again. The node enters `Online` mode immediately:
+
+   ```sh
+   logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+   ```
+   :::
+
    - Mining is off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
    - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
 

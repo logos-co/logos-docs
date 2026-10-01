@@ -28,10 +28,13 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 - A supported OS:
     - Linux
     - Mac OS (should work, but not tested)
+    - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
+    - On Windows, install it with `winget install jqlang.jq`.
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+   - On Windows, run `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 | iex` in PowerShell instead, then open a new terminal.
 :::
 
 ## What to expect
@@ -97,7 +100,7 @@ To see every method the module exposes (the same methods you can `call`), run `l
 
     Now edit the configuration and modify:
 
-      * `data-dir`: should point to an absolute path on your disk, to which you have write access;
+      * `data-dir`: should point to an absolute path on your disk, to which you have write access. On Windows, use a Windows path such as `C:/Users/<you>/logos-storage-data`: Git Bash converts paths in command arguments, but not inside the JSON file;
       * `listen-port`: should contain a valid TCP port which is currently free on your local machine.
 
     :::tip

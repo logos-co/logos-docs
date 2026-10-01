@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3.1**.
 :::
 
-The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
+The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS, or on Windows through Basecamp.
 
 ## What to expect
 
@@ -42,6 +42,8 @@ You can install the application through Logos Basecamp (Option A), or build it f
 1. In the left bar, select the **Storage** icon to launch the Logos Storage UI.
 
 ### Option B—Build and run locally with Nix
+
+This option needs Nix, so it is available on Linux and macOS only. On Windows, use Option A.
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries. You need:
 

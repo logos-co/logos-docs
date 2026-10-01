@@ -192,15 +192,13 @@ See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.
 
 ## Other Logos command-line tools
 
-`logosctl` is the tool that Logos releases ship. These standalone tools are for module developers, and the [tutorials](https://github.com/logos-co/logos-tutorial) use them. Build them with Nix:
+`logosctl` is the tool that Logos releases ship. Module developers also use these standalone tools. Build them with Nix:
 
 | Tool | Purpose | Build |
 |:---|:---|:---|
-| `logoscore` | The runtime `logosctl` is built on, with its own session (`~/.logoscore`) and no package commands. No longer released. | `nix build github:logos-co/logos-logoscore-cli#cli` |
-| `lgx` | Create, inspect, merge and sign LGX packages. See the [LGX reference](./lgx-package-format-and-bundling-reference.md). | `nix build github:logos-co/logos-package#lgx` |
-| `lgpm` | Install local `.lgx` files into a modules directory | `nix build github:logos-co/logos-package-manager#cli` |
-| `lgpd` | Search catalogues and download packages, without installing them | `nix build github:logos-co/logos-package-downloader#cli` |
-| `lm` | Show a built module's metadata, methods and events | `nix build github:logos-co/logos-module#lm` |
+| `lgx` | Create, inspect, merge and sign LGX packages. See the [LGX reference](./lgx-package-format-and-bundling-reference.md). | `nix build 'github:logos-co/logos-package/0.1.0#lgx'` |
+| `lgpm` | Install local `.lgx` files into a directory of your choice, such as a Logos Basecamp data directory | `nix build 'github:logos-co/logos-package-manager/0.3.0#cli'` |
+| `lm` | Show a built module's metadata, methods and events | `nix build 'github:logos-co/logos-module/0.3.0#lm'` |
 
 ## Further reading
 

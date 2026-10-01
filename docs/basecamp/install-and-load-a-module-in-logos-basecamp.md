@@ -18,7 +18,7 @@ import YouTube from '@site/src/components/YouTube';
 #### Access features and functionalities through modules in Logos Basecamp.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 In Logos [Basecamp](../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../get-started/glossary.md#catalogue) or local `.lgx` files.

@@ -67,19 +67,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.3.0. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.1. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.0/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.1/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   04d078ebea2e2f247e0c9bb2a6f48526fea05aab2b0dc48db2ce3235fd5bc911  logosctl-x86_64-linux.tar.gz
+   27eaecc233e79e84337b7a95e919f5c5f901aff20880ed6f9680baba54180751  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +89,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   b32c30a6083c72716ca4147dba3aebad635d4de3cd1b57e79b84c17eb2173cee  logosctl-x86_64.AppImage
+   01f87931943dba0b2df2153ad8da7ce7dd5b4a8d5207d1931432613abbc34929  logosctl-x86_64.AppImage
    EOF
    ```
 

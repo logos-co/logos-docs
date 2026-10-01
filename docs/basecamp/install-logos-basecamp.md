@@ -71,7 +71,7 @@ This tutorial is also available in video form:
     ./LogosBasecamp-Desktop-*-x86_64.AppImage  # or ./LogosBasecamp-Desktop-*-aarch64.AppImage
     ```
 
-    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.0-bbe5da-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
+    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.1-aeb819-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
 
 ## Build and run Logos Basecamp from source
 

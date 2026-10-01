@@ -424,7 +424,7 @@ There are two Logos runtimes, `logosctl` and `logos-basecamp`, that can load and
 
 ### Run with `logosctl`
 
-The `logosctl` CLI (from `logos-liblogos`) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
+The `logosctl` CLI (from [`logos-logoscore-cli`](https://github.com/logos-co/logos-logoscore-cli)) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
 
 1. Load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
 
@@ -486,7 +486,7 @@ The LGX variant type must match the basecamp build type. Dev builds of basecamp 
    ```
 
 :::tip
-Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-logos-storage-node.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the full list of [Logos modules](https://github.com/logos-co/logos-modules#modules).
+Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-logos-storage-node.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the [Logos module catalogue](https://github.com/logos-co/logos-modules-release#module-set). `logosctl search` lists it from the command line.
 :::
 
 ## Troubleshooting

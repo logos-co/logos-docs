@@ -245,4 +245,4 @@ Integrator feedback shapes which Planned items come first. When you talk to us, 
 - Whether you would ship your logic as Logos modules, and what would stop you.
 - Which methods your users' applications would need on a node you run for them.
 
-Talk to your Logos point of contact, or join the conversation in the Logos Discord or on the [Logos forum](https://forum.logos.co).
+Talk to your Logos point of contact, or join the conversation on the [Logos Discord](https://discord.com/invite/logosnetwork) or the [Logos forum](https://forum.logos.co).

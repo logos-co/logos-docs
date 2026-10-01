@@ -314,19 +314,9 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
    Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
    :::
 
-1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
+1. To participate in consensus, your node needs tokens. On Testnet v0.3 you earn them by mining: follow [Optional: Earn PoW mining rewards](#optional-earn-pow-mining-rewards) after your node reaches `Online` mode.
 
-   ```sh
-   grep -A6 known_keys /var/lib/logos-node/user_config.yaml
-   ```
-
-1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
-
-1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
-
-   ```sh
-   curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
-   ```
+   - Mining rewards are paid to your node's `PoWClaim` key, which is one of your wallet's `known_keys`, so they count towards your stake once they age into an epoch.
 
 ### Optional: Earn PoW mining rewards
 
@@ -374,7 +364,21 @@ Keep the generated value; `<your PoWClaim key>` below is only an illustration.
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
-1. Request funds to both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` from the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/)
+1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` with [PoW mining rewards](#optional-earn-pow-mining-rewards). Add both keys to `pow.auto_claim.targets` in `/var/lib/logos-node/user_config.yaml`, next to the generated `PoWClaim` target, then restart the blockchain module and start mining again:
+
+   ```yaml
+   pow:
+     auto_claim:
+       targets:
+       - public_key: <your PoWClaim key>
+         threshold: 18446744073709551615
+       - public_key: <your BlendZk key>
+         threshold: 18446744073709551615
+       - public_key: <your SdpFunding key>
+         threshold: 18446744073709551615
+   ```
+
+   - Each claim pays the target holding the least funds, so the new keys are funded first.
 
    :::info
    The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.

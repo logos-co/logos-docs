@@ -440,7 +440,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-In logosctl 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
+In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
 1. Check that the [storage module](../../get-started/glossary.md#storage-module) is running:
 

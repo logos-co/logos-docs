@@ -150,10 +150,10 @@ We will now publish a file to the Logos storage network. We create a simple file
     echo "Hello world from Logos Storage" > "$(pwd)/hello.txt"
     ```
 
-1.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path and a chunk size in bytes, and returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
+1.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path, a chunk size in bytes, and an `advertise` flag—`true` announces the file and serves it to other nodes. It returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
 
     ```sh
-    logosctl call storage_module uploadUrl "$(pwd)/hello.txt" false 65536 false false
+    logosctl call storage_module uploadUrl "$(pwd)/hello.txt" 65536 true
     ```
 
     :::info

@@ -284,7 +284,7 @@ Windows packages are cross-compiled: Nix runs on Linux and targets `x86_64-windo
    ```
 
    - Restart Windows if prompted, then open **Ubuntu 24.04** from the Start menu and create your Linux user.
-   - WSL2 needs hardware virtualization. If Windows itself runs in a virtual machine, enable nested virtualization for that VM.
+   - WSL2 needs hardware virtualisation. If Windows itself runs in a virtual machine, enable nested virtualisation for that VM.
 
 1. In the Ubuntu terminal, install Nix and open a new terminal afterwards:
 

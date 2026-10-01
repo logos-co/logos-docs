@@ -331,6 +331,8 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
 ### Optional: Earn PoW mining rewards
 
 The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
+Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
+Keep the generated value; `<your PoWClaim key>` below is only an illustration.
 
 1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core. Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
 
@@ -438,31 +440,17 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-1. Load the [storage module](../../get-started/glossary.md#storage-module) and create the default config:
+In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
-   ```bash
-   logosctl module load storage_module
-   logosctl call storage_module loadConfigOrDefault | jq -r '.result.value | fromjson' > config.json
-   ```
-
-   You can inspect the configuration and modify it as required (see the list of valid configuration attributes [here](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl4initERKNSt6stringE)).
-
-2. Start the module:
-
-   ```bash
-   logosctl call storage_module init @./config.json
-   logosctl call storage_module start
-   ```
-
-   Startup is asynchronous. Check readiness:
+1. Check that the [storage module](../../get-started/glossary.md#storage-module) is running:
 
    ```bash
    logosctl call storage_module isRunning
    ```
 
-   Wait until `result` is `true` before downloading. Startup can take a few minutes.
+   Repeat this check until `result` is `true` before downloading. Startup can take a few minutes.
 
-3. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
+2. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
    ```sh
    logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
@@ -471,7 +459,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
    
    After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
 
-4. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
+3. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
 internet from learning that you are downloading the book. Try it out:
 
    ```sh

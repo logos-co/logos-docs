@@ -35,7 +35,6 @@ Everything `logosctl` needs lives in one directory, a session. `--config-dir` se
 | Path | Contents |
 |:---|:---|
 | `daemon/config.yaml` | Daemon configuration, installed with `logosctl daemon config set` |
-| `client/config.yaml` | Dial settings, only needed to reach a daemon on another host |
 | `modules/` | Core modules installed into this session |
 | `plugins/` | UI plugins installed into this session |
 | `keyring/` | Trusted package-signing keys |
@@ -149,18 +148,6 @@ Commands are grouped by what they act on. Within a group, `ls` lists and `show` 
 
 The session's keyring is separate from Basecamp's. The `signature_policy` setting in the daemon configuration decides what happens to a package that is unsigned or signed by a key the session does not trust: `none` skips the check, `warn` (the default) installs it with a warning, and `require` refuses it.
 
-### Tokens and remote clients
-
-| Command | Description |
-|:---|:---|
-| `logosctl token issue --name N [--expires D] [--replace] [--local-only]` | Issue a client token. Works offline, on the session directory. |
-| `logosctl token ls` | List issued tokens |
-| `logosctl token revoke NAME` | Revoke a token |
-| `logosctl client config set FILE` | Install the dial settings for a daemon on another host |
-| `logosctl client config show` | Print the client configuration |
-
-On the same host none of this is needed: the daemon writes a working client configuration and token into the session every time it starts.
-
 ## Argument typing
 
 `logosctl call` turns each argument into a JSON value with the first rule that matches.
@@ -187,14 +174,11 @@ The daemon configuration is a YAML document that you install with `logosctl daem
 | `dirs` | Redirect a session directory: `keyring`, `cache`, `modules`, `plugins`, `data` or `logs`. A relative path stays inside the session. |
 | `modules_dirs` | Extra read-only directories to scan for modules |
 | `signature_policy` | `none`, `warn` (default) or `require`. See [Signing keys](#signing-keys). |
-| `modules` | Network listeners per module (`core_service`, `capability_module`): `protocol`, `host`, `port`, `codec`, `cert`, `key`, `ca_file`, `verify_peer` |
-| `ssl` | Default `cert`, `key` and `ca` for every `tcp_ssl` listener |
-| `insecure_tcp` | Allow unencrypted `tcp` on a non-loopback address |
 | `access_group` | Share the daemon with an operating-system group |
 | `access_policy` | Which caller modules may call which modules, as a JSON document in a string |
 | `logging` | Log file name, rotation size and number of files kept |
 
-A remote client needs `capability_module` reachable as well as `core_service`. See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.1/docs/logosctl.md) for every key and a TLS example.
+See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.1/docs/logosctl.md) for every key.
 
 ## Exit codes
 

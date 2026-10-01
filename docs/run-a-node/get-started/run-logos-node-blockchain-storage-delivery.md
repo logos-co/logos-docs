@@ -178,7 +178,7 @@ Download and install the three module packages from the configured module [catal
    --yes
    logosctl package install delivery_module \
    --version 0.3.0 \
-   --root-hash '<DELIVERY_0_3_0_ROOT_HASH>' \
+   --root-hash 31583b977f7370c8fc7ed70351daef1069f718c0a005e74306921da2b8aee76f \
    --yes
    ```
 

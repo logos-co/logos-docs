@@ -26,6 +26,7 @@ Logos is a modular application framework built on Qt 6. Applications are compose
 - A supported OS:
    - Linux x86_64 or aarch64
    - macOS arm64 or x86_64
+   - Windows 10 or 11 x86_64, building inside WSL2. Nix does not run on Windows itself, so Windows packages are cross-compiled from Linux. See [Build a Windows package](#build-a-windows-package).
 - At least 10 GB of disk space
 - Git
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
@@ -271,6 +272,65 @@ When your module uses `logos-module-builder`, LGX package outputs are automatica
    :::info
    `.#lgx` produces a single `-dev` variant (for example, `linux-amd64-dev`) that references `/nix/store` paths, and `.#lgx-portable` produces a single self-contained portable variant (for example, `linux-amd64`). Released builds of `logosctl`—including the one the `install-logosctl.sh` helper script downloads—only install portable variants, while dev builds of the tool and of `logos-basecamp` only install `-dev` variants. If you need both variants in a single file, use the `#dual` bundler described in the next section.
    :::
+
+### Build a Windows package
+
+Windows packages are cross-compiled: Nix runs on Linux and targets `x86_64-windows`. On a Windows machine, that Linux is WSL2. The result installs with the Windows build of `logosctl`.
+
+1. Set up WSL2 with Ubuntu. In PowerShell, run:
+
+   ```powershell
+   wsl --install -d Ubuntu-24.04
+   ```
+
+   - Restart Windows if prompted, then open **Ubuntu 24.04** from the Start menu and create your Linux user.
+   - WSL2 needs hardware virtualization. If Windows itself runs in a virtual machine, enable nested virtualization for that VM.
+
+1. In the Ubuntu terminal, install Nix and open a new terminal afterwards:
+
+   ```bash
+   sh <(curl -L https://nixos.org/nix/install) --daemon
+   ```
+
+1. Enable flakes and the Logos binary cache, which serves the prebuilt Windows toolchain (Qt, the MinGW libraries, and the Logos SDK) so that you don't compile it yourself. The Nix daemon reads these settings from `/etc/nix/nix.conf`:
+
+   ```bash
+   sudo tee -a /etc/nix/nix.conf <<'EOF'
+   experimental-features = nix-command flakes
+   extra-substituters = https://cache.nix.logos.co/public
+   extra-trusted-public-keys = public:l4HrXgL4nw246+LBh2SOJyhz64BoGegOYLheT/iIAPU=
+   EOF
+   sudo systemctl restart nix-daemon
+   ```
+
+1. Scaffold or clone your module in the Linux file system, for example under `~/`, rather than under `/mnt/c`. Nix and Git are much slower on the Windows drive.
+
+1. Build the portable Windows package:
+
+   ```bash
+   nix build .#packages.x86_64-windows.lgx-portable
+   ```
+
+   - `result/logos-<module-name>-module-lib.lgx` holds a `windows-x86_64` variant whose plugin is a `.dll`.
+   - Build the portable variant: a `-dev` variant references `/nix/store` paths that don't exist on Windows.
+   - Every dependency of your module needs a Windows build too.
+
+1. Copy the package to your Windows user folder:
+
+   ```bash
+   cp -L result/logos-<module-name>-module-lib.lgx /mnt/c/Users/<windows-user>/Downloads/
+   ```
+
+1. In PowerShell, with `logosctl` installed by `install-logosctl.ps1`, install, load, and call the module. Confirm the install prompt, or pass `-y`:
+
+   ```powershell
+   logosctl daemon start --detach
+   logosctl package install --file $HOME\Downloads\logos-<module-name>-module-lib.lgx
+   logosctl module load <module-name>
+   logosctl call <module-name> <method> <args>
+   ```
+
+   The first build in a fresh WSL2 Ubuntu downloads about 500 MB from the binary cache and takes a few minutes; later builds reuse it.
 
 ### Use the `nix bundle` command
 

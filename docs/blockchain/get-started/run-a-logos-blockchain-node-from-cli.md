@@ -28,6 +28,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
     - macOS aarch64 (recent versions)
     - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
+- FUSE, required by the `logosctl` AppImage (Linux only). On Debian/Ubuntu: `sudo apt install fuse libfuse2t64`. Without it, `logosctl` fails with `No suitable fusermount binary found on the $PATH`.
 - On x86_64, a CPU with ADX instruction support: Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
 - 2 Core CPU, 2Ghz. Modern multi-core processor.
 - Minimal RAM (1 Gb).
@@ -119,7 +120,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 1.  Start the node:
 
     ```sh
-    logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+    logosctl call blockchain_module start "$HOME/user_config.yaml" ""
     ```
 
     - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
@@ -210,7 +211,7 @@ A faucet distributes free tokens on test networks so you can experiment without 
 1.  Find the keys associated with your node:
 
     ```sh
-    grep -A6 known_keys user_config.yaml
+    grep -E 'known_keys|voucher_master_key_id' -A6 user_config.yaml
     ```
 
     Example output:
@@ -257,6 +258,56 @@ A faucet distributes free tokens on test networks so you can experiment without 
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
 
 Block proposal is probabilistic. Your node will not propose on every [slot](../../get-started/glossary.md#slot); participation depends on your stake relative to total active stake in the network.
+:::
+
+## Step 5: Claim leader rewards
+
+Each block your node proposes mints a **leader-reward voucher**. On a CLI node, vouchers are not credited automatically; you claim them to turn them into spendable balance.
+
+Run this step only once your node reports `mode: Online` ([Step 3](#step-3-verify-that-your-node-is-running-and-connected-to-peers)) and your stake has matured. The chain-leader service is not available while the node is still `Bootstrapping`, and `leader_claim` fails there with an unrelated error rather than the response shown below.
+
+1.  Check what is currently claimable. The `value` field is a JSON string, so extract and re-parse it:
+
+    ```sh
+    logosctl call blockchain_module wallet_get_claimable_vouchers | jq -r .result.value | jq .
+    ```
+
+    Example response:
+
+    ```json
+    {
+      "tip": "e5f28df8...9153e",
+      "vouchers": []
+    }
+    ```
+
+1.  Claim an available voucher:
+
+    ```sh
+    logosctl call blockchain_module leader_claim
+    ```
+
+    On success the call returns `success: true` with the claim transaction hash in `value`. When there is nothing to claim, it returns:
+
+    ```json
+    {
+      "method": "leader_claim",
+      "module": "blockchain_module",
+      "result": {
+        "error": "Failed to claim leader rewards: Chain leader service error: Wallet API error: No claimable voucher found",
+        "success": false,
+        "value": null
+      },
+      "status": "ok"
+    }
+    ```
+
+:::info
+`leader_claim` claims **one** voucher per call. To drain several, check `wallet_get_claimable_vouchers` and call `leader_claim` once per listed voucher, pausing a few seconds between calls to avoid a burst of failures.
+
+A voucher becomes claimable only once it is provable against the current tip, so a claim can be a temporary no-op (`No claimable voucher found`) shortly after a block is led; retry on the next check. `leader_claim` currently returns only the transaction hash, not the voucher it consumed or the fee paid.
+
+Distinguish the two failure shapes. A reply with `"status": "ok"` and `result.success: false` means the node answered and had nothing to claim. A reply with `"status": "error"` and no `result` object means the call never reached the chain-leader service: either it timed out (`call to 'blockchain_module.leader_claim' timed out after 20000ms`) or the service is not running yet (`Failed to establish connection to chain-leader-service`). Both of the latter mean the node is not `Online` yet; re-check [Step 3](#step-3-verify-that-your-node-is-running-and-connected-to-peers) rather than retrying the claim.
 :::
 
 ## Troubleshooting the Logos Blockchain node

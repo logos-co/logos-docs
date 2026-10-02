@@ -35,6 +35,7 @@ This procedure covers how to lock one or more of your wallet [notes](../../get-s
 - You can select one or more wallet notes and lock their full value into a channel through a four-step wizard.
 - You can review the exact deposit payload, including channel ID, notes, keys, fee, and metadata, before submitting.
 - You can confirm the deposit succeeded by finding the returned transaction hash in the **Explorer** tab, where the transaction carries a **Channel Deposit** operation.
+- You can see a LEZ deposit arrive in your LEZ wallet about an hour after it is included in a block.
 
 ## Submit a deposit
 
@@ -94,6 +95,10 @@ The wizard collects the deposit payload across two input steps and a review step
    - The result shows the transaction and the slot of the block it was included in. Its operation is labelled **Channel Deposit** (`op 18`).
    - If the result reads `Nothing found for “<hash>”.`, the transaction is not in a block yet. Wait for a few blocks and search again.
 
+1. For a LEZ deposit, wait for the funds to arrive in the LEZ wallet. The LEZ credits a deposit only once the block that includes it is [final](../concepts/about-cryptarchia.md#fork-choice-rule) on the Logos Blockchain, which takes 120 blocks, or about an hour on the testnet. The deposit is then credited in the next LEZ block.
+
+   - To check, open the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md) and click **Refresh** in the **Accounts** panel. The public account whose ID you pasted in **Metadata** shows the deposited amount added to its balance.
+
 ## Troubleshooting channel deposits
 
 ### Confirm & deposit is disabled
@@ -133,3 +138,8 @@ A required field is missing or invalid:
 ### The wizard shows Deposit failed
 
 The module rejected the transaction. Common causes are insufficient funds to cover the selected notes plus the maximum transaction fee, an invalid channel ID or key, or a rejected or expired tip. The exact error is shown in the result step.
+
+### The deposit does not show up in the LEZ wallet
+
+- Less than an hour has passed since the deposit was included in a block. The LEZ credits it only once that block is final on the Logos Blockchain. Wait, then click **Refresh** in the **Accounts** panel of the LEZ wallet again.
+- **Metadata** did not hold the ID of a public LEZ account. The LEZ cannot credit such a deposit.

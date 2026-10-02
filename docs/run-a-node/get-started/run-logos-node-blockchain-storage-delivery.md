@@ -314,21 +314,9 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
    Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
    :::
 
-1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
+1. To participate in consensus, your node needs funds. Fund it by mining, as described in the next section.
 
-   ```sh
-   grep -A6 known_keys /var/lib/logos-node/user_config.yaml
-   ```
-
-1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
-
-1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
-
-   ```sh
-   curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
-   ```
-
-### Optional: Earn PoW mining rewards
+### Fund the node by mining
 
 The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
 Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
@@ -374,7 +362,7 @@ Keep the generated value; `<your PoWClaim key>` below is only an illustration.
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
-1. Request funds to both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` from the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/)
+1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining, then claim the rewards into each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
 
    :::info
    The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.

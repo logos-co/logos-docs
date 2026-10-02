@@ -54,7 +54,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     # > "Online"
     ```
 
-1.  Open your `keystore.yaml` and use the [faucet](https://testnet.blockchain.logos.co/web/faucet/) to send funds to both the `BlendZk` and `SdpFunding` public keys.
+1.  Open your `keystore.yaml` and note the `BlendZk` and `SdpFunding` public keys. Both need funds.
 
     ```yaml
     # keystore.yaml
@@ -66,7 +66,27 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       ...
     ```
 
-1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`. You may need to repeat the faucet requests since only one drip is allowed per block:
+1.  Fund both keys by mining. Start mining and stop auto-claim, so that mined rewards wait for you to claim them into these keys instead of your `PoWClaim` key:
+
+    ```bash
+    logosctl call blockchain_module pow_start_mining
+    logosctl call blockchain_module pow_stop_auto_claim
+    ```
+
+1.  Check that mined tickets are ready to claim. Wait until `claimable_tickets` is greater than `0`:
+
+    ```bash
+    logosctl call blockchain_module pow_claimable_rewards | jq -r .result.value | jq .
+    ```
+
+1.  Claim the ready tickets into each key, replacing the placeholders with your keys. Each call returns the transaction hash of the claim. Check for ready tickets again before the second claim, because the first one uses every ticket that is ready:
+
+    ```bash
+    logosctl call blockchain_module pow_claim <BLEND_ZK_KEY>
+    logosctl call blockchain_module pow_claim <SDP_FUNDING_KEY>
+    ```
+
+1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`, and claim again into any key that has no notes yet:
 
     ```bash
     logosctl call blockchain_module wallet_get_notes <ADDRESS> "" \

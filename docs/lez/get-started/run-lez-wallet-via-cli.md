@@ -138,18 +138,12 @@ In this task, wallet account and transfer commands interact with the authenticat
 
    In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`.
 
-### Claim funds using the Piñata faucet
+### Fund the sender account
 
-"[Piñata](../../get-started/glossary.md#piñata)" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
+1. Send native tokens to the sender account in one of these ways:
 
-1. Fund the sender account via Piñata:
-
-   ```bash
-   # This may take a few seconds to complete
-   wallet pinata claim --to <sender_public_account_id>
-   ```
-
-   - If the command prints `Transaction hash is <hash>` and then `Error: All pollers failed`, the wallet stopped waiting before the transaction was included, not the transaction itself. Wait a minute and check the balance in the next step before claiming again.
+   - Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md). In **Metadata**, paste the sender account ID without its `Public/` prefix.
+   - Have another testnet user transfer native tokens to the sender account ID.
 
 1. Check the sender account balance:
 
@@ -157,7 +151,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-   In the output you should see `Account owned by authenticated transfer program`, with a `"balance":150`.
+   In the output you should see `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
 
 ### Create and fund the recipient public account
 
@@ -200,7 +194,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-This should show a `"balance":113` (150 - 37 = 113).
+The sender's `"balance"` should be `37` lower than before the transfer.
 
    ```bash
    # Recipient account

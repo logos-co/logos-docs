@@ -55,7 +55,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 - Internet access.
 - A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app can activate your LEZ account for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.
-- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get test LEZ without trading](#get-test-lez-without-trading) covers it.
+- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get LEZ to sell](#get-lez-to-sell) covers it.
 :::
 
 ## What to expect
@@ -121,7 +121,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     **Expected:** a page headed **Get set up**, subtitled `Four steps, then you're trading. No keys to type.`, with four numbered sections: **1. Ethereum key**, **2. LEZ account**, **3. Activate your LEZ account**, and **4. Get test ETH**. Each section's border turns green and its heading gains a `done` marker as you complete it.
 
-    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and described in [Get test LEZ without trading](#get-test-lez-without-trading) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
+    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and covered in [Get LEZ to sell](#get-lez-to-sell) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
 
 1. Under **1. Ethereum key**, click **Generate a key**.
 
@@ -151,13 +151,11 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 Activation gets a step of its own because a LEZ account that was never activated is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. The app doesn't remember between launches whether your account is registered, so it always asks the network rather than guessing. If you set this account up in an earlier session, press **Activate account** anyway. It checks first and confirms in about a second without sending anything, and the same is true of **Check again** afterwards, which is the button to press if a swap ever does nothing at all.
 :::
 
-### Get test LEZ without trading
+### Get LEZ to sell
 
-Below **Start trading**, the **Setup** tab carries a collapsed section labelled **Get test LEZ without trading**. It's a secondary path rather than one of the four steps, and you can finish this whole procedure without opening it.
+You don't need any LEZ to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
 
-You don't need it to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
-
-You do need it to *sell* LEZ, because a sell offer has to be backed by LEZ you already hold, and on a test network the only other source is the [Piñata](../get-started/glossary.md#piñata) faucet. Expand the section and click **Claim test LEZ** to claim up to `150` LEZ per run. Each claim solves a small proof-of-work puzzle and then waits for the network, so it can take a few minutes, and the collapsed header carries a `claiming…`, `claimed`, or `claim failed` badge so folding the section away never loses track of one. A claim needs the account from **2. LEZ account** to arrive in, and it changes none of the numbered steps.
+You do need LEZ to *sell* it, because a sell offer has to be backed by LEZ you already hold. Buy LEZ on the **Market** tab first, then publish your sell offer from that balance. The collapsed **Get test LEZ without trading** section below **Start trading** no longer works on the testnet: its **Claim test LEZ** button fails, so leave it closed.
 
 ## Step 3: Confirm your configuration
 
@@ -277,11 +275,11 @@ The maker refuses a lock that doesn't leave it enough time to respond, and the E
 
 ### There isn't enough LEZ in the account
 
-Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, expand **Get test LEZ without trading** on the **Setup** tab and click **Claim test LEZ**. Each run claims up to `150` LEZ from the Piñata faucet, so repeat it until the balance covers what you need.
+Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, buy LEZ on the **Market** tab first, as described in [Get LEZ to sell](#get-lez-to-sell).
 
 ### Setup shows a `Fund LEZ` step instead
 
-You're on an older build, or on one launched with the developer override that restores the previous screens. Up to `swap_ui` `0.4.5`, step 3 both activated the account and claimed `150` LEZ from the faucet, and **Start trading** was numbered as a fifth step. That flow still works, and everything else on this page still applies to it, but the faucet claim is no longer part of getting set up. Update `swap` and `swap_ui` from the **Package Manager** to get the four-step flow this page describes.
+You're on an older build, or on one launched with the developer override that restores the previous screens. Up to `swap_ui` `0.4.5`, step 3 both activated and funded the account, and **Start trading** was numbered as a fifth step. That funding no longer works on the testnet. Update `swap` and `swap_ui` from the **Package Manager** to get the four-step flow this page describes.
 
 ### A swap stopped halfway and the funds are still locked
 

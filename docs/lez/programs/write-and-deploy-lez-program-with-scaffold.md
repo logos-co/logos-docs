@@ -176,7 +176,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
 Use the project-local wallet CLI to submit transactions to your deployed program. The wallet is available at `logos-scaffold wallet`.
 
-1. With the sequencer from Step 6 running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
+1. With the sequencer from Step 6 running, top up the default wallet on your local network, then list your accounts (`wallet list` shows accounts, not a balance):
 
     ```bash
     logos-scaffold wallet topup
@@ -194,7 +194,7 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 
 ## Deploy to the testnet
 
-To deploy to the LEZ public testnet instead of a local sequencer, ensure your wallet has test tokens (use `logos-scaffold wallet topup` to request from the faucet) and remove the `RISC0_DEV_MODE=1` prefix from the build and deploy commands. Full ZK proof generation can take significantly longer than dev mode.
+To deploy to the LEZ public testnet instead of a local sequencer, ensure your wallet has test tokens, for example [bridged from the Logos Blockchain](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md) (`logos-scaffold wallet topup` funds only a local sequencer), and remove the `RISC0_DEV_MODE=1` prefix from the build and deploy commands. Full ZK proof generation can take significantly longer than dev mode.
 
 ```bash
 logos-scaffold build

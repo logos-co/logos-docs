@@ -604,11 +604,10 @@ The host app has [`logos-design-system`](https://github.com/logos-co/logos-desig
    }
    ```
 
-1. Build the design system's storybook, then run it to browse the available components:
+1. Run the design system's storybook to browse the available components:
 
    ```bash
-   nix build github:logos-co/logos-design-system#bin-bundle-dir --out-link ../logos-storybook
-   ../logos-storybook/bin/LogosStorybook
+   nix run github:logos-co/logos-design-system
    ```
 
    - **Controls** are designed and ready for production, for example `LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField` and `LogosToolTip`.

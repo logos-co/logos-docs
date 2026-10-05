@@ -74,7 +74,7 @@ The AMM, TWAP oracle, and token programs are already deployed on testnet, so you
 
    - The IDLs you'll pass to `--idl` below (`artifacts/amm-idl.json`, `artifacts/token-idl.json`, `artifacts/twap_oracle-idl.json`) are already committed under `artifacts/`.
 
-1. Look up the current testnet ProgramIds in [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md) and note the `token`, `amm`, and `twap_oracle` values—you'll pass these as `--program` throughout this procedure, in place of `<TOKEN_PROGRAM_ID>`, `<AMM_PROGRAM_ID>`, and `<TWAP_PROGRAM_ID>`.
+1. Look up the current testnet programs in [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md) and note the **ImageID (hex)** value—the 64-character hex string—for `token`, `amm`, and `twap_oracle`. You'll pass these as `--program` throughout this procedure, in place of `<TOKEN_PROGRAM_ID>`, `<AMM_PROGRAM_ID>`, and `<TWAP_PROGRAM_ID>`. `spel --program` accepts only the hex form; the base58 ImageID in the next column is read as a file path and fails. The `*_pdas` helpers in [Step 5](#step-5-derive-the-amm-pdas) accept either form.
 
    :::warning
    If the testnet deployment is ever redeployed, every ProgramId in DEPLOYMENTS.md changes, and every PDA derived from those ProgramIds changes with it (config, pool, vaults, LP definition, LP lock, current tick). Always re-derive PDAs from the ProgramIds you're currently using rather than reusing old values.
@@ -146,7 +146,8 @@ AMM PDAs use a SHA-256 seed scheme, so derive them with the program's own `*_pda
      "<AMM_PROGRAM_ID>" "<TWAP_PROGRAM_ID>" "<DEF_A>" "<DEF_B>"
    ```
 
-   - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, and `<CURRENT_TICK_PDA>`.
+   - `<OWNER>` is the account that will sign `initialize` in [Step 6](#step-6-initialise-the-amm). `(owner, nonce)` namespaces the AMM instance, so the config PDA—and every PDA derived from it—depends on it; pick it before deriving.
+   - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, `<CURRENT_TICK_PDA>`, and the `protocol_fee_a`/`protocol_fee_b` PDAs needed by [Step 10](#step-10-swap-tokens) and [Step 14](#step-14-admin-withdraw-protocol-fees).
    - [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md) lists the equivalent PDAs already derived for the live testnet TKA/TKB pool—useful as a worked example to sanity-check the shape of this command's output, but not reusable here, since your `<DEF_A>`/`<DEF_B>` are different token definitions.
 
 1. Select any of your accounts to be `<AUTHORITY>`—the admin who can later call `update_config` or withdraw protocol fees ([Step 14](#step-14-admin-withdraw-protocol-fees)).
@@ -255,7 +256,7 @@ Derive and create a TWAP `price-observations` account for a time window before y
 
 ## Step 10: Swap tokens
 
-Initiate a swap between your two tokens with `swap-exact-input`. `--token-definition-id-in` picks the direction—pass the definition id of the token you're spending.
+Initiate a swap between your two tokens with `swap-exact-input`. Direction is set by which holding you pass as `--user-input-holding`—that's the side that's debited and signed.
 
 1. Execute a swap.
 
@@ -267,21 +268,20 @@ Initiate a swap between your two tokens with `swap-exact-input`. `--token-defini
         --pool <POOL_PDA> \
         --vault-a <VAULT_A_PDA> \
         --vault-b <VAULT_B_PDA> \
-        --user-holding-a <USER_HOLDING_A> \
-        --user-holding-b <USER_HOLDING_B> \
+        --user-input-holding <HOLDING_OF_TOKEN_YOU_SPEND> \
+        --user-output-holding <HOLDING_OF_TOKEN_YOU_RECEIVE> \
         --current-tick-account <CURRENT_TICK_PDA> \
         --clock 4BdcjoXkq786TMWcBGGHqcxeLYMZmn17rL4eM9ZyRWNU \
         --protocol-fee-holding <PROTOCOL_FEE_PDA_FOR_INPUT_TOKEN> \
         --swap-amount-in <AMOUNT_IN> \
         --min-amount-out <MIN_OUT> \
-        --token-definition-id-in <DEF_OF_INPUT_TOKEN> \
         --deadline 18446744073709551615
    ```
 
-   - `--token-definition-id-in`: `<DEF_A>` ⇒ A→B; `<DEF_B>` ⇒ B→A.
+   - `--user-input-holding` picks the direction: pass your Token A holding to swap A→B, your Token B holding to swap B→A. Only this side is signed and debited.
    - `--protocol-fee-holding`: the protocol-fee PDA **for the input token**: `protocol_fee_a` when spending A, `protocol_fee_b` when spending B (from [Step 5](#step-5-derive-the-amm-pdas)'s output). The swap diverts `protocol_fee_bps` of the fee here, creating the account on first use; pass it even when the instance's protocol fee is `0`.
    - `--swap-amount-in` must be ≤ the input holding's balance; `--min-amount-out` is the slippage floor (`1` accepts any nonzero output).
-   - `spel` signs **both** `user-holding-a` and `user-holding-b`—the input side is dynamic, so both are marked as signers even though only the input side is debited. `swap-exact-output` uses the same account set with `--exact-amount-out`/`--max-amount-in` instead.
+   - `swap-exact-output` uses the same account set with `--exact-amount-out`/`--max-amount-in` instead.
 
    :::info
    To verify, run the following:

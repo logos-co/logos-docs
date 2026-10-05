@@ -54,11 +54,7 @@ Transfers, mints, and burns are irreversible, and renouncing the mint authority 
 
 1. Install `spel`.
 
-   ```bash
-   git clone https://github.com/logos-co/spel.git
-   cd spel
-   cargo install --path spel-cli  # installs as "spel"
-   ```
+   
 
 ## Step 2: Create a fungible token
 
@@ -79,7 +75,7 @@ Creating a token creates its [token definition account](../../get-started/glossa
 
    - The listing shows each account's label and base58 id, for example `Public/CER21z16YgmWr3aN8FEHsrmfm2iRfQiwZTac3FQa21US [Token A Definition]`. Use those ids wherever this procedure refers to `<DEF>`, `<HOLDING>`, or `<AUTHORITY>`.
 
-1. Create the token with `new-fungible-definition`, replacing `<TOKEN_PROGRAM_ID>` with the current testnet token program's ProgramId from [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md).
+1. Create the token with `new-fungible-definition`, replacing `<TOKEN_PROGRAM_ID>` with the `token` row's **ImageID (hex)** value—the 64-character hex string—from [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md). `spel --program` takes only a 64-char hex ID, a name from `spel.toml`, or a path to a program binary, so the base58 ImageID in the next column is read as a file path and fails.
 
    ```sh
    spel --idl artifacts/token-idl.json \
@@ -255,7 +251,7 @@ Passing `--new-authority none` **permanently renounces** minting—the supply be
 A non-fungible token is a definition with a `printable_supply` plus a metadata account. Its first holding is an `NftMaster`; each print carves an `NftPrintedCopy` out of it. `print_balance` reserves one unit for the master itself, so a `printable_supply` of `N` yields `N − 1` printable copies.
 
 :::warning
-`spel` cannot currently create NFT (or metadata-bearing fungible) definitions—`new-definition-with-metadata` takes two structured arguments that `spel` has no way to encode. This holds for both CLI v0.5.0 and v0.6.0. Until it's supported, create these definitions programmatically; see `token_program::new_definition::new_definition_with_metadata` and the integration tests in `programs/integration_tests/tests/token.rs` in the [`lez-programs`](https://github.com/logos-blockchain/lez-programs) repository. Everything below works over the CLI against a definition created that way.
+`spel` cannot currently create NFT (or metadata-bearing fungible) definitions—`new-definition-with-metadata` takes two structured arguments that `spel` has no way to encode (it can only encode enum-kinded IDL types, and neither argument's type appears in the IDL's `types` section). This still holds as of CLI v0.7.0. Until it's supported, create these definitions programmatically; see `token_program::new_definition::new_definition_with_metadata` and the integration tests in `programs/integration_tests/tests/token.rs` in the [`lez-programs`](https://github.com/logos-blockchain/lez-programs) repository. Everything below works over the CLI against a definition created that way.
 :::
 
 1. Print a copy. Both the master holding and the fresh printed-copy account must sign; the printed target must be fresh—`print-nft` claims it itself, so don't pre-initialise it.
@@ -299,6 +295,10 @@ spel --idl artifacts/token-idl.json inspect <METADATA> --type TokenMetadata
 `--type` must match the account's actual shape—decoding a holding as a definition fails. A holding's `definition_id` field is how you find the token it belongs to.
 
 ## Troubleshooting
+
+### `Transaction NOT confirmed` on a transaction that actually landed
+
+`spel` stops waiting after a fixed number of blocks and prints `❌ Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks`. It prints that same line whether the transaction was rejected by the program or simply confirmed too slowly, so read it as "unknown", never as "failed". Check the affected accounts with `inspect` ([Step 9](#step-9-inspect-a-token-account)) before re-running—re-running a `transfer` that did land moves the balance a second time.
 
 ### `Token definition must be owned by token program`
 

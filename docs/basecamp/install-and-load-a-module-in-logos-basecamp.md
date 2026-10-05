@@ -57,13 +57,13 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 
 ### How Basecamp downloads a package
 
-Basecamp ships with the `storage_module` module, which runs a Logos Storage node. A catalogue can publish a package version on Logos Storage, with a `logos:` address, and over HTTPS.
+Basecamp ships with the `storage_module` module, which runs a Logos Storage node. A catalogue can publish a package version on Logos Storage with a `logos:` address, as well as over HTTPS. 
 
-- When the version is on Logos Storage and the node is running, Basecamp downloads it from Logos Storage.
-- When the node is stopped, `storage_module` is not loaded, or the node is on another network than the catalogue, Basecamp downloads it from the HTTPS URL.
-- When the Logos Storage download takes too long, Basecamp stops it and downloads the package from the HTTPS URL.
+- When a package with the desired version is available on the Logos Storage network and the Storage node is running, Basecamp downloads the package from Logos Storage.
+- When the Storage node is stopped, `storage_module` is not loaded, or the node is on another network than the catalogue, Basecamp downloads the package from the HTTPS URL.
+- If the Logos Storage download takes too long, Basecamp stops it and downloads the package from the HTTPS URL.
 
-The **Source** column of **Package Manager** shows where a package comes from. For a package that is not installed, it shows an icon for each source the package is available from. For an installed package, it shows the source it was downloaded from. Hover an icon to read the name of the sources it shows.
+The **Source** column of **Package Manager** shows where a package comes from. For a package that is not installed, it shows an icon for each source from which the package is available for download. For an installed package, it shows the source it was downloaded from. Hover over an icon to see the name of the package source.
 
 ![The Source column in Package Manager](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-source.png)
 
@@ -120,7 +120,7 @@ Basecamp uses Logos Storage only when the Logos Storage node can serve the packa
 
     ![Storage Module loaded in Module Inspector](./assets/install-and-load-a-module-in-logos-basecamp/module-inspector-storage.png)
 
-1. If you installed the **Storage** app, open it and check that the node is running. A download never starts a node that you stopped.
+1. If you installed the **Storage** app, open it and check that the node is running. A package download will not begin if your Storage node is stopped.
 
 ### A QML-based UI App cannot reach the network
 

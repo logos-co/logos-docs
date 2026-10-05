@@ -10,10 +10,6 @@ slug: connectivity
 sidebar_position: 1
 ---
 
-:::tip[Version]
-This document is accurate for **Testnet v0.3**.
-:::
-
 # Connectivity
 
 #### Understand how a storage node joins a network and becomes reachable from the internet.
@@ -22,25 +18,24 @@ This document is accurate for **Testnet v0.3**.
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-A node is useful only when it can reach - and be reached from - other nodes.
-This page explains how a node joins a network and how to make it reachable from
+A node is useful only when it can reach - and be reached from - other nodes. This page explains how a node joins a network and how to make it reachable from
 the outside.
 
 ## Joining a network
 
-To share files, you need to be part of a _storage network_ with other peers. To
-join a storage network, you need to know at least one other node that is already
-part of that storage network; that is, you need a _bootstrap peer_ for that
+To share files, you need to be part of a _Storage network_ with other peers. To
+join a Storage network, you need to know at least one other node that is already
+part of that Storage network; that is, you need a _bootstrap peer_ for that
 storage network. Once connected to a suitable bootstrap peer, your node should
 be able to look up any other peers that are also part of the same storage
-network. With Logos storage, currently, you have two main choices.
+network. With Logos Storage, currently, you have two main choices:
 
-**Join an existing public storage network.** We provide two sets of public
+**Join an existing public Storage network.** We provide two sets of public
 bootstrap peers which define two logically separate, public storage networks.
-Bootstrap addresses for those storage networks are shipped with the storage
+Bootstrap addresses for those Storage networks are shipped with the Logos Storage
 module by default, and you can access them by setting the `network` option to a
-preset name. Since presets already contain the storage network's bootstrap
-nodes, you need nothing else. If nothing is specified, storage will always join
+preset name. Since presets already contain the Storage network's bootstrap
+nodes, you need nothing else. If nothing is specified, Storage will always join
 `logos.test` by default.
 
 | Preset       | Description                       |
@@ -48,16 +43,16 @@ nodes, you need nothing else. If nothing is specified, storage will always join
 | `logos.test` | Logos testnet (default)           |
 | `logos.dev`  | Logos devnet                      |
 
-**Create your own storage network.** If you start your node with
+**Create your own Storage network.** If you start your node with
 `no-bootstrap-node` set to `true`, it will bootstrap from no-one, effectively
-becoming the bootstrap peer and only member of a new storage network. You can
+becoming the bootstrap peer and only member of a new Storage network. You can
 read your node's address with the `spr` method, then use that address in the
-`bootstrap-node` option of other nodes to get them to join your storage network.
+`bootstrap-node` option of other nodes to get them to join your Storage network.
 
 :::note
-Any node that joins a storage network can be a bootstrap peer for that
+Any node that joins a Storage network can be a bootstrap peer for that
 network. Public bootstrap peers are convenient because their addresses are
-well-known and they are highly available, but they a convenience more than a
+well-known and they are highly available, but they are a convenience more than a
 necessity.
 :::
 
@@ -84,13 +79,13 @@ actions, in this order, if it is unreachable:
 The reachability check is done regularly, every 2 minutes by default
 (depending on the configuration).
 
-Being unreachable is not a dead end. Unreachable nodes will sit behind the relay
-and can still share content, but the performance will be lower than for a
+Being unreachable is not a dead end. Unreachable nodes sit behind the relay
+and can still share content, but the performance will be worse than for a
 reachable node.
 
 :::info
 * Port mapping only works if UPnP, NAT-PMP or PCP is enabled on the router. If
-it fails, the node log shows `TCP port mapping failed` and the node uses a relay
+it fails, the node log will show `TCP port mapping failed` and the node will use a relay
 instead. 
 * Relay resources are limited. You should always do your best to configure your
 network in a way that does not require utilising a relay.
@@ -145,10 +140,11 @@ If your router does not support UPnP, or you prefer not to enable it, map the po
 1. In your router's admin page, find the *Port forwarding* section (sometimes
    called *NAT rules* or *Virtual server*) and add a rule pointing to your
    machine's local address and port.
-1. Set the `nat` option to `extip:<your-public-IP>` (see [Finding your public IP](#finding-your-public-ip)).
+1. Set the `nat` option to `extip:<your-public-IP>`.
 
-:::info Give your machine a fixed address on the local network (a *DHCP
-reservation* or *static lease* in the router settings). Otherwise forwarding
+:::info
+Give your machine a fixed address on the local network (a *DHCP
+reservation* or *static lease* in the router settings). Otherwise, forwarding
 rules may break if the router assigns a different address to your machine.
 :::
 

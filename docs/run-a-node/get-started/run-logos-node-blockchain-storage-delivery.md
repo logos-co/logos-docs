@@ -318,11 +318,10 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
 
 ### Fund the node by mining
 
-The generated `user_config.yaml` includes a `pow` section that automatically claims mining rewards to the node's `PoWClaim` key.
-Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
-Keep the generated value; `<your PoWClaim key>` below is only an illustration.
+The generated `user_config.yaml` includes a `pow` section that deals with automatically claiming mining rewards to the node's `PoWClaim` key. Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
+Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
-1. Optionally, limit the number of mining threads. The default `max_threads: null` uses one thread per CPU core. Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
+1. Leave the `pow` section as generated. If desired, you can optionally limit the number of mining threads by editing `pow.mining.max_threads`, which uses one thread per CPU core by default (with the `null` value). Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
 
    ```yaml
    pow:
@@ -347,7 +346,7 @@ Keep the generated value; `<your PoWClaim key>` below is only an illustration.
    logosctl call blockchain_module pow_start_mining
    ```
 
-   - Mining is off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
+   - Mining is turned off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
    - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
 
 1. Check the mining and auto-claim status:
@@ -430,7 +429,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
-1. Check that the [storage module](../../get-started/glossary.md#storage-module) is running:
+1. Check that the [Storage module](../../get-started/glossary.md#storage-module) is running:
 
    ```bash
    logosctl call storage_module isRunning
@@ -438,7 +437,7 @@ In `logosctl` 0.3.1, the package downloader starts Storage automatically using i
 
    Repeat this check until `result` is `true` before downloading. Startup can take a few minutes.
 
-2. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
+1. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
    ```sh
    logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
@@ -447,8 +446,7 @@ In `logosctl` 0.3.1, the package downloader starts Storage automatically using i
    
    After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
 
-3. Logos storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). Those are slow, but prevent actors on the
-internet from learning that you are downloading the book. Try it out:
+1. Logos Storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). They are slow, but prevent others from learning that you are downloading a file. Try it out:
 
    ```sh
    # remove file from disk
@@ -460,7 +458,7 @@ internet from learning that you are downloading the book. Try it out:
       "$(pwd)/farewell-to-westphalia.pdf" false 65536 true false
    ```
 
-   In contrast to direct downloads, downloads over mix can take on the order of minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
+   In contrast to direct downloads, downloads over mix can take a few minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
 
    :::tip
    - Use **absolute paths** when feeding file paths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.

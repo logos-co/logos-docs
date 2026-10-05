@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Get started running a Logos storage node and uploading your first file to the Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.3 who want to contribute storage capacity to the Logos network.
@@ -102,7 +102,7 @@ Several module calls in this procedure are **asynchronous**: the call returns `"
 To see every method the module exposes (the same methods you can `call`), run `logosctl module-info storage_module`.
 :::
 
-1.  Ask the Storage module to produce a suitable default configuration:
+1.  Use the Storage module to produce a suitable default configuration:
 
     ```sh
     logosctl call storage_module loadConfigOrDefault | jq ".result.value | fromjson" > config.json
@@ -114,11 +114,11 @@ To see every method the module exposes (the same methods you can `call`), run `l
       * `listen-port`: should contain a valid TCP port which is currently free on your local machine.
 
     :::tip
-    - The default settings for Logos storage should be enough to get your node properly connected onto the Logos testnet. In case you want more control over port allocation, or want to learn more about how Logos storage operates, see [Connectivity](../concepts/connectivity.md).
+    - The default settings for Logos Storage should be enough to get your node properly connected onto the Logos testnet. In case you want more control over port allocation, or want to learn more about how Logos storage operates, see [Connectivity](../concepts/connectivity.md).
     - If you plan on running a node for longer, consider helping the network by setting up port mapping on your router (see [Connectivity](../concepts/connectivity.md) for details).
     :::
 
-1.  Initialise the storage module. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
+1.  Initialise the Storage module. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
 
     ```sh
     logosctl call storage_module init @config.json
@@ -192,11 +192,8 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
     ```
 
     :::note
-    - Setting `advertise` to `true` when you run an ephemeral node; that is, a node that runs briefly and is then shut down,
-      can be detrimental to network performance as your node announces itself and then leaves an
-      advertisement pointing to a departed node behind.
-    - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that
-      would reveal to other nodes that you've downloaded the file, defeating the purpose of the using mix in the first place.
+    - Setting `advertise` to `true` when you run an ephemeral node (a node that runs briefly and is then shut down) can be detrimental to network performance as your node announces itself and then leaves an advertisement pointing to a departed node.
+    - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that would reveal to other nodes that you've downloaded the file, defeating the purpose of the using mix in the first place.
     - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
     :::
 

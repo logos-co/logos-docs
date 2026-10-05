@@ -30,10 +30,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```bash
   # Ubuntu / Debian
   sudo apt update
-  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev
+  sudo apt install git curl build-essential clang libclang-dev pkg-config libssl-dev libpcsclite-dev
 
   # Fedora
-  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs
+  sudo dnf install git curl gcc glibc-devel clang clang-devel pkgconf-pkg-config openssl-devel llvm-libs pcsc-lite-devel
   
   # macOS
   xcode-select --install
@@ -53,8 +53,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.1
+   git checkout v0.2.4
    ```
+
+   - The tag must match the programs the testnet runs. With an older tag such as `v0.2.1`, `wallet check-health` panics with `Local ID for authenticated transfer program is different from remote`.
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 
@@ -126,7 +128,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet auth-transfer init --account-id <sender_public_account_id>
    ```
 
-   In the output, you should see the transaction hash printed as `Transaction hash is <hash>`.
+   In the output, you should see `Transaction is included in block <number>`, followed by the transaction data.
 
 1. Check the account updated state:
 
@@ -136,16 +138,12 @@ In this task, wallet account and transfer commands interact with the authenticat
 
    In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`.
 
-### Claim funds using the Piñata faucet
+### Fund the sender account
 
-"[Piñata](../../get-started/glossary.md#piñata)" is the name of the LEZ-specific testnet faucet program that funds accounts with native tokens.
+1. Send native tokens to the sender account in one of these ways:
 
-1. Fund the sender account via Piñata:
-
-   ```bash
-   # This may take a few seconds to complete
-   wallet pinata claim --to <sender_public_account_id>
-   ```
+   - Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md). In **Metadata**, paste the sender account ID without its `Public/` prefix.
+   - Have another testnet user transfer native tokens to the sender account ID.
 
 1. Check the sender account balance:
 
@@ -153,7 +151,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-   In the output you should see `Account owned by authenticated transfer program`, with a `"balance":150`.
+   In the output you should see `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
 
 ### Create and fund the recipient public account
 
@@ -162,6 +160,14 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```bash
    wallet account new public
    ```
+
+1. Initialise the recipient account under the authenticated-transfer program:
+
+   ```bash
+   wallet auth-transfer init --account-id <recipient_public_account_id>
+   ```
+
+   - Do not skip this. A transfer to a recipient that was never initialised is discarded without an error: the send prints a transaction hash, the sender's balance does not change, and the recipient stays `Uninitialized`.
 
 1. Send 37 tokens from sender to recipient:
 
@@ -188,7 +194,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-This should show a `"balance":113` (150 - 37 = 113).
+The sender's `"balance"` should be `37` lower than before the transfer.
 
    ```bash
    # Recipient account

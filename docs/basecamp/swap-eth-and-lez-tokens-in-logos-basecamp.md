@@ -55,7 +55,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 - Internet access.
 - A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app can activate your LEZ account for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.
-- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get test LEZ without trading](#get-test-lez-without-trading) covers it.
+- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get LEZ to sell](#get-lez-to-sell) covers it.
 :::
 
 ## What to expect
@@ -69,7 +69,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of packages, and Basecamp re-reads it whenever the index changes.
 
-1. In the sidebar, click **Package Manager**, then click **Repositories** in the toolbar.
+1. In the sidebar, click **Package Manager**, then click **Manage Repositories** in the toolbar.
 
     This opens **Settings** at the **Package Repositories** page, which lists the repositories you're drawing packages from.
 
@@ -87,17 +87,17 @@ Basecamp arrives with the official Logos catalogue configured, and it merges tha
 
 1. Go back to **Package Manager** and search for `swap`.
 
-    **Expected:** two packages from the new repository, `swap` and `swap_ui`, both shown as **ETH ↔ LEZ Atomic Swap** and both at the same version. The catalogue always serves the current release, so take whatever version it offers rather than looking for a particular number.
+    **Expected:** two packages from the new repository, `swap` and `swap_ui`, both shown as **ETH ↔ LEZ Atomic Swap** and both at the same version. Tell them apart by the **Type** column: `core` is `swap` and `ui_qml` is `swap_ui`. The catalogue always serves the current release, so take whatever version it offers rather than looking for a particular number.
 
 1. Install `swap` first, then install `swap_ui`.
 
-    Each opens an **Add Application** window listing **Required Packages**. Confirm with **Install** and wait for the stage label to reach `Installed`.
+    Click **INSTALL** on the package's row. An **Install Package?** dialogue opens. Confirm with **Install** and wait for the row's **Action** column to read `INSTALLED`.
 
     :::warning
     Install `swap` before `swap_ui`. The UI package declares a dependency on the backend, and taking them the other way round leaves the interface with no backend to talk to.
     :::
 
-1. Restart Basecamp, then open **ETH ↔ LEZ Atomic Swap** from the sidebar.
+1. Open **ETH ↔ LEZ Atomic Swap** from the sidebar, where its tile reads `SW`. If the tile isn't there, restart Basecamp.
 
     **Expected:** a row of six tabs across the top: **Market**, **Swap**, and **History**, then, after a divider, **Sell**, **Refund**, and **Setup**. Beneath the tabs runs a strip with your `ETH` and `LEZ` addresses and balances, which keep themselves up to date, and a connection chip that settles on `Connected` once the app finds a peer, gaining a peer count—`Connected · 1 peer` and up—as it counts them.
 
@@ -121,7 +121,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     **Expected:** a page headed **Get set up**, subtitled `Four steps, then you're trading. No keys to type.`, with four numbered sections: **1. Ethereum key**, **2. LEZ account**, **3. Activate your LEZ account**, and **4. Get test ETH**. Each section's border turns green and its heading gains a `done` marker as you complete it.
 
-    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two collapsed sections follow it: **Get test LEZ without trading**, described in [Get test LEZ without trading](#get-test-lez-without-trading) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration).
+    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and covered in [Get LEZ to sell](#get-lez-to-sell) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
 
 1. Under **1. Ethereum key**, click **Generate a key**.
 
@@ -151,19 +151,17 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 Activation gets a step of its own because a LEZ account that was never activated is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. The app doesn't remember between launches whether your account is registered, so it always asks the network rather than guessing. If you set this account up in an earlier session, press **Activate account** anyway. It checks first and confirms in about a second without sending anything, and the same is true of **Check again** afterwards, which is the button to press if a swap ever does nothing at all.
 :::
 
-### Get test LEZ without trading
+### Get LEZ to sell
 
-Below **Start trading**, the **Setup** tab carries a collapsed section labelled **Get test LEZ without trading**. It's a secondary path rather than one of the four steps, and you can finish this whole procedure without opening it.
+You don't need any LEZ to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
 
-You don't need it to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
-
-You do need it to *sell* LEZ, because a sell offer has to be backed by LEZ you already hold, and on a test network the only other source is the [Piñata](../get-started/glossary.md#piñata) faucet. Expand the section and click **Claim test LEZ** to claim up to `150` LEZ per run. Each claim solves a small proof-of-work puzzle and then waits for the network, so it can take a few minutes, and the collapsed header carries a `claiming…`, `claimed`, or `claim failed` badge so folding the section away never loses track of one. A claim needs the account from **2. LEZ account** to arrive in, and it changes none of the numbered steps.
+You do need LEZ to *sell* it, because a sell offer has to be backed by LEZ you already hold. Buy LEZ on the **Market** tab first, then publish your sell offer from that balance. The collapsed **Get test LEZ without trading** section below **Start trading** no longer works on the testnet: its **Claim test LEZ** button fails, so leave it closed.
 
 ## Step 3: Confirm your configuration
 
 **Advanced settings**, at the foot of the **Setup** tab, holds every endpoint, address, and key the app uses, grouped under **Ethereum**, **LEZ**, **Swap Parameters**, and **Developer**. It is the former **Config** tab, folded into **Setup** so there is one place to set the app up rather than two. After the guided sections above it, the key fields are already filled and the network values ship pre-filled, so this step is a check rather than a data-entry exercise. You can skip it and still complete a swap; it's here so you can see what **Setup** did and confirm nothing is off.
 
-1. Open the **Setup** tab and expand **Advanced settings**.
+1. Open the **Setup** tab and scroll to **Advanced settings**. Expand it if it's collapsed. It opens by itself when a field needs attention, so it's often open already, and clicking its heading then collapses it.
 
 1. Under **Ethereum**, confirm **RPC URL** is `wss://ethereum-sepolia-rpc.publicnode.com` and **HTLC Contract Address** is `0x351B0EA07739FA9F6769213927D7836a790A5FAF`.
 
@@ -203,11 +201,11 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
 1. Click the offer.
 
-    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **Hashlock**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH.
+    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then the time left on both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH. There's no **Hashlock** row yet: your app creates the secret, and with it the hashlock, only when you accept.
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 
-    If the button is disabled, the app shows why immediately beneath it, such as `Finish setting up first — open Setup` or `This offer has expired`.
+    If the button is disabled, the app shows why just above it, such as `Finish setting up first — open Setup`, `This offer has expired`, or, while your Sepolia ETH hasn't arrived, `You don't have enough ETH for this swap`.
 
 1. Switch to the **Swap** tab and watch it run.
 
@@ -235,9 +233,9 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 
     **Expected:** the LEZ explorer shows the matching claim. The URL looks like `https://explorer.testnet.lez.logos.co/transaction/` followed by a 64-character hash with no `0x` prefix.
 
-1. Compare the **Hashlock** on the receipt with the hashlock the offer advertised in [Step 4](#step-4-take-a-live-offer).
+1. Look at the **Hashlock** on the receipt. It's the hash of the secret your app generated when you accepted the offer in [Step 4](#step-4-take-a-live-offer), and the row for this swap in the **History** list carries the same value.
 
-    They match, which is the point. The same hash bound both locks, and the preimage now published on the LEZ chain is what released both.
+    The same hash bound both locks, which is the point, and the preimage now published on the LEZ chain is what released both.
 
 :::warning
 A Basecamp app can't open your browser for you. Logos app interfaces run inside a sandboxed QML engine that silently ignores requests to open an external URL, as reported in [eth-lez-atomic-swaps#84](https://github.com/logos-co/eth-lez-atomic-swaps/issues/84). That's why every row on the receipt carries copy buttons instead of clickable links—**⧉** for the value itself, **↗** for a block-explorer link—and why every instruction here says to paste the link into your browser yourself.
@@ -257,7 +255,7 @@ If you never got as far as a receipt, [open an issue](https://github.com/logos-c
 
 ### The app doesn't appear after installing it
 
-Restart Basecamp. A newly installed app reaches the sidebar only after a restart. If it's still missing, check your platform: the catalogue publishes `darwin-arm64`, `linux-amd64`, and `linux-arm64` builds only, and Basecamp installs nothing at all on a platform with no matching build, which is what happens on Intel macOS.
+Restart Basecamp. Current Basecamp releases add a newly installed app to the sidebar straight away, but older ones only do so after a restart. If it's still missing, check your platform: the catalogue publishes `darwin-arm64`, `linux-amd64`, and `linux-arm64` builds only, and Basecamp installs nothing at all on a platform with no matching build, which is what happens on Intel macOS.
 
 ### The Market tab is empty
 
@@ -277,11 +275,11 @@ The maker refuses a lock that doesn't leave it enough time to respond, and the E
 
 ### There isn't enough LEZ in the account
 
-Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, expand **Get test LEZ without trading** on the **Setup** tab and click **Claim test LEZ**. Each run claims up to `150` LEZ from the Piñata faucet, so repeat it until the balance covers what you need.
+Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, buy LEZ on the **Market** tab first, as described in [Get LEZ to sell](#get-lez-to-sell).
 
 ### Setup shows a `Fund LEZ` step instead
 
-You're on an older build, or on one launched with the developer override that restores the previous screens. Up to `swap_ui` `0.4.5`, step 3 both activated the account and claimed `150` LEZ from the faucet, and **Start trading** was numbered as a fifth step. That flow still works, and everything else on this page still applies to it, but the faucet claim is no longer part of getting set up. Update `swap` and `swap_ui` from the **Package Manager** to get the four-step flow this page describes.
+You're on an older build, or on one launched with the developer override that restores the previous screens. Up to `swap_ui` `0.4.5`, step 3 both activated and funded the account, and **Start trading** was numbered as a fifth step. That funding no longer works on the testnet. Update `swap` and `swap_ui` from the **Package Manager** to get the four-step flow this page describes.
 
 ### A swap stopped halfway and the funds are still locked
 

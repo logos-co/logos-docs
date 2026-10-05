@@ -14,9 +14,13 @@ import Figure from '@site/src/components/Figure';
 
 # Logos Storage
 
-#### Learn how Logos provides resilient, censorship-resistant file sharing for decentralised applications.
+#### Learn how Logos can be used to build resilient, censorship-resistant file sharing applications.
 
-[Logos storage](../get-started/glossary.md#logos-storage) is a filesharing protocol that allows users of the Logos stack to publish and share files in a decentralised manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires the Logos runtime and tooling to work.
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
+[Logos storage](../get-started/glossary.md#logos-storage) is a filesharing protocol that allows users building on the Logos stack to publish and share files in a decentralised manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires the Logos runtime and tooling to work.
 
 ## The basics
 

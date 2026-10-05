@@ -34,7 +34,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 - Minimal RAM (1 Gb).
 - SSD with 100+ GB free with ability to expand storage on demand.
 - Relatively reliable network connection. 1Mbps of free bandwidth.
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
@@ -42,7 +42,7 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 
 - You can install the node binary, generate a configuration, and join the public testnet.
 - You can verify that your node is syncing and connected to peers using the local API.
-- You can receive test tokens from the faucet and automatically participate in the consensus lottery once your stake matures.
+- You can mine test tokens and automatically participate in the consensus lottery once your stake matures.
 
 ## Step 1: Load the Logos Blockchain module
 
@@ -131,7 +131,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
 ## Step 3: Verify that your node is running and connected to peers
 
-Wait for your node to finish syncing and reach `Online` mode before requesting tokens. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
+Wait for your node to finish syncing and reach `Online` mode before mining. Pipe the `get_cryptarchia_info` command through `jq .` to format JSON output.
 
 1.  Check the consensus state. The `logosctl` call and the node's HTTP endpoint return the same data in slightly different shapes.
 
@@ -204,55 +204,42 @@ Wait for your node to finish syncing and reach `Online` mode before requesting t
 
 1. Wait until `mode` transitions to `Online` before continuing. Bootstrapping should take approximately 1 hour.
 
-## Step 4: Request tokens from the faucet
+## Step 4: Mine tokens to fund your node
 
-A faucet distributes free tokens on test networks so you can experiment without financial risk. Navigate to the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode.
+A synced node validates the chain but does not propose blocks until its wallet holds stake. You fund it by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
 
-1.  Find the keys associated with your node:
+:::warning
+Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+:::
 
-    ```sh
-    grep -E 'known_keys|voucher_master_key_id' -A6 user_config.yaml
-    ```
-
-    Example output:
-
-    ```
-    known_keys:
-        57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923: ...
-        de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14: ...
-    voucher_master_key_id: de3233cec107e6589f83d4f3094caa65c633b5b33601211353779dc01972ca14
-    ```
-
-1.  Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
-
-    ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
-
-    :::tip
-    The faucet UI POSTs to `https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>`. You can call that endpoint directly from a script or headless host:
+1.  After your node reaches `Online` mode, start mining:
 
     ```sh
-    curl -X POST "https://testnet.blockchain.logos.co/web/faucet-backend/<your-chosen-key>"
-    # {"status":"queued"}
+    logosctl call blockchain_module pow_start_mining
     ```
-    :::
 
-1.  Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+    - Mining is off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
+    - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
+
+1.  Check the mining and auto-claim status:
 
     ```sh
-    curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
+    logosctl call blockchain_module pow_status | jq -r .result.value | jq .
     ```
 
-    Example response:
+    - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards. The target's `public_key` is your `PoWClaim` key.
 
-    ```json
-    {
-      "tip": "5d16d4bd3712dc5869fc624e59774552b4fb0c974a6efa516563b3778bac9258",
-      "balance": 1000,
-      "address": "57364103d3ff29c35d2073cba0526ef729b8e08490bddfc6b74128b6613fe923"
-    }
+1.  Check the balance of your `PoWClaim` key. Replace `<your-powclaim-key>` with the `public_key` from the previous step:
+
+    ```sh
+    curl -s http://localhost:8080/wallet/<your-powclaim-key>/balance | jq .
     ```
 
-    - The faucet enforces a rate limit per key. A request made during the cooldown returns `429` with `{"status":"cooldown","retry_after_secs":...}`. Wait for the cooldown to pass, then retry.
+1.  Mining uses CPU for as long as it runs. Once you have enough funds, stop it:
+
+    ```sh
+    logosctl call blockchain_module pow_stop_mining
+    ```
 
 :::info
 Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that `mode` remains `Online` and `height` continues to increase.
@@ -341,10 +328,10 @@ If the count is greater than `0`, the crash has a different cause. Collect the c
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
 
-### The testnet explorer shows an error when I click on a transaction?
+### How do I look up a transaction on the testnet explorer?
 
-The [testnet explorer](https://testnet.blockchain.logos.co/web/) does not support clicking on individual transactions. Searching by address is also not supported. Transaction hashes returned by the faucet may appear truncated and may not be immediately findable.
+Open `https://testnet.blockchain.logos.co/web/explorer/transactions/<TX_HASH>`, replacing `<TX_HASH>` with the transaction hash. The [testnet explorer](https://testnet.blockchain.logos.co/web/explorer/) home page has no search box for transaction hashes, and searching by address is not supported.
 
-### My wallet balance is not updating after requesting tokens?
+### My wallet balance is not updating after mining?
 
-If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the faucet transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again.
+If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the claim transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again. If `pow_status` shows `is_mining` as `false`, run `pow_start_mining` again: mining stops when the node restarts.

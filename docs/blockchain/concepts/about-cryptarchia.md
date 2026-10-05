@@ -14,11 +14,15 @@ sidebar_position: 2
 
 #### Understand how Cryptarchia reaches consensus while keeping block proposers private.
 
-[Cryptarchia](../../get-started/glossary.md#cryptarchia), the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain)'s consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) consensus mechanism, ensuring that nodes cannot be linked to blocks they propose. PPoS also ensures that the proposer's relative stake cannot be deduced based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralisation.
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
+[Cryptarchia](../../get-started/glossary.md#cryptarchia), the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain)'s consensus protocol, ensures that the entire Logos network reaches an agreement on the correct state of the blockchain. Cryptarchia uses a [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) ([PPoS](../../get-started/glossary.md#ppos)) consensus mechanism, making it infeasible to link nodes to blocks they propose. PPoS also makes it infeasible for adversaries to deduce a proposer's relative stake based on its activity. This separation reinforces the neutrality of the network, since nodes cannot be easily linked to any specific activity on the network. At the same time, Cryptarchia has no stake barrier for participating in consensus, fostering further decentralisation.
 
 ## The basics
 
-- Cryptarchia is a Private Proof of Stake (PPoS) consensus protocol, so nodes cannot be linked to the blocks they propose and their relative stake cannot be deduced from activity.
+- Cryptarchia is a Private Proof of Stake (PPoS) consensus protocol, making it infeasible to link nodes to blocks they propose and deduce their relative stake.
 - Cryptarchia maintains block production during failures, allowing the network to keep operating even if competing forks emerge temporarily.
 - Cryptarchia has low entry barriers, so validator nodes can run on a basic laptop with no minimum stake requirement.
 
@@ -38,7 +42,7 @@ Prioritising liveness means that block production will continue during a failure
 
 Cryptarchia provides PPoS consensus that hides the identity of a block proposer both before and after a proposal. Hiding a proposer’s identity before the proposal is accomplished by using a secret leadership election. This mechanism selects consensus leaders without revealing the leader schedule ahead of time.
 
-For full proposer privacy, a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](./about-the-blend-network.md), which obfuscates the link between a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
+For full proposer privacy, a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](./about-the-blend-network.md), which makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
 
 ### Low barrier to entry
 

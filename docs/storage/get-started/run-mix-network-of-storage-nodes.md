@@ -19,7 +19,7 @@ sidebar_position: 3
 #### Stand up a local Mix network and download a file through it, with the content lookup anonymised.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure stands up a small local [Mix](../concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
@@ -31,7 +31,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
     - Mac OS (should work, but not tested)
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 
@@ -44,14 +44,14 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
 ## Download and install the storage module
 
-All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's daemon is then pointed at that directory with `--modules-dir`, so there's no need to repeat the install per node.
+All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's session is then configured to also scan that directory (the `modules_dirs` key of its daemon configuration), so there's no need to repeat the install per node.
 
 1.  Start a throwaway session and install the storage module package into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
 
     ```sh
     logosctl daemon start --detach --config-dir ./install-session
     logosctl --config-dir ./install-session catalog refresh
-    logosctl --config-dir ./install-session package install storage_module --version 2.1.2 --yes
+    logosctl --config-dir ./install-session package install storage_module --version 3.0.0 --yes
     ```
 
 1.  Confirm the module landed, then stop this session—its only job was the install:
@@ -77,7 +77,6 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
       "data-dir": "$(pwd)/storage-data/node-1",
       "log-file": "$(pwd)/storage-data/node-1/storage.log",
       "nat": "extip:127.0.0.1",
-      "disc-port": 9091,
       "listen-port": 8081,
       "mix-enabled": true,
       "no-bootstrap-node": true
@@ -85,10 +84,12 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     EOF
     ```
 
-1.  Start a `logosctl` daemon for node 1, detached, with its own session and pointed at the shared module directory. Its logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
+1.  Point node 1's session at the shared module directory, then start a `logosctl` daemon for it, detached. `logosctl` has no `--modules-dir` flag: extra module directories are set with `modules_dirs` in the session's daemon configuration, which `daemon config set -` reads from standard input. The daemon's logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
 
     ```sh
-    logosctl daemon start --detach --config-dir ./logosctl-1 --modules-dir ./install-session/modules
+    printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+      | logosctl --config-dir ./logosctl-1 daemon config set -
+    logosctl daemon start --detach --config-dir ./logosctl-1
     ```
 
 1.  Load the module, initialise it, and start the node:
@@ -123,7 +124,6 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
       "data-dir": "$(pwd)/storage-data/node-$id",
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
       "nat": "extip:127.0.0.1",
-      "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
       "mix-enabled": true,
       "bootstrap-node": ["$BOOTSTRAP"]
@@ -132,11 +132,13 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
     done
     ```
 
-1.  Start one daemon per node, each detached with its own session, pointed at the shared module directory:
+1.  Point each node's session at the shared module directory and start one daemon per node, each detached:
 
     ```sh
     for id in 2 3 4; do
-      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
     done
     ```
 
@@ -197,10 +199,10 @@ Since this is a local network, every relay is reachable at `127.0.0.1` on its fi
     done | jq -s '{version: 1, relays: .}' > mix-pool.json
     ```
 
-1.  Collect the relays' proxy SPRs (`providerRecord`) into a JSON array:
+1.  Collect the relays' proxy SPRs (`spr`) into a JSON array:
 
     ```sh
-    jq -s -c '[.[].result.value.providerRecord]' debug-*.json > mix-proxies.json
+    jq -s -c '[.[].result.value.spr]' debug-*.json > mix-proxies.json
     ```
 
 ## Start the storage nodes (5 and 6)
@@ -219,7 +221,6 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
       "log-level": "DEBUG",
       "data-dir": "$(pwd)/storage-data/node-$id",
       "log-file": "$(pwd)/storage-data/node-$id/storage.log",
-      "disc-port": $((9090 + id)),
       "listen-port": $((8080 + id)),
       "nat": "extip:127.0.0.1",
       "mix-enabled": true,
@@ -231,11 +232,13 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
     done
     ```
 
-1.  Start one daemon per storage node, each detached with its own session, pointed at the shared module directory:
+1.  Point each storage node's session at the shared module directory and start one daemon per node, each detached:
 
     ```sh
     for id in 5 6; do
-      logosctl daemon start --detach --config-dir ./logosctl-$id --modules-dir ./install-session/modules
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
     done
     ```
 
@@ -267,7 +270,7 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 
     ```sh
     echo "Hello through Mix from the storage doc-test." > hello.txt
-    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536
+    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536 true
     ```
 
 1.  The upload runs in the background; give it a moment, then read the [CID](../../get-started/glossary.md#cid) of the stored manifest from node 5:
@@ -280,7 +283,7 @@ Node 5 seeds a file, and node 6 downloads it with `local=false` to force a netwo
 1.  Download the CID through node 6:
 
     ```sh
-    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536
+    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536 true false
     # Wait a few seconds for the download to complete
     ```
 

@@ -51,11 +51,12 @@ The recipient generates a reusable keypair (NPK and VPK) and shares it with send
    wallet account show-keys --account-id <recipient-account-or-label>
    ```
 
+   - Pass the `Private/...` ID that `wallet account ls` lists at the path printed in the previous step (for example, `/0`).
    - This prints NPK (hex) then VPK (hex). Save the output to a file to use with `--to-keys` later.
 
 ## Step 2: Send funds to the recipient's private account
 
-The sender credits the recipient's account at a chosen identifier. The circuit initialises the account, emits its commitment and a deterministic nullifier, and encrypts the post-state to the recipient via ephemeral ECDH against the recipient VPK.
+The sender credits the recipient's account at a chosen identifier. The circuit initialises the account, emits its commitment and a deterministic nullifier, and encrypts the post-state to the recipient by ML-KEM-768 encapsulation against the recipient VPK.
 
 :::warning
 Two senders who independently pick the same identifier for the same NPK target the same account. The second transfer fails at the commitment/nullifier layer. Use high-entropy identifiers to avoid collisions.
@@ -84,7 +85,7 @@ The recipient scans for incoming transfers, decrypting the `PrivateAccountKind` 
    wallet account sync-private
    ```
 
-   - The wallet decrypts the ciphertext header for each incoming transfer and reconstructs `AccountId = SHA256(prefix || npk || identifier)` for accounts where the VPK matches.
+   - The wallet decrypts the ciphertext header for each incoming transfer and reconstructs `AccountId = SHA256(prefix || npk || vpk || identifier)` for accounts where the VPK matches.
    - Each incoming transfer appears as a separate account (`PrivateOwned` or `PrivatePdaOwned`), distinguished by identifier.
 
 1. Spend from the discovered account:

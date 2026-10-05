@@ -14,6 +14,10 @@ sidebar_position: 4
 
 #### Understand how nodes move data between peers and which transports suit each environment.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Transports](../../get-started/glossary.md#transport) help move data packets across a network by establishing connections between peers. They define the rules and protocols to ensure efficient network transmission, routing, and data delivery. [Logos Delivery](../../get-started/glossary.md#logos-delivery) is a transport-agnostic framework that allows developers to choose and support multiple protocols according to their requirements.
 
 ## The basics

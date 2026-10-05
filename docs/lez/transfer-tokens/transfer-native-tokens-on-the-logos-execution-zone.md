@@ -33,7 +33,7 @@ On LEZ, public and private accounts differ in where their state lives and how tr
 - Private accounts
   - Structurally identical to public accounts, but their values are stored off-chain.
   - Use two keypairs: [nullifier keys](../../get-started/glossary.md#nullifier-keys) for privacy-preserving executions and [viewing keys](../../get-started/glossary.md#viewing-keys) for encrypting and decrypting values.
-  - The [private account](../../get-started/glossary.md#private-account) ID is derived from the [nullifier public key](../../get-started/glossary.md#nullifier-public-key).
+  - The [private account](../../get-started/glossary.md#private-account) ID is derived from the [nullifier public key](../../get-started/glossary.md#nullifier-public-key), the viewing public key, and an identifier.
   - Anyone can initialise private accounts, but once initialised they can only be modified by the owner's keys.
 - Transfers involving any private account
   - The execution is privacy-preserving.
@@ -101,23 +101,14 @@ Transfers are irreversible. Double-check all details before proceeding.
     The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
     :::
 
-1.  Fund the sender account using the Testnet [Piñata](../../get-started/glossary.md#piñata) program. Your account receives 150 tokens every time you fund it.
-
-    ```sh
-    wallet pinata claim --to ACCOUNT-TYPE/ACCOUNT-ID
-    ```
+1.  Fund the sender account. Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md), pasting the account ID without its `Public/` prefix in **Metadata**, or have another testnet user transfer native tokens to it. A deposit can only fund a public account.
 1.  Confirm your account balance after funding using the `wallet account get` command:
 
     ```sh
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-    The output looks like this:
-
-    ```
-    Account owned by authenticated transfer program
-    {..."balance":150...}
-    ```
+    The output shows `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
 
 ## Step 2: Transfer tokens
 

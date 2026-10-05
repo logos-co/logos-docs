@@ -14,6 +14,10 @@ sidebar_position: 6
 
 #### See the services that keep Logos Delivery communication private and abuse-resistant.
 
+:::info
+This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+:::
+
 [Logos Delivery](../../get-started/glossary.md#logos-delivery)'s protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
 
 ## Pseudonymity
@@ -22,10 +26,10 @@ Logos Delivery ensures [pseudonymity](https://lip.logos.co/messaging/core/draft/
 
 ## Anonymity/unlinkability
 
-[Anonymity](https://lip.logos.co/messaging/core/draft/10/waku2.html#anonymity--unlinkability) means an adversary cannot connect an actor to their actions or data. To achieve anonymity, avoiding linking activities with actors or their Personally Identifiable Information (PII) is crucial. In Logos Delivery, the following anonymity features are provided:
+[Anonymity](https://lip.logos.co/messaging/core/draft/10/waku2.html#anonymity--unlinkability) means it is computationally infeasible for an adversary to connect an actor to their actions or data. To achieve anonymity, avoiding linking activities with actors or their Personally Identifiable Information (PII) is crucial. In Logos Delivery, the following anonymity features are provided:
 
-- [Publisher-message unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Ensures that the publisher of messages in the `Relay` protocol cannot be linked to their published messages.
-- [Subscriber-topic unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Ensures that the subscriber of topics in the `Relay` protocol cannot be linked to the topics they have subscribed to.
+- [Publisher-message unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Makes it computationally infeasible for the publisher of messages in the `Relay` protocol to be linked to their published messages.
+- [Subscriber-topic unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Makes it computationally infeasible for the subscriber of topics in the `Relay` protocol to be linked to the topics they have subscribed to.
 
 ## Spam protection
 

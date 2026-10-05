@@ -29,7 +29,7 @@ This document is accurate for **Testnet v0.2.1**.
     - Linux: x86_64
     - macOS
 - An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
-- [Docker](https://docs.docker.com/get-docker/) or Podman installed.
+- [Docker](https://docs.docker.com/get-docker/) or Podman, if you build guest programs in reproducible mode. The default `logos-scaffold` flow in this document does not need a container runtime.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install).
     - To install, run `rzup install rust`
 - **Nix** with flakes enabled.
@@ -137,6 +137,25 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
     The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
 
+    :::warning
+    The local sequencer always uses port `3040`. If something else is already listening there—another
+    scaffold project, or a sequencer left running by an earlier session—`localnet start` fails with:
+
+    ```text
+    Error: Failed to build RPC server
+
+    Caused by:
+        Address already in use (os error 98)
+    ```
+
+    Free port `3040` before starting. Changing `port` under `[localnet]` in `scaffold.toml` is not a
+    workaround in `logos-scaffold` 0.3.0: it moves the readiness check and the generated
+    `sequencer_config.json`, but the sequencer binary still binds `3040` (its `--port` default) and
+    `.scaffold/wallet/wallet_config.json` keeps pointing at `http://127.0.0.1:3040`. The result is
+    that `deploy` and `wallet topup` silently talk to whatever is already on `3040` instead of your
+    own sequencer.
+    :::
+
 ## Step 7: Deploy your program
 
 1. Deploy all guest programs to the running sequencer:
@@ -157,7 +176,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
 Use the project-local wallet CLI to submit transactions to your deployed program. The wallet is available at `logos-scaffold wallet`.
 
-1. With the sequencer from Step 6 running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
+1. With the sequencer from Step 6 running, top up the default wallet on your local network, then list your accounts (`wallet list` shows accounts, not a balance):
 
     ```bash
     logos-scaffold wallet topup
@@ -175,7 +194,7 @@ Use the project-local wallet CLI to submit transactions to your deployed program
 
 ## Deploy to the testnet
 
-To deploy to the LEZ public testnet instead of a local sequencer, ensure your wallet has test tokens (use `logos-scaffold wallet topup` to request from the faucet) and remove the `RISC0_DEV_MODE=1` prefix from the build and deploy commands. Full ZK proof generation can take significantly longer than dev mode.
+To deploy to the LEZ public testnet instead of a local sequencer, ensure your wallet has test tokens, for example [bridged from the Logos Blockchain](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md) (`logos-scaffold wallet topup` funds only a local sequencer), and remove the `RISC0_DEV_MODE=1` prefix from the build and deploy commands. Full ZK proof generation can take significantly longer than dev mode.
 
 ```bash
 logos-scaffold build

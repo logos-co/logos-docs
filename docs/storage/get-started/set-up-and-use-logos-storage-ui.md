@@ -16,17 +16,17 @@ sidebar_position: 2
 #### Get started sharing and downloading files on the Logos Storage network
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.1**.
 :::
 
-The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS.
+The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS, or on Windows through Basecamp.
 
 ## What to expect
 
 - You can build and run a standalone Logos Storage UI application using a single `nix build` command.
 - You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
 - You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
-- You can make content lookups private with the **Mix** switch, and stop and restart the node without losing your files.
+- You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.
 
 ## Step 1: Run the application
 
@@ -36,11 +36,14 @@ You can install the application through Logos Basecamp (Option A), or build it f
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
 1. In the left bar, select **Package Manager**.
-1. Select `Storage` in `Categories` then click **Install**.
-1. Wait until a green **Installed** label appears next to both [modules](../../get-started/glossary.md#module).
-1. In the left bar, select **storage** to launch the Logos Storage UI.
+1. Select `Storage` in `Categories`, then click **INSTALL** in the **Storage** row.
+1. In the **Install Package?** dialogue, which lists the `storage_module` [module](../../get-started/glossary.md#module) as a dependency to install alongside the UI, click **Install**.
+1. Wait until the **Action** column of the **Storage** row reads **INSTALLED**. A new **Storage** icon appears in the left bar.
+1. In the left bar, select the **Storage** icon to launch the Logos Storage UI.
 
 ### Option B—Build and run locally with Nix
+
+This option needs Nix, so it is available on Linux and macOS only. On Windows, use Option A.
 
 The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries. You need:
 
@@ -189,14 +192,21 @@ The manifest is the representation of a file on the network: it carries the meta
 No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ`, the [Farewell to Westphalia book](https://logos.co/farewell-to-westphalia). It is available on the network the default configuration connects to.
 :::
 
-When the file is downloaded, the download icon will turn green indicating that the file exists in your downloads folder.
+When the file is downloaded, the download icon turns orange. This means the file is in your downloads folder.
 
-## Step 5: Make your lookups private with Mix
+## Step 5: Fetch and download privately with Mix
 
-The **Mix** switch in the **Node** panel controls private queries. When enabled, the node forwards its content lookups over the Logos mix network, which makes them much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
+A private fetch or download goes over the Logos mix network. This makes it much harder to trace back to you. See [Mix](../concepts/mix.md) for how it works.
 
-- The switch is on by default when your configuration includes the Mix options (which, by default, it does).
-- Private queries can be slower and may fail more often than direct ones. When looking up content that is not sensitive, you can toggle the switch off—observers will then be able to link you to your queries.
+1. To fetch a manifest privately, turn on the `Private` switch in the `Fetch Manifest` panel, then click `Fetch`.
+
+1. To download a file privately, click the lock icon in the manifest entry's `Actions` column. The icon turns orange. A private download is not advertised to the network.
+
+   ![Private switch and lock icon turned on](../assets/set-up-and-use-logos-storage-ui/storage-ui-private.png)
+
+- By default, fetches and downloads are not private.
+- After a private fetch, the lock icon is already on. Click it to download directly.
+- Private transfers are slower.
 
 :::warning
 
@@ -214,12 +224,16 @@ In the top right section, the settings icon on the right of **Manage node** open
 
 The default configuration should be suitable for most users.
 
-Some settings cannot be updated, such as the `Data directory` and `Mix enabled`.
+Some settings cannot be updated, such as the `Data directory`.
 Most of the editable settings will require a node restart to take effect. You should see a message indicating that on the bottom right:
 
-> Unsaved changes - the node must restart to apply them.
+> `Unsaved changes — the node must restart to apply them.`
 
-After saving the changes, you will need to close the settings and click **Stop** then **Start** to restart the node.
+After you click `Save`, the message changes to:
+
+> `Saved. Restart the node to apply and save to disk.`
+
+The new configuration is saved to disk only when the node restarts. Close the settings and click `Stop` then `Start` to restart the node.
 
 :::info
 The active configuration is saved to `${HOME}/.logos_storage/config.json`. This file should not be edited manually. The settings UI should be used to change the configuration instead. If your configuration is messed up, you can delete this file and restart the node to reset it to the default configuration.
@@ -235,13 +249,15 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
 ## Step 8: Manage the node lifecycle
 
-1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns grey, the node reports **Stopped**, and peer connections drop.
+1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns red, the node reports **Stopped**, and peer connections drop.
 
-1. Click **Start** to bring the node back to **Running**.
+1. Click **Start** to start the node again. The status goes back to the reachability check (**Unknown**, then **Reachable** or **Not reachable**) and peers reconnect.
 
    - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
 
 1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
+
+   - `.lgx` files have no trash icon: they are module packages downloaded from the Logos Package Manager in Basecamp.
 
 ## Troubleshooting Logos Storage
 

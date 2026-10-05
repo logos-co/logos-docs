@@ -26,6 +26,7 @@ If you don't want to run your own LEZ explorer instance, navigate instead to the
 :::info[Prerequisites]
 
 - [`cargo-leptos`](https://crates.io/crates/cargo-leptos) installed.
+- The WebAssembly Rust target, which `cargo-leptos` uses to build the Explorer front end: `rustup target add wasm32-unknown-unknown`. Without it, `just run-explorer` fails with ``error[E0463]: can't find crate for `core` ``.
 - A running instance of an [LEZ Indexer](run-lez-indexer.md).
 :::
 

@@ -18,7 +18,7 @@ import YouTube from '@site/src/components/YouTube';
 #### Get Logos Basecamp running on your desktop.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and apps using its graphical interface as an alternative to the command line.
@@ -27,7 +27,7 @@ You can install Logos Basecamp in two ways:
 
 | Method | When to use it | Tooling required |
 |:--|:--|:--|
-| [Prebuilt release (AppImage or DMG)](#install-from-a-prebuilt-release) | End users | None |
+| [Prebuilt release (AppImage, DMG or Windows installer)](#install-from-a-prebuilt-release) | End users | None |
 | [Build from source with Nix](#build-and-run-logos-basecamp-from-source) | Contributors, custom builds, unsupported platforms | Nix with flakes enabled |
 
 :::info[Prerequisites]
@@ -35,6 +35,7 @@ You can install Logos Basecamp in two ways:
 - A supported OS:
     - Linux x86_64 or aarch64 (tested on Ubuntu 22.04+)
     - macOS aarch64 (recent versions)
+    - Windows 10 or 11 x86_64 (native installer; see [apps available on Windows](#apps-available-on-windows))
     - WSL2 Ubuntu on Windows 11 (or Windows 10 21H2+ with WSLg for GUI support) is also supported
 - 4 GB RAM minimum (8 GB recommended) and ~2 GB free disk space.
 - For the source build only: **Nix** with flakes enabled.
@@ -56,6 +57,7 @@ This tutorial is also available in video form:
 1. Go to the [latest release page](https://github.com/logos-co/logos-basecamp/releases/latest) and download the artifact for your OS:
     - Linux, WSL: the `AppImage` files
     - macOS: the `.dmg` files
+    - Windows: the `-windows-setup.exe` file
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
@@ -71,7 +73,21 @@ This tutorial is also available in video form:
     ./LogosBasecamp-Desktop-*-x86_64.AppImage  # or ./LogosBasecamp-Desktop-*-aarch64.AppImage
     ```
 
-    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.0-bbe5da-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
+    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.1-aeb819-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
+
+- On Windows, run the downloaded `LogosBasecamp-Desktop-*-x86_64-windows-setup.exe`. It doesn't need administrator rights.
+    - The installer is not code-signed yet, so Microsoft Defender SmartScreen may show **Windows protected your PC**. Click **More info**, then **Run anyway**.
+    - Choose **Install (recommended)** to install for your user under `%LOCALAPPDATA%\Programs\Logos Basecamp`, with a Start menu entry, an optional desktop shortcut, and an uninstaller in **Settings > Apps**. Choose **Portable (extract only)** to only extract the files to a folder of your choice.
+    - Launch **Logos Basecamp** from the Start menu, or run `bin\LogosBasecamp.exe` from the portable folder.
+
+### Apps available on Windows
+
+Not every module in the catalogue has a Windows build yet. Of the apps covered in these docs, these run on native Windows:
+
+- **Chat**: the `chat_ui`, `chat_module`, and `delivery_module` packages. See [Send 1:1 messages with the Logos Chat app](../messaging/get-started/send-1-1-messages-logos-chat.md).
+- **Storage**: the `storage_ui` and `storage_module` packages. See [Set up and use the Logos Storage UI](../storage/get-started/set-up-and-use-logos-storage-ui.md).
+
+For other apps, such as the blockchain node or the swap app, run the Linux AppImage under WSL2.
 
 ## Build and run Logos Basecamp from source
 

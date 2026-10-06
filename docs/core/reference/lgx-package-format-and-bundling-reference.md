@@ -11,9 +11,9 @@ slug: lgx-package-format-and-bundling-reference
 
 # LGX package format and bundling reference
 
-An LGX file (`.lgx`) is the [package](../../get-started/glossary.md#package) format for distributing a Logos [module](../../get-started/glossary.md#module): a deterministic, gzip-compressed tar archive that bundles one or more platform-specific builds of the module with a signed manifest describing its metadata and dependencies. `lgx` is the CLI that creates, inspects, and signs these archives; `lgpm` and `lgpd` install them on a running system or from a [catalogue](../../get-started/glossary.md#catalogue).
+An LGX file (`.lgx`) is the [package](../../get-started/glossary.md#package) format for distributing a Logos [module](../../get-started/glossary.md#module): a deterministic, gzip-compressed tar archive that bundles one or more platform-specific builds of the module with a signed manifest describing its metadata and dependencies. `lgx` is the CLI that creates, inspects, and signs these archives. [`logosctl`](./logos-cli-reference.md) installs them into a session, from a [catalogue](../../get-started/glossary.md#catalogue) or from a local file; the standalone `lgpm` installs local files, and `lgpd` downloads packages from a catalogue without installing them.
 
-This page summarises the format. The [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md) is the authoritative reference for the manifest schema, CLI commands, and signing details; the [catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md) covers how packages are listed and verified for download.
+This page summarises the format. The [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md) is the authoritative reference for the manifest schema and signing details, and the `logos-package` [command reference](https://github.com/logos-co/logos-package#command-reference) lists every `lgx` command; the [catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md) covers how packages are listed and verified for download.
 
 ## Package structure
 
@@ -27,14 +27,41 @@ package.lgx (tar.gz)
 │       └── <name>.lidl
 ├── variants/              # Required - one directory per platform build
 │   ├── linux-amd64/
-│   └── darwin-arm64/
+│   ├── darwin-arm64/
+│   └── windows-x86_64/
 ├── docs/                  # Optional - documentation
 └── licenses/              # Optional - license files
 ```
 
-Only these entries are permitted at the archive root. Each entry under `variants/` is a platform build (for example `linux-amd64`, `darwin-arm64`); files directly under `variants/` are not allowed. Everything under `assets/` is platform-independent and stored once, so a registry can read a package's icon or `.lidl` interface documents without unpacking a platform build.
+Only these entries are permitted at the archive root. Each entry under `variants/` is a platform build, named as described in [Variants and bundling](#variants-and-bundling); files directly under `variants/` are not allowed. Everything under `assets/` is platform-independent and stored once, so a registry can read a package's icon or `.lidl` interface documents without unpacking a platform build.
 
-Building a package with `lgx` is deterministic: identical inputs always produce a byte-identical `.lgx`, which lets a catalogue verify a download against a published content hash rather than trusting the transport.
+Building a package with `lgx` is deterministic: identical inputs always produce a byte-identical `.lgx`. A catalogue publishes each package's content hash (`rootHash`, the root of the Merkle tree over its contents), and installers check a download against it before installing, rather than trusting the transport.
+
+## Variants and bundling
+
+A variant is named after the platform it runs on. A development variant adds `-dev`: its libraries still resolve from the Nix store, so only an installer built with Nix accepts it. A portable variant bundles its libraries and runs anywhere.
+
+| Platform | Portable variant | Development variant |
+|---|---|---|
+| Linux x86_64 | `linux-amd64` | `linux-amd64-dev` |
+| Linux aarch64 | `linux-arm64` | `linux-arm64-dev` |
+| macOS arm64 | `darwin-arm64` | `darwin-arm64-dev` |
+| macOS x86_64 | `darwin-amd64` | `darwin-amd64-dev` |
+| Windows x86_64 | `windows-x86_64` | `windows-x86_64-dev` |
+
+An installer accepts only variants for its own platform, and only of its own kind: a released `logosctl`, `lgpm` or Basecamp takes portable variants, and a development build of one takes `-dev` variants. Installers from `logos-package-manager` 0.3.0 onwards also accept the other spelling of an architecture (`x86_64` or `amd64`, `aarch64` or `arm64`), but older ones do not, so build packages with the names in the table.
+
+A module built with `logos-module-builder` has these package outputs:
+
+| Output | Produces |
+|---|---|
+| `nix build .#lgx` | The development variant for the build machine |
+| `nix build .#lgx-portable` | The portable variant for the build machine |
+| `nix build '.#packages.x86_64-windows.lgx-portable'` | The `windows-x86_64` variant, cross-built on Linux, since Nix does not run on Windows |
+
+The outputs are made with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx), which can package the `lib/` output of any Nix build: `#default` makes the development variant, `#portable` the portable one, and `#dual` a package carrying both. To ship one package for several platforms, build a variant on each and combine them with `lgx merge`.
+
+`lgx` has no release binaries; build it with `nix build github:logos-co/logos-package#lgx`.
 
 ## Manifest fields
 
@@ -42,11 +69,13 @@ Building a package with `lgx` is deterministic: identical inputs always produce 
 
 | Field | Type | Purpose |
 |---|---|---|
-| `manifestVersion` | string | Manifest schema version, currently `0.6.0`. Gates the version-dependent rules on this page: the icon contract (`0.4.0`+) and `optional_dependencies` (`0.6.0`+) |
+| `manifestVersion` | string | Manifest schema version, currently `0.6.0`. Gates the version-dependent rules on this page: the icon contract (`0.4.0`+), `provides` (`0.5.0`+), and `optional_dependencies` and `interface_dependencies` (`0.6.0`+) |
 | `name`, `version` | string | Canonical lowercase package identity |
+| `description`, `author`, `category` | string | Required human-readable metadata |
 | `type` | string | Package classification, for example `core`, `library`, or `ui_qml` |
 | `dependencies` | array | Other packages this one requires to run |
 | `optional_dependencies` | array | Packages this one can call but does not require |
+| `interface_dependencies` | array | Names of interfaces the module binds to a provider at run time. Not resolved to packages; carried so a catalogue or UI can show them |
 | `main` | object | Map of platform variant name to the entry point path for that variant |
 | `display_name` | string | Human-readable label shown by UI consumers (Package Manager, Apps Inspector) and CLI tools. Falls back to `name` when absent |
 | `provides` | array | App-to-app intents the package can service, for example `chat.group.open` |
@@ -63,12 +92,20 @@ A package's `type` distinguishes a [core module](../../get-started/glossary.md#c
 
 ## Signing and verification
 
-Packages can be signed with an Ed25519 key identified by a `did:jwk:...` DID, producing a `manifest.sig` alongside `manifest.json`. Content hashes (a Merkle tree over the archive) are always present in the manifest regardless of signing, and `lgx verify` recomputes and checks them against the archive contents.
+Packages can be signed with an Ed25519 key identified by a `did:jwk:...` DID, producing a `manifest.sig` alongside `manifest.json`. Content hashes (a Merkle tree over the archive) are always present in the manifest regardless of signing, and `lgx verify` recomputes and checks them against the archive contents. A package without them, made by older tooling, fails validation, so installers reject it; rebuild it with current tooling.
 
-Installers (`lgpm install`, and the package-manager module underlying Basecamp) apply a signature policy at install time: by default an unsigned package installs with a warning, while `--require-signatures` rejects any package not signed by a key in the local trust keyring. A catalogue's `logos-repo.json` can also list `trustedSigners`, so a client can accept a package the catalogue vouches for without a prior manual `lgx keyring add`.
+Installers apply a signature policy at install time. By default an unsigned package, or one signed by a key the installer does not trust, installs with a warning:
+
+- `logosctl` reads the policy from the `signature_policy` setting of its daemon configuration (`none`, `warn` or `require`) and trusts the keys added with `logosctl key add`, which are kept per session.
+- `lgpm install` rejects such a package with `--require-signatures`, and trusts the keys added with `lgx keyring add`.
+- Basecamp's package manager keeps its own keyring.
+
+Trust comes only from the keyring of the installer itself. A signer named in a package, in a catalogue entry, or in a catalogue's `trustedSigners` list is not trusted until you add its key.
 
 ## Further reading
 
 - [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md)—manifest schema, `lgx` CLI reference, signing and DID details.
 - [Logos catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md)—for `logos-repo.json` and `index.json`, version selection, and download verification.
 - [Build and run a Logos core module](../build-modules/build-and-run-a-logos-core-module.md)—building and installing an `.lgx` package end to end.
+- [Logos CLI reference](./logos-cli-reference.md)—installing packages and managing trusted keys with `logosctl`.
+- [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx)—the tool behind the builder's package outputs.

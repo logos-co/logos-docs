@@ -28,6 +28,7 @@ Identity, conversations, and message history exist only while the app is running
 - A supported OS:
     - Linux
     - macOS
+    - Windows 10 or 11 x86_64 (Option A only)
 - Network access
 - For the local build only: **Nix** with flakes enabled.
     - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:

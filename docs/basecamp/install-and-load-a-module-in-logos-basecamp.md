@@ -18,7 +18,7 @@ import YouTube from '@site/src/components/YouTube';
 #### Access features and functionalities through modules in Logos Basecamp.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 In Logos [Basecamp](../get-started/glossary.md#basecamp), you can install and load modules that provide features like chat, storage, or wallets from the online [catalogue](../get-started/glossary.md#catalogue) or local `.lgx` files.
@@ -35,6 +35,7 @@ There are two types of modules in Logos Basecamp. [Core modules](../get-started/
 ## What to expect
 
 - You can install a [module](../get-started/glossary.md#module) from the online catalogue or from a local `.lgx` file.
+- You can choose where Basecamp downloads packages from: the [Logos Storage](../get-started/glossary.md#logos-storage) network, HTTPS, or either.
 - You can load or unload a module from **Settings**: core modules under **Module Inspector**, UI modules under **Apps Inspector**.
 - You can read a loaded module's status, CPU, and memory in **Settings > Module Inspector**. **Apps Inspector** shows a UI module's status and version, without live resource usage.
 
@@ -53,6 +54,30 @@ When installing a module, Logos Basecamp extracts the variant for your platform 
 1. Browse and locate the module you want. Use the **Categories** and **Types** filters or the search box. The **Type** column shows `core` for core modules and `ui_qml` for UI modules. Click a row to open its **Details** panel on the right.
 1. Click **INSTALL** on the module's row. An **Install Package?** dialogue opens and lists any dependency changes. Click **Install** to confirm.
 1. Wait until the row's **Action** column reads `INSTALLED`. Core modules then appear in **Settings > Module Inspector**. UI modules appear in the sidebar and in **Settings > Apps Inspector**.
+
+### How Basecamp downloads a package
+
+Basecamp ships with the `storage_module` module, which runs a Logos Storage node. A catalogue can publish a package version on Logos Storage with a `logos:` address, as well as over HTTPS. 
+
+- When a package with the desired version is available on the Logos Storage network and the Storage node is running, Basecamp downloads the package from Logos Storage.
+- When the Storage node is stopped, `storage_module` is not loaded, or the node is on another network than the catalogue, Basecamp downloads the package from the HTTPS URL.
+- If the Logos Storage download takes too long, Basecamp stops it and downloads the package from the HTTPS URL.
+
+The **Source** column of **Package Manager** shows where a package comes from. For a package that is not installed, it shows an icon for each source from which the package is available for download. For an installed package, it shows the source it was downloaded from. Hover over an icon to see the name of the package source.
+
+![The Source column in Package Manager](./assets/install-and-load-a-module-in-logos-basecamp/package-manager-source.png)
+
+### Choose the download source
+
+1. At the bottom of the sidebar, click **Settings** ![](./assets/install-and-load-a-module-in-logos-basecamp/settings-icon.png), then click **Package Repositories**.
+1. Under **Download source**, pick one value:
+    - **Any**: Logos Storage when possible, HTTPS otherwise.
+    - **Logos only**: only Logos Storage.
+    - **HTTP only**: only the HTTPS URL.
+
+    ![The Download source selector in Package Repositories](./assets/install-and-load-a-module-in-logos-basecamp/download-source.png)
+
+If the selected source cannot serve a version, **Package Manager** shows it as **Not available** and you cannot install it.
 
 ### Install from a local `.lgx` file
 
@@ -81,10 +106,21 @@ You can click **Unload** in **Settings > Module Inspector** or close the tab of 
 
 Confirm the module actually installed: check its status in **Package Manager**.
 
-- If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build flavour, or architecture.
+- If installing from the online catalogue: if a package's row shows **Not available** instead of **Install**, it has no build for your platform, build type (dev, portable, or release), or architecture, or the [download source](#choose-the-download-source) you selected cannot serve it.
 - If installing from a local `.lgx` file: Basecamp reports an error if the archive has no variant for your platform.
 
 Either way, confirm the archive includes a variant matching your platform before reinstalling. If the package shows as installed in Package Manager but still doesn't appear in the relevant inspector, its manifest `type` may not match where you're looking—core modules only appear in Module Inspector, and UI modules (`ui_qml`) only appear in Apps Inspector.
+
+### A package downloads over HTTPS instead of Logos Storage
+
+Basecamp uses Logos Storage only when the Logos Storage node can serve the package.
+
+1. Open **Settings > Package Repositories** and check that **Download source** is not **HTTP only**.
+1. Open **Settings > Module Inspector** and check that **Storage Module** (`storage_module`) reads `LOADED`. If it doesn't, click **Load**.
+
+    ![Storage Module loaded in Module Inspector](./assets/install-and-load-a-module-in-logos-basecamp/module-inspector-storage.png)
+
+1. If you installed the **Storage** app, open it and check that the node is running. A package download will not begin if your Storage node is stopped.
 
 ### A QML-based UI App cannot reach the network
 

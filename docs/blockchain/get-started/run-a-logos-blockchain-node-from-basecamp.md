@@ -43,7 +43,7 @@ By the end of this procedure:
 - Basecamp will be running the Logos Blockchain app.
 - Your node will be connected to testnet peers and syncing the chain.
 - You will confirm sync by observing an advancing block height.
-- Optionally, you can fund your wallet from the faucet so your node proposes blocks.
+- Optionally, you can fund your wallet by mining so your node proposes blocks.
 
 ## Step 1: Install and launch the blockchain app
 
@@ -117,19 +117,7 @@ In the consensus tab, you will see the consensus status of your node. A syncing 
 
 A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For consensus leadership, your wallet's notes participate automatically—there is no separate staking step.
 
-1. In the node view, open **Operations → Accounts** and copy one of your wallet keys.
-
-   ![Accounts](../assets/run-a-logos-blockchain-node-from-basecamp/accounts.png)
-
-1. Go to the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/), paste the key in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**. Make sure your node is *Online* before doing this.
-
-   ![Image of the faucet UI after requesting funds with a public key](../assets/run-a-logos-blockchain/node-faucet.png)
-
-   - Only one faucet transaction can be included per block. During high demand, your transaction may be dropped; retry the request and wait 1 to 2 minutes before checking again.
-
-1. Wait 1 to 2 minutes, then check your balance by clicking **Refresh** in the **Accounts** view.
-
-   ![Funded account](../assets/run-a-logos-blockchain-node-from-basecamp/funded-account.png)
+1. Fund your wallet by mining with the **Fund** button, as described in [Fund your node](../node-app/build-and-run-logos-blockchain-node-app-ui.md#step-4-fund-your-node). Make sure your node is *Online* first.
 
 1. Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that the consensus status remains `Online` and `Height` continues to increase.
    

@@ -39,7 +39,7 @@ Choose one of the three installation paths based on your environment:
    - TCP `30303`: P2P (`tcpPort`).
    - UDP `30303`: P2P over QUIC, on by default at the `tcpPort` number.
    - UDP `9000`: discv5 discovery (`discv5UdpPort`).
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.2.3) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - Some prerequisites differ between paths:
    - **Path A**: Docker with Compose

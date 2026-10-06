@@ -71,7 +71,9 @@ dApps
 Datagram
 deanonymisation
 deanonymise
+definition's
 deployable
+deployment's
 deshielded
 devnet
 dir
@@ -102,8 +104,10 @@ glibc
 gzip
 hardcoding
 heredoc
+holding's
 HTLC
 HTLCs
+IDLs
 IIDs
 impl
 indexer
@@ -218,6 +222,7 @@ symlink
 systemd
 testnet
 tmux
+token's
 TOKENA
 tokenomics
 toolchain

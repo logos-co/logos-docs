@@ -246,7 +246,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 ## Step 5: Implement the synchronous transfer helper
 
-1.  Add the `onProgress` and `onDone` callbacks. The Storage module invokes these as the [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_t) operation progresses and the [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_t) operation completes, respectively:
+1.  Add the `onProgress` and `onDone` callbacks. The Storage module invokes these as the [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) operation progresses and the [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) operation completes, respectively:
 
     ```cpp showLineNumbers=72
     void onProgress(const std::string &payload) {
@@ -352,7 +352,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
       echo("uploading " + path.string() + " (" + std::to_string(size) + " bytes)");
 
       return syncTransferOp("upload", size, [&] {
-        return modules().storage_module.uploadUrl(path.string(), kChunkSize);
+        return modules().storage_module.uploadUrl(path.string(), kChunkSize, true);
       });
     }
     ```
@@ -374,7 +374,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
       return syncTransferOp("download", 0, [&] {
         return modules().storage_module.downloadToUrl(cid, path.string(), false,
-                                                      kChunkSize);
+                                                      kChunkSize, false, true);
       });
     }
     ```

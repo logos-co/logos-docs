@@ -412,7 +412,7 @@ The Storage module is a dependency of your module, so install it first.
 
     ```bash
     logosctl --config-dir ./config-dir catalog refresh
-    logosctl --config-dir ./config-dir package install storage_module --version 2.1.2 --yes
+    logosctl --config-dir ./config-dir package install storage_module --version 3.0.0 --yes
     ```
 
 1.  Install your own module package from the local `.lgx` file:
@@ -445,7 +445,7 @@ The Storage module is a dependency of your module, so install it first.
       Modules: 3 loaded, 0 crashed, 2 not loaded
         storage_cli         v1.0.0  not_loaded  -
         package_manager     v1.0.0  loaded      20s
-        storage_module      v2.1.2  not_loaded  -
+        storage_module      v3.0.0  not_loaded  -
         package_downloader  v1.0.0  loaded      20s
         capability_module   v1.0.0  loaded      21s
       ```

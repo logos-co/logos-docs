@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Use the Logos Delivery module to run a Logos delivery node
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.3). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available—Docker, prebuilt binaries, and Nix—so you can choose the one that fits your environment.

@@ -17,8 +17,8 @@ sidebar_position: 1
 
 #### Use `logos-scaffold` to create, build, and deploy a guest program on the Logos Execution Zone testnet.
 
-:::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+:::warning
+This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
 :::
 
 [`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
@@ -53,7 +53,7 @@ This document is accurate for **Testnet v0.3.0**.
 1. Clone the logos-scaffold repository and install the CLI:
 
     ```bash
-    git clone https://github.com/logos-co/scaffold.git
+    git clone --branch v0.4.0 https://github.com/logos-co/scaffold.git
     cd scaffold
     cargo install --path .
     ```

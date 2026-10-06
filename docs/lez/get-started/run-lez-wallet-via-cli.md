@@ -94,7 +94,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
 
 In this flow, you create and initialise an [account](../../get-started/glossary.md#account), claim testnet funds, send a transfer, and confirm resulting balances.
 
-In this task, wallet account and transfer commands interact with the authenticated-transfer [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
+In this task, wallet account and transfer commands interact with the `authenticated-transfer` [program](../../get-started/glossary.md#program), and sequencer processing determines the resulting account state. Public and [private account](../../get-started/glossary.md#private-account) paths share command patterns, while private paths can include local proof generation.
 
 ### Create and initialise the sender public account
 
@@ -116,27 +116,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
    ```
 
-   You should see `Account is Uninitialized` in the output. New accounts start uninitialised, so no program owns them yet. A program can claim an uninitialised account (for example, the authenticated-transfer program or the [token program](../../get-started/glossary.md#token-program)). After a program claims an account, only that program can modify the account state. LEZ makes one exception for account credits, where any program can credit native tokens to any account. For account debits, LEZ requires the owning program.
-
-1. Initialise the sender account, then check the updated state:
-
-   :::info
-   Running `wallet auth-transfer init` initialises the sender account under the authenticated-transfer program, so the account can debit native tokens when you send transfers.
-   :::
-
-   ```bash
-   wallet auth-transfer init --account-id <sender_public_account_id>
-   ```
-
-   In the output, you should see `Transaction is included in block <number>`, followed by the transaction data.
-
-1. Check the account updated state:
-
-   ```bash
-   wallet account get --account-id <sender_public_account_id>
-   ```
-
-   In the output you should see `Account owned by authenticated transfer program`, with `"balance":0`.
+   You should see `Balance 0, nonce 0` in the output. New accounts start empty and unowned, and you don't need to initialise them: the `authenticated-transfer` program can credit native tokens to any account.
 
 ### Fund the sender account
 
@@ -151,7 +131,7 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-   In the output you should see `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
+   In the output, the number after `Balance` should be greater than `0`.
 
 ### Create and fund the recipient public account
 
@@ -160,14 +140,6 @@ In this task, wallet account and transfer commands interact with the authenticat
    ```bash
    wallet account new public
    ```
-
-1. Initialise the recipient account under the authenticated-transfer program:
-
-   ```bash
-   wallet auth-transfer init --account-id <recipient_public_account_id>
-   ```
-
-   - Do not skip this. A transfer to a recipient that was never initialised is discarded without an error: the send prints a transaction hash, the sender's balance does not change, and the recipient stays `Uninitialized`.
 
 1. Send 37 tokens from sender to recipient:
 
@@ -194,14 +166,14 @@ In this task, wallet account and transfer commands interact with the authenticat
    wallet account get --account-id <sender_public_account_id>
    ```
 
-The sender's `"balance"` should be `37` lower than before the transfer.
+The sender's `Balance` should be `37` lower than before the transfer.
 
    ```bash
    # Recipient account
    wallet account get --account-id <recipient_public_account_id>
    ```
 
-This should show a `"balance":37`.
+This should show `Balance 37`.
 
 ## Next steps
 

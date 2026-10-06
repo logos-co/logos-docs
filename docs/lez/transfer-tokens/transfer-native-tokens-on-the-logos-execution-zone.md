@@ -84,24 +84,7 @@ Transfers are irreversible. Double-check all details before proceeding.
     ```sh
     wallet account ls
     ```
-1.  Initialise the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialise.
-
-    ```sh
-    wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
-    ```
-
-    For example, to initialise the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS`, you run:
-
-    ```sh
-    wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
-    ```
-
-    :::info
-    New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
-
-    The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
-    :::
-
+    
 1.  Fund the sender account. Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md), pasting the account ID without its `Public/` prefix in **Metadata**, or have another testnet user transfer native tokens to it. A deposit can only fund a public account.
 1.  Confirm your account balance after funding using the `wallet account get` command:
 
@@ -109,7 +92,7 @@ Transfers are irreversible. Double-check all details before proceeding.
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-    The output shows `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
+    The output shows `Balance` followed by a number greater than `0`.
 
 ## Step 2: Transfer tokens
 

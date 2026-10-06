@@ -60,7 +60,7 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module package version 0.3.0. The root hash ensures you select the published package identity that exactly matches the pinned version:
+1.  Install the Logos Blockchain module package version 0.3.0:
 
     ```sh
     logosctl package install blockchain_module \
@@ -88,7 +88,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files (written to `$HOME`) by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.3.0:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.0:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{

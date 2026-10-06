@@ -73,7 +73,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     logosctl call blockchain_module pow_stop_auto_claim
     ```
 
-1.  Check whether there are mined tickets are ready to claim. Rerun this command periodically until `claimable_tickets` is greater than `0`:
+1.  Check whether there are mined tickets ready to claim. Rerun this command periodically until `claimable_tickets` is greater than `0`:
 
     ```bash
     logosctl call blockchain_module pow_claimable_rewards | jq -r .result.value | jq .

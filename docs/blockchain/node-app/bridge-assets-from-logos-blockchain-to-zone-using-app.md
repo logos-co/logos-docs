@@ -109,7 +109,7 @@ The node is not running. Start it with **Start Node** in the header and wait for
 
 Either the account has no spendable notes, or the node was not running when you chose the account, so its notes were never loaded.
 
-- If the node was not running, start it and wait it to reach **Online** mode. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
+- If the node was not running, start it and wait for it to reach **Online** mode. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
 - If the node was running, the account has nothing to deposit. Fund it first, or choose another account.
 
 ### The LEZ testnet checkbox is missing

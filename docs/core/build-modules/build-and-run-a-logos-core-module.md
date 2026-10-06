@@ -31,7 +31,7 @@ You write a core module as one plain C++ class: its public methods are the modul
    - Windows 10 or 11 x86_64, building inside WSL2. Nix does not run on Windows itself, so Windows packages are cross-compiled from Linux. See [Build a Windows package](#build-a-windows-package).
 - At least 10 GB of disk space
 - Git
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
@@ -440,7 +440,7 @@ These steps use a development build of Logos Basecamp, which installs the develo
 1. Build the development version of Logos Basecamp and the `lgpm` package manager, which installs packages into a directory of your choice:
 
    ```bash
-   nix build 'github:logos-co/logos-basecamp/0.3.1' --out-link ./logos-basecamp
+   nix build 'github:logos-co/logos-basecamp/0.3.2' --out-link ./logos-basecamp
    nix build 'github:logos-co/logos-package-manager/0.3.0#cli' --out-link ./pm
    ```
 

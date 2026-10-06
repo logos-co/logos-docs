@@ -67,19 +67,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.3.1. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.2. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.1/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.2/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   27eaecc233e79e84337b7a95e919f5c5f901aff20880ed6f9680baba54180751  logosctl-x86_64-linux.tar.gz
+   294fbcc6409a8851b7471582bdad2dbfaf681b5d1c67dfffec38ada925dc6762  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -427,7 +427,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
+In `logosctl` 0.3.2, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
 1. Check that the [Storage module](../../get-started/glossary.md#storage-module) is running:
 

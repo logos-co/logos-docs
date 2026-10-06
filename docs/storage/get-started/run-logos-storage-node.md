@@ -32,7 +32,7 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
     - On Windows, install it with `winget install jqlang.jq`.
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
    - On Windows, run `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 | iex` in PowerShell instead, then open a new terminal.
 :::

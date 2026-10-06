@@ -48,7 +48,7 @@ Every Logos component runs as a node. Blockchain and LEZ nodes follow their chai
 - **On the user's device.** This is how Logos is designed to be used: its nodes are deliberately lightweight so that they run on consumer hardware. No third party sees what the user queries or submits, and the node talks to the peer-to-peer networks directly. The node can run:
   - **inside the application**, which costs artefact size and the CPU, network, battery, and storage a running node uses while it runs, or
   - **on another device the user owns**, such as a home computer running Basecamp or `logosctl`, which the user's application reaches remotely. The user keeps the privacy of running their own node without running it on, for example, their phone.
-- **In your infrastructure.** You run the nodes and the user's application holds the keys. This suits exchanges, custodians, and wallets that cannot run a node on the user's device, at a cost to privacy.
+- **In your infrastructure.** You run the nodes and the user's application holds the keys. This suits exchanges, custodians, and wallets that cannot run a node on the user's device, at a cost to privacy. Serving many users' applications this way is [under design](#remotely-a-node-in-your-infrastructure).
 
 Which of these suits your users bears on privacy as well as on cost. See [What a remote node costs you](#what-a-remote-node-costs-you).
 
@@ -174,7 +174,7 @@ Logos Basecamp for Android and iOS is planned for Testnet v0.4.0. Kotlin and Swi
 
 Whether a phone runs the Logos nodes itself depends on how it is used. A phone on Wi-Fi and on charge at home is a very different setting from one on a mobile network and on battery, and running a chain node on a phone has not been benchmarked yet.
 
-What the design already ensures is that the two halves can be split. Wallet modules run on the phone, where the keys are, and the nodes they use can run on another device the user owns, such as a home computer, or in your infrastructure. See [Calling modules locally and remotely](#calling-modules-locally-and-remotely).
+What the design already ensures is that the two halves can be split. Wallet modules run on the phone, where the keys are, and the nodes they use can run on another device the user owns, such as a home computer. Running them in your infrastructure for your users is under design. See [Calling modules locally and remotely](#calling-modules-locally-and-remotely).
 
 ## Calling modules locally and remotely
 
@@ -182,46 +182,44 @@ A module is never linked against another module's library, the way a program is 
 
 ### Locally
 
-**Available.** Each module runs in its own process and calls other modules over a local socket. The runtime only lets a module call the modules it declares as dependencies.
+**Available.** Each module runs in its own process and calls other modules over a local socket. An access policy, set before the runtime starts, decides which modules may call which, for example only the modules that declare a dependency on it.
 
-**Planned.** A runtime without Qt, and the single-process and in-application placements described under [Where modules run](#where-modules-run).
+**Planned.** A runtime without Qt, the single-process and in-application placements described under [Where modules run](#where-modules-run), and access grants per method rather than per module.
 
-### Remotely, for integrators: the node in your infrastructure
-
-:::note[Planned]
-Module transports over TCP and TLS are in the `logosctl` 0.3.0 release candidates and are marked as work in progress.
-:::
-
-You run the node modules in a `logosctl` daemon in your infrastructure and expose them over TCP with TLS. Your application authenticates with a token that the daemon issues, which can be named, set to expire, and revoked.
-
-Today, your application's own code connects to the remote module. A module inside your application cannot yet declare a dependency on a remote module, so a wallet module in the application cannot use a node module in your infrastructure without your code in between.
-
-The target is the transparency that peering already gives (see below), with grants per method rather than per module. That way you could expose the read and relay methods of a node to your users' applications without exposing its administrative methods. If your integration depends on this, [tell us](#tell-us-what-you-need).
-
-### Remotely, for individuals: peering
+### Remotely: a node on another device the user owns
 
 :::note[Planned]
 Peering works on development branches. It is not released yet.
 :::
 
-A user runs a node on another device they own, in Basecamp or `logosctl`, and pairs their application with it, either by comparing a six-digit code on both screens or with a single-use invite. Paired runtimes connect over mutual TLS. The runtime on that device **exports** the node module, and the application's runtime **imports** it.
+A user runs a node on another device they own, in Basecamp or `logosctl`, and pairs their application with it through **peering**, either by comparing a six-digit code on both screens or with a single-use invite. The runtime on that device **exports** the node module, and the application's runtime **imports** it. Paired runtimes connect over mutual TLS 1.3 with pinned keys.
 
 The imported module appears under a local name. Modules in the application, and the application's generated clients, call it exactly as they would call a local module, and its events arrive the same way. The import reconnects after the remote runtime restarts.
 
-The exporting runtime decides what each paired runtime is granted, and the importing runtime decides which of its own modules may call the import. A grant that covers a whole module includes its administrative methods, such as stopping the node, so pair only with applications you trust.
+Both sides decide. The importing runtime chooses which of its own modules may use the import, and the exporting runtime's policy chooses what each of them may reach. A grant currently opens the whole module, including administrative methods such as stopping the node, so pair only with applications you trust.
+
+### Remotely: a node in your infrastructure
+
+:::note[Planned]
+Running nodes in your infrastructure for your users' applications is under design. No mechanism is settled yet.
+:::
+
+Peering is built for a small number of runtimes that know each other, such as a phone and its owner's home computer. Serving many users from your infrastructure needs more than that: admitting your users' applications without pairing each one by hand, limiting them to the methods they need, such as reading chain state and relaying transactions, keeping one user's events from reaching another, and handling many connections at once.
+
+If your integration depends on this, [tell us](#tell-us-what-you-need) how many users would connect, and which methods they would need.
 
 ### Why remote module access
 
-- **One interface, local or remote.** The same contract and the same generated client serve a module wherever it runs. Moving a node from the application to a server is a deployment change, not a code change.
+- **One interface, local or remote.** The same contract and the same generated client serve a module wherever it runs. Moving a node from the application to another device is a deployment change, not a code change.
 - **Typed contracts and generated clients.** Every module publishes a `.lidl` contract, and clients are generated from it for each supported language. There is no request format to hand-write or keep in sync, and a module can describe its own contract at run time.
 - **Events built in.** Subscriptions work across the network, so an application receives new blocks or incoming messages as they happen, without polling and without a separate notification service.
 - **No API server to build.** A module's contract is its remote interface. Exposing a module is a deployment setting, not a separate service to write, version, and operate.
 - **Any module, not only nodes.** Storage, Delivery, and your own modules are exposed and reached the same way as the chain nodes.
 - **Composition across machines.** With peering, a module in one runtime can depend on a module in another, so a distributed application is built from the same parts as a local one.
-- **Access control per module and per caller.** Access is denied by default and granted per module and per calling module. Tokens are named, can expire, can be revoked, and can be restricted to local connections only.
-- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over mutual TLS 1.3 with pinned keys. Module transports for integrators use TLS with issued tokens.
+- **Access control on both sides.** The importing runtime chooses which of its modules may use an import, and the exporting runtime's policy chooses what each remote module may reach. Anything the policy does not list is refused.
+- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over mutual TLS 1.3 with pinned keys. Every call on a connection runs as the module authenticated when it opened, so there are no tokens to steal or replay.
+- **Live revocation.** Narrowing a policy or removing a peer closes the connections it no longer allows, while the runtimes keep running.
 - **Resilience.** An imported module reports its connection state and reconnects after the remote runtime restarts.
-- **A compact encoding.** Calls can use CBOR in place of JSON where bandwidth matters.
 - **Explicit compatibility.** Runtimes and modules that share the same protocol major version work together.
 
 ## What a remote node costs you
@@ -243,6 +241,6 @@ Integrator feedback shapes which Planned items come first. When you talk to us, 
 - Where you want the nodes to run: in the application, on another device your users own, or in your infrastructure.
 - Which components you need: LEZ, Logos Blockchain, Storage, or Delivery.
 - Whether you would ship your logic as Logos modules, and what would stop you.
-- Which methods your users' applications would need on a node you run for them.
+- For a node you run for your users: how many users would connect, and which methods they would need.
 
 Talk to your Logos point of contact, or join the conversation on the [Logos Discord](https://discord.com/invite/logosnetwork) or the [Logos forum](https://forum.logos.co).

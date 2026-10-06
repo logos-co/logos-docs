@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Wrap the Storage module API in a simple synchronous CLI interface.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
@@ -50,7 +50,7 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
     ```bash
     mkdir ./storage_cli
     cd ./storage_cli
-    nix flake init -t github:logos-co/logos-module-builder/0.2.0
+    nix flake init -t github:logos-co/logos-module-builder/0.3.2
     ```
 
 ## Step 2: Configure the module metadata, flake, and CMake files
@@ -101,9 +101,9 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
       # Replace the line:
       #   logos-module-builder.url = "github:logos-co/logos-module-builder";
       # with:
-      logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
+      logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
       # and add this:
-      storage_module.url = "github:logos-co/logos-storage-module/v2.1.2";
+      storage_module.url = "github:logos-co/logos-storage-module/v3.0.0";
     };
     ```
 
@@ -518,7 +518,7 @@ The Storage module is a dependency of your module, so install it first.
     - The daemon logs show the download progressing, e.g.:
 
       ```text
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/giuliano/logos-v0.2.1/./farewell-to-westphalia.pdf
+      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/<USER>/logos-v0.3.0/./farewell-to-westphalia.pdf
       [2026-08-19 19:04:53.920] [out] [storage_cli] Waiting for node to start.
       [2026-08-19 19:04:53.920] [out] [storage_cli] Node is started, attempting to run download operation.
       [2026-08-19 19:04:53.922] [out] [storage_cli]  65536 bytes

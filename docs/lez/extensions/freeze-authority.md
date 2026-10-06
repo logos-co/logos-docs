@@ -19,10 +19,6 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)), and pre-release library tags. The framework pin becomes a release tag once upstream cuts a release that contains it.
 :::
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 `freeze-authority` is a SPEL extension that adds an emergency-stop primitive to your [LEZ](../../get-started/glossary.md#lez) program. A designated freeze authority can pause all [program](../../get-started/glossary.md#program) execution (program-wide freeze) and block specific [accounts](../../get-started/glossary.md#account) from interacting (per-account freeze). The role can be transferred by the admin or renounced; while the program is frozen, only the freeze management carve-outs (unfreeze, authority transfer and renounce, per-account freeze edits), admin operations, and instructions you marked `#[freeze_exempt]` remain callable. This page walks through using `freeze-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
 `freeze-authority` depends on `admin-authority`. The admin governs the freeze authority slot; the freeze authority governs the frozen flags. See [Gate program instructions with admin-authority](admin-authority.md) for the admin layer.

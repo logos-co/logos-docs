@@ -6,7 +6,7 @@ topics: core
 steps_layout: sectioned
 authors: [danisharora099]
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: atomic-swaps-poc
 sidebar_position: 3
 ---
@@ -16,12 +16,12 @@ sidebar_position: 3
 #### Install the atomic swap app from a catalogue URL and trade Sepolia ETH for LEZ testnet tokens with a counterparty you never have to trust.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
-You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. There's no repository to clone, no Nix, and no local chain. The app also sets up both of your accounts for you: a guided **Setup** tab generates your Ethereum key, then creates and activates your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account), and finishes by pointing you at a faucet for the Sepolia gas it can't fetch on your behalf, all in [Step 2](#step-2-set-up-your-accounts). You don't need to hold any LEZ before you start, because buying LEZ is what this app is for. Nothing in this journey needs a command line.
+You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it.+The app also sets up both of your accounts for you: a guided **Setup** tab generates your Ethereum key, then creates and activates your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account), and finishes by pointing you at a faucet for the Sepolia gas it can't fetch on your behalf, all in [Step 2](#step-2-set-up-your-accounts). You don't need to hold any LEZ tokens before you start.
 
 ## Networks and addresses
 
@@ -45,7 +45,7 @@ The Ethereum RPC must use the `wss://` scheme. The app subscribes to contract ev
 
 A swap is a trade between two people who have no reason to trust each other. One holds LEZ testnet tokens, the other holds Sepolia ETH, and neither wants to send first. An atomic swap removes that problem: either both transfers happen, or neither does.
 
-The mechanism is a hash time-locked contract, or HTLC. Your app invents a random secret, called a preimage, and locks your ETH in a contract on Sepolia that releases only to whoever presents that secret. Your counterparty sees the lock and makes a matching lock of their LEZ against the *hash* of the same secret. You then claim their LEZ, which publishes the secret on the LEZ chain as a side effect. Your counterparty reads it there and uses it to claim your ETH. Both legs settle, and neither of you ever handed over funds on trust.
+The mechanism is a hash time-locked contract, or HTLC. Your app invents a random secret, called a preimage, and locks your ETH in a contract on Sepolia that releases only to whoever presents that secret. Your counterparty sees the lock and makes a matching lock of their LEZ tokens against the *hash* of the same secret. You then claim their LEZ tokens, which publishes the secret on the LEZ as a side effect. Your counterparty reads it there and uses it to claim your ETH. Both legs settle, and neither of you ever handed over funds on trust.
 
 The time locks make the failure case safe. Each lock carries a deadline, and yours is deliberately the longer of the two, so you always have time to react to whatever your counterparty does. If they vanish after you lock, nothing is lost. You wait for your deadline to pass and take your own funds back from the **Refund** tab. In the offer you'll take below, the LEZ side expires after 20 minutes and your Ethereum side after 40.
 
@@ -55,7 +55,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 - Internet access.
 - A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app can activate your LEZ account for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.
-- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ from the market. Selling LEZ is the case that needs a balance up front, and [Get LEZ to sell](#get-lez-to-sell) covers it.
+- **No LEZ.** You don't need any to take the offer in this procedure: the LEZ network charges no fees, so a buyer can start from an empty LEZ balance and acquire LEZ tokens from the market. Selling LEZ tokens requires a balance up front, which is covered in [Get LEZ tokens to sell](#get-lez-tokens-to-sell).
 :::
 
 ## What to expect
@@ -109,7 +109,7 @@ The catalogue is saved in your Basecamp settings and survives restarts. You add 
 
 ## Step 2: Set up your accounts
 
-A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an activated LEZ account to receive your tokens. Setup doesn't hand you LEZ, and doesn't need to: you buy that on the **Market** tab in [Step 4](#step-4-take-a-live-offer). The app builds both identities for you in the **Setup** tab, with no command line and no copying a raw private key between apps. Every field the tab fills is an ordinary configuration field underneath, listed in the tab's own **Advanced settings** section, so nothing here is hidden from you.
+A swap needs two identities: an Ethereum key to sign your Sepolia transactions, and an activated LEZ account to receive your tokens. Setup doesn't hand you LEZ tokens, and doesn't need to: you buy that on the **Market** tab in [Step 4](#step-4-take-a-live-offer). The app builds both identities for you in the **Setup** tab, with no command line and no copying a raw private key between apps. Every field the tab fills is an ordinary configuration field underneath, listed in the tab's own **Advanced settings** section, so nothing here is hidden from you.
 
 On a fresh install the app opens on the **Setup** tab automatically. You can also reach it any time from the **Setup** tab at the right-hand end of the tab row.
 
@@ -121,7 +121,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
     **Expected:** a page headed **Get set up**, subtitled `Four steps, then you're trading. No keys to type.`, with four numbered sections: **1. Ethereum key**, **2. LEZ account**, **3. Activate your LEZ account**, and **4. Get test ETH**. Each section's border turns green and its heading gains a `done` marker as you complete it.
 
-    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and covered in [Get LEZ to sell](#get-lez-to-sell) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
+    Below them sits an unnumbered **Start trading** card. It isn't a step, because it asks nothing of you; it's the handoff to the market, and it stays dimmed until the four above it are done. Two more sections follow it: **Get test LEZ without trading**, collapsed and covered in [Get LEZ tokens to sell](#get-lez-tokens-to-sell) below, and **Advanced settings**, checked in [Step 3](#step-3-confirm-your-configuration). **Advanced settings** opens by itself on a fresh install, because the key fields it holds are still empty.
 
 1. Under **1. Ethereum key**, click **Generate a key**.
 
@@ -133,7 +133,7 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 
 1. Under **3. Activate your LEZ account**, click **Activate account**.
 
-    Activation registers your account on the LEZ network so it can receive the tokens you buy. It's free, it's a single transaction, and it's the one step a buyer can't skip. It doesn't give you any LEZ and doesn't need to: you get that from the market in [Step 4](#step-4-take-a-live-offer).
+    Activation registers your account on the LEZ network so it can receive the tokens you buy. It's free, it's a single transaction, and it's the one step a buyer can't skip. LEZ tokens are obtained in [Step 4](#step-4-take-a-live-offer).
 
     **Expected:** the button changes to **Activating…** and a status line appears with a live seconds counter, reading `Setting up your account on the network…` and then saying it's waiting for the network to confirm. Test-network blocks can be a minute or more apart, so the counter keeps moving to show it isn't stuck. When it finishes, the section shows `done`, the status line reads `Account set up on the network`, and the button becomes **Check again**.
 
@@ -151,11 +151,11 @@ The Ethereum key the app generates is a fresh, throwaway key. Fund it with Sepol
 Activation gets a step of its own because a LEZ account that was never activated is the most confusing failure in this app: the sequencer silently discards transactions that reference an account it has never seen initialised, so a swap simply stalls rather than failing. The app doesn't remember between launches whether your account is registered, so it always asks the network rather than guessing. If you set this account up in an earlier session, press **Activate account** anyway. It checks first and confirms in about a second without sending anything, and the same is true of **Check again** afterwards, which is the button to press if a swap ever does nothing at all.
 :::
 
-### Get LEZ to sell
+### Get LEZ tokens to sell
 
-You don't need any LEZ to buy LEZ. Buying is what the app is for: you pay Sepolia ETH on the **Market** tab and the LEZ arrives. An empty LEZ balance is fine, because the LEZ network charges no fees.
+You don't need any LEZ tokens to buy LEZ tokens. Buying is what the app is for: you pay Sepolia ETH in the **Market** tab and obtain LEZ tokens. An empty LEZ balance is fine, because the LEZ testnet charges no fees.
 
-You do need LEZ to *sell* it, because a sell offer has to be backed by LEZ you already hold. Buy LEZ on the **Market** tab first, then publish your sell offer from that balance. The collapsed **Get test LEZ without trading** section below **Start trading** no longer works on the testnet: its **Claim test LEZ** button fails, so leave it closed.
+You do need LEZ tokens to *sell*, because a sell offer has to be backed by LEZ tokens you already hold. Buy LEZ tokens on the **Market** tab first, then publish your sell offer from that balance. The collapsed **Get test LEZ without trading** section below **Start trading** no longer works on the testnet: its **Claim test LEZ** button fails, so leave it closed.
 
 ## Step 3: Confirm your configuration
 
@@ -201,7 +201,7 @@ Logos runs a maker on this testnet. It publishes offers and waits for someone to
 
 1. Click the offer.
 
-    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then the time left on both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying the LEZ and paying the ETH. There's no **Hashlock** row yet: your app creates the secret, and with it the hashlock, only when you accept.
+    **Expected:** a detail pane on the right reading **Buy 10 LEZ** `for 0.00001 ETH`, with the rate beneath it, then the time left on both time locks and the rows **Seller ETH address**, **Seller LEZ account**, **LEZ program**, and **ETH contract**. You're buying LEZ tokens and paying in ETH. There's no **Hashlock** row yet: your app creates the secret, and with it the hashlock, only when you accept.
 
 1. Click the button reading `Accept — buy 10 LEZ`.
 
@@ -235,7 +235,7 @@ Every finished swap writes a receipt recording both legs, so you can check the t
 
 1. Look at the **Hashlock** on the receipt. It's the hash of the secret your app generated when you accepted the offer in [Step 4](#step-4-take-a-live-offer), and the row for this swap in the **History** list carries the same value.
 
-    The same hash bound both locks, which is the point, and the preimage now published on the LEZ chain is what released both.
+    The same hash bound both locks, which is the point, and the preimage now published on the LEZ is what released both.
 
 :::warning
 A Basecamp app can't open your browser for you. Logos app interfaces run inside a sandboxed QML engine that silently ignores requests to open an external URL, as reported in [eth-lez-atomic-swaps#84](https://github.com/logos-co/eth-lez-atomic-swaps/issues/84). That's why every row on the receipt carries copy buttons instead of clickable links—**⧉** for the value itself, **↗** for a block-explorer link—and why every instruction here says to paste the link into your browser yourself.
@@ -273,9 +273,9 @@ Your LEZ account almost certainly isn't activated. The sequencer discards transa
 
 The maker refuses a lock that doesn't leave it enough time to respond, and the Ethereum contract enforces its own floor of 300 seconds. Your Ethereum deadline has to sit comfortably beyond the LEZ one, not just after it. This shows up when a swap is started against an offer that's nearly expired, so take a freshly published one. The maker keeps waiting rather than reporting a failure, so your **Swap** tab appears to stall instead of showing an error.
 
-### There isn't enough LEZ in the account
+### There aren't enough LEZ tokens in the account
 
-Check first that this is really your problem. Taking an offer needs no LEZ at all, so if you're following this page as a buyer, an empty balance isn't what's stopping you. If you're publishing sell offers instead, buy LEZ on the **Market** tab first, as described in [Get LEZ to sell](#get-lez-to-sell).
+Check first that this is really your problem. Taking a buy offer requires no LEZ tokens. If you're publishing sell offers instead, buy LEZ tokens on the **Market** tab first, as described in [Get LEZ tokens to sell](#get-lez-tokens-to-sell).
 
 ### Setup shows a `Fund LEZ` step instead
 

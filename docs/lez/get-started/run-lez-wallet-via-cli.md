@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Try the wallet CLI against the live LEZ testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.
@@ -53,10 +53,10 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.2.4
+   git checkout v0.3.0
    ```
 
-   - The tag must match the programs the testnet runs. With an older tag such as `v0.2.1`, `wallet check-health` panics with `Local ID for authenticated transfer program is different from remote`.
+   - The tag must match the programs the testnet runs.
 
 1. Rename the existing wallet directory (if you have one) to avoid conflicts:
 

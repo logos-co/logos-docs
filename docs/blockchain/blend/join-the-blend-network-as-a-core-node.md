@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Connect your blockchain node to Blend to contribute to proposer privacy.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 Joining the [Blend Network](../../get-started/glossary.md#blend-network) lets your blockchain node contribute to the privacy of [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) proposers and receive rewards for participating. This procedure applies to operators of a running Logos Blockchain node who want to register that node as a Blend [core node](../../get-started/glossary.md#core-node). Before you start, make sure your node's address is publicly reachable so other peers can connect to it.
@@ -66,20 +66,20 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       ...
     ```
 
-1.  Fund both keys by mining. Start mining and stop auto-claim, so that mined rewards wait for you to claim them into these keys instead of your `PoWClaim` key:
+1.  Fund both keys by mining. Start mining and stop auto-claim, so that mined rewards wait for you to claim them into these keys instead of being claimed automatically by your `PoWClaim` key:
 
     ```bash
     logosctl call blockchain_module pow_start_mining
     logosctl call blockchain_module pow_stop_auto_claim
     ```
 
-1.  Check that mined tickets are ready to claim. Wait until `claimable_tickets` is greater than `0`:
+1.  Check whether there are mined tickets are ready to claim. Rerun this command periodically until `claimable_tickets` is greater than `0`:
 
     ```bash
     logosctl call blockchain_module pow_claimable_rewards | jq -r .result.value | jq .
     ```
 
-1.  Claim the ready tickets into each key, replacing the placeholders with your keys. Each call returns the transaction hash of the claim. Check for ready tickets again before the second claim, because the first one uses every ticket that is ready:
+1.  Claim the ready tickets into each key, replacing the placeholders with your keys. Each call returns the transaction hash of the claim. Check for ready tickets again before the second claim, because the first one claims every ready ticket:
 
     ```bash
     logosctl call blockchain_module pow_claim <BLEND_ZK_KEY>

@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI, syncing it with the public LEZ testnet, creating [accounts](../../get-started/glossary.md#account), executing all combinations of public, private, shielded, and deshielded native token transfers, and withdrawing tokens to the L1 through the bridge. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
@@ -29,7 +29,8 @@ Recovering a wallet from its recovery phrase is not yet supported.
 
 :::info[Prerequisites]
 
-- To run the wallet in Logos Basecamp: [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md) on macOS (Apple silicon) or Linux (x86-64 or ARM64). The catalogue publishes the wallet for these platforms only.
+- To run the wallet in Logos Basecamp:
+    - [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md) on macOS (Apple silicon) or Linux (x86-64 or ARM64). The catalogue publishes the wallet for these platforms only.
 - To build the wallet from source: **Nix** with flakes enabled, on macOS (Apple silicon) or Linux (x86-64 or ARM64).
     - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 

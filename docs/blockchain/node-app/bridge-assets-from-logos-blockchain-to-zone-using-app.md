@@ -16,7 +16,7 @@ sidebar_position: 3
 #### Get started locking wallet notes into a Logos Zone, including the LEZ, using the Logos Blockchain UI app.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure covers how to lock one or more of your wallet [notes](../../get-started/glossary.md#note) (UTXOs) into a Logos [Zone](../../get-started/glossary.md#zone) (such as the [LEZ](../../get-started/glossary.md#lez)) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on Testnet v0.3 who need to fund a [channel](../../get-started/glossary.md#channel) without hand-assembling note IDs, keys, and fees on a CLI.
@@ -109,7 +109,7 @@ The node is not running. Start it with **Start Node** in the header and wait for
 
 Either the account has no spendable notes, or the node was not running when you chose the account, so its notes were never loaded.
 
-- If the node was not running, start it and wait for **Online**. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
+- If the node was not running, start it and wait it to reach **Online** mode. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
 - If the node was running, the account has nothing to deposit. Fund it first, or choose another account.
 
 ### The LEZ testnet checkbox is missing

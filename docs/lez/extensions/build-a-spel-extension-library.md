@@ -19,10 +19,6 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). The pin becomes a release tag once upstream cuts a release that contains it.
 :::
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 SPEL extension libraries ship reusable on-chain primitives, access control, freeze switches, multisig, etc., that consuming [programs](../../get-started/glossary.md#program) adopt with a single attribute. This guide is for library authors. App developers consuming an existing extension should follow that extension's own integration guide instead.
 
 ## What an extension provides

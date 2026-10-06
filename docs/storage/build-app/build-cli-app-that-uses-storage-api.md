@@ -33,7 +33,7 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
   ```
 
 - **Git**
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
 

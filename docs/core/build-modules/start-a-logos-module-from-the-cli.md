@@ -27,7 +27,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
    - Linux x86_64 or aarch64
    - macOS arm64 (Apple Silicon)
 - Git
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:

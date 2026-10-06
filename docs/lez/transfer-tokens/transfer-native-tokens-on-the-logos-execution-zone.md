@@ -201,8 +201,7 @@ wallet account get --account-id Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJ
 The output looks like this:
 
 ```text
-Account owned by authenticated transfer program
-{..."balance":BALANCE-AMOUNT...}
+Balance BALANCE-AMOUNT, nonce NONCE
 ```
 
 :::tip

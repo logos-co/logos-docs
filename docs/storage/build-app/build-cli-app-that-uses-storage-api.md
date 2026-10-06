@@ -103,7 +103,7 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
       # with:
       logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
       # and add this:
-      storage_module.url = "github:logos-co/logos-storage-module/v3.0.0";
+      storage_module.url = "github:logos-co/logos-storage-module/v3.0.2";
     };
     ```
 
@@ -412,7 +412,7 @@ The Storage module is a dependency of your module, so install it first.
 
     ```bash
     logosctl --config-dir ./config-dir catalog refresh
-    logosctl --config-dir ./config-dir package install storage_module --version 3.0.0 --yes
+    logosctl --config-dir ./config-dir package install storage_module --version 3.0.2 --yes
     ```
 
 1.  Install your own module package from the local `.lgx` file:

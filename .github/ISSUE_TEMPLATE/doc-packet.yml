@@ -70,6 +70,8 @@ body:
         - devnet
         - testnet v0.1
         - testnet v0.2
+        - testnet v0.3
+        - testnet v0.4
     validations:
       required: true
 

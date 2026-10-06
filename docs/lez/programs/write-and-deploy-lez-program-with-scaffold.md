@@ -197,7 +197,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
 
 Use the project-local wallet CLI to submit transactions to your deployed program. The wallet is available at `logos-scaffold wallet`.
 
-1. With the sequencer from [Step 6](#step-6-start-a-local-sequencer) running, top up the default wallet from the faucet, then list your accounts (`wallet list` shows accounts, not a balance):
+1. With the sequencer from Step 6 running, top up the default wallet on your local network, then list your accounts (`wallet list` shows accounts, not a balance):
 
     ```bash
     logos-scaffold wallet topup

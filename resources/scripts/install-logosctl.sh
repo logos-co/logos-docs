@@ -2,15 +2,15 @@
 # Install logosctl, per docs/messaging/delivery/run-logos-delivery-node.md Step 1.
 #
 # Downloads a pinned logosctl release for the host OS/arch and installs it.
-# Works on Linux (x86_64/aarch64) and macOS (Apple Silicon). To move to a
-# newer build, bump LOGOSCTL_TAG below.
+# Works on Linux (x86_64/aarch64) and macOS (Apple Silicon); on Windows, use
+# install-logosctl.ps1. To move to a newer build, bump LOGOSCTL_TAG below.
 #   Linux: installed to /usr/local/bin/logosctl (needs write access there,
 #          e.g. run as root or via sudo — the same assumption the doc makes).
 #   macOS: installed to ~/.local/logosctl, and PATH is updated in ~/.zshrc.
 set -eu
 
 # Pinned tool release.
-LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.2.3}
+LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.3.1}
 
 os=$(uname -s)
 arch=$(uname -m)

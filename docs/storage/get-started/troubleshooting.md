@@ -11,20 +11,11 @@ slug: faq
 
 # Troubleshooting
 
-#### Fix the most common connectivity problems of a storage node.
+#### Fix the most common problems of a storage node.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
-
-[Logos Storage](../../get-started/glossary.md#logos-storage) requires your node to be reachable from the internet and, to that end, you must open two ports on your router:
-
-- **Discovery port** (`disc-port`): UDP. Used for discovery and DHT operations. Defaults to `8090` for the [storage module](../../get-started/glossary.md#storage-module) and to `9090` in the Storage UI.
-- **libp2p listen port** (`listen-port`): TCP. Used for data transfer and peer connections. The Storage UI uses `8500` by default; the storage module picks a random free port unless you set `listen-port`.
-
-In the Storage UI, both values are shown as **Listen port** and **Discovery port** in the settings popup.
-
-Problems sharing files are commonly related to one (or both) of these ports not being open or available. See [Connectivity](../concepts/connectivity.md) for how reachability works and how to set it up.
 
 ## `logosctl` fails with a FUSE error
 
@@ -39,14 +30,6 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 ./squashfs-root/AppRun --help
 ```
 
-## The node has no peers
-
-**Symptom**: the node starts successfully but never connects to any peer.
-
-**Cause**: this is typically due to discovery being unavailable: for instance, another process is already occupying its port.
-
-**Fix**: ensure that no process is using the discovery port (`8090` by default, `9090` in the Storage UI), or change `disc-port` in your configuration (**Discovery port** in the Storage UI settings).
-
 ## Another application is using the listen port
 
 **Symptom**: the node fails to start, or peers cannot connect, because the TCP listen port is already taken.
@@ -59,9 +42,9 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 **Symptom**: downloading from the network works, but files you publish cannot be downloaded by other nodes.
 
-**Cause**: your node is unreachable from the internet. Outgoing connections (your downloads) go through your router normally; incoming connections (peers fetching from you) are blocked by it.
+**Cause**: your peer is not taking inbound connections. This can happen if your node is behind a NAT and cannot locate a relay, or if the relays it can locate are fully booked. Outgoing connections (your downloads) go through your router normally; incoming connections (peers fetching from you) are blocked by it.
 
-**Fix**: make your node reachable with UPnP or manual port forwarding: see [Connectivity](../concepts/connectivity.md).
+**Fix**: your best bet is to try make your node reachable with UPnP or manual port forwarding: see [Connectivity](../concepts/connectivity.md).
 
 ## UPnP is not working
 
@@ -73,11 +56,11 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 ## Manual port forwarding is not working
 
-**Symptom**: you configured port forwarding with both UDP and TCP ports but the node remains unreachable.
+**Symptom**: you configured port forwarding but the node remains unreachable.
 
-**Cause**: the ports are not open on your router.
+**Cause**: the TCP listen port is not actually open on your router.
 
-**Fix**: make sure port forwarding is enabled for these ports on your router. Check that both rules exist (TCP for the listen port, UDP for discovery) and point to your machine's current local address: see [Forwarding ports manually](../concepts/connectivity.md#forwarding-ports-manually).
+**Fix**: make sure port forwarding is enabled and matches what is in your `listen-port`. Check that rule exists and points to your machine's current local address: see [Forwarding ports manually](../concepts/connectivity.md#forwarding-ports-manually).
 
 ## The ports are forwarded, but the node is still unreachable
 
@@ -85,11 +68,10 @@ Problems sharing files are commonly related to one (or both) of these ports not 
 
 **Cause**: the machine's own firewall blocks incoming connections. Some Linux distributions (such as Fedora) enable a firewall by default.
 
-**Fix**: allow both ports through the firewall, replacing `<listen-port>` and `<disc-port>` with your TCP listen port and UDP discovery port (**Listen port** and **Discovery port** in the Storage UI settings, or the `listen-port` and `disc-port` values of your config). With firewalld (Fedora):
+**Fix**: allow inbound connections on your `<listen-port>` in your firewall. With firewalld (Fedora), for instance, you would do:
 
 ```sh
 sudo firewall-cmd --permanent --add-port=<listen-port>/tcp
-sudo firewall-cmd --permanent --add-port=<disc-port>/udp
 sudo firewall-cmd --reload
 ```
 
@@ -97,12 +79,11 @@ With ufw (Ubuntu):
 
 ```sh
 sudo ufw allow <listen-port>/tcp
-sudo ufw allow <disc-port>/udp
 ```
 
 ## The node was reachable, but is not anymore
 
-**Symptom**: the node worked for days or weeks, then peers suddenly cannot connect to you anymore.
+**Symptom**: the node worked for days or weeks, then peers suddenly cannot download files from you anymore.
 
 **Cause**: most home ISPs change your public IP from time to time. If `nat` is set to `extip:<IP>`, the node keeps announcing the old address.
 

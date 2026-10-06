@@ -13,10 +13,10 @@ sidebar_position: 1
 
 # Run a Logos node with blockchain, storage, and delivery
 
-#### Get started running a full Logos node with all three core modules on testnet v0.2.1.
+#### Get started running a full Logos node with all three core modules on testnet v0.3.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
@@ -36,7 +36,7 @@ The default paths used throughout this procedure are:
 :::info[Prerequisites]
 
 - Linux host with a public IPv4 address.
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, and `30303/tcp` open on the host firewall.
+- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, `30303/tcp`, and `30303/udp` open on the host firewall.
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
@@ -67,19 +67,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.2.3. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.1. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.2.3/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.1/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   41c2dffd080c6720c82ed4d0663dd39cbfc1c6aa114434179764732f2ade3096  logosctl-x86_64-linux.tar.gz
+   27eaecc233e79e84337b7a95e919f5c5f901aff20880ed6f9680baba54180751  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +89,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   63b5d72138f448fa2b95ab7ea2ad6ff7f11486339042771d0b3c79eb4ff27fbb  logosctl-x86_64.AppImage
+   01f87931943dba0b2df2153ad8da7ce7dd5b4a8d5207d1931432613abbc34929  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -129,7 +129,10 @@ Create a new user that will run the Logos node, as well as the `logosctl` sessio
    8091/tcp
    9000/udp
    30303/tcp
+   30303/udp
    ```
+
+   If the node is behind NAT, forward these ports to the node using the listed protocols.
 
 ## Step 3: Install modules
 
@@ -166,16 +169,16 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.2.4 \
-   --root-hash 2e57268c4ec1fdcf07e4b6bf1b33b5ac99705c071f879e6ca1c41b4e543cc674 \
+   --version 0.3.0 \
+   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
    --yes
    logosctl package install storage_module \
-   --version 2.1.2 \
-   --root-hash 19b11b153748c30665608c5527776ba2be74f7764481a11d33f687098764b740 \
+   --version 3.0.2 \
+   --root-hash 810c39c610c0f37cc6e48e5fb115df69f72de4df7c052cdb1e17f53b7897cc97 \
    --yes
    logosctl package install delivery_module \
-   --version 0.2.1 \
-   --root-hash 0bccd85b4702c01a2c227df8aa55b3f5159a9fe009d57ae8bb8b3a7c20dfcbbe \
+   --version 0.3.0 \
+   --root-hash 31583b977f7370c8fc7ed70351daef1069f718c0a005e74306921da2b8aee76f \
    --yes
    ```
 
@@ -192,9 +195,9 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.2.4
-   delivery_module 0.2.1
-   storage_module 2.1.2
+   blockchain_module 0.3.0
+   delivery_module 0.3.0
+   storage_module 3.0.2
    ```
 
 1. Stop the Logos node after installation:
@@ -246,9 +249,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.2.4` release starts a new blockchain with a new genesis. Despite this, the Logos node testnet release remains `v0.2.1`, and other module versions are unchanged.
+The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
 
-Blockchain nodes must start with an empty blockchain state directory. Existing `0.2.3` blockchain configuration and wallet keys can be retained, but balances and Blend declarations from the previous blockchain do not carry over.
+Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
 :::
 
 1. Create the peer bootstrap file:
@@ -307,25 +310,58 @@ Blockchain nodes must start with an empty blockchain state directory. Existing `
 
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
-1. To participate in consensus, you must request tokens from the [public faucet site](https://testnet.blockchain.logos.co/web/faucet/) after your node reaches `Online` mode. First, find the keys associated with your node:
+   :::warning
+   Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+   :::
 
-   ```sh
-   grep -A6 known_keys /var/lib/logos-node/user_config.yaml
+1. To participate in consensus, your node needs funds. Fund it by mining, as described in the next section.
+
+### Fund the node by mining
+
+The generated `user_config.yaml` includes a `pow` section that deals with automatically claiming mining rewards to the node's `PoWClaim` key. Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
+Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
+
+1. Leave the `pow` section as generated. If desired, you can optionally limit the number of mining threads by editing `pow.mining.max_threads`, which uses one thread per CPU core by default (with the `null` value). Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
+
+   ```yaml
+   pow:
+     mining:
+       max_threads: 2
+       max_tickets_per_block: 4
+     auto_claim:
+       targets:
+       - public_key: <your PoWClaim key>
+         threshold: 18446744073709551615
+       tick:
+         unit: seconds
+         value: 10
    ```
 
-1. Choose any key from `known_keys`, enter it in **Destination Public Key (Hex)** on the faucet site, and press **Request Funds**.
+   - Leave the rest of the `pow` section as generated. `auto_claim.targets` is already filled with your node's `PoWClaim` key.
+   - Restart the blockchain module for the change to take effect.
 
-1. Wait 1 to 2 minutes, then check your balance. Replace `<your-chosen-key>` with the key you used:
+1. After your node reaches `Online` mode, start mining:
 
    ```sh
-   curl -s http://localhost:8080/wallet/<your-chosen-key>/balance | jq .
+   logosctl call blockchain_module pow_start_mining
    ```
+
+   - Mining is turned off by default and does not persist across restarts. Run `pow_start_mining` again after every restart.
+   - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
+
+1. Check the mining and auto-claim status:
+
+   ```sh
+   logosctl call blockchain_module pow_status | jq -r .result.value | jq .
+   ```
+
+   - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
 
 ### Optional: Join the Blend Network
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
-1. Request funds to both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` from the [testnet faucet](https://testnet.blockchain.logos.co/web/faucet/)
+1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining, then claim the rewards into each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
 
    :::info
    The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
@@ -391,107 +427,43 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-Create the storage config and start the module.
+In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
-1. Create the storage config:
+1. Check that the [Storage module](../../get-started/glossary.md#storage-module) is running:
 
-   ```sh
-   cd /var/lib/logos-node/storage-module
-   mkdir -p storage-data
-   cat > config.json <<EOF
-   {
-     "data-dir": "/var/lib/logos-node/storage-module/storage-data",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "disc-port": 8090,
-     "network": "logos.test"
-   }
-   EOF
+   ```bash
+   logosctl call storage_module isRunning
    ```
 
-   - `config.json` includes the following fields:
+   Repeat this check until `result` is `true` before downloading. Startup can take a few minutes.
 
-   | Field | Purpose |
-   |-------|---------|
-   | `data-dir` | Storage repository path |
-   | `log-level` | Log verbosity |
-   | `listen-port` | Public TCP libp2p port |
-   | `disc-port` | Public UDP discovery port |
-   | `network` | Storage network preset |
-
-   - Use fixed `listen-port` and `disc-port`; do not leave public nodes on random ports.
-   - The `logos.test` preset provides the storage bootstrap settings.
-   - Use an absolute `data-dir`. A relative path resolves against the Logos node's working directory (`/var/lib/logos-node`), not against the directory that holds `config.json`.
-
-   :::info
-   To run storage with [mix](../../get-started/glossary.md#mix) support, generate the config from the published mix bootstrap data. You can use the script provided here. Copy its contents into a file (for example `storage-config.sh`):
+1. Try downloading the book [Farewell to Westphalia](https://logos.co/book):
 
    ```sh
-   #!/usr/bin/env bash
-   # Copy the contents of this file into a script named storage-config.sh
-   set -euo pipefail
-
-   if ! command -v jq &> /dev/null; then
-     echo "Please install jq first"
-     exit 1
-   fi
-
-   data_dir="${1:-./logos-storage-data}"
-
-   raw_data=$(curl -s -fsSL https://fleets.logos.co/logos-test/storage-network.json)
-   mp_json=$(echo $raw_data | jq -c '{
-     "version": 1,
-     "relays": map({
-       "peerId": .peerId,
-       "mixPubKey": .mixPubKey,
-       "libp2pPubKey": .libp2pPubKey,
-       "multiAddr": "/ip4/\(.address)/tcp/\(.port)"
-     })
-   } | tostring')
-
-   dht_proxy_sprs=$(echo $raw_data | jq '[.[].tcpSpr]')
-
-   cat <<EOF | jq .
-   {
-     "data-dir": "${data_dir}",
-     "log-level": "INFO",
-     "listen-port": 8091,
-     "disc-port": 8090,
-     "network": "logos.test",
-     "mix-enabled": true,
-     "dht-mix-proxy": ${dht_proxy_sprs},
-     "mix-pool-json": ${mp_json}
-   }
-   EOF
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
    ```
-   Then make it executable and run it:
+   
+   After a while - a few seconds, depending on your internet connection - the file should appear on your disk.
+
+1. Logos Storage supports private downloads over the [Logos mix network](../../storage/concepts/mix.md). They are slow, but prevent others from learning that you are downloading a file. Try it out:
 
    ```sh
-   chmod +x storage-config.sh
-   ./storage-config.sh /var/lib/logos-node/storage-module/storage-data > config.json
+   # remove file from disk
+   rm ./farewell-to-westphalia.pdf
+   # remove file from node
+   logosctl call storage_module remove zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ
+   # download again, this time using mix
+   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ\
+      "$(pwd)/farewell-to-westphalia.pdf" false 65536 true false
    ```
 
-   The script accepts an optional storage data directory as its first argument. Pass an absolute path, as above. Without one, it writes the relative path `./logos-storage-data`, which resolves against the Logos node's working directory.
-   :::
+   In contrast to direct downloads, downloads over mix can take a few minutes. You should see the file streaming to your disk, though, and eventually the download should complete. 
 
-1. Load and start the [storage module](../../get-started/glossary.md#storage-module):
-
-   ```sh
-   cd /var/lib/logos-node/storage-module
-   logosctl module load storage_module
-   logosctl call storage_module init @config.json
-   logosctl call storage_module start
-   ```
-
-   _If using the mix config_, also enable private queries and verify with a test download:
-
-   ```sh
-   logosctl call storage_module togglePrivateQueries true
-   logosctl call storage_module downloadToUrl zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ "$(pwd)/farewell-to-westphalia.pdf" false 65536
-   ```
-
-   - Pass an absolute destination path. A relative path resolves against the Logos node's working directory (`/var/lib/logos-node`), not the current directory.
+   :::tip
+   - Use **absolute paths** when feeding file paths to Logos Storage via the module API. Relative paths resolve relative to the daemon's working directory, which might be different from what you expect.
    - On a freshly started node, the first calls can return `"error":"Failed to start download."` while the mix relays connect. Wait about 10 seconds and run `downloadToUrl` again.
+   :::
 
 ## Step 7: Configure and start the delivery module
 
@@ -526,7 +498,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    | `kernelConf.preset` | Network preset |
    | `kernelConf.relay` | Enable the [Relay](../../get-started/glossary.md#relay) protocol |
    | `kernelConf.logLevel` | Log verbosity |
-   | `kernelConf.tcpPort` | Public TCP P2P port |
+   | `kernelConf.tcpPort` | Public TCP P2P port; QUIC uses the same port number over UDP by default |
    | `kernelConf.discv5UdpPort` | Public UDP discovery port |
    | `kernelConf.discv5Discovery` | Enable discv5 discovery |
    | `kernelConf.nat` | Public IP advertisement mode |
@@ -534,6 +506,7 @@ Create the kernel-only delivery config for a node operator and start the module.
    - The kernel-only entry layer intentionally omits the messaging client and reliable channel manager.
    - Calls to `send`, `subscribe`, and `channel*` are unavailable, while `getNodeInfo`, `storeQuery`, and metrics remain available.
    - Use fixed `tcpPort` and `discv5UdpPort`; do not leave public nodes on random ports.
+   - Delivery `0.3.0` enables QUIC by default. Open and, if needed, forward both TCP and UDP on `tcpPort` (`30303` here), plus UDP on `discv5UdpPort` (`9000`).
    - The `logos.test` preset provides the delivery network bootstrap settings.
 
 1. Load and start the [delivery module](../../get-started/glossary.md#delivery-module):
@@ -580,6 +553,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
    0.0.0.0:8091/tcp
    0.0.0.0:9000/udp
    0.0.0.0:30303/tcp
+   0.0.0.0:30303/udp
    127.0.0.1:8080/tcp
    ```
 

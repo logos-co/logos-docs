@@ -251,7 +251,7 @@ Passing `--new-authority none` **permanently renounces** minting—the supply be
 A non-fungible token is a definition with a `printable_supply` plus a metadata account. Its first holding is an `NftMaster`; each print carves an `NftPrintedCopy` out of it. `print_balance` reserves one unit for the master itself, so a `printable_supply` of `N` yields `N − 1` printable copies.
 
 :::warning
-`spel` cannot currently create NFT (or metadata-bearing fungible) definitions—`new-definition-with-metadata` takes two structured arguments that `spel` has no way to encode (it can only encode enum-kinded IDL types, and neither argument's type appears in the IDL's `types` section). This still holds as of CLI v0.7.0. Until it's supported, create these definitions programmatically; see `token_program::new_definition::new_definition_with_metadata` and the integration tests in `programs/integration_tests/tests/token.rs` in the [`lez-programs`](https://github.com/logos-blockchain/lez-programs) repository. Everything below works over the CLI against a definition created that way.
+`spel` cannot currently create NFT (or metadata-bearing fungible) definitions—`new-definition-with-metadata` takes two structured arguments that `spel` has no way to encode (it can only encode enum-kinded IDL types, and neither argument's type appears in the `types` section of the IDL). This still holds as of CLI v0.7.0. Until it's supported, create these definitions programmatically; see `token_program::new_definition::new_definition_with_metadata` and the integration tests in `programs/integration_tests/tests/token.rs` in the [`lez-programs`](https://github.com/logos-blockchain/lez-programs) repository. Everything below works over the CLI against a definition created that way.
 :::
 
 1. Print a copy. Both the master holding and the fresh printed-copy account must sign; the printed target must be fresh—`print-nft` claims it itself, so don't pre-initialise it.
@@ -298,7 +298,7 @@ spel --idl artifacts/token-idl.json inspect <METADATA> --type TokenMetadata
 
 ### `Transaction NOT confirmed` on a transaction that actually landed
 
-`spel` stops waiting after a fixed number of blocks and prints `❌ Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks`. It prints that same line whether the transaction was rejected by the program or simply confirmed too slowly, so read it as "unknown", never as "failed". Check the affected accounts with `inspect` ([Step 9](#step-9-inspect-a-token-account)) before re-running—re-running a `transfer` that did land moves the balance a second time.
+`spel` stops waiting after a fixed number of blocks and prints `❌ Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks`. It prints that same line whether the transaction was rejected by the program or simply confirmed too slowly. Check the affected accounts with `inspect` ([Step 9](#step-9-inspect-a-token-account)) before re-running—re-running a `transfer` that did land moves the balance a second time.
 
 ### `Token definition must be owned by token program`
 

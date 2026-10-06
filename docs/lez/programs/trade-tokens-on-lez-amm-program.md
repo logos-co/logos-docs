@@ -146,7 +146,7 @@ AMM PDAs use a SHA-256 seed scheme, so derive them with the program's own `*_pda
      "<AMM_PROGRAM_ID>" "<TWAP_PROGRAM_ID>" "<DEF_A>" "<DEF_B>"
    ```
 
-   - `<OWNER>` is the account that will sign `initialize` in [Step 6](#step-6-initialise-the-amm). `(owner, nonce)` namespaces the AMM instance, so the config PDA—and every PDA derived from it—depends on it; pick it before deriving.
+   - `<OWNER>` is the account that will sign `initialize` in [Step 6](#step-6-initialise-the-amm).
    - This command prints the `<CONFIG_PDA>`, `<POOL_PDA>`, `<VAULT_A_PDA>`, `<VAULT_B_PDA>`, `<POOL_DEFINITION_LP_PDA>`, `<LP_LOCK_HOLDING_PDA>`, `<CURRENT_TICK_PDA>`, and the `protocol_fee_a`/`protocol_fee_b` PDAs needed by [Step 10](#step-10-swap-tokens) and [Step 14](#step-14-admin-withdraw-protocol-fees).
    - [DEPLOYMENTS.md](https://github.com/logos-blockchain/lez-programs/blob/main/DEPLOYMENTS.md) lists the equivalent PDAs already derived for the live testnet TKA/TKB pool—useful as a worked example to sanity-check the shape of this command's output, but not reusable here, since your `<DEF_A>`/`<DEF_B>` are different token definitions.
 

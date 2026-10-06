@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Get started running a Logos storage node and uploading your first file to the Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.3 who want to contribute storage capacity to the Logos network.
@@ -32,7 +32,7 @@ This procedure covers how to build and run the [Logos Storage Module](https://gi
 - `jq` on your `PATH`.
     - To verify, run: `jq --version`
     - On Windows, install it with `winget install jqlang.jq`.
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
    - On Windows, run `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 | iex` in PowerShell instead, then open a new terminal.
 :::

@@ -57,7 +57,7 @@ This tutorial is also available in video form:
 1. Go to the [latest release page](https://github.com/logos-co/logos-basecamp/releases/latest) and download the artifact for your OS:
     - Linux, WSL: the `AppImage` files
     - macOS: the `.dmg` files
-    - Windows: the `-windows-setup.exe` file
+    - Windows: the `-x86_64-setup.exe` file
 
 1. Depending on your OS, install and launch Basecamp as follows:
 
@@ -73,9 +73,9 @@ This tutorial is also available in video form:
     ./LogosBasecamp-Desktop-*-x86_64.AppImage  # or ./LogosBasecamp-Desktop-*-aarch64.AppImage
     ```
 
-    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.1-aeb819-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
+    The file name carries the release version and commit, for example `LogosBasecamp-Desktop-v0.3.2-f2fae6-x86_64.AppImage`. If you have downloaded more than one release, run the file name in full.
 
-- On Windows, run the downloaded `LogosBasecamp-Desktop-*-x86_64-windows-setup.exe`. It doesn't need administrator rights.
+- On Windows, run the downloaded `LogosBasecamp-Desktop-*-x86_64-setup.exe`. It doesn't need administrator rights.
     - The installer is not code-signed yet, so Microsoft Defender SmartScreen may show **Windows protected your PC**. Click **More info**, then **Run anyway**.
     - Choose **Install (recommended)** to install for your user under `%LOCALAPPDATA%\Programs\Logos Basecamp`, with a Start menu entry, an optional desktop shortcut, and an uninstaller in **Settings > Apps**. Choose **Portable (extract only)** to only extract the files to a folder of your choice.
     - Launch **Logos Basecamp** from the Start menu, or run `bin\LogosBasecamp.exe` from the portable folder.

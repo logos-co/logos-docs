@@ -10,7 +10,7 @@
 set -eu
 
 # Pinned tool release.
-LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.3.1}
+LOGOSCTL_TAG=${LOGOSCTL_TAG:-0.3.2}
 
 os=$(uname -s)
 arch=$(uname -m)

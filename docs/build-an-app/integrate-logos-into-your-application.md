@@ -87,7 +87,7 @@ flowchart LR
 - **Wallet modules** handle keys, derivation, signing, and proving. Both chains need proofs generated on the client: LEZ executes and proves transactions on [private accounts](../get-started/glossary.md#private-account) locally, and Logos Blockchain value transfers carry a zero-knowledge proof in place of a signature. Wallet modules therefore run where the keys are, which is normally in the user's application.
 - **Node modules** follow their network over peer-to-peer connections, serve chain state, and relay the transactions the wallets produce.
 - **A LEZ node depends on a Logos Blockchain node** to obtain the finalised LEZ state.
-- **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet.
+- **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet. The node API is an interface that more than one module can implement, so a wallet depends on the interface and not on a particular node module.
 
 Storage and Delivery follow the same pattern without a wallet: an application calls the [Storage module](../get-started/glossary.md#storage-module) or the [Delivery module](../get-started/glossary.md#delivery-module) directly. Logos Delivery protects its network against spam with [Rate Limiting Nullifiers](../messaging/concepts/understand-logos-delivery-protocols.md#rln-relay) (RLN), and publishers hold an RLN membership [registered on LEZ](../lez/rln/register-rln-membership-from-basecamp.md).
 
@@ -98,7 +98,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 ### What you get
 
 - **The whole stack by composition.** Blockchain, LEZ, Storage, and Delivery are modules your modules depend on. An application composed from them inherits their metadata protection and private state support, whether or not its developer built anonymity measures directly.
-- **Isolation.** Each module runs in its own operating system process, so a fault in one module does not reach the others. Container-like isolation and finer permission management are in development.
+- **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A separate process contains faults; it is not a security sandbox by itself. Sandbox and container isolation, and finer permission management, are in development.
 - **A fault and audit boundary.** Each module is developed, audited, and upgraded independently.
 - **Distribution without a central service** (in development). Once Basecamp is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue) and distributed over the Logos stack itself, with developer signatures and integrity checks.
 - **An ecosystem around your modules.** Other developers' modules can depend on yours and call it, the same way yours call the Logos modules. A native Basecamp integration makes your product part of the stack rather than a client of it.
@@ -120,7 +120,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 - [Install and load a module in Logos Basecamp](../basecamp/install-and-load-a-module-in-logos-basecamp.md)
 - [Run a Logos node](../run-a-node/get-started/run-logos-node-blockchain-storage-delivery.md) with `logosctl`
 
-A module is a compiled shared library that exposes its methods through a C-compatible interface (FFI), so in principle any language that can build such a library can be used to write one. A Logos SDK for the language makes this much easier: it provides the module plumbing and generates typed clients for the modules yours depends on. For the languages with an SDK, see [Languages](#languages).
+A module is a compiled native library that exposes its methods through a C-compatible interface (FFI). It is usually a shared library, and can be linked statically where dynamic loading is not available. In principle any language that can build such a library can be used to write one. A Logos SDK for the language makes this much easier: it provides the module plumbing and generates typed clients for the modules yours depends on. For the languages with an SDK, see [Languages](#languages).
 
 ## Host Logos Core in your application
 
@@ -131,7 +131,7 @@ Hosting Logos Core in a third-party application works on development branches. I
 Your application keeps its own code, user interface, and distribution, and hosts the Logos Core runtime inside it:
 
 1. Your application ships the runtime and the module [packages](../get-started/glossary.md#package) it needs inside its own bundle.
-1. At start-up, your application starts the runtime through the Logos Core host library for its language.
+1. At start-up, your application starts the runtime through the Logos Core host library for its language. The host libraries wrap a small C interface, which is what makes bindings for further languages practical, and your application does not need to run a particular event loop.
 1. Logos Core loads the modules, resolves their dependencies, and manages their lifecycle, exactly as it does in Basecamp.
 1. Your application calls modules through typed clients generated from each module's contract (a `.lidl` file), and subscribes to their events.
 
@@ -141,11 +141,11 @@ This is not a library wrapper per Logos component. Your application gets the mod
 
 ### Where modules run
 
-The runtime can run each module in a process of its own, run every module in a single runtime process, or run inside your application's process with no child processes at all. The last option is what platforms that forbid spawning processes, such as iOS, require. The placement does not change your application's code. Only the process-per-module placement isolates modules from each other and from your application.
+The runtime can run each module in a process of its own, run every module in a single runtime process, or run inside your application's process with no child processes at all. The last option is what platforms that forbid spawning processes, such as iOS, require. The placement does not change your application's code. Only the process-per-module placement keeps a fault in one module from reaching the other modules and your application.
 
 ### What you give up compared with a Basecamp app
 
-- **Basecamp distribution.** You ship and update your application through your own channels, such as app stores, so decentralised discovery, distribution, and signature checks do not apply to it.
+- **Basecamp distribution.** You ship and update your application through your own channels, such as app stores, so decentralised discovery and distribution do not apply to it. Module packages are still signed, and you decide which publishers your application trusts.
 - **The ecosystem effect.** Code that is not a module cannot be reused by other developers' modules or run by Basecamp users.
 - **Some isolation.** When modules run inside your application's process, a fault in a module can reach your application.
 - **Packaging work.** You build and ship the runtime and modules for each platform you support.
@@ -154,7 +154,7 @@ If you host Logos Core yourself, consider publishing your core logic as modules 
 
 ### Languages
 
-The table shows where a Logos SDK exists or is planned. Any language that can produce a shared library with a C-compatible interface can still be used to write a module without one. **Not planned yet** means no work is scheduled. If you need that language, [tell us](#tell-us-what-you-need).
+The table shows where a Logos SDK exists or is planned. Any language that can produce a native library with a C-compatible interface can still be used to write a module without one. **Not planned yet** means no work is scheduled. If you need that language, [tell us](#tell-us-what-you-need).
 
 | Language | Write a module | Host Logos Core in your application |
 |:---|:---|:---|
@@ -166,11 +166,14 @@ The table shows where a Logos SDK exists or is planned. Any language that can pr
 | JavaScript and React Native | Planned | Not planned yet |
 | Dart and Flutter | Not planned yet | Not planned yet |
 | Python | Not planned yet | Not planned yet: `logos-logoscore-py` runs `logosctl` as a separate process |
+
 ## Mobile
 
 :::note[Planned]
 Logos Basecamp for Android and iOS is planned for Testnet v0.4.0. Kotlin and Swift libraries that let a mobile application host Logos Core, with its modules bundled inside the application package, are also planned. Integrator feedback is welcome on which comes first.
 :::
+
+The Logos Core design includes a mode intended for mobile and simple packaged applications, in which the modules are linked into the application and called directly.
 
 Whether a phone runs the Logos nodes itself depends on how it is used. A phone on Wi-Fi and on charge at home is a very different setting from one on a mobile network and on battery, and running a chain node on a phone has not been benchmarked yet.
 
@@ -194,17 +197,28 @@ Peering works on development branches. It is not released yet.
 
 A user runs a node on another device they own, in Basecamp or `logosctl`, and pairs their application with it through **peering**, either by comparing a six-digit code on both screens or with a single-use invite. The runtime on that device **exports** the node module, and the application's runtime **imports** it. Paired runtimes connect over mutual TLS 1.3 with pinned keys.
 
-The imported module appears under a local name. Modules in the application, and the application's generated clients, call it exactly as they would call a local module, and its events arrive the same way. The import reconnects after the remote runtime restarts.
+The imported module appears under a local name. Modules in the application, and the application's generated clients, call it exactly as they would call a local module, and its events arrive the same way. When the remote runtime restarts, the import becomes ready again; calls in flight at that moment fail, and events sent in the meantime are not redelivered.
 
 Both sides decide. The importing runtime chooses which of its own modules may use the import, and the exporting runtime's policy chooses what each of them may reach. A grant currently opens the whole module, including administrative methods such as stopping the node, so pair only with applications you trust.
 
 ### Remotely: a node in your infrastructure
 
 :::note[Planned]
-Running nodes in your infrastructure for your users' applications is under design. No mechanism is settled yet.
+Peering at this scale is under design. The draft Logos Core specification defines the access-control pieces described below. They are not implemented yet.
 :::
 
-Peering is built for a small number of runtimes that know each other, such as a phone and its owner's home computer. Serving many users from your infrastructure needs more than that: admitting your users' applications without pairing each one by hand, limiting them to the methods they need, such as reading chain state and relaying transactions, keeping one user's events from reaching another, and handling many connections at once.
+The mechanism is the same peering: your users' applications import the node modules that your runtime exports. Peering as it stands is built for a small number of runtimes that know each other, such as a phone and its owner's home computer. To serve many users from your infrastructure, it needs to gain the following.
+
+The draft specification covers who may do what:
+
+- **Grants per method and per event.** A grant can limit a user's application to the methods it needs, such as reading chain state and relaying transactions. The limit is enforced before the module's code runs.
+- **Expiry and revocation.** Each grant can expire, and can be revoked individually while the node keeps running.
+- **Audit.** Every access decision leaves a record.
+- **Automated onboarding.** Enrolling a user's runtime is itself an operation that a service of yours can be authorised to perform, so users do not have to be paired by hand.
+
+There is no anonymous access, by design: each user's runtime is enrolled with its own keys, so the operator can tell users apart.
+
+Still open are how users are enrolled in practice, how one user's events are kept from reaching another, and rate limits and connection scale, which the specification leaves to each deployment.
 
 If your integration depends on this, [tell us](#tell-us-what-you-need) how many users would connect, and which methods they would need.
 
@@ -217,14 +231,17 @@ If your integration depends on this, [tell us](#tell-us-what-you-need) how many 
 - **Any module, not only nodes.** Storage, Delivery, and your own modules are exposed and reached the same way as the chain nodes.
 - **Composition across machines.** With peering, a module in one runtime can depend on a module in another, so a distributed application is built from the same parts as a local one.
 - **Access control on both sides.** The importing runtime chooses which of its modules may use an import, and the exporting runtime's policy chooses what each remote module may reach. Anything the policy does not list is refused.
-- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over mutual TLS 1.3 with pinned keys. Every call on a connection runs as the module authenticated when it opened, so there are no tokens to steal or replay.
+- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over mutual TLS 1.3 with pinned keys. Each connection is opened with a single-use ticket that expires within seconds and is bound to that connection, so there is no long-lived credential to steal or replay.
+- **No downgrade.** A connection that cannot be mutually authenticated is refused. It never falls back to a weaker one.
+- **Nothing to probe.** A caller that is refused cannot tell whether the module exists.
+- **Authority does not pass through.** Calling a module does not lend it your permissions.
 - **Live revocation.** Narrowing a policy or removing a peer closes the connections it no longer allows, while the runtimes keep running.
-- **Resilience.** An imported module reports its connection state and reconnects after the remote runtime restarts.
-- **Explicit compatibility.** Runtimes and modules that share the same protocol major version work together.
+- **Resilience.** An imported module reports its connection state, and becomes ready again when the remote runtime returns.
+- **Explicit compatibility.** Both sides check that they hold the same contract before any call, so a mismatch is refused up front instead of failing in use.
 
 ## What a remote node costs you
 
-Running the node somewhere other than in the application changes what the node operator can see. When the same party runs both the application and the node, such as a custodian running both in its own infrastructure or a user pairing with a node on their own home computer, the trust assumptions are the same as running the node locally. When they are different parties, the node operator sees your network identity, the credentials you connect with, and what you query and submit.
+Running the node somewhere other than in the application changes what the node operator can see. When the same party runs both the application and the node, such as a custodian running both in its own infrastructure or a user pairing with a node on their own home computer, the trust assumptions are the same as running the node locally. When they are different parties, the node operator sees your network identity, the credentials you connect with, and what you query and submit. You also rely on that operator for correctness: a remote node can return wrong results, and the connection does not prove otherwise.
 
 What that exposes depends on the component:
 

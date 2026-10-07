@@ -89,7 +89,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   01f87931943dba0b2df2153ad8da7ce7dd5b4a8d5207d1931432613abbc34929  logosctl-x86_64.AppImage
+   dc2a7e67c7326dada2b9302fb15f9df2cacbe6de3b9db50502ad7831608ffd56  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -177,8 +177,8 @@ Download and install the three module packages from the configured module [catal
    --root-hash 810c39c610c0f37cc6e48e5fb115df69f72de4df7c052cdb1e17f53b7897cc97 \
    --yes
    logosctl package install delivery_module \
-   --version 0.3.0 \
-   --root-hash 31583b977f7370c8fc7ed70351daef1069f718c0a005e74306921da2b8aee76f \
+   --version 0.3.2 \
+   --root-hash 824ccb2cd21b54f196dd3d32659df7f67e6df4298b1ab8cab60b48f704e2feac \
    --yes
    ```
 
@@ -196,7 +196,7 @@ Download and install the three module packages from the configured module [catal
 
    ```text
    blockchain_module 0.3.0
-   delivery_module 0.3.0
+   delivery_module 0.3.2
    storage_module 3.0.2
    ```
 

@@ -16,7 +16,7 @@ sidebar_position: 4
 #### Learn how to get rewarded for having your Logos Blockchain node propose blocks.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Every block your node leads through [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership) mints a reward voucher, and claiming a voucher redeems it into spendable balance. It is intended for node operators running their node via the Blockchain UI app. The procedure also covers claiming the proof-of-work tickets that [mining](../../get-started/glossary.md#mining) produces.
@@ -66,7 +66,7 @@ Check what is ready to claim, submit a claim, then follow it until it settles.
 
 ## Claim mining rewards
 
-Mining (the **Fund** button in the header) produces proof-of-work tickets instead of vouchers. A ticket pays nothing until it is claimed, and it expires if it never is. Mining rewards are claimed from the **Mining** tab, not the **Rewards** tab.
+Mining (the **Fund** button in the header) produces proof-of-work tickets instead of vouchers. A ticket pays nothing until it is claimed, and it expires if it is never claimed. Mining rewards are claimed from the **Mining** tab, not the **Rewards** tab.
 
 1. Click the **Mining** tab.
 

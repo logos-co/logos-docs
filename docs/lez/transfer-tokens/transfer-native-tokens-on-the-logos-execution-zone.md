@@ -6,7 +6,7 @@ topics: LEZ
 steps_layout: flat
 authors: cheny0, jorge-campo, moudyellaz
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: transfer-native-tokens-on-the-logos-execution-zone
 sidebar_position: 1
 ---
@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. It's a component of the Logos project. You can use the wallet CLI to invoke LEZ's authenticated-transfers [program](../../get-started/glossary.md#program) to transfer native tokens between public and private accounts.
@@ -84,24 +84,7 @@ Transfers are irreversible. Double-check all details before proceeding.
     ```sh
     wallet account ls
     ```
-1.  Initialise the sender account. Replace `ACCOUNT-TYPE` with the type of the sender account (public or private) and `ACCOUNT-ID` with the account ID you want to initialise.
-
-    ```sh
-    wallet auth-transfer init --account-id ACCOUNT-TYPE/ACCOUNT-ID
-    ```
-
-    For example, to initialise the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS`, you run:
-
-    ```sh
-    wallet auth-transfer init --account-id Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS
-    ```
-
-    :::info
-    New accounts are created in an uninitialised state, which means no program on LEZ owns them yet. Any program can claim and own an uninitialised account. After initialisation, only the owning program can modify the account.
-
-    The only exception is native token credits: any program can credit native tokens to any account, but only the owning program can debit native tokens.
-    :::
-
+    
 1.  Fund the sender account. Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md), pasting the account ID without its `Public/` prefix in **Metadata**, or have another testnet user transfer native tokens to it. A deposit can only fund a public account.
 1.  Confirm your account balance after funding using the `wallet account get` command:
 
@@ -109,7 +92,7 @@ Transfers are irreversible. Double-check all details before proceeding.
     wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
     ```
 
-    The output shows `Account owned by authenticated transfer program`, with a `"balance"` greater than `0`.
+    The output shows `Balance` followed by a number greater than `0`.
 
 ## Step 2: Transfer tokens
 
@@ -144,25 +127,21 @@ Currently, only uninitialised private accounts can be modified without authorisa
 
 Use the `wallet auth-transfer send` to transfer tokens. Replace `ACCOUNT-TYPE` with the type of the account (public or private) and `TOKEN-AMOUNT` with the amount of tokens to transfer.
 
-````
 ```sh
 wallet auth-transfer send \
     --from ACCOUNT-TYPE/SENDER-ACCOUNT-ID \
     --to ACCOUNT-TYPE/RECIPIENT-ACCOUNT-ID \
     --amount TOKEN-AMOUNT
 ```
-````
 
 For example, to transfer 17 tokens from the public account with ID `Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS` to the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-````
 ```sh
 wallet auth-transfer send \
     --from Public/Ev1JprP9BmhbFVQyBcbznU8bAXcwrzwRoPTetXdQPAWS \
     --to Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL \
     --amount 17
 ```
-````
 
 ### Method 2: Transfer tokens using the recipient account `npk` and `vpk`
 
@@ -181,6 +160,7 @@ Check your account `npk` and `vpk` using the `wallet account get --account-id AC
         --to-vpk RECIPIENT-VPK \
         --amount TOKEN-AMOUNT
     ```
+
 1.  Once the transaction is accepted, run the following command to scan the chain for encrypted values in the transaction and update the local state accordingly.
 
     ```sh
@@ -191,28 +171,21 @@ Check your account `npk` and `vpk` using the `wallet account get --account-id AC
 
 Confirm the transfer by checking the balances of both accounts using the `wallet account get` command.
 
-````
 ```sh
 wallet account get --account-id ACCOUNT-TYPE/ACCOUNT-ID
 ```
-````
 
 For example, to check the balance of the private account with ID `HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL`, you run:
 
-````
 ```sh
 wallet account get --account-id Private/HacPU3hakLYzWtSqUPw6TUr8fqoMieVWovsUR6sJf7cL
 ```
-````
 
 The output looks like this:
 
-````
 ```text
-Account owned by authenticated transfer program
-{..."balance":BALANCE-AMOUNT...}
+Balance BALANCE-AMOUNT, nonce NONCE
 ```
-````
 
 :::tip
 When checking the balance of a private account, the `wallet account get` command doesn't query the network. It works offline because private account data lives only in your wallet storage. Other users cannot read your private balances using this command and your private account ID.

@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Run a node that participates in consensus from the Logos Blockchain desktop app.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or with the Logos Blockchain UI app, which drives the `blockchain_module` module from a graphical interface.
@@ -62,7 +62,7 @@ To install packages one by one instead, see [Install and load a module in Logos 
 
 ### Build from source
 
-Build the standalone app from the `release/0.3.0` branch of [`logos-blockchain-ui`](https://github.com/logos-blockchain/logos-blockchain-ui), the source of the `blockchain_ui` 0.3.0 catalogue release. Its `flake.lock` pins `blockchain_module` 0.3.0 and the node release it runs.
+Build the standalone app from the `release/0.3.1` branch of [`logos-blockchain-ui`](https://github.com/logos-blockchain/logos-blockchain-ui), the source of the `blockchain_ui` 0.3.1 catalogue release. Its `flake.lock` pins `blockchain_module` 0.3.0 and the node release it runs.
 
 :::note
 `master` runs ahead of the testnet, so a build from it can need node changes, bootstrap peers, and config updates that this page does not cover.
@@ -71,7 +71,7 @@ Build the standalone app from the `release/0.3.0` branch of [`logos-blockchain-u
 1.  Clone the release branch and enter the project directory:
 
     ```bash
-    git clone --branch release/0.3.0 https://github.com/logos-blockchain/logos-blockchain-ui.git
+    git clone --branch release/0.3.1 https://github.com/logos-blockchain/logos-blockchain-ui.git
     cd logos-blockchain-ui
     ```
 
@@ -135,7 +135,7 @@ The welcome screen offers **Quick start** and **Advanced**. **Quick start** gene
 1.  On **4. Fund**, choose whether the node claims mined rewards automatically:
 
     - Leave **Claim mined rewards automatically** on. **Pays into** already lists the target from your generated config: your **PoWClaim** account, with **No cap**. To pay into another account as well, choose it, set a threshold or switch on **No cap**, and click **Add**.
-    - Or switch it off. You can still mine with the **Fund** button and claim rewards yourself from the **Mining** tab.
+    - Alternatively, switch it off. You can still mine with the **Fund** button and claim rewards yourself from the **Mining** tab.
 
     ![Step 4. Fund with auto-claim on](../assets/build-and-run-logos-blockchain-node-app-ui/wizard-4-fund.png)
 
@@ -192,7 +192,7 @@ The app hides **Quick start** when it has no bootstrap peers: either it could no
 
 The config was written for an older release, so the node won't start with it. Testnet v0.3 starts a new chain, so configs from Testnet v0.2 need updating. Click **Update config**: the app rebuilds the config for this release and keeps your settings and keys. If the dialogue reads `This config can't be updated` instead, there is no keystore next to the config, and **Start fresh** creates a new config with a new set of keys.
 
-### The headline stays on Bootstrapping
+### The headline stays in Bootstrapping mode
 
 The node is still catching up, and the line beside the headline says why:
 

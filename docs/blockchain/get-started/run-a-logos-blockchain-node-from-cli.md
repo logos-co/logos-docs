@@ -6,7 +6,7 @@ topics: blockchain
 steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: run-a-logos-blockchain-node-from-cli
 sidebar_position: 3
 ---
@@ -16,7 +16,7 @@ sidebar_position: 3
 #### Start a node and verify runtime and consensus signals.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
@@ -60,16 +60,16 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module package version 0.2.4. The root hash ensures you select the published package identity that exactly matches the pinned version:
+1.  Install the Logos Blockchain module package version 0.3.0:
 
     ```sh
     logosctl package install blockchain_module \
-    --version 0.2.4 \
+    --version 0.3.0 \
     --yes
     ```
 
     :::note
-    Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+    Individual module package versions are pinned independently and do not necessarily match the testnet version number.
     :::
 
 1.  Load the Logos Blockchain module:
@@ -88,7 +88,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files (written to `$HOME`) by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.4:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.0:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{
@@ -111,9 +111,9 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     | Field | Purpose | Guidance |
     |-------|---------|----------|
-    | `network.initial_peers` | Bootstrap peers | Use the current network document |
-    | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-    | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
+    | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
+    | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
     | `state.base_folder` | State directory | Use a persistent local path |
     | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
@@ -206,7 +206,7 @@ Wait for your node to finish syncing and reach `Online` mode before mining. Pipe
 
 ## Step 4: Mine tokens to fund your node
 
-A synced node validates the chain but does not propose blocks until its wallet holds stake. You fund it by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
+A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
 
 :::warning
 Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.

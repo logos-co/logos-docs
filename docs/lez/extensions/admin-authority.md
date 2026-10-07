@@ -19,10 +19,6 @@ This page is an early draft and may be incomplete or incorrect. Expect changes, 
 This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)), and pre-release library tags. The framework pin becomes a release tag once upstream cuts a release that contains it.
 :::
 
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
-:::
-
 `admin-authority` is a SPEL extension that adds a single transferable admin role to your [LEZ](../../get-started/glossary.md#lez) program. The admin is the only [account](../../get-started/glossary.md#account) allowed to call admin-gated instructions. The role can be transferred to another signer or [PDA](../../get-started/glossary.md#pda), or renounced permanently. This page walks through using `admin-authority` from an app developer's perspective. If you are building a different extension, see [Build a SPEL extension library](build-a-spel-extension-library.md) instead.
 
 ## When to use it

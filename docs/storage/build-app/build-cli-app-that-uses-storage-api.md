@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Wrap the Storage module API in a simple synchronous CLI interface.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
@@ -50,7 +50,7 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
     ```bash
     mkdir ./storage_cli
     cd ./storage_cli
-    nix flake init -t github:logos-co/logos-module-builder/0.2.0
+    nix flake init -t github:logos-co/logos-module-builder/0.3.2
     ```
 
 ## Step 2: Configure the module metadata, flake, and CMake files
@@ -101,9 +101,9 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
       # Replace the line:
       #   logos-module-builder.url = "github:logos-co/logos-module-builder";
       # with:
-      logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.0";
+      logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
       # and add this:
-      storage_module.url = "github:logos-co/logos-storage-module/v2.1.2";
+      storage_module.url = "github:logos-co/logos-storage-module/v3.0.2";
     };
     ```
 
@@ -246,7 +246,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 ## Step 5: Implement the synchronous transfer helper
 
-1.  Add the `onProgress` and `onDone` callbacks. The Storage module invokes these as the [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_t) operation progresses and the [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_t) operation completes, respectively:
+1.  Add the `onProgress` and `onDone` callbacks. The Storage module invokes these as the [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) operation progresses and the [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) operation completes, respectively:
 
     ```cpp showLineNumbers=72
     void onProgress(const std::string &payload) {
@@ -352,7 +352,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
       echo("uploading " + path.string() + " (" + std::to_string(size) + " bytes)");
 
       return syncTransferOp("upload", size, [&] {
-        return modules().storage_module.uploadUrl(path.string(), kChunkSize);
+        return modules().storage_module.uploadUrl(path.string(), kChunkSize, true);
       });
     }
     ```
@@ -374,7 +374,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
       return syncTransferOp("download", 0, [&] {
         return modules().storage_module.downloadToUrl(cid, path.string(), false,
-                                                      kChunkSize);
+                                                      kChunkSize, false, true);
       });
     }
     ```
@@ -412,7 +412,7 @@ The Storage module is a dependency of your module, so install it first.
 
     ```bash
     logosctl --config-dir ./config-dir catalog refresh
-    logosctl --config-dir ./config-dir package install storage_module --version 2.1.2 --yes
+    logosctl --config-dir ./config-dir package install storage_module --version 3.0.2 --yes
     ```
 
 1.  Install your own module package from the local `.lgx` file:
@@ -442,12 +442,13 @@ The Storage module is a dependency of your module, so install it first.
         Uptime:       0s
         Version:      v1.0.0
 
-      Modules: 3 loaded, 0 crashed, 2 not loaded
+      Modules: 5 loaded, 0 crashed, 1 not loaded
         storage_cli         v1.0.0  not_loaded  -
-        package_manager     v1.0.0  loaded      20s
-        storage_module      v2.1.2  not_loaded  -
-        package_downloader  v1.0.0  loaded      20s
-        capability_module   v1.0.0  loaded      21s
+        package_manager     v1.0.0  loaded      13s
+        storage_module      v3.0.2  loaded      1s
+        package_downloader  v1.0.0  loaded      13s
+        modules_state       v0.1.0  loaded      13s
+        capability_module   v1.0.0  loaded      13s
       ```
 
 1.  Load the CLI module:
@@ -460,7 +461,6 @@ The Storage module is a dependency of your module, so install it first.
 
       ```text
       Loaded module: storage_cli (v1.0.0)
-        Dependencies loaded: storage_module
       ```
 
 ## Step 11: Publish a file
@@ -500,7 +500,7 @@ The Storage module is a dependency of your module, so install it first.
     logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf
     ```
 
-    This may take a little while.
+    This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds, with `call to 'storage_cli.download' timed out after 20000ms`, `"error":"expected a result object, got null"`, or `RPC_FAILED`, because the node is still looking up the file's manifest on the network. Wait a few seconds and run the same command again until it succeeds; this can take a minute or two after the daemon starts.
 
     - **Expected result:**
 
@@ -518,7 +518,7 @@ The Storage module is a dependency of your module, so install it first.
     - The daemon logs show the download progressing, e.g.:
 
       ```text
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/giuliano/logos-v0.2.1/./farewell-to-westphalia.pdf
+      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/<USER>/logos-v0.3.0/./farewell-to-westphalia.pdf
       [2026-08-19 19:04:53.920] [out] [storage_cli] Waiting for node to start.
       [2026-08-19 19:04:53.920] [out] [storage_cli] Node is started, attempting to run download operation.
       [2026-08-19 19:04:53.922] [out] [storage_cli]  65536 bytes

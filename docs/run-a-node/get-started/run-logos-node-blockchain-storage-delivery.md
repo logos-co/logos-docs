@@ -40,9 +40,20 @@ The default paths used throughout this procedure are:
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
-- CPU: 2 Cores, 2Ghz. Modern multi-core processor. Must have ADX instruction support (on x86_64), such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+   - Check whether your CPU has ADX support by running:
+
+   ```sh
+   # Linux
+   grep -o adx /proc/cpuinfo | head -1
+
+   # macOS
+   sysctl -a | grep -i adx
+   ```
 - Memory (RAM): Minimal (1 Gb).
-- Storage: SSD with 100+ GB free with ability to expand storage on demand.
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 
 To run a Blend node, make sure you have:

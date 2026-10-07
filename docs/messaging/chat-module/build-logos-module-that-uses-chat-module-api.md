@@ -16,12 +16,12 @@ sidebar_position: 1
 #### Get started with private 1:1 and group end-to-end encrypted messaging in your own Logos module.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.2.2`) to exchange addresses, open private 1:1 (or *direct*) and group conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
+This procedure covers how to build a Logos [module](../../get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.3.0`) to exchange addresses, open private 1:1 (or *direct*) and group conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `liblogoschat` or `logos-delivery`.
 
-Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity (with a new address) and an empty conversation list.
+Conversations and their messages are kept across restarts, but only as **history**. Each `init()` still starts a new installation with a new address, so a conversation from a previous session reads back with `history_only` set: you can read, label, and delete it, but you cannot send into it or invite to it until a member invites the new installation back in.
 
 :::info[Prerequisites]
 
@@ -56,10 +56,10 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
    mkdir your-module-name && cd your-module-name
    ```
 
-1. Initialise from the template:
+1. Initialise from the template. Use the `0.3.1` tag—the builder `chat_module` v0.3.0 is released against:
 
    ```bash
-   nix flake init -t github:logos-co/logos-module-builder/tutorial-v3#ui-qml-backend
+   nix flake init -t github:logos-co/logos-module-builder/0.3.1#ui-qml-backend
    ```
 
 1. Initialise a Git repository and stage all generated files:
@@ -72,12 +72,12 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 
    | File | What it is | Can you edit it? |
    |---|---|---|
-   | `src/ui_example_plugin.{h,cpp}` | The C++ plugin | Yes—your chat code goes here (Steps 3–7) |
-   | `src/ui_example.rep`, `src/ui_example_interface.h` | The module's interface | No |
+   | `src/ui_example_backend.{h,cpp}` | The C++ backend class you write | Yes—your chat code goes here (Steps 3–7) |
+   | `src/ui_example.rep` | The view contract between the backend and QML | Later—when you expose chat state to your UI |
    | `src/qml/Main.qml` | The example view | Later—replace with your own UI |
-   | `metadata.json`, `CMakeLists.txt` | Build config | Step 2 only |
+   | `metadata.json`, `flake.nix` | Build config | Step 2 only |
 
-   You add your chat code in `UiExamplePlugin::initLogos()`. Leave the example `status` / `add` UI as is for now.
+   The plugin and interface classes around the backend are generated at build time; you do not write them. You add your chat code in `UiExampleBackend::onContextReady()`. Leave the example `status` / `add` UI as is for now.
 
 :::info
 Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`)—they must all match, or `nix build` fails. To use a different name, change it in every one of these.
@@ -91,23 +91,20 @@ Add `chat_module` to both `metadata.json` and `flake.nix`, pinning to the releas
 The flake input name (`chat_module`) must match the dependency name in `metadata.json`. `logos-module-builder` automatically generates the typed `chat_module` wrapper at build time.
 :::
 
-1. In `metadata.json`, add `chat_module` and `delivery_module` to the dependencies array and reuse `chat_module`'s bundled `delivery_module` contract:
+1. In `metadata.json`, add `chat_module` and `delivery_module` to the dependencies array, each with the minimum version it must be installed at:
 
    ```json
    {
      "name": "ui_example",
-     "dependencies": ["chat_module", "delivery_module"],
-     "dependency_overrides": {
-       "delivery_module": {
-         "input": "chat_module",
-         "file": "rust-lib/deps/delivery_module.lidl"
-       }
-     },
+     "dependencies": [
+       { "name": "chat_module", "version": ">=0.3.0" },
+       { "name": "delivery_module", "version": ">=0.3.0" }
+     ],
      ...
    }
    ```
 
-1. In `flake.nix`, pin `chat_module` and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
+1. In `flake.nix`, pin `chat_module`, follow its builder and its [transport](../../get-started/glossary.md#transport) dependency `delivery_module`, then map the delivery input to the `delivery_module` dependency so the builder can resolve it:
 
    ```nix
    inputs = {
@@ -115,11 +112,10 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
      # module was released against.
      logos-module-builder.follows = "chat_module/logos-module-builder";
      # Pin chat_module to the released tag so its API can't shift under `nix flake update`.
-     chat_module.url = "github:logos-co/logos-chat-module/v0.2.2";
-     # chat_module reaches delivery over IPC, but the builder still needs delivery's
-     # runtime build from a matching flake input. Pin the v0.2.0 tag—the exact
-     # rev chat_module v0.2.2 is built against.
-     logos-delivery-module.url = "github:logos-co/logos-delivery-module/v0.2.0";
+     chat_module.url = "github:logos-co/logos-chat-module/v0.3.0";
+     # Follow chat_module's delivery pin, so both build against the same
+     # delivery module.
+     logos-delivery-module.follows = "chat_module/logos-delivery-module";
    };
 
    outputs = inputs@{ logos-module-builder, logos-delivery-module, ... }:
@@ -132,46 +128,53 @@ The flake input name (`chat_module`) must match the dependency name in `metadata
    ```
 
 :::info
-The `dependency_overrides` entry above only points the builder at delivery's `.lidl` contract for code generation—it does **not** supply delivery's runtime build. The builder resolves each `metadata.json` dependency's runtime from a matching flake input, so `delivery_module` needs the `logos-delivery-module` input, mapped in via `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/flake.nix) wires the two modules together.
+The builder resolves each `metadata.json` dependency—its contract for code generation and its runtime build—from a flake input of the same name. `delivery_module` therefore needs the `logos-delivery-module` input, mapped in via `flakeInputs`; without it, `nix build` cannot resolve `delivery_module`. No `dependency_overrides` entry is needed: `chat_module` no longer bundles a copy of delivery's contract. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.3.0/flake.nix) wires the two modules together.
 :::
 
-## Step 3: Initialise `LogosModules` and subscribe to events
+## Step 3: Subscribe to events in your backend
 
-In your module's `initLogos()` function, construct `LogosModules` with the provided `LogosAPI*` and subscribe to all push events before calling `init()`. Subscribing first ensures you do not miss early events or the first incoming messages.
+Add `onContextReady()` to the backend the template scaffolded. It fires once the generated plugin glue has wired `modules()`, the typed callers for the dependencies you declared. Subscribe to all push events there, before calling `init()`: subscribing first ensures you do not miss early events or the first incoming messages.
 
-1. Add the `LogosModules` member, then construct it in `initLogos()`.
-
-   In the header `src/ui_example_plugin.h`—add the include and the member:
+1. Override `onContextReady()` in `src/ui_example_backend.h`:
 
    ```cpp
-   #include "logos_sdk.h"   // generated umbrella—exposes LogosModules
+   #pragma once
 
-   // inside the UiExamplePlugin class:
-   LogosModules* m_logos = nullptr;
+   #include "rep_ui_example_source.h"
+   #include "logos_ui_plugin_context.h"
+
+   class UiExampleBackend : public UiExampleSimpleSource,
+                            public LogosUiPluginContext
+   {
+   public:
+       int add(int a, int b) override;
+
+       void onContextReady() override;
+   };
    ```
 
-   In `src/ui_example_plugin.cpp`—construct it:
+1. In `src/ui_example_backend.cpp`, include the generated umbrella and define the hook:
 
    ```cpp
-   void UiExamplePlugin::initLogos(LogosAPI* api) {
-       logosAPI = api;      // keep the scaffold's two existing lines
-       setBackend(this);
-       m_logos = new LogosModules(api);
-       // Use m_logos->chat_module to call the Logos Chat module.
+   #include "ui_example_backend.h"
+   #include "logos_sdk.h"   // generated umbrella—exposes LogosModules behind modules()
+
+   void UiExampleBackend::onContextReady() {
+       // Use modules().chat_module to call the Logos Chat module.
    }
    ```
 
-1. Subscribe to the module's push events. Each handler receives the event's positional arguments in the order declared in `chat_module.lidl`:
+1. Subscribe to the module's push events inside `onContextReady()`. Each handler receives the event's positional arguments in the order declared in `chat_module.lidl`:
 
    ```cpp
-   auto& chat = m_logos->chat_module;
+   auto& chat = modules().chat_module;
 
    // A new message arrived in a conversation.
    chat.on("message_received", [](const QVariantList& a) {
        // a[0]: QString convo_id, a[1]: QString content, a[2]: qint64 timestamp_ms,
        // a[3]: QString sender (the sender's account address)
    });
-   // One of your own messages was recorded/sent.
+   // One of your own messages was published and recorded.
    chat.on("message_sent", [](const QVariantList& a) {
        // a[0]: convo_id, a[1]: content, a[2]: timestamp_ms
    });
@@ -181,17 +184,21 @@ In your module's `initLogos()` function, construct `LogosModules` with the provi
        // a[3]: QString kind ("direct" | "group"), a[4]: QString name, a[5]: QString desc
        // Choose a[3] = "direct" for a 1:1 conversation
    });
+   // Local metadata changed: a nickname was set, a member was invited, or an
+   // invite back into a history_only conversation cleared the flag.
    chat.on("conversation_updated", [](const QVariantList& a) { /* a[0]: convo_id */ });
+   // The group committed a roster change.
    chat.on("members_changed",      [](const QVariantList& a) { /* a[0]: convo_id */ });
    chat.on("conversation_deleted", [](const QVariantList& a) { /* a[0]: convo_id */ });
    // Delivery/connection state changed—drives your "connected" indicator.
    chat.on("delivery_state_changed", [](const QVariantList& a) {
        // a[0]: QString delivery_state ("initialising" | "online" | "stopped" | "error")
        // a[1]: QString detail
+       // a[2]: bool delivery_adopted (see Step 4)
    });
    ```
 
-   See the [Chat module API reference](https://logos-co.github.io/logos-chat-module/v0.2.2/pages/api_reference.html) for the exact argument list of every method and event. It is generated from [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.2.2/rust-lib/chat_module.lidl), the contract this tutorial's client is built from.
+   See the [Chat module API reference](https://logos-co.github.io/logos-chat-module/v0.3.0/pages/api_reference.html) for the exact argument list of every method and event. It is generated from [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.3.0/rust-lib/chat_module.lidl), the contract this tutorial's client is built from.
 
 ## Step 4: Initialise the chat client
 
@@ -206,21 +213,24 @@ Ongoing activity—incoming messages, new conversations, delivery-state changes�
 `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
 :::
 
-`init()` takes a single `ChatConfig` record, passed from C++ as a `QVariantMap` (records in parameter position have no generated struct—the wire shape is the contract). Both fields are optional:
+`init()` takes a single `ChatConfig` record. The builder generates a typed struct for every record in the contract, under the `ChatModule` namespace. Both fields are optional:
 
 | Field | Type | Notes |
 |---|---|---|
-| `delivery_preset` | string | The delivery network to join. Use `logos.test` to reach the Logos test network; absent or empty means `logos.dev`. Must match across all participants. |
-| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`) |
+| `delivery_preset` | string | The delivery network to join. Absent or empty means `logos.test`, the Logos test network. Must match across all participants. |
+| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`). Read once, at the first `init()`. |
 
-1. Initialise the chat client:
+:::info
+`delivery_module` runs one delivery node for every module that uses it, configured by whichever module asked first. If a node already exists when you call `init()`, the Chat module adopts it and your `delivery_preset` does not apply. The module reports this as `delivery_adopted == true` on `status()` and on `delivery_state_changed`.
+:::
+
+1. Initialise the chat client, in `onContextReady()` after the subscriptions:
 
    ```cpp
-   const QVariantMap config{
-       {"delivery_preset", "logos.test"},
-       {"log_level", "info"},
-   };
-   const LogosResult res = m_logos->chat_module.init(config);
+   ChatModule::ChatConfig config;
+   config.delivery_preset = QStringLiteral("logos.test");
+   config.log_level = QStringLiteral("info");
+   const LogosResult res = modules().chat_module.init(config);
    if (!res.success) {
        qWarning() << "init failed:" << res.getError<QString>();
        return;
@@ -229,18 +239,21 @@ Ongoing activity—incoming messages, new conversations, delivery-state changes�
    // Wait for delivery_state_changed with state == "online" before creating conversations.
    ```
 
+   - Calling `init()` again while initialised succeeds and ignores the new config. Call `shutdown()` first to reconfigure.
+
 1. Read (or set) your identity:
 
    ```cpp
-   const QString myId = m_logos->chat_module.get_installation_name();
-   // Optionally choose a name: m_logos->chat_module.set_installation_name("alice");
+   const QString myId = modules().chat_module.get_installation_name();
+   // Optionally choose a name: modules().chat_module.set_installation_name("alice");
    ```
 
 1. Share your address:
 
    ```cpp
-   const QString myAddress = m_logos->chat_module.get_address();
+   const QString myAddress = modules().chat_module.get_address();
    // share `myAddress` out of band (the peer pastes it—see Steps 9 and 10)
+   // The address is new on every init(), so share it again after a restart.
    ```
 
 ## Step 5: Direct conversations
@@ -254,7 +267,7 @@ To create a group conversation, skip this step and proceed to [Step 6](#step-6-g
 1. Open the conversation as the initiator, or receive it as the recipient:
 
    ```cpp
-   const LogosResult res = m_logos->chat_module.create_conversation(peerAddress);
+   const LogosResult res = modules().chat_module.create_conversation(peerAddress);
    // On success a conversation_created event (is_outgoing == true) fires with the new convo_id.
    ```
 
@@ -264,11 +277,12 @@ To create a group conversation, skip this step and proceed to [Step 6](#step-6-g
 1. Send a message:
 
    ```cpp
-   m_logos->chat_module.send_message(convoId, "How are you?");
+   modules().chat_module.send_message(convoId, "How are you?");
    // On success a message_sent event fires locally; the peer receives a message_received event.
    ```
 
    - Message content is plain text in both directions—the module handles encoding and end-to-end encryption on the wire.
+   - Success means the message was handed to `delivery_module`, not that delivery sent it or that the peer received it.
 
 1. Receive messages through the `message_received` event.
 
@@ -279,7 +293,7 @@ A group conversation starts with its creator as the only member and grows one pe
 1. Create the group:
 
    ```cpp
-   const LogosResult res = m_logos->chat_module.create_group_conversation("Book Club", "Weekly sci-fi picks");
+   const LogosResult res = modules().chat_module.create_group_conversation("Book Club", "Weekly sci-fi picks");
    const QString groupId = res.getValue<QString>();  // the conversation id every member will share
    ```
 
@@ -288,20 +302,21 @@ A group conversation starts with its creator as the only member and grows one pe
 1. Grow the group one member at a time:
 
    ```cpp
-   m_logos->chat_module.add_group_member(groupId, peerAddress);
+   modules().chat_module.add_group_member(groupId, peerAddress);
    // Returns once the add is *proposed*; the group commits it asynchronously.
    ```
 
-   - `add_group_member` returns as soon as the add is proposed. The process takes a few minutes, then the peer will see the group chat on their side.
+   - `add_group_member` returns as soon as the add is proposed, and a `conversation_updated` event fires locally. The process takes a few minutes, then the peer will see the group chat on their side.
+   - The invite goes to every installation the account at `peerAddress` endorses.
    - The invited peer does not call anything; a `conversation_created` event (`kind == "group"`, carrying the group's shared name and description) arrives once the welcome lands.
    - Membership is symmetric: **any** member can propose an add, not just the creator.
-   - A `members_changed` event fires on every membership change.
+   - A `members_changed` event fires once the group commits a membership change.
    - Members can not be removed.
 
 1. Send a message to the group:
 
    ```cpp
-   m_logos->chat_module.send_message(groupId, "hello group");
+   modules().chat_module.send_message(groupId, "hello group");
    // One send reaches every member; each receiver gets a message_received event.
    ```
 
@@ -309,33 +324,41 @@ A group conversation starts with its creator as the only member and grows one pe
 
 ## Step 7: Read state and shut down
 
-1. Read history and conversation state at any time (synchronous reads):
+1. Read history and conversation state at any time (synchronous reads). Each read returns the typed records generated from the contract:
 
    ```cpp
-   const QVariantList convos = m_logos->chat_module.list_conversations();  // [Conversation]
-   const QVariantList msgs   = m_logos->chat_module.get_messages(convoId); // [Message]
-   const QVariantMap  st     = m_logos->chat_module.status().toMap();      // { convo_count, delivery_state, detail }
+   const QList<ChatModule::Conversation> convos = modules().chat_module.list_conversations();
+   const QList<ChatModule::Message>      msgs   = modules().chat_module.get_messages(convoId);
+   const ChatModule::Status              st     = modules().chat_module.status();
+   // st.convo_count, st.delivery_state, st.detail, st.delivery_adopted
    ```
 
+   - `list_conversations` returns conversations in no particular order; sort by `last_activity_ms` for a conversation list.
+   - `get_messages` returns messages oldest first. After a restart it reads back a conversation's newest 500.
+   - A `Conversation` with `history_only == true` comes from a previous session: it can be read, labelled, and deleted, but not sent into or invited to.
+   - Optional fields (`nickname`, `name`, `description`, `preview`, and a message's `sender`) are `std::optional`; read them with `value_or(...)`.
+
    :::warning
-   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler—it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.2.2/src/ChatBackend.cpp)).
+   Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler—it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.3.0/src/ChatBackend.cpp)).
    :::
 
 1. Read a group conversation roster at any time:
 
    ```cpp
-   const QVariantList members = m_logos->chat_module.list_group_members(groupId);  // [GroupMember]
+   const QList<ChatModule::GroupMember> members = modules().chat_module.list_group_members(groupId);
    // Each element: { address, pending }—committed members first, then invites
    // this instance sent that the group has not committed yet (pending == true).
    ```
 
-   - The `pending` flag clears when the group commits that add. An unknown conversation id reports an empty roster.
+   - The `pending` flag clears when the group commits that add. An unknown conversation id, or a `history_only` conversation, reports an empty roster.
 
 1. Shut down cleanly:
 
    ```cpp
-   m_logos->chat_module.shutdown();   // disconnects and tears the client down
+   modules().chat_module.shutdown();   // disconnects and tears the client down
    ```
+
+   - The installation ends here. A later `init()` starts a new one with a new address, and this session's conversations read back `history_only`.
 
 ## Step 8: Build and run
 
@@ -391,7 +414,7 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 
 ### Why do peers not connect or messages not propagate?
 
-The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. Each instance must also be able to reach the key-package registry at `https://devnet.chat-kc.logos.co` over HTTPS, where key material is published during `init()` and looked up by `create_conversation`. The registry is an API endpoint: opening its root URL in a browser returns `404 Not Found` even when it is working. For delivery-level detail, check the log file named by `get_log_path()`.
+The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. If `delivery_adopted` is `true`, another module created the delivery node first and it keeps the settings it was created with, which may differ from your `delivery_preset`. Each instance must also be able to reach the key-package registry at `https://devnet.chat-kc.logos.co` over HTTPS, where key material is published during `init()` and looked up by `create_conversation`. The registry is an API endpoint: opening its root URL in a browser returns `404 Not Found` even when it is working. For delivery-level detail, check the log file named by `get_log_path()`.
 
 ### Why hasn't an invited member joined the group yet?
 
@@ -405,6 +428,6 @@ Briefly after a membership change commits, the group is finalising its new epoch
 
 You issued a synchronous module read (`list_conversations`, `get_messages`, `status`) from inside an event handler. That re-enters the IPC replica while its read notifier is disabled and blocks until the call times out. Defer such reads to the next event-loop turn.
 
-### Why are my conversations gone after a restart?
+### Why can't I send into a conversation after a restart?
 
-Chat state is **ephemeral** in this release: identity, conversations, and message history live in memory only. Restarting an instance mints a fresh identity with a new address and an empty conversation list, so peers must re-open conversations with the new address. Persistence across restarts is planned for a later release.
+Conversations and their messages persist across restarts purely as history. Each `init()` is a new installation with a new address, so a conversation from a previous session reads back with `history_only == true`: it keeps its messages and can be labelled and deleted, but it cannot be sent into or invited to, and it has no roster. Peers must open a new direct conversation with the new address, or a group member must invite the new address back in, which clears the flag and raises `conversation_updated`. Restoring such conversations is being worked on.

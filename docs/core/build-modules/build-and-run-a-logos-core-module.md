@@ -516,6 +516,8 @@ A core module must keep `"interface": "universal"` in `metadata.json`. Without i
 
 Confirm that you launched Logos Basecamp with the `--user-dir` you installed into, and that the module is in a subdirectory of its `modules/` directory (for example, `basecamp-data/modules/my_module/`) containing the module binary and `manifest.json`. A development build of Logos Basecamp needs the `-dev` variant from `.#lgx`; a released build needs the portable variant from `.#lgx-portable`.
 
+Also confirm you installed the module into the base directory the running instance actually reads, and restarted it afterwards. A rebuilt package never reaches a running Basecamp on its own. See [Troubleshoot Logos module development with Basecamp](../../scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md).
+
 ### Module not discovered by `logosctl`
 
 Confirm the module is in a subdirectory of the session's `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains a `manifest.json` with a `main` object matching your OS and architecture. Run `logosctl package ls` to see what the current session actually has installed.

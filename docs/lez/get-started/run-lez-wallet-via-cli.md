@@ -116,7 +116,7 @@ In this task, wallet account and transfer commands interact with the `authentica
    wallet account get --account-id Public/14TYHiuzKiNR1ydETpr9mJMkjY6jf1hQFZ11d3X8Tc7N
    ```
 
-   You should see `Balance 0, nonce 0` in the output. New accounts start empty and unowned, and you don't need to initialise them: the `authenticated-transfer` program can credit native tokens to any account.
+   You should see `Balance 0, nonce 0` in the output. New accounts start empty and not owned, and you don't need to initialise them: the `authenticated-transfer` program can credit native tokens to any account.
 
 ### Fund the sender account
 

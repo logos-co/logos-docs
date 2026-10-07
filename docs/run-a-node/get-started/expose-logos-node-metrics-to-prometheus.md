@@ -220,7 +220,7 @@ The server did not start. The usual causes are:
 
 - The server is already running. Check with `logosctl call openmetrics getInfo`, and run `logosctl call openmetrics stop` before starting it with a new configuration.
 - Another process holds the port. Check with `ss -lntp | grep ':9464'`, then pick a free `port` in `config.json`.
-- `config.json` is not valid JSON, or `port` is missing or outside `1`–`65535`.
+- `config.json` is not valid JSON, or `port` is missing or not between `1` and `65535`.
 
 ### A module's metrics are missing from `/metrics`
 

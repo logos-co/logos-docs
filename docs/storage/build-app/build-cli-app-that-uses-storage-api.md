@@ -442,12 +442,13 @@ The Storage module is a dependency of your module, so install it first.
         Uptime:       0s
         Version:      v1.0.0
 
-      Modules: 3 loaded, 0 crashed, 2 not loaded
+      Modules: 5 loaded, 0 crashed, 1 not loaded
         storage_cli         v1.0.0  not_loaded  -
-        package_manager     v1.0.0  loaded      20s
-        storage_module      v3.0.0  not_loaded  -
-        package_downloader  v1.0.0  loaded      20s
-        capability_module   v1.0.0  loaded      21s
+        package_manager     v1.0.0  loaded      13s
+        storage_module      v3.0.2  loaded      1s
+        package_downloader  v1.0.0  loaded      13s
+        modules_state       v0.1.0  loaded      13s
+        capability_module   v1.0.0  loaded      13s
       ```
 
 1.  Load the CLI module:

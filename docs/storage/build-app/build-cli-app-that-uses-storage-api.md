@@ -499,7 +499,7 @@ The Storage module is a dependency of your module, so install it first.
     logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf
     ```
 
-    This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds with `"error":"expected a result object, got null"` (or `RPC_FAILED`), because the node is still looking up the file's manifest on the network. Wait a few seconds and run the same command again until it succeeds; this can take a minute or two after the daemon starts.
+    This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds, with `call to 'storage_cli.download' timed out after 20000ms`, `"error":"expected a result object, got null"`, or `RPC_FAILED`, because the node is still looking up the file's manifest on the network. Wait a few seconds and run the same command again until it succeeds; this can take a minute or two after the daemon starts.
 
     - **Expected result:**
 

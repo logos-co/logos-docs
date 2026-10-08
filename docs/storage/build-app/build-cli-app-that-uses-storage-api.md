@@ -553,7 +553,7 @@ This may take a little while. On a node that has just started, the first attempt
 The public download should produce a 2,276,462-byte PDF.
 
 :::tip
-Try uploading different files and sharing their CIDs with other network participants if you know anyone. They should be able to download them.
+Try uploading different files and sharing their `CIDs` with other network participants if you know anyone. They should be able to download them.
  :::
 
 You may now stop the daemon (`logosctl --config-dir ./config-dir daemon stop`), or leave it running and use it for other operations.

@@ -97,7 +97,7 @@ nix flake init -t github:logos-co/logos-module-builder/0.3.2
     rm src/minimal_impl.{h,cpp}
     ```
 
-1.  Replace the generated `flake.nix` with the following pinned inputs:
+1.  In the generated `flake.nix`, replace the `inputs` block with the following pinned inputs. Keep the generated `outputs` as they are:
 
     ```nix
     {

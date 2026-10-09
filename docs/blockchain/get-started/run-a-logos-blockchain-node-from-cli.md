@@ -219,7 +219,7 @@ Wait for your node to finish syncing and reach `Online` mode before mining. Pipe
 A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
 
 :::warning
-Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
 :::
 
 1.  After your node reaches `Online` mode, start mining:

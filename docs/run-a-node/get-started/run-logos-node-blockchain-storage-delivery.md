@@ -180,8 +180,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.0 \
-   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
+   --version 0.3.1 \
+   --root-hash cfe0b7893b7fa46736b27203bf6ffb177f18601c09a899f47665a6c17bd9c6d0 \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
@@ -206,7 +206,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.0
+   blockchain_module 0.3.1
    delivery_module 0.3.2
    storage_module 3.0.2
    ```
@@ -260,7 +260,7 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
+The blockchain module `0.3.1` release starts a new blockchain with a new genesis.
 
 Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
 :::

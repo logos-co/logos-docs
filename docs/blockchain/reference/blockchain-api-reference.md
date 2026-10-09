@@ -21,6 +21,7 @@ If you have access to a running Blockchain node, you can view the OpenAPI specif
 
 - The API listens on `127.0.0.1:8080` by default. To change the address, set `api.backend.listen_address` in the node's configuration.
 - Requests and responses use JSON unless an endpoint says otherwise. Send request bodies with the `Content-Type: application/json` header.
+- A few successful responses have a JSON body but a `text/plain` content type: [`GET /leader/aged-notes`](#get-leaderaged-notes), [`GET /leader/claim/vouchers`](#get-leaderclaimvouchers), [`GET /wallet/{public_key}/balance`](#get-walletpublic_keybalance), and [`POST /wallet/transactions/transfer-funds`](#post-wallettransactionstransfer-funds). Parse the body as JSON regardless of the content type.
 - Hashes, block IDs, transaction IDs, note IDs, declaration IDs, and ZK public keys are 32-byte values encoded as 64-character hexadecimal strings without a `0x` prefix.
 - Peer IDs are libp2p peer IDs encoded as base58 strings. Network addresses and locators are libp2p `multiaddr` strings, such as `/ip4/203.0.113.10/udp/3000/quic-v1`.
 - Slots, epochs, and token amounts are unsigned integers.
@@ -262,7 +263,7 @@ Returns `404` if the node doesn't store the transaction.
 | `mantle_tx` | object | The unsigned transaction. |
 | `mantle_tx.hash` | string | The hash of the transaction. |
 | `mantle_tx.ops` | array of objects | The operations in the transaction. Each has a numeric `opcode` and a `payload` object whose fields depend on the operation. |
-| `ops_proofs` | array | The proofs that authorise each operation, in the same order as `mantle_tx.ops`. An entry is `null` for an operation that needs no proof. |
+| `ops_proofs` | array of objects | The proofs that authorise each operation, in the same order as `mantle_tx.ops`. Each entry is an object with a single key that names the proof type, such as `ZkSig`. An operation that needs no proof has the entry `{"None": null}`. |
 
 ## Mantle and mempool
 
@@ -619,12 +620,12 @@ Gets the balance of a key in the node's wallet.
 
 #### Response fields
 
-Returns `404` if the key isn't in the node's wallet, or if the node hasn't yet synced the block that funded it.
+Returns `404` if the key holds no notes at that block. This includes a key that the node's wallet holds but that hasn't received any funds yet, and a funded key whose funding block the node hasn't synced yet.
 
 | Field | Type | Description |
 | --- | --- | --- |
 | `tip` | string | The ID of the block the balance was read at. |
-| `balance` | integer | The total value of the key's notes. |
+| `balance` | integer | The total value of the key's notes, excluding notes deposited into channels. |
 | `notes` | object | An object that maps each note ID to the note's value. |
 | `address` | string | The ZK public key. |
 

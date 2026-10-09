@@ -40,9 +40,20 @@ The default paths used throughout this procedure are:
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
-- CPU: 2 Cores, 2Ghz. Modern multi-core processor. Must have ADX instruction support (on x86_64), such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+   - Check whether your CPU has ADX support by running:
+
+   ```sh
+   # Linux
+   grep -o adx /proc/cpuinfo | head -1
+
+   # macOS
+   sysctl -a | grep -i adx
+   ```
 - Memory (RAM): Minimal (1 Gb).
-- Storage: SSD with 100+ GB free with ability to expand storage on demand.
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 
 To run a Blend node, make sure you have:
@@ -159,7 +170,7 @@ Download and install the three module packages from the configured module [catal
 
    - The detached command returns after the Logos node is ready to accept commands.
 
-1. Refresh the official module catalogue:
+1. Refresh the official module catalogue. Run this even if the daemon was already running, because it does not see packages published after it last refreshed:
 
    ```sh
    logosctl catalog refresh
@@ -169,8 +180,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.0 \
-   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
+   --version 0.3.1 \
+   --root-hash cfe0b7893b7fa46736b27203bf6ffb177f18601c09a899f47665a6c17bd9c6d0 \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
@@ -195,7 +206,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.0
+   blockchain_module 0.3.1
    delivery_module 0.3.2
    storage_module 3.0.2
    ```
@@ -249,7 +260,7 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
+The blockchain module `0.3.1` release starts a new blockchain with a new genesis.
 
 Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
 :::
@@ -311,7 +322,7 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
    :::warning
-   Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+   Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
    :::
 
 1. To participate in consensus, your node needs funds. Fund it by mining, as described in the next section.
@@ -321,24 +332,26 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
 The generated `user_config.yaml` includes a `pow` section that deals with automatically claiming mining rewards to the node's `PoWClaim` key. Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
 Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
-1. Leave the `pow` section as generated. If desired, you can optionally limit the number of mining threads by editing `pow.mining.max_threads`, which uses one thread per CPU core by default (with the `null` value). Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
+1. Leave the `pow` section as generated. The generated defaults look like this:
 
    ```yaml
    pow:
      mining:
-       max_threads: 2
-       max_tickets_per_block: 4
+       max_threads: 1
+       max_tickets_per_block: 1
      auto_claim:
        targets:
        - public_key: <your PoWClaim key>
-         threshold: 18446744073709551615
+         threshold: 2000000000
        tick:
          unit: seconds
          value: 10
    ```
 
-   - Leave the rest of the `pow` section as generated. `auto_claim.targets` is already filled with your node's `PoWClaim` key.
-   - Restart the blockchain module for the change to take effect.
+   - `auto_claim.targets` is already filled with your node's `PoWClaim` key.
+   - `max_threads` sets how many CPU threads mine. To mine faster, raise it, or set it to `null` to use one thread per CPU core.
+   - `threshold` is the balance, in tokens, that auto-claim pays the target up to. Once a target reaches its threshold, auto-claim stops paying it, and once every target has, auto-claim and mining both stop.
+   - If you edit the `pow` section, restart the blockchain module for the change to take effect.
 
 1. After your node reaches `Online` mode, start mining:
 

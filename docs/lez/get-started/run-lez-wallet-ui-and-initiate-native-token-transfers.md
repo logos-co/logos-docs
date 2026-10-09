@@ -124,13 +124,13 @@ A new wallet starts with one public account and one private account, both empty.
 
 1.  In the **Accounts** panel, click **+ Create** next to **Public Accounts**. If your account list is empty, click **+ Public account** instead.
 
-    The new [public account](../../get-started/glossary.md#public-account) appears in the account list with its account ID and balance in LGO. The edit (pencil) and copy buttons sit on the right of each account.
+    The new [public account](../../get-started/glossary.md#public-account) appears in the account list with its account ID and balance in TestToken. The edit (pencil) and copy buttons sit on the right of each account.
 
     ![A public account with its edit and copy buttons highlighted](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/account-actions.png)
 
 1.  Optional: to name the account, click the edit (pencil) button next to it, enter a name in the **Add name** dialogue, and click **Save**. Each name must be unique in the wallet, and the edit button shows only on accounts that don't have a name yet.
 
-1.  Fund the account. Next to the account, click the copy button to copy its account ID, then have another testnet user send LGO to it, or [bridge tokens from the L1](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md).
+1.  Fund the account. Next to the account, click the copy button to copy its account ID, then have another testnet user send TestToken to it, or [bridge tokens from the L1](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md).
 
 ## Send a public transfer
 
@@ -139,7 +139,7 @@ This task moves tokens from a funded public account to another public account.
 1. In the transfer panel, select **Send**, then select the **Public** tab.
 1. In the **From** field, choose a public account with a positive balance.
 1. In the **To** field, either paste the recipient's account ID, or tick **Use owned account** and choose one of your own public accounts.
-1. In **Amount (LGO)**, enter the amount to send.
+1. In **Amount (TestToken)**, enter the amount to send.
 1.  Click **Send**.
 
     A result line displays below the **Send** button and reads `Success. Tx:` followed by the transaction hash. Use its copy button to copy the hash for the next task.
@@ -172,7 +172,7 @@ The **Bridge** section withdraws native tokens from one of your public accounts 
 1. In the transfer panel, select **Bridge**.
 1. In the **From** field, choose a public account with a positive balance.
 1. In **Bedrock (L1) public key**, paste the recipient's Bedrock public key as hex.
-1. In **Amount (LGO)**, enter the amount to withdraw.
+1. In **Amount (TestToken)**, enter the amount to withdraw.
 1.  Click **Withdraw**.
 
     A result line displays below the **Withdraw** button. On success, it reads `Success. Tx:` followed by the transaction hash.

@@ -25,9 +25,16 @@ This procedure covers running the app (through Logos [Basecamp](../../get-starte
 
 :::info[Prerequisites]
 
-- A supported platform. The `blockchain_ui` 0.3.0 release in the Basecamp catalogue is built for:
-    - Linux x86_64 and arm64
-    - macOS on Apple silicon
+- A graphical desktop session on one of:
+    - **Linux** (tested on Ubuntu 24.04)
+    - **Windows 11 with WSL2** (plus WSLg for the GUI)
+    - **Apple Silicon Mac** (M1 or later).
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- Memory (RAM): Minimal (1 Gb).
+- Storage:
+    - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+    - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 - To build from source: **Nix** with flakes enabled.
     - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -176,7 +183,7 @@ A synced node validates the chain but does not propose blocks until its wallet h
     - If you switched auto-claim off during [step-by-step setup](#step-by-step-setup), claim tickets yourself under **Manual claim**, as described in [Claim mining rewards](./claim-leader-rewards-in-logos-blockchain-ui-app.md#claim-mining-rewards).
     - The **Mining Rewards** tile on the **Node** tab shows what mining has paid so far.
 
-1.  Open the **Wallet** tab, then click **Accounts**. Click **Refresh** and confirm the balance of your **PoWClaim** account, in LGO.
+1.  Open the **Wallet** tab, then click **Accounts**. Click **Refresh** and confirm the balance of your **PoWClaim** account, in TestToken.
 
     ![Wallet > Accounts with a funded PoWClaim account](../assets/build-and-run-logos-blockchain-node-app-ui/wallet-accounts.png)
 

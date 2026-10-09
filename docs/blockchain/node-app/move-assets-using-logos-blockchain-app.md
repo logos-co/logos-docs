@@ -30,7 +30,7 @@ This procedure covers how to send funds from one of your wallet accounts to a re
 
 ## What to expect
 
-- You can pick any of your wallet accounts as the sender and see its balance in LGO before you send.
+- You can pick any of your wallet accounts as the sender and see its balance in TestToken before you send.
 - You can submit a transfer and copy the resulting transaction hash from the result notice below the **Send** button.
 - You can confirm the transfer by finding its hash in the **Explorer** tab or on the testnet block explorer website, and by refreshing your account balances.
 
@@ -47,11 +47,11 @@ Every tab in the app is open whether or not the node is running, but the **Send*
 1. Select the sender account in the **From** dropdown.
 
    - Each account shows its name, address, and balance.
-   - The balance of the selected account appears as **Available:** next to the **Amount (LGO)** label.
+   - The balance of the selected account appears as **Available:** next to the **Amount (TestToken)** label.
 
 1. Enter the recipient's public key in the **To** field.
 
-1. Enter the amount to send, in LGO, in the **Amount (LGO)** field.
+1. Enter the amount to send, in TestToken, in the **Amount (TestToken)** field.
 
    - If the amount is more than the account holds, the form shows `More than this account holds.` and **Send** stays disabled.
 

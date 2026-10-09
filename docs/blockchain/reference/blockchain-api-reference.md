@@ -40,7 +40,7 @@ Gets the consensus state information for the node.
 | Field | Type | Description |
 | --- | --- | --- |
 | `cryptarchia_info` | object | The node's current view of the chain. |
-| `cryptarchia_info.lib` | string | The ID of the latest immutable block (LIB), the most recent block that can no longer be reorganized. |
+| `cryptarchia_info.lib` | string | The ID of the latest immutable block (LIB), the most recent block that can no longer be reorganised. |
 | `cryptarchia_info.lib_slot` | integer | The slot of the latest immutable block. |
 | `cryptarchia_info.tip` | string | The ID of the block at the tip of the node's canonical chain. |
 | `cryptarchia_info.slot` | integer | The slot of the tip block. |
@@ -94,7 +94,7 @@ Gets information about the node's peer connectivity.
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `listen_addresses` | array of strings | The multiaddresses the node listens on. |
+| `listen_addresses` | array of strings | The addresses the node listens on. |
 | `peer_id` | string | The peer ID of this node. |
 | `connected_peers` | array of strings | The peer IDs of the peers the node is connected to. |
 | `discovered_peers` | array of strings | The peer IDs of the peers the node has discovered through Kademlia. A discovered peer isn't necessarily connected. |

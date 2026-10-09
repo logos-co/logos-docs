@@ -6,7 +6,7 @@ topics: [storage]
 steps_layout: sectioned
 authors: giuliano, kashepavadan
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: build-cli-app-that-uses-storage-api
 sidebar_position: 1
 ---
@@ -18,6 +18,8 @@ sidebar_position: 1
 :::tip[Version]
 This document is accurate for **Testnet v0.3.0**.
 :::
+
+This tutorial uses **Storage module v3.0.2**, **Logos module builder 0.3.2**, and `logosctl 0.3.2`.
 
 The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
 
@@ -45,13 +47,14 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
 
 ## Step 1: Scaffold the module project
 
-1.  Use the Logos module builder template to scaffold a new module project:
+Use the Logos module builder template to scaffold a new module project:
 
-    ```bash
-    mkdir ./storage_cli
-    cd ./storage_cli
-    nix flake init -t github:logos-co/logos-module-builder/0.3.2
-    ```
+```bash
+mkdir ./storage_cli
+cd ./storage_cli
+git init
+nix flake init -t github:logos-co/logos-module-builder/0.3.2
+```
 
 ## Step 2: Configure the module metadata, flake, and CMake files
 
@@ -94,17 +97,17 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
     rm src/minimal_impl.{h,cpp}
     ```
 
-1.  Edit the generated `flake.nix` to add the Storage module as an input:
+1.  In the generated `flake.nix`, replace the `inputs` block with the following pinned inputs. Keep the generated `outputs` as they are:
 
     ```nix
-    inputs = {
-      # Replace the line:
-      #   logos-module-builder.url = "github:logos-co/logos-module-builder";
-      # with:
-      logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
-      # and add this:
-      storage_module.url = "github:logos-co/logos-storage-module/v3.0.2";
-    };
+    {
+      inputs = {
+        logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
+        storage_module.url = "github:logos-co/logos-storage-module/v3.0.2";
+      };
+
+      # ...
+    }
     ```
 
 1.  Edit `CMakeLists.txt` to reference the new source file names. Replace `logos_module` with:
@@ -121,35 +124,35 @@ The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/
 
 ## Step 3: Define the module interface
 
-1.  Create `src/storage_cli_impl.h` with the following interface. It declares two operations—`publish` and `download`—both of which return a [`StdLogosResult`](https://github.com/logos-co/logos-cpp-sdk/tree/95d7b3a9c5ef845bdc31f12f1d8222a12eda916d#logosresult) ([result type](https://en.wikipedia.org/wiki/Result_type)), and overrides `onContextReady`, a [Logos C++ SDK](https://github.com/logos-co/logos-cpp-sdk) hook called when the module is loaded:
+Create `src/storage_cli_impl.h` with the following interface. It declares two operations—`publish` and `download`—both of which return a [`StdLogosResult`](https://github.com/logos-co/logos-cpp-sdk/tree/95d7b3a9c5ef845bdc31f12f1d8222a12eda916d#logosresult) ([result type](https://en.wikipedia.org/wiki/Result_type)), and overrides `onContextReady`, a [Logos C++ SDK](https://github.com/logos-co/logos-cpp-sdk) hook called when the module is loaded:
 
-    ```cpp showLineNumbers
-    // storage_cli_impl.h
-    #pragma once
+```cpp showLineNumbers
+#pragma once
 
-    #include <logos_module_context.h>
-    #include <logos_result.h>
-    #include <string>
+#include <logos_module_context.h>
+#include <logos_result.h>
+#include <string>
 
-    /**
-     * A synchronous, CLI-shaped facade over the asynchronous `storage_module`.
-     */
-    class StorageCliImpl : public LogosModuleContext {
-    public:
-      /**
-       * Uploads a file to the local node.
-       */
-      StdLogosResult publish(const std::string &input);
-      /**
-       * Downloads a file from the network onto the specified local path.
-       */
-      StdLogosResult download(const std::string &cid, const std::string &output);
+/**
+ * A synchronous, CLI-shaped facade over the asynchronous `storage_module`.
+ */
+class StorageCliImpl : public LogosModuleContext {
+public:
+  /**
+   * Uploads a file to the local node and returns the completion result.
+   */
+  StdLogosResult publish(const std::string &input);
+  /**
+   * Downloads a file from the network onto the specified local path.
+   * Returns the completion result.
+   */
+  StdLogosResult download(const std::string &cid, const std::string &output);
 
-    protected:
-      /// Starts (and configures) the storage node when the module is loaded.
-      void onContextReady() override;
-    };
-    ```
+protected:
+  /// Starts (and configures) the storage node when the module is loaded.
+  void onContextReady() override;
+};
+```
 
 ## Step 4: Set up shared state and helper functions
 
@@ -158,7 +161,6 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 1.  Start `src/storage_cli_impl.cpp` with its header and includes. `nlohmann/json` ships with the Logos SDK, so you don't need to install it separately:
 
     ```cpp showLineNumbers
-    // storage_cli_impl.cpp
     #include "storage_cli_impl.h"
     #include "logos_sdk.h"
 
@@ -177,7 +179,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 1.  Open an anonymous namespace and define the node configuration and transfer chunk size:
 
-    ```cpp showLineNumbers=17
+    ```cpp showLineNumbers=16
     namespace {
 
     constexpr const char *kNodeConfig = R"({
@@ -192,13 +194,15 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 1.  Add standard C++ [promises](https://en.cppreference.com/cpp/thread/promise) to make the `publish`/`download` operations synchronous and a [mutex](https://en.cppreference.com/cpp/thread/mutex) to serialise these operations:
 
-    ```cpp showLineNumbers=28
+    ```cpp showLineNumbers=27
     // We'll use two promises: one for synchronising node startup, and another for
     // upload/download operation results.
     std::promise<bool> gStarted;
     // The start future is potentially called by several different threads, so we
     // need a shared future.
     std::shared_future<bool> gStartedFut = gStarted.get_future().share();
+    // A rejected start can also emit a completion event. Resolve startup only once.
+    std::once_flag gStartedOnce;
     // gResult is initialised during an asynchronous operation dispatch, set in
     // the callback once, and consumed by the dispatcher exactly once, so we can
     // use a regular future.
@@ -214,7 +218,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 1.  Add helper functions for printing transfer progress and for parsing JSON payloads returned by the Storage module:
 
-    ```cpp showLineNumbers=44
+    ```cpp showLineNumbers=45
     void echo(const std::string &line, bool endline = true) {
       std::cout << line;
       if (endline) {
@@ -236,9 +240,9 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
     json parsePayload(const std::string &payload) {
       json j = json::parse(payload, nullptr, false);
-      if (j.is_discarded()) {
+      if (!j.is_object()) {
         echo("Failed to parse payload: " + payload);
-        return {};
+        return json::object();
       }
       return j;
     }
@@ -246,20 +250,26 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 ## Step 5: Implement the synchronous transfer helper
 
-1.  Add the `onProgress` and `onDone` callbacks. The Storage module invokes these as the [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) operation progresses and the [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) operation completes, respectively:
+1.  Add the `onProgress` and `onDone` callbacks. Both [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) and [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) report progress and completion through these callbacks. Progress events contain a byte increment and the total size. `onStarted` resolves the startup promise once, regardless of the result:
 
-    ```cpp showLineNumbers=72
+    ```cpp showLineNumbers=73
     void onProgress(const std::string &payload) {
-      gTransferBytes += parsePayload(payload).value("bytes", int64_t{0});
+      const json j = parsePayload(payload);
+      gTransferBytes += j.value("bytes", int64_t{0});
+      gTransferTotal = j.value("total", gTransferTotal);
       printProgress();
     }
 
     void onDone(const std::string &payload) { gResult.set_value(payload); }
+
+    void onStarted(bool success) {
+      std::call_once(gStartedOnce, [success] { gStarted.set_value(success); });
+    }
     ```
 
-1.  Add `syncTransferOp`, the helper that turns an asynchronous Storage operation into a synchronous one—this is the core of the module:
+1.  Add `syncTransferOp`, the helper that turns an asynchronous Storage operation into a synchronous one - this is the core of the module:
 
-    ```cpp showLineNumbers=79
+    ```cpp showLineNumbers=86
     StdLogosResult syncTransferOp(const std::string &what, int64_t total,
                                   const std::function<StdLogosResult()> &op) {
       echo("Waiting for node to start.");
@@ -285,31 +295,32 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
       const std::string result = gResult.get_future().get();
       const json payload = parsePayload(result);
-      return StdLogosResult{.success = payload.value("success", false),
+      const bool success = payload.value("success", false);
+      return StdLogosResult{.success = success,
                             .value = payload,
-                            .error = ""};
+                            .error = success ? "" : payload.value("error", "Transfer failed")};
     }
+
     } // namespace
     ```
 
-    - Lines 81-85 wait on the `gStartedFut` promise, which is set once the node has started.
-    - Line 90 acquires `gOpLock` so two `syncTransferOp` calls can't run concurrently.
-    - Lines 92-94 reset the result promise and progress counters
-    - Line 97 dispatches the operation via `op()`, and blocks on the result promise, which is fulfilled by the `onDone` callback above once the operation completes.
-    - Lines 103-106 parse and return the result.
+    - `gStartedFut` waits until node startup succeeds or fails.
+    - `gOpLock` serialises transfers because this example shares one result promise and progress counters.
+    - The helper resets that state, dispatches `op()`, and waits for `onDone` to fulfil the result promise.
+    - The returned result includes the completion payload and any transfer error.
 
 ## Step 6: Implement the context hook and the public operations
 
 1.  Implement `onContextReady`, which registers the Storage module's callbacks and starts the Storage node:
 
-    ```cpp showLineNumbers=111
+    ```cpp showLineNumbers=119
     void StorageCliImpl::onContextReady() {
       StorageModule &storage = modules().storage_module;
 
       storage.onStorageStart([](const std::string &payload) {
         const json j = parsePayload(payload);
         echo("Node started with result: " + j.dump());
-        gStarted.set_value(j.value("success", false));
+        onStarted(j.value("success", false));
       });
 
       storage.onStorageUploadProgress(&onProgress);
@@ -320,29 +331,38 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
       echo("starting storage node (data-dir /tmp/logos-storage, network "
            "logos.test)...");
 
+      if (storage.isRunning()) {
+        onStarted(true);
+        return;
+      }
       if (!storage.init(kNodeConfig)) {
-        echo("failed to initialise storage module. We'll assume it has already "
-             "been initialised.");
-        gStarted.set_value(true);
+        echo("failed to initialise storage module");
+        onStarted(false);
         return;
       }
       if (!storage.start()) {
-        echo("node start was rejected. We'll assume it has already been started.");
-        gStarted.set_value(true);
+        echo("node start was rejected");
+        onStarted(false);
       }
     }
     ```
 
     :::note
-    `onContextReady` assumes that a failure to dispatch `init` or `start` means the module was already initialised or started, since there's no API to distinguish that case from a genuine failure. Avoid reloading this module; if you do, restart the whole node instead.
+    * To make the code in this tutorial simpler, failed initialisation or a rejected start make all subsequent transfers return `Node start failed`. You will need to reload the module to try again.
+    * The Storage module stores its configuration in `~/.logos_storage/config.json`.
     :::
 
-1.  Implement `publish`, which uploads a local file:
+1.  Implement `publish`, which uploads a local file. The final `true` argument to `uploadUrl` enables advertising and serving the file to peers:
 
-    ```cpp showLineNumbers=140
+    ```cpp showLineNumbers=151
     StdLogosResult StorageCliImpl::publish(const std::string &input) {
+      // Paths are resolved relative to the daemon process. Callers
+      // should use absolute paths.
       std::error_code ec;
       const std::filesystem::path path = std::filesystem::absolute(input, ec);
+      if (ec) {
+        return {.success = false, .value = {}, .error = ec.message()};
+      }
       const auto size = static_cast<int64_t>(std::filesystem::file_size(path, ec));
       if (ec) {
         echo("upload failed: cannot read " + input + " (" + ec.message() + ")");
@@ -357,9 +377,9 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
     }
     ```
 
-1.  Implement `download`, which downloads a file by its [CID](../../get-started/glossary.md#cid) onto local disk:
+1.  Implement `download`, which downloads a file by its [CID](../../get-started/glossary.md#cid) onto local disk. The last two arguments to `downloadToUrl` select a direct download; i.e, not using the [Logos mix network](../concepts/mix.md) (`isPrivate=false`), and enable advertising and serving the downloaded data (`advertise=true`); i.e, your node will actively replicate and serve it:
 
-    ```cpp showLineNumbers=156
+    ```cpp showLineNumbers=171
     StdLogosResult StorageCliImpl::download(const std::string &cid,
                                             const std::string &output) {
       std::error_code ec;
@@ -381,28 +401,30 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 ## Step 7: Build your module
 
-1.  Build the module:
+Build the module:
 
-    ```bash
-    nix build '.#lgx-portable'
-    ```
+```bash
+git add flake.nix metadata.json CMakeLists.txt src
+nix build '.#lgx-portable'
+git add flake.lock
+```
 
-    - **Expected result:** an `.lgx` package appears under the `result` folder:
+- **Expected result:** an `.lgx` package appears under the `result` folder:
 
-      ```bash
-      $ ls result
-      logos-storage_cli-module-lib.lgx
-      ```
+  ```bash
+  $ ls result
+  logos-storage_cli-module-lib.lgx
+  ```
 
 ## Step 8: Start the Logos daemon
 
 Package installs are handled by a module bundled inside the daemon, so the daemon has to be running before you install anything.
 
-1.  From the `storage_cli` project directory you have been working in since Step 1, start `logosctl`, using a project-local session so everything this tutorial installs stays under `./config-dir`:
+From the `storage_cli` project directory you have been working in since Step 1, start `logosctl`, using a project-local session so installed modules and daemon logs stay under `./config-dir`. The example stores file data separately in `/tmp/logos-storage`:
 
-    ```bash
-    logosctl daemon start --detach --config-dir ./config-dir
-    ```
+```bash
+logosctl daemon start --detach --config-dir ./config-dir
+```
 
 ## Step 9: Install the Storage module and your module
 
@@ -465,67 +487,73 @@ The Storage module is a dependency of your module, so install it first.
 
 ## Step 11: Publish a file
 
-1.  Create a sample file and publish it with the CLI module:
+Create a sample file and publish it with the CLI module. Pass absolute paths because the daemon will otherwise resolves file paths relative to its own working directory:
 
-    ```bash
-    echo "Hello, World!" > hello.txt
-    logosctl --config-dir ./config-dir call storage_cli publish ./hello.txt
-    ```
+```bash
+echo "Hello, World!" > hello.txt
+logosctl --config-dir ./config-dir call storage_cli publish "$PWD/hello.txt"
+```
 
-    - **Expected result:**
+- **Expected result:**
 
-      ```json
-      {
-        "error": null,
-        "success": true,
-        "value": {
-          "cid": "zDvZRwzkx14BXkvr6MBpY7e29GgP3QBYM671u1P1kiLGYxt2iyHA",
-          "sessionId": "0",
-          "success": true
-        }
-      }
-      ```
+  ```json
+  {
+    "error": null,
+    "success": true,
+    "value": {
+      "cid": "zDvZRwzkx14BXkvr6MBpY7e29GgP3QBYM671u1P1kiLGYxt2iyHA",
+      "sessionId": "0",
+      "success": true
+    }
+  }
+  ```
 
-    - Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's own log file (`./config-dir/logs/daemon.log`), not here. For a small file like this, progress is a single line:
+- Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's own log file (`./config-dir/logs/daemon.log`), not here. For a small file like this, progress is a single line:
 
-      ```text
-      [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (14 of 14 bytes)
-      ```
+  ```text
+  [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (14 of 14 bytes)
+  ```
+
+- You can share the CID that appears after your call to `publish` with other people, and they should be able to download it like we describe in the next step.
 
 ## Step 12: Download a file
 
-1.  Download [Farewell to Westphalia](https://logos.co/book/farewell-to-westphalia-foss-edition.pdf) from the Storage network by its CID:
+Download [Farewell to Westphalia](https://logos.co/book/farewell-to-westphalia-foss-edition.pdf) from the Storage network by its CID:
 
-    ```bash
-    logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ ./farewell-to-westphalia.pdf
-    ```
+```bash
+logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ "$PWD/farewell-to-westphalia.pdf"
+```
 
-    This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds, with `call to 'storage_cli.download' timed out after 20000ms`, `"error":"expected a result object, got null"`, or `RPC_FAILED`, because the node is still looking up the file's manifest on the network. Wait a few seconds and run the same command again until it succeeds; this can take a minute or two after the daemon starts.
+This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds, with `call to 'storage_cli.download' timed out after 20000ms`, `"error":"expected a result object, got null"`, or `RPC_FAILED`, because the node is still looking up the file's manifest on the network. A CLI timeout does not cancel the transfer. Check `./config-dir/logs/daemon.log` and wait for the pending operation to finish before retrying. If it remains stuck, stop and restart the daemon, then load `storage_cli` again.
 
-    - **Expected result:**
+- **Expected result:**
 
-      ```json
-      {
-        "error": null,
-        "success": true,
-        "value": {
-          "sessionId": "zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ",
-          "success": true
-        }
-      }
-      ```
+  ```json
+  {
+    "error": null,
+    "success": true,
+    "value": {
+      "sessionId": "zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ",
+      "success": true
+    }
+  }
+  ```
 
-    - The daemon logs show the download progressing, e.g.:
+- The daemon logs show download progress, including the total size:
 
-      ```text
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /home/<USER>/logos-v0.3.0/./farewell-to-westphalia.pdf
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Waiting for node to start.
-      [2026-08-19 19:04:53.920] [out] [storage_cli] Node is started, attempting to run download operation.
-      [2026-08-19 19:04:53.922] [out] [storage_cli]  65536 bytes
-      [2026-08-19 19:04:53.922] [out] [storage_cli]  131072 bytes
-      ...
-      [2026-08-19 19:04:53.928] [out] [storage_cli]  2228224 bytes
-      [2026-08-19 19:04:53.928] [out] [storage_cli]  2276462 bytes
-      ```
+  ```text
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /path/to/storage_cli/farewell-to-westphalia.pdf
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Waiting for node to start.
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Node is started, attempting to run download operation.
+  [2026-10-08 15:41:51.993] [out] [storage_cli]   2% (65536 of 2276462 bytes)
+  ...
+  [2026-10-08 15:41:52.005] [out] [storage_cli]   100% (2276462 of 2276462 bytes)
+  ```
+
+The public download should produce a 2,276,462-byte PDF.
+
+:::tip
+Try uploading different files and sharing their `CIDs` with other network participants if you know anyone. They should be able to download them.
+ :::
 
 You may now stop the daemon (`logosctl --config-dir ./config-dir daemon stop`), or leave it running and use it for other operations.

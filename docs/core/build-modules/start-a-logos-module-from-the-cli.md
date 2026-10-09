@@ -49,7 +49,7 @@ This guide covers how to build and install a Logos [module](../../get-started/gl
 
 `logosctl` expects each module in its own subdirectory containing a `manifest.json`. `logosctl package install` handles this layout automatically when given an [LGX](../../get-started/glossary.md#lgx) package, and unpacks it into the current [session's](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) own `modules/` directory.
 
-1. Create a module from the `logos-module-builder` template and build its LGX package:
+1. Create a module from the `logos-module-builder` template and build its LGX [package](../../get-started/glossary.md#package):
 
    ```bash
    mkdir hello-module

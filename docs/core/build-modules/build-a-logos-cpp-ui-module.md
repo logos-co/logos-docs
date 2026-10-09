@@ -652,7 +652,7 @@ The host app has [`logos-design-system`](https://github.com/logos-co/logos-desig
    - The `calc_module` input has the same name as the dependency in `metadata.json`.
    - Leave the placeholder `path:/path/to/your/calc_module` as it is. Nix doesn't accept a relative path such as `../logos-calc-module` in `flake.nix`, so [Step 9](#step-9-build-and-run-the-module) records the real path in `flake.lock` instead.
    - To fetch `calc_module` from a repository instead, use a `github:` URL, for example `calc_module.url = "github:<your-org>/<your-calc-module>";`.
-   - `mkLogosQmlModule` compiles the backend, bundles the view, builds the LGX packages and sets up `nix run`.
+   - `mkLogosQmlModule` compiles the backend, bundles the view, builds the LGX [packages](../../get-started/glossary.md#package) and sets up `nix run`.
 
 ## Step 9: Build and run the module
 

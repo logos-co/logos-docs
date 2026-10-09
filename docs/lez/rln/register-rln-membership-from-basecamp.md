@@ -18,7 +18,7 @@ slug: register-rln-membership-from-basecamp
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to install the RLN Membership app in Logos Basecamp from released binaries and use its guided wizard to register a membership on the [LEZ](../../get-started/glossary.md#lez) testnet. It is intended for anyone who wants to try acquiring an RLN membership for participating in DoS-protected networks on the Logos stack, using an auto-provisioned, faucet-funded wallet.
+This procedure covers how to install the RLN Membership [app](../../get-started/glossary.md#app) in Logos Basecamp from released binaries and use its guided wizard to register a membership on the [LEZ](../../get-started/glossary.md#lez) testnet. It is intended for anyone who wants to try acquiring an RLN membership for participating in DoS-protected networks on the Logos stack, using an auto-provisioned, faucet-funded wallet.
 
 :::info[Prerequisites]
 
@@ -44,7 +44,7 @@ Add the RLN module registry, then install the app with its dependencies from bot
    ```text
    https://github.com/logos-co/logos-rln-modules/releases/download/index/logos-repo.json
    ```
-   - The repository lists as **Logos RLN Membership** with eight packages.
+   - The repository lists as **Logos RLN Membership** with eight [packages](../../get-started/glossary.md#package).
 
 1. Find **RLN Membership** in the list and click **Install**. In the **Install Package?** dialogue, review the listed dependency changes and click **Install** to confirm.
 

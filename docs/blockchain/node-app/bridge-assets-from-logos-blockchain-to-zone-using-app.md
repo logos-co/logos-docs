@@ -56,7 +56,7 @@ The wizard collects the deposit payload across two input steps and a review step
 
 1. On **Step 2 of 4**, enter the deposit parameters:
 
-   - **Channel ID hex**: the target channel. For the public LEZ testnet, select **LEZ testnet** and the app fills in the channel ID. For any other Zone, paste the 64-hex-character channel ID.
+   - **Channel ID hex**: the target channel. For the public LEZ testnet, select **LEZ testnet** and the [app](../../get-started/glossary.md#app) fills in the channel ID. For any other Zone, paste the 64-hex-character channel ID.
    - **Change goes to**: the account that receives any leftover value. It defaults to the account you deposit from.
    - **Accounts funding the gas fee**: the accounts the node draws the transaction fee from. The account you deposit from is added for you. To add another, choose it in the **Account…** dropdown and click **Add**.
    - **Max tx fee**: the maximum fee you allow, in TestToken.

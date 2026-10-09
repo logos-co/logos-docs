@@ -409,7 +409,7 @@ nix build '.#lgx-portable'
 git add flake.lock
 ```
 
-- **Expected result:** an `.lgx` package appears under the `result` folder:
+- **Expected result:** an `.lgx` [package](../../get-started/glossary.md#package) appears under the `result` folder:
 
   ```bash
   $ ls result

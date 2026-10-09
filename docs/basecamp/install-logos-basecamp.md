@@ -21,7 +21,7 @@ import YouTube from '@site/src/components/YouTube';
 This document is accurate for **Testnet v0.3**.
 :::
 
-Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and apps using its graphical interface as an alternative to the command line.
+Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and [apps](../get-started/glossary.md#app) using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
 
@@ -84,7 +84,7 @@ This tutorial is also available in video form:
 
 Not every module in the catalogue has a Windows build yet. Of the apps covered in these docs, these run on native Windows:
 
-- **Chat**: the `chat_ui`, `chat_module`, and `delivery_module` packages. See [Send 1:1 messages with the Logos Chat app](../messaging/get-started/send-1-1-messages-logos-chat.md).
+- **Chat**: the `chat_ui`, `chat_module`, and `delivery_module` [packages](../get-started/glossary.md#package). See [Send 1:1 messages with the Logos Chat app](../messaging/get-started/send-1-1-messages-logos-chat.md).
 - **Storage**: the `storage_ui` and `storage_module` packages. See [Set up and use the Logos Storage UI](../storage/get-started/set-up-and-use-logos-storage-ui.md).
 
 For other apps, such as the blockchain node or the swap app, run the Linux AppImage under WSL2.

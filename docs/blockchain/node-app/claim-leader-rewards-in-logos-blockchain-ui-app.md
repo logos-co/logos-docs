@@ -19,7 +19,7 @@ sidebar_position: 4
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Every block your node leads through [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership) mints a reward voucher, and claiming a voucher redeems it into spendable balance. It is intended for node operators running their node via the Blockchain UI app. The procedure also covers claiming the proof-of-work tickets that [mining](../../get-started/glossary.md#mining) produces.
+This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Every block your node leads through [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership) mints a reward voucher, and claiming a voucher redeems it into spendable balance. It is intended for node operators running their node via the Blockchain UI [app](../../get-started/glossary.md#app). The procedure also covers claiming the proof-of-work tickets that [mining](../../get-started/glossary.md#mining) produces.
 
 :::info[Prerequisites]
 

@@ -11,7 +11,7 @@ slug: blockchain-api-reference
 
 # Logos Blockchain API Reference
 
-This page describes every HTTP endpoint a Logos Blockchain node exposes. It's accurate for Logos Blockchain node `0.3.1`.
+This page describes every HTTP endpoint a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node exposes. It's accurate for Logos Blockchain node `0.3.1`.
 
 :::tip
 If you have access to a running Blockchain node, you can view the OpenAPI specification at `/api-docs/openapi.json` and a Swagger UI at `/swagger-ui/` on the same port.
@@ -22,9 +22,9 @@ If you have access to a running Blockchain node, you can view the OpenAPI specif
 - The API listens on `127.0.0.1:8080` by default. To change the address, set `api.backend.listen_address` in the node's configuration.
 - Requests and responses use JSON unless an endpoint says otherwise. Send request bodies with the `Content-Type: application/json` header.
 - A few successful responses have a JSON body but a `text/plain` content type: [`GET /leader/aged-notes`](#get-leaderaged-notes), [`GET /leader/claim/vouchers`](#get-leaderclaimvouchers), [`GET /wallet/{public_key}/balance`](#get-walletpublic_keybalance), and [`POST /wallet/transactions/transfer-funds`](#post-wallettransactionstransfer-funds). Parse the body as JSON regardless of the content type.
-- Hashes, block IDs, transaction IDs, note IDs, declaration IDs, and ZK public keys are 32-byte values encoded as 64-character hexadecimal strings without a `0x` prefix.
-- Peer IDs are libp2p peer IDs encoded as base58 strings. Network addresses and locators are libp2p `multiaddr` strings, such as `/ip4/203.0.113.10/udp/3000/quic-v1`.
-- Slots, epochs, and token amounts are unsigned integers.
+- Hashes, block IDs, transaction IDs, [note](../../get-started/glossary.md#note) IDs, declaration IDs, and ZK public keys are 32-byte values encoded as 64-character hexadecimal strings without a `0x` prefix.
+- Peer IDs are libp2p peer IDs encoded as base58 strings. Network addresses and [locators](../../get-started/glossary.md#locator) are libp2p `multiaddr` strings, such as `/ip4/203.0.113.10/udp/3000/quic-v1`.
+- [Slots](../../get-started/glossary.md#slot), [epochs](../../get-started/glossary.md#epoch), and token amounts are unsigned integers.
 - Path parameters are shown in braces. For example, in `GET /cryptarchia/blocks/{id}`, replace `{id}` with a block ID.
 
 ### Access and security
@@ -58,7 +58,7 @@ While the node is in the `Bootstrapping` state, the following endpoints don't re
 - [`GET /pow/rewards/claimable`](#get-powrewardsclaimable)
 - [`POST /pow/claim`](#post-powclaim)
 
-The other read endpoints on this page respond normally while the node is bootstrapping.
+The other read endpoints on this page respond normally while the node is [bootstrapping](../../get-started/glossary.md#bootstrapping).
 
 ## Node
 
@@ -165,7 +165,7 @@ Returns `404` if the node doesn't store the block.
 | `header.parent_block` | string | The ID of the parent block. |
 | `header.slot` | integer | The slot the block was proposed in. |
 | `header.body_root` | string | The root of the block body's Merkle tree. |
-| `header.proof_of_leadership` | object | The proposer's Proof of Leadership. It contains `proof`, `entropy_contribution`, `leader_key`, and `voucher_cm`. |
+| `header.proof_of_leadership` | object | The proposer's [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership). It contains `proof`, `entropy_contribution`, `leader_key`, and `voucher_cm`. |
 | `uncle_headers` | array of objects | The signed headers of uncle blocks referenced by this block. Each entry has a `header` object in the same format as `header`, and a `signature` string. |
 | `transactions` | array of objects | The transactions in the block, in the format that [`GET /cryptarchia/transaction/{id}`](#get-cryptarchiatransactionid) returns. |
 
@@ -348,7 +348,7 @@ Returns `404` if the channel doesn't exist.
 | --- | --- | --- |
 | `accredited_keys` | array | The keys that are authorised to post to the channel. |
 | `configuration_threshold` | integer | The number of keys required to change the channel's configuration. |
-| `tip_message` | string | The ID of the channel's latest message. |
+| `tip_message` | string | The ID of the channel's latest [message](../../get-started/glossary.md#message). |
 | `config_tip_hash` | string | The ID of the channel's latest configuration message. |
 | `tip_slot` | integer | The slot of the channel's latest message. |
 | `tip_sequencer` | integer | The position, in `accredited_keys`, of the key whose turn it is to post. |
@@ -379,7 +379,7 @@ Builds a channel deposit transaction, funds and signs it with the node's wallet,
 
 ## Service Declaration Protocol
 
-These endpoints read and submit [Service Declaration Protocol](../../get-started/glossary.md#service-declaration-protocol) (SDP) declarations. In `0.3.1`, the only service type is the Blend Network, shown as `BN`.
+These endpoints read and submit [Service Declaration Protocol](../../get-started/glossary.md#service-declaration-protocol) (SDP) declarations. In `0.3.1`, the only service type is the [Blend Network](../../get-started/glossary.md#blend-network), shown as `BN`.
 
 ### `GET /mantle/sdp/declarations`
 
@@ -506,7 +506,7 @@ The response is `null` if the Blend service has no network information to report
 | Field | Type | Description |
 | --- | --- | --- |
 | `node_id` | string | The peer ID of this node in the Blend network. |
-| `core_info` | object or `null` | Peer information for a node that participates in the Blend network as a core node. `null` if the node runs as an edge or broadcast node. |
+| `core_info` | object or `null` | Peer information for a node that participates in the Blend network as a [core node](../../get-started/glossary.md#core-node). `null` if the node runs as an edge or broadcast node. |
 | `core_info.current_epoch_peers` | array | The peers negotiated for the current epoch. Each entry is a two-element array: the peer ID (string) and whether the peer is healthy (boolean). |
 | `core_info.old_epoch_peers` | array of strings or `null` | The peer IDs negotiated for the previous epoch while an epoch transition is in progress. `null` if no transition is in progress. |
 
@@ -710,11 +710,11 @@ Signs a transaction hash with one or more of the wallet's ZK keys.
 
 ## Proof-of-Work
 
-The four `PUT` endpoints used for EmPoWering take no request body. On success, each returns status `200` with a `null` JSON body. The response confirms only that the node received the command, so use [`GET /pow/status`](#get-powstatus) to check the resulting state.
+The four `PUT` endpoints used for [EmPoWering](../../get-started/glossary.md#empowering) take no request body. On success, each returns status `200` with a `null` JSON body. The response confirms only that the node received the command, so use [`GET /pow/status`](#get-powstatus) to check the resulting state.
 
 ### `GET /pow/status`
 
-Gets the runtime state of the PoW service: whether the node is mining, whether auto-claim is armed, and the balance of each auto-claim target.
+Gets the runtime state of the PoW service: whether the node is [mining](../../get-started/glossary.md#mining), whether auto-claim is armed, and the balance of each auto-claim target.
 
 #### Response fields
 

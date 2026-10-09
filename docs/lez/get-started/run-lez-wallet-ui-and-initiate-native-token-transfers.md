@@ -21,7 +21,7 @@ This document is accurate for **Testnet v0.3.0**.
 
 The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI, syncing it with the public LEZ testnet, creating [accounts](../../get-started/glossary.md#account), executing all combinations of public, private, shielded, and deshielded native token transfers, and withdrawing tokens to the L1 through the bridge. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
-This page describes the **LEZ Wallet** app version 1.2.0 (`lez_wallet_ui`), which requires the `lez_core` module version 0.5.0 or later.
+This page describes the **LEZ Wallet** [app](../../get-started/glossary.md#app) version 1.2.0 (`lez_wallet_ui`), which requires the `lez_core` module version 0.5.0 or later.
 
 :::note
 Recovering a wallet from its recovery phrase is not yet supported.
@@ -57,7 +57,7 @@ Install the official release from the Basecamp catalogue, or build the same rele
 1. In the **Add Application** dialogue, click **Install**. **Install** also installs the `lez_core` [module](../../get-started/glossary.md#module) listed under **Required Packages**.
 1. Wait until the button changes to **Launch**, then click it. A **LEZ Wallet** icon appears in the sidebar, so you can reopen the wallet from there later.
 
-To install packages one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
+To install [packages](../../get-started/glossary.md#package) one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
 
 ### Build from source
 

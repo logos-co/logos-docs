@@ -19,7 +19,7 @@ sidebar_position: 3
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-The atomic swap app is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
+The atomic swap [app](../get-started/glossary.md#app) is a Logos [Basecamp](../get-started/glossary.md#basecamp) app that trades tokens across two unrelated chains without an exchange, a bridge, or an escrow agent. This procedure takes you from a fresh Basecamp install to a completed swap against a live counterparty that Logos operates, ending with a receipt you can check on both chains' block explorers.
 
 You install this app from a [catalogue](../get-started/glossary.md#catalogue) URL rather than building it. The app also sets up both of your accounts for you: a guided **Setup** tab generates your Ethereum key, then creates and activates your [LEZ](../get-started/glossary.md#lez) [account](../get-started/glossary.md#account), and finishes by pointing you at a faucet for the Sepolia gas it can't fetch on your behalf, all in [Step 2](#step-2-set-up-your-accounts). You don't need to hold any LEZ tokens before you start.
 
@@ -67,7 +67,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 ## Step 1: Add the catalogue and install the app
 
-Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of packages, and Basecamp re-reads it whenever the index changes.
+Basecamp arrives with the official Logos catalogue configured, and it merges that built-in catalogue with any you add yourself. The atomic swap app is published from its own repository, so you add its catalogue first. A catalogue is a small JSON file naming an index of [packages](../get-started/glossary.md#package), and Basecamp re-reads it whenever the index changes.
 
 1. In the sidebar, click **Package Manager**, then click **Manage Repositories** in the toolbar.
 

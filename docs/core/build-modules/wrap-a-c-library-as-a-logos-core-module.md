@@ -477,7 +477,7 @@ logos-calc-module/
    - The first build takes 5 to 15 minutes while Nix downloads Qt, the Logos SDK and their dependencies. Later builds use the Nix cache.
    - Keep the quotes around `'.#lib'`. Some shells, notably zsh, interpret `#` otherwise.
 
-1. Build the full package:
+1. Build the full [package](../../get-started/glossary.md#package):
 
    ```bash
    nix build

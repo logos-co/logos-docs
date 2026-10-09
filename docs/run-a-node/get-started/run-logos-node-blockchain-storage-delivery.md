@@ -22,7 +22,7 @@ This document is accurate for **Testnet v0.3**.
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 :::note
-Individual module package versions are pinned independently and do not necessarily match the testnet version number.
+Individual module [package](../../get-started/glossary.md#package) versions are pinned independently and do not necessarily match the testnet version number.
 :::
 
 The default paths used throughout this procedure are:

@@ -70,7 +70,7 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module package version 0.3.0:
+1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.0:
 
     ```sh
     logosctl package install blockchain_module \

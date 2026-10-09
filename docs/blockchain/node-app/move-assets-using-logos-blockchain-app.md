@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to send funds from one of your wallet accounts to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the **Transfer** form of the Logos Blockchain UI app. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
+This procedure covers how to send funds from one of your wallet accounts to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the **Transfer** form of the Logos Blockchain UI [app](../../get-started/glossary.md#app). It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
 :::info[Prerequisites]
 

@@ -28,7 +28,7 @@ You write a core module as one plain C++ class: its public methods are the modul
 - A supported OS:
    - Linux x86_64 or aarch64
    - macOS arm64 (Apple Silicon)
-   - Windows 10 or 11 x86_64, building inside WSL2. Nix does not run on Windows itself, so Windows packages are cross-compiled from Linux. See [Build a Windows package](#build-a-windows-package).
+   - Windows 10 or 11 x86_64, building inside WSL2. Nix does not run on Windows itself, so Windows [packages](../../get-started/glossary.md#package) are cross-compiled from Linux. See [Build a Windows package](#build-a-windows-package).
 - At least 10 GB of disk space
 - Git
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.

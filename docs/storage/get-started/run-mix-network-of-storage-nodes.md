@@ -46,7 +46,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 
 All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's session is then configured to also scan that directory (the `modules_dirs` key of its daemon configuration), so there's no need to repeat the install per node.
 
-1.  Start a throwaway session and install the storage module package into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
+1.  Start a throwaway session and install the storage module [package](../../get-started/glossary.md#package) into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
 
     ```sh
     logosctl daemon start --detach --config-dir ./install-session

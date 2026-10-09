@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.2.1**.
 :::
 
-This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The app is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The [app](../../get-started/glossary.md#app) is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
 Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
 
@@ -59,7 +59,7 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
 1.  In the left bar, select **Package Manager**.
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-1.  Find **Chat** (type `ui_qml`) in the package list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+1.  Find **Chat** (type `ui_qml`) in the [package](../../get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
 
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
 1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.

@@ -19,7 +19,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or with the Logos Blockchain UI app, which drives the `blockchain_module` module from a graphical interface.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised network states. You can run a Logos Blockchain node [using the CLI](../get-started/run-a-logos-blockchain-node-from-cli.md) or with the Logos Blockchain UI [app](../../get-started/glossary.md#app), which drives the `blockchain_module` module from a graphical interface.
 
 This procedure covers running the app (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), setting up a node through the onboarding wizard, confirming that it syncs, and funding its wallet so it can propose blocks.
 
@@ -65,7 +65,7 @@ Install the official release from the Basecamp catalogue, or build the same rele
 
 1. Wait until the button changes to **Launch**, then click it. A **Blockchain** icon appears in the sidebar, so you can reopen the app from there later.
 
-To install packages one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
+To install [packages](../../get-started/glossary.md#package) one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
 
 ### Build from source
 

@@ -42,7 +42,7 @@ Port forwarding is **not** required. A blockchain node participates outbound-onl
 
 By the end of this procedure:
 
-- Basecamp will be running the Logos Blockchain app.
+- Basecamp will be running the Logos Blockchain [app](../../get-started/glossary.md#app).
 - Your node will be connected to testnet peers and syncing the chain.
 - You will confirm sync by observing an advancing block height.
 - Optionally, you can fund your wallet by mining so your node proposes blocks.
@@ -59,7 +59,7 @@ By the end of this procedure:
    ![Install the Blockchain app](../assets/run-a-logos-blockchain-node-from-basecamp//blockchain-app-install.png)
 
    :::note
-   Individual package versions are pinned independently and do not necessarily match the testnet version number.
+   Individual [package](../../get-started/glossary.md#package) versions are pinned independently and do not necessarily match the testnet version number.
    :::
 
 1. Once the modules are installed, press **Launch**.

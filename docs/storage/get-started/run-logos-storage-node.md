@@ -47,7 +47,7 @@ In this tutorial, you will:
 
 ## Load the Logos storage module
 
-`logosctl` ships the Logos storage [module](../../get-started/glossary.md#module) and loads it when the daemon starts, because the package downloader uses it as an optional dependency to fetch packages. The package downloader may also have started the storage node already, with the default configuration or the one saved by your last `init`. Stop it first so that you can start it with your own configuration.
+`logosctl` ships the Logos storage [module](../../get-started/glossary.md#module) and loads it when the daemon starts, because the package downloader uses it as an optional dependency to fetch [packages](../../get-started/glossary.md#package). The package downloader may also have started the storage node already, with the default configuration or the one saved by your last `init`. Stop it first so that you can start it with your own configuration.
 
 1.  Start `logosctl`:
 

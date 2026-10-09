@@ -183,7 +183,7 @@ A synced node validates the chain but does not propose blocks until its wallet h
     - If you switched auto-claim off during [step-by-step setup](#step-by-step-setup), claim tickets yourself under **Manual claim**, as described in [Claim mining rewards](./claim-leader-rewards-in-logos-blockchain-ui-app.md#claim-mining-rewards).
     - The **Mining Rewards** tile on the **Node** tab shows what mining has paid so far.
 
-1.  Open the **Wallet** tab, then click **Accounts**. Click **Refresh** and confirm the balance of your **PoWClaim** account, in LGO.
+1.  Open the **Wallet** tab, then click **Accounts**. Click **Refresh** and confirm the balance of your **PoWClaim** account, in TestToken.
 
     ![Wallet > Accounts with a funded PoWClaim account](../assets/build-and-run-logos-blockchain-node-app-ui/wallet-accounts.png)
 

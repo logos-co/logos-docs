@@ -28,10 +28,12 @@ The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the bl
    - **Linux** (tested on Ubuntu 24.04)
    - **Windows 11 with WSL2** (plus WSLg for the GUI)
    - **Apple Silicon Mac** (M1 or later).
-- 2 Core CPU, 2Ghz. Modern multi-core processor.
-- Minimal RAM (1 Gb).
-- SSD with 100+ GB free with ability to expand storage on demand.
-- Relatively reliable network connection. 1Mbps of free bandwidth.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- Memory (RAM): Minimal (1 Gb).
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 :::
 
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.

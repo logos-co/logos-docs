@@ -23,17 +23,27 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 
 :::info[Prerequisites]
 
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+    - Check whether your CPU has ADX support by running:
+
+    ```sh
+    # Linux
+    grep -o adx /proc/cpuinfo | head -1
+
+    # macOS
+    sysctl -a | grep -i adx
+    ```
 - A supported OS:
     - Linux x86_64
     - macOS aarch64 (recent versions)
     - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
 - FUSE, required by the `logosctl` AppImage (Linux only). On Debian/Ubuntu: `sudo apt install fuse libfuse2t64`. Without it, `logosctl` fails with `No suitable fusermount binary found on the $PATH`.
-- On x86_64, a CPU with ADX instruction support: Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
-- 2 Core CPU, 2Ghz. Modern multi-core processor.
-- Minimal RAM (1 Gb).
-- SSD with 100+ GB free with ability to expand storage on demand.
-- Relatively reliable network connection. 1Mbps of free bandwidth.
+- Memory (RAM): Minimal (1 Gb).
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::

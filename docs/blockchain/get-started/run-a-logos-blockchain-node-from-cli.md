@@ -94,12 +94,6 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
 
 The `generate_user_config` subcommand generates a user configuration that includes per-node settings such as keys, ports, and peer addresses, along with fresh cryptographic keys and an auto-detected public IP.
 
-:::warning
-The blockchain module `0.3.1` release starts a new blockchain with a new genesis.
-
-Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
-:::
-
 :::info
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::

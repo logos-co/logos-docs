@@ -16,7 +16,7 @@ sidebar_position: 3
 #### Start a node and verify runtime and consensus signals.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.1**.
 :::
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
@@ -64,17 +64,17 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl daemon start
     ```
 
-1.  In a new terminal window with the same user, refresh the official module catalogue:
+1.  In a new terminal window with the same user, refresh the official module catalogue. Run this even if the daemon was already running, because it does not see packages published after it last refreshed:
 
     ```sh
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.0:
+1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.1:
 
     ```sh
     logosctl package install blockchain_module \
-    --version 0.3.0 \
+    --version 0.3.1 \
     --yes
     ```
 
@@ -98,7 +98,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.0:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.1:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{

@@ -590,6 +590,8 @@ Run health checks against the Logos node and all three loaded modules to confirm
    logosctl call delivery_module getNodeInfo MyBoundPorts
    ```
 
+1. (Optional) To monitor the node continuously, [expose its metrics to Prometheus](./expose-logos-node-metrics-to-prometheus.md).
+
 ### Optional: Run the node unattended with systemd
 
 Use a dedicated service for the Logos node process (started and controlled by `logosctl`) and a separate bootstrap script for module startup. Do not start modules from `ExecStartPost` in `logos-node.service`—slow or failing module starts may cause systemd to kill the daemon.

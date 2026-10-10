@@ -100,6 +100,7 @@ const sidebars: SidebarsConfig = {
   ],
   runANodeSidebar: [
     'run-a-node/get-started/run-logos-node-blockchain-storage-delivery',
+    'run-a-node/get-started/expose-logos-node-metrics-to-prometheus',
     {
       type: 'category',
       label: 'Blockchain node',

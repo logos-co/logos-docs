@@ -72,22 +72,22 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     logosctl call blockchain_module pow_start_mining
     ```
 
-    - The `BlendZk` key needs a single note of at least 1,000,000,000, the minimum stake that the declaration locks.
-    - The `SdpFunding` key pays the fees for the declaration and for the activity message your node sends each epoch. Send it at least 50,000,000, which covers two months of fees with a wide margin for fee increases.
+    - The `BlendZk` key needs a single note of at least 1,000,000,000 (1 billion), the minimum stake that the declaration locks.
+    - The `SdpFunding` key pays the fees for the declaration and for the activity message your node sends each epoch. Send it at least 50,000,000 (50 million), which covers two months of fees with a wide margin for fee increases.
 
-1.  Check the auto-claim target. Its `public_key` is your `PoWClaim` key, and its `balance` grows as auto-claim collects rewards. Rerun this command periodically until the balance is at least 1,050,000,000:
+1.  Check the auto-claim target. Its `public_key` is your `PoWClaim` key, and its `balance` grows as auto-claim collects rewards. Rerun this command periodically until the balance is at least 1,050,000,000 (1.05 billion):
 
     ```bash
     logosctl call blockchain_module pow_status | jq -r .result.value | jq .auto_claim.targets
     ```
 
-    - With the generated config, auto-claim pays the `PoWClaim` key up to 2,000,000,000, then stops itself and stops mining. You can continue as soon as the balance reaches 1,050,000,000, or wait for mining to stop at 2,000,000,000.
+    - With the generated config, auto-claim pays the `PoWClaim` key up to 2,000,000,000 (2 billion), then stops itself and stops mining. You can continue as soon as the balance reaches 1.05 billion, or wait for mining to stop at 2 billion.
 
     :::info[How long mining takes]
-    Each claim pays about 2,000,000, so 1,050,000,000 takes about 525 claims and 2,000,000,000 about 1,000. How fast a node collects claims depends on its CPU and on how many other nodes are mining. On Testnet v0.3.1 in October 2026, a typical node collected about 8 claims an hour, so it reached 1,050,000,000 in about 3 days and 2,000,000,000 in about 5.5 days. The fastest nodes collected about 65 claims an hour and reached 2,000,000,000 in about 15 hours. To estimate your own time, check the `balance` an hour apart.
+    Each claim pays about 2 million, so 1.05 billion takes about 525 claims and 2 billion about 1,000. How fast a node collects claims depends on its CPU and on how many other nodes are mining. On Testnet v0.3.1 in October 2026, a typical node collected about 8 claims an hour, so it reached 1.05 billion in about 3 days and 2 billion in about 5.5 days. The fastest nodes collected about 65 claims an hour and reached 2 billion in about 15 hours. To estimate your own time, check the `balance` an hour apart.
     :::
 
-1.  Merge the mined rewards into larger notes. Auto-claim pays each claim as a separate note of about 2,000,000, but a transfer can spend at most 32 notes, so the 1,000,000,000 transfer can't be sent from these small notes directly. This script repeatedly transfers the 32 largest notes of the `PoWClaim` key back to itself as one note, waiting for each transfer to land, until the 32 largest notes together cover the 1,000,000,000 transfer. Replace `<POW_CLAIM_KEY>` with the `public_key` from the previous step:
+1.  Merge the mined rewards into larger notes. Auto-claim pays each claim as a separate note of about 2 million, but a transfer can spend at most 32 notes, so the 1 billion transfer can't be sent from these small notes directly. This script repeatedly transfers the 32 largest notes of the `PoWClaim` key back to itself as one note, waiting for each transfer to land, until the 32 largest notes together cover the 1 billion transfer. Replace `<POW_CLAIM_KEY>` with the `public_key` from the previous step:
 
     ```bash
     POW_CLAIM_KEY=<POW_CLAIM_KEY>
@@ -113,10 +113,10 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     fi
     ```
 
-    - Each round merges up to 32 notes and needs a block to land, so reaching 1,000,000,000 takes about 16 rounds. Expect this to take 15 to 30 minutes.
+    - Each round merges up to 32 notes and needs a block to land, so reaching 1 billion takes about 16 rounds. Expect this to take 15 to 30 minutes.
     - Each round pays a fee of about 1,800 at current gas prices.
 
-1.  Transfer 1,000,000,000 from your `PoWClaim` key to the `BlendZk` key, replacing the placeholders with your keys. The `PoWClaim` key pays the fee and receives any change. The call returns the hash of the transfer transaction:
+1.  Transfer 1,000,000,000 (1 billion) from your `PoWClaim` key to the `BlendZk` key, replacing the placeholders with your keys. The `PoWClaim` key pays the fee and receives any change. The call returns the hash of the transfer transaction:
 
     ```bash
     curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
@@ -129,7 +129,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       }' | jq .
     ```
 
-1.  Once the 1,000,000,000 transfer has landed, which you can check with `wallet_get_notes` as shown in the next step, transfer the remaining funds to the `SdpFunding` key. Send at least 50,000,000:
+1.  Once the 1 billion transfer has landed, which you can check with `wallet_get_notes` as shown in the next step, transfer the remaining funds to the `SdpFunding` key. Send at least 50,000,000 (50 million):
 
     ```bash
     curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
@@ -142,7 +142,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       }' | jq .
     ```
 
-    - One transfer can move about 60,000,000 at most, because it spends at most 32 notes. To move more of the remaining balance, repeat the transfer once the previous one has landed.
+    - One transfer can move about 60 million at most, because it spends at most 32 notes. To move more of the remaining balance, repeat the transfer once the previous one has landed.
 
 1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`:
 
@@ -157,9 +157,9 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     # > ]
     ```
 
-    - Note the `id` of the 1,000,000,000 note held by the `BlendZk` key—you need it in the next step.
+    - Note the `id` of the 1 billion note held by the `BlendZk` key—you need it in the next step.
 
-1.  Join the Blend Network by locking the 1,000,000,000 note held by your `BlendZk` key.
+1.  Join the Blend Network by locking the 1 billion note held by your `BlendZk` key.
 
     :::info
     Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
@@ -176,7 +176,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 
     - `<YOUR_IP>`: Must be your external IP address
     - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
-    - `<BLEND_ZK_NOTE_ID>`: The ID of the 1,000,000,000 note held by your `BlendZk` key, as queried above.
+    - `<BLEND_ZK_NOTE_ID>`: The ID of the 1 billion note held by your `BlendZk` key, as queried above.
     - The Blend core listener starts only after the node's declaration becomes active.
 
 1.  Confirm the declaration was accepted on-chain by polling `/mantle/sdp/declarations` and looking for your entry:

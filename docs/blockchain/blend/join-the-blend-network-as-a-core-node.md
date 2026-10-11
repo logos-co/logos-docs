@@ -103,11 +103,9 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     else
       while [ "$(notes | jq '.[:32] | add')" -lt "$TARGET" ]; do
         amount=$(( $(notes | jq '.[:32] | add') - 100000 ))
-        curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
-          -H 'Content-Type: application/json' \
-          -d "{\"recipient_public_key\": \"$POW_CLAIM_KEY\", \"amount\": $amount,
-               \"change_public_key\": \"$POW_CLAIM_KEY\", \"funding_public_keys\": [\"$POW_CLAIM_KEY\"]}" \
-          | jq -e .hash || break
+        logosctl call blockchain_module wallet_transfer_funds \
+          "$POW_CLAIM_KEY" "json:[\"$POW_CLAIM_KEY\"]" "$POW_CLAIM_KEY" "str:$amount" "" \
+          | jq -e -r '.result.value // empty' || break
         until [ "$(notes | jq '.[0]')" -ge "$amount" ]; do sleep 30; done
       done
     fi
@@ -116,30 +114,24 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     - Each round merges up to 32 notes and needs a block to land, so reaching 1 billion takes about 16 rounds. Expect this to take 15 to 30 minutes.
     - Each round pays a fee of about 1,800 at current gas prices.
 
-1.  Transfer 1,000,000,000 (1 billion) from your `PoWClaim` key to the `BlendZk` key, replacing the placeholders with your keys. The `PoWClaim` key pays the fee and receives any change. The call returns the hash of the transfer transaction:
+1.  Transfer 1,000,000,000 (1 billion) from your `PoWClaim` key to the `BlendZk` key, replacing the placeholders with your keys. The `PoWClaim` key pays the fee and receives any change:
 
     ```bash
-    curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
-      -H 'Content-Type: application/json' \
-      -d '{
-        "recipient_public_key": "<BLEND_ZK_KEY>",
-        "amount": 1000000000,
-        "change_public_key": "<POW_CLAIM_KEY>",
-        "funding_public_keys": ["<POW_CLAIM_KEY>"]
-      }' | jq .
+    logosctl call blockchain_module wallet_transfer_funds \
+      <POW_CLAIM_KEY> 'json:["<POW_CLAIM_KEY>"]' <BLEND_ZK_KEY> str:1000000000 ""
+
+    # A successful call returns the transaction hash:
+    # > {"method":"wallet_transfer_funds","module":"blockchain_module","result":{"error":null,"success":true,"value":"<TX_HASH>"},"status":"ok"}
     ```
+
+    - The arguments are, in order: the key that receives any change, the list of keys whose notes pay for the transfer, the recipient key, the amount, and the block to build the transfer on, where `""` means the current tip.
+    - The `json:` prefix passes the funding keys as a list, and the `str:` prefix passes the amount as text, which `wallet_transfer_funds` requires. Both prefixes need `logosctl` 0.3.2 or later.
 
 1.  Once the 1 billion transfer has landed, which you can check with `wallet_get_notes` as shown in the next step, transfer the remaining funds to the `SdpFunding` key. Send at least 50,000,000 (50 million):
 
     ```bash
-    curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
-      -H 'Content-Type: application/json' \
-      -d '{
-        "recipient_public_key": "<SDP_FUNDING_KEY>",
-        "amount": 50000000,
-        "change_public_key": "<POW_CLAIM_KEY>",
-        "funding_public_keys": ["<POW_CLAIM_KEY>"]
-      }' | jq .
+    logosctl call blockchain_module wallet_transfer_funds \
+      <POW_CLAIM_KEY> 'json:["<POW_CLAIM_KEY>"]' <SDP_FUNDING_KEY> str:50000000 ""
     ```
 
     - One transfer can move about 60 million at most, because it spends at most 32 notes. To move more of the remaining balance, repeat the transfer once the previous one has landed.

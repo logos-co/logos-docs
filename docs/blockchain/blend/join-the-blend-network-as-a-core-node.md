@@ -72,8 +72,6 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     logosctl call blockchain_module pow_start_mining
     ```
 
-    - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
-
 1.  Check the auto-claim target. Its `public_key` is your `PoWClaim` key, and its `balance` grows as auto-claim collects rewards. Rerun this command periodically until the balance covers both transfers and their fees:
 
     ```bash

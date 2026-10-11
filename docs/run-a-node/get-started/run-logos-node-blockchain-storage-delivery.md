@@ -374,7 +374,7 @@ Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
-1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining, then claim the rewards into each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
+1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining into your `PoWClaim` key, then transferring funds from it to each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
 
    :::info
    The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.

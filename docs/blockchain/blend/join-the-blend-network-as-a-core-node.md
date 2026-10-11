@@ -66,27 +66,36 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
       ...
     ```
 
-1.  Fund both keys by mining. Start mining and stop auto-claim, so that mined rewards wait for you to claim them into these keys instead of being claimed automatically by your `PoWClaim` key:
+1.  Fund both keys by mining. Start mining. Auto-claim pays the mined rewards into your node's `PoWClaim` key, and you then transfer funds from that key to the `BlendZk` and `SdpFunding` keys:
 
     ```bash
     logosctl call blockchain_module pow_start_mining
-    logosctl call blockchain_module pow_stop_auto_claim
     ```
 
-1.  Check whether there are mined tickets ready to claim. Rerun this command periodically until `claimable_tickets` is greater than `0`:
+    - Auto-claim starts automatically. You do not need to call `pow_start_auto_claim`.
+
+1.  Check the auto-claim target. Its `public_key` is your `PoWClaim` key, and its `balance` grows as auto-claim collects rewards. Rerun this command periodically until the balance covers both transfers and their fees:
 
     ```bash
-    logosctl call blockchain_module pow_claimable_rewards | jq -r .result.value | jq .
+    logosctl call blockchain_module pow_status | jq -r .result.value | jq .auto_claim.targets
     ```
 
-1.  Claim the ready tickets into each key, replacing the placeholders with your keys. Each call returns the transaction hash of the claim. Check for ready tickets again before the second claim, because the first one claims every ready ticket:
+1.  Transfer funds from your `PoWClaim` key to the `BlendZk` key, replacing the placeholders with your keys and the amount to send. The `PoWClaim` key pays the fee and receives any change. The call returns the hash of the transfer transaction:
 
     ```bash
-    logosctl call blockchain_module pow_claim <BLEND_ZK_KEY>
-    logosctl call blockchain_module pow_claim <SDP_FUNDING_KEY>
+    curl -s -X POST http://localhost:8080/wallet/transactions/transfer-funds \
+      -H 'Content-Type: application/json' \
+      -d '{
+        "recipient_public_key": "<BLEND_ZK_KEY>",
+        "amount": <AMOUNT>,
+        "change_public_key": "<POW_CLAIM_KEY>",
+        "funding_public_keys": ["<POW_CLAIM_KEY>"]
+      }' | jq .
     ```
 
-1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`, and claim again into any key that has no notes yet:
+1.  Once the `BlendZk` key holds a note, which you can check with `wallet_get_notes` as shown in the next step, repeat the transfer with `<SDP_FUNDING_KEY>` as the `recipient_public_key`. Both transfers spend notes held by the `PoWClaim` key, so wait for the first one to land before sending the second.
+
+1.  Wait until both keys have received funds. Check each balance with `wallet_get_notes`, and transfer again to any key that has no notes yet:
 
     ```bash
     logosctl call blockchain_module wallet_get_notes <ADDRESS> "" \

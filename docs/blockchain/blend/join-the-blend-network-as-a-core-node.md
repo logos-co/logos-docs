@@ -87,28 +87,11 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
     Each claim pays about 2 million, so 1.05 billion takes about 525 claims and 2 billion about 1,000. How fast a node collects claims depends on its CPU and on how many other nodes are mining. On Testnet v0.3.1 in October 2026, a typical node collected about 8 claims an hour, so it reached 1.05 billion in about 3 days and 2 billion in about 5.5 days. The fastest nodes collected about 65 claims an hour and reached 2 billion in about 15 hours. To estimate your own time, check the `balance` an hour apart.
     :::
 
-1.  Merge the mined rewards into larger notes. Auto-claim pays each claim as a separate note of about 2 million, but a transfer can spend at most 32 notes, so the 1 billion transfer can't be sent from these small notes directly. This script repeatedly transfers the 32 largest notes of the `PoWClaim` key back to itself as one note, waiting for each transfer to land, until the 32 largest notes together cover the 1 billion transfer. Replace `<POW_CLAIM_KEY>` with the `public_key` from the previous step:
+1.  Merge the mined rewards into larger notes. Auto-claim pays each claim as a separate note of about 2 million, but a transfer can spend at most 32 notes, so the 1 billion transfer can't be sent from these small notes directly. This script repeatedly transfers the 32 largest notes of the `PoWClaim` key back to itself as one note, waiting for each transfer to land, until the 32 largest notes together cover the 1 billion transfer plus a margin for its fee. Replace `<POW_CLAIM_KEY>` with the `public_key` from the previous step:
 
     ```bash
-    POW_CLAIM_KEY=<POW_CLAIM_KEY>
-    TARGET=1000100000  # 1B plus a margin for the transfer fee
-
-    notes() {
-      logosctl call blockchain_module wallet_get_notes "$POW_CLAIM_KEY" "" \
-        | jq -r .result.value | jq '[.notes[].value | tonumber] | sort | reverse'
-    }
-
-    if [ "$(notes | jq 'add')" -lt "$TARGET" ]; then
-      echo "The PoWClaim balance is below 1B. Keep mining."
-    else
-      while [ "$(notes | jq '.[:32] | add')" -lt "$TARGET" ]; do
-        amount=$(( $(notes | jq '.[:32] | add') - 100000 ))
-        logosctl call blockchain_module wallet_transfer_funds \
-          "$POW_CLAIM_KEY" "json:[\"$POW_CLAIM_KEY\"]" "$POW_CLAIM_KEY" "str:$amount" "" \
-          | jq -e -r '.result.value // empty' || break
-        until [ "$(notes | jq '.[0]')" -ge "$amount" ]; do sleep 30; done
-      done
-    fi
+    K=<POW_CLAIM_KEY>; n() { logosctl call blockchain_module wallet_get_notes $K "" | jq -r .result.value | jq "[.notes[].value | tonumber] | sort | reverse | $1"; }
+    while [ $(n length) -gt 2 ] && [ $(n '.[:32] | add') -lt 1000100000 ]; do a=$(( $(n '.[:32] | add') - 100000 )); logosctl call blockchain_module wallet_transfer_funds $K "json:[\"$K\"]" $K str:$a "" | jq -e .result.success || break; until [ $(n '.[0]') -ge $a ]; do sleep 30; done; done
     ```
 
     - Each round merges up to 32 notes and needs a block to land, so reaching 1 billion takes about 16 rounds. Expect this to take 15 to 30 minutes.

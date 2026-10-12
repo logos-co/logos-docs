@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Install the blockchain modules and run a syncing testnet node from the Basecamp desktop app.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.1**.
 :::
 
 The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or—as described here—from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
@@ -54,7 +54,7 @@ By the end of this procedure:
    ![Blockchain node application](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-app.png)
 
 
-1. Make sure that `Blockchain` (the UI module) is set to `v0.3.1` and `Blockchain Module` (the core module) is set to `v0.3.0`, then click **Install**.
+1. Make sure that `Blockchain` (the UI module) is set to `v0.3.2` and `Blockchain Module` (the core module) is set to `v0.3.0`, then click **Install**.
 
    ![Install the Blockchain app](../assets/run-a-logos-blockchain-node-from-basecamp//blockchain-app-install.png)
 
@@ -76,7 +76,8 @@ In the Blockchain app, add a node configuration.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 
-1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.3.0:
+
+1. On the **Network** page, keep **Default (public testnet)** selected and check that the **Bootstrap peers** field lists the testnet bootstrap peers (one per line). For release 0.3.1, it is pre-filled with:
 
    ```text
    /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
@@ -86,20 +87,18 @@ In the Blockchain app, add a node configuration.
    ```
 
    :::info
-   Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
+   Make sure that these addresses match the peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
    :::
 
-1. Leave the other fields at their defaults and click **Generate config**, then **Continue**.
-
-   ![Generate config screen](../assets/run-a-logos-blockchain-node-from-basecamp/generate-config.png)
+1. Click **Generate config**. On the **Keys** page, back up your keys (for example with **Download keystore.yaml**), tick **I've backed up my keys somewhere safe**, and click **Continue**.
 
    :::caution
-   A config generated with an empty **Initial peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
+   A config generated with an empty **Bootstrap peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
    :::
 
 ## Step 3: Start the node
 
-On the node view, select **Start Node**.
+   On the **Fund** page, leave the defaults and click **Start node**. On later launches, use **Start Node** at the top right of the node view.
 
    ![Start node](../assets/run-a-logos-blockchain-node-from-basecamp/start-node.png)
 
@@ -146,7 +145,7 @@ The node runs only while Basecamp is open, and it does not resume automatically 
 This is a UI-side issue, not a node fault—the core is healthy but the UI cannot render the call. Recover least-destructively first:
 
 1. **Fully quit Basecamp and relaunch** (Quit, not just close the window), then reopen the node. This clears most cases with no data loss.
-1. **Check that the module versions match**: `Blockchain Module` should be `0.3.0` and `Blockchain` should be `0.3.1`. A version mismatch is a common cause.
+1. **Check that the module versions match**: `Blockchain Module` should be `0.3.1` and `Blockchain` should be `0.3.2`. A version mismatch is a common cause.
 1. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder—that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
 
 If the consensus info on the **Node** page shows an advancing height, the node is syncing and a restart is enough—do not wipe a working node.

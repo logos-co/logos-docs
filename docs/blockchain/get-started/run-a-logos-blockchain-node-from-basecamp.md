@@ -72,7 +72,7 @@ By the end of this procedure:
 
 In the Blockchain app, add a node configuration.
 
-1. Click **Generate config**.
+1. Click **Advanced**, keep **Generate a new node** selected, and click **Continue**.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 

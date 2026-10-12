@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.1**.
 :::
 
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.

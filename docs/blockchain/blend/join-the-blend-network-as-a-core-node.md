@@ -91,8 +91,11 @@ Complete these steps to fund the required keys, retrieve a locked [note](../../g
 
     ```bash
     K=<POW_CLAIM_KEY>; n() { logosctl call blockchain_module wallet_get_notes $K "" | jq -r .result.value | jq "[.notes[].value | tonumber] | sort | reverse | $1"; }
-    while [ $(n length) -gt 2 ] && [ $(n '.[:32] | add') -lt 1000100000 ]; do a=$(( $(n '.[:32] | add') - 100000 )); logosctl call blockchain_module wallet_transfer_funds $K "json:[\"$K\"]" $K str:$a "" | jq -e .result.success || break; until [ $(n '.[0]') -ge $a ]; do sleep 30; done; done
+    if [ $(n 'add // 0') -lt 1000100000 ]; then echo "Not enough funds: the key holds $(n 'add // 0'), and merging needs at least 1000100000. Keep mining."; else
+    while [ $(n length) -gt 2 ] && [ $(n '.[:32] | add') -lt 1000100000 ]; do a=$(( $(n '.[:32] | add') - 100000 )); logosctl call blockchain_module wallet_transfer_funds $K "json:[\"$K\"]" $K str:$a "" | jq -e .result.success || break; until [ $(n '.[0]') -ge $a ]; do sleep 30; done; done; fi
     ```
+
+    - If the key holds less than 1,000,100,000 in total, the script prints the current balance and stops without sending anything. Keep mining and run it again later.
 
     - Each round merges up to 32 notes and needs a block to land, so reaching 1 billion takes about 16 rounds. Expect this to take 15 to 30 minutes.
     - Each round pays a fee of about 1,800 at current gas prices.

@@ -405,10 +405,6 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
     cargo run --bin tui-sequencer -- --node-url <Your Node URL>
     ```
 
-    :::warning
-    The `tui-zone-tutorial` branch pins a Zone SDK from before `logos-blockchain` 0.2.4. Against a 0.2.4 node (the current testnet release), the sequencer never becomes ready and logs ``Failed to fetch consensus info: Internal server error: Failed to parse response: missing field `mode` `` every few seconds: the node's `/cryptarchia/info` response now carries `phase` instead of `mode`. Until the branch is updated, the tutorial builds but cannot run against the testnet.
-    :::
-
     The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
 
     Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalised**—confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.

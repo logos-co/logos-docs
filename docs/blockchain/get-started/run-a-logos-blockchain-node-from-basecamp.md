@@ -108,7 +108,7 @@ The status moves to *Starting*, then *[Bootstrapping](../../get-started/glossary
 
 ## Step 4: Verify that your node is syncing
 
-In the **Consensus** panel of the **Node** tab, you will see the consensus status of your node. A syncing node returns a `Tip` that is not genesis and a `Height` that increases over time. The block list in the UI also begins filling within a minute or two.
+On the **Node** tab, the **Height** and **TiP** tiles show the consensus status of your node. A syncing node shows a **TiP** that is not genesis and a **Height** that increases over time. The block list on the **Explorer** tab also begins filling within a minute or two.
 
    :::note
    If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current [slot](../../get-started/glossary.md#slot) during initial sync is normal.

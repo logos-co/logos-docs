@@ -180,7 +180,7 @@ Submit a channel config to add or remove sequencers from `accredited_keys`. Beca
        admin_pk,
        new_sequencer_b_pk,
        new_sequencer_c_pk,
-   ]);
+   ])?;
 
    let ((result, checkpoint), signed_tx) = sequencer
        .handle()

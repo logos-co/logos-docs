@@ -177,6 +177,10 @@ A withdrawal is initiated inside the Zone and lands on-chain as two operations i
 
 Each of the two carries a `ChannelMultiSigProof` with `ChannelState.transfer_threshold` signatures, at most one per accredited key. The process is different for single-sequencer Zones and for Zones whose transfer threshold is greater than one.
 
+:::warning
+Withdrawals cannot be completed with the latest Zone SDK release (`logos-blockchain` 0.2.4). In that release, `publish_atomic_withdraw` always returns `Error::Network("atomic withdraw is unsupported until channel notes are tracked")`, and `ChannelWithdrawOp` takes the channel's `inputs` rather than the `outputs` and `withdraw_nonce` used in Option 2, so the Option 2 code and the Step 4 recovery code do not compile against it. The withdrawal API is being reworked on `master`. Treat Steps 3 and 4 as a description of the intended flow until a release supports it.
+:::
+
 ### Option 1: Submit a single-sequencer withdrawal
 
 This option applies only when `ChannelState.transfer_threshold == 1`.

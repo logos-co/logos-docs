@@ -18,12 +18,12 @@ sidebar_position: 1
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.2**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
-The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the TUI Zone demo.
+The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions.
 
 :::info[Prerequisites]
 
@@ -40,7 +40,7 @@ The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use too
 
 ## Step 1: Clone the Logos Blockchain repository
 
-Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone, built on the Zone SDK from release 0.3.2, with space to fill in the relevant code. The TUI Zone exists only on this branch: release 0.3.0 removed it from the main code base, together with the node's `inscribe` subcommand.
+Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone, built on the Zone SDK, with space to fill in the relevant code. A complete implementation of the TUI Zone exists on the `tui-zone-solution` branch.
 
 1.  Run the following in your desired path to clone the repository and switch to the tutorial branch:
 
@@ -62,7 +62,7 @@ Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone
 - `channel_id: ChannelId`—the ID of the channel associated with the Zone.
 - `signing_key: Ed25519Key`—a key authorised to post updates to the channel.
 - `node: Node`—a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
-- `funding: FundingConfig`—the node wallet key that pays transaction fees, and limits on how much the sequencer pays.
+- `funding: FundingConfig`—the node wallet key that pays transaction fees, and places limits on how much the sequencer pays.
 - `checkpoint: Option<SequencerCheckpoint>`—\[Optional] the checkpoint representing the most recently pushed channel update.
 
 Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](../../get-started/glossary.md#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL\_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](../../get-started/glossary.md#mantle) Operation.

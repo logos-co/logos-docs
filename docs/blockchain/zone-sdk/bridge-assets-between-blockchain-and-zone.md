@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Move tokens between Logos Blockchain and a Zone using channels and the Zone SDK.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.2**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 [Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones. A Zone's [channel](../../get-started/glossary.md#channel) holds the bridged funds as **channel notes**: ledger notes registered to the channel, which only the channel's accredited keys can spend.
@@ -64,8 +64,6 @@ A channel is created automatically the first time an operation references a prev
    | -------------------- | -------------------------------------------------------------------- |
    | `transfer_threshold` | Minimum number of accredited-key signatures needed to authorise a channel transfer or withdrawal. |
    | `accredited_keys`    | The committee that may sign transfers and withdrawals. |
-
-   The channel's funds are not a field of `ChannelState`: they are the channel notes registered to it. A transfer or withdrawal spends specific notes by ID, so it cannot be replayed once those notes are gone.
 
 1. Initialise a `ZoneSequencer` with a `FundingConfig` and publish the first [inscription](../../get-started/glossary.md#inscription) inside your event loop once `Event::Ready` has fired. The channel is created on-chain automatically, naming this sequencer's key as the sole accredited key.
 

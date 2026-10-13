@@ -16,7 +16,7 @@ sidebar_position: 3
 #### Get started with multi-sequencer channels using the Zone SDK and round-robin slot windows.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.2**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This tutorial covers how to configure and operate a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [channel](../../get-started/glossary.md#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](../../get-started/glossary.md#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/0.3.2/zone-sdk) who need to move from a single-sequencer setup to a decentralised one.
@@ -149,7 +149,7 @@ The Zone SDK queues inscriptions locally when it is not your sequencer's turn an
    }
    ```
 
-   - `channel_update` is a `ChannelUpdate`. It is a `ChannelUpdate::Extension { adopted }` when nothing you hold became invalid, and a `ChannelUpdate::Conflict { common_prefix, adopted, orphaned }` when entries left the channel view. `orphaned()` is empty on an extension.
+   - `channel_update` is a `ChannelUpdate` object. It is a `ChannelUpdate::Extension { adopted }` when nothing you hold became invalid, and a `ChannelUpdate::Conflict { common_prefix, adopted, orphaned }` when entries left the channel view. `orphaned()` is empty on an extension.
    - To keep your own state in step with a conflict, either revert every orphaned entry and apply every adopted one, or reset to finalised state and replay `channel_update.canonical_chain()`, the whole non-finalised view at the new tip. Your own publishes are applied at publish time and appear in `adopted` only after they were first reported orphaned.
    - `tests/src/cucumber/steps/zone/operations/policies.rs` in the `logos-blockchain` repository contains reference policies for this republish loop: `OrphanRepublishPolicy` (simple republish), `RepublishLineagePolicy` (for repeating payloads, so each intent lands once), `SortedConflictPolicy` (republish only when it preserves the channel's sorted order), and `BalanceAwarePolicy` (republish only when the account balance still allows it).
    - If the orphan was caused by an application-level conflict rather than a race, you can choose to drop the payload or deduplicate it against a higher-level transaction stream, or apply any other custom rule instead of republishing.

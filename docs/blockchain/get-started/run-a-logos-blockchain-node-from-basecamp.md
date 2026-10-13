@@ -170,7 +170,7 @@ A synced node validates the chain but does not propose blocks until its wallet h
 1. Open the **Mining** tab to follow mined tickets. A ticket pays nothing until it is claimed, and expires if it never is claimed.
 
    - By default, the node claims tickets for you and pays them into your **PoWClaim** account, whether you used **Quick start** or step-by-step setup: the generated config lists that account as an auto-claim target.
-   - If you switched auto-claim off during [step-by-step setup](#step-by-step-setup), claim tickets yourself under **Manual claim**, as described in [Claim mining rewards](./claim-leader-rewards-in-logos-blockchain-ui-app.md#claim-mining-rewards).
+   - If you switched auto-claim off during [step-by-step setup](#step-by-step-setup), claim tickets yourself under **Manual claim**.
    - The **Mining Rewards** tile on the **Node** tab shows how much has been claimed so far.
 
    ![The header showing Stop Mining while the node mines](../assets/run-a-logos-blockchain-node-from-basecamp/node-mining.png)

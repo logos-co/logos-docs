@@ -53,6 +53,9 @@ Before you begin, clone the [logos-blockchain](https://github.com/logos-blockcha
     # To follow along with the tutorial
     git checkout tui-zone-tutorial
     cd deployment/tui-zone
+
+    # The tutorial code uses `rand`, which the skeleton's Cargo.toml doesn't list yet
+    cargo add rand
     ```
 
     Check out the branch before changing into `deployment/tui-zone`: the directory exists only on `tui-zone-tutorial`, so `cd logos-blockchain/deployment/tui-zone` straight after cloning fails with `No such file or directory`.

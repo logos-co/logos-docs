@@ -18,7 +18,7 @@ import YouTube from '@site/src/components/YouTube';
 #### Get Logos Basecamp running on your desktop.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.1**.
 :::
 
 Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and [apps](../get-started/glossary.md#app) using its graphical interface as an alternative to the command line.
@@ -45,11 +45,6 @@ You can install Logos Basecamp in two ways:
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
-:::
-
-:::tip
-This tutorial is also available in video form:
-<YouTube id="SZ72xolkZz4" title="Installing Logos Basecamp" />
 :::
 
 ## Install from a prebuilt release

@@ -180,8 +180,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.1 \
-   --root-hash cfe0b7893b7fa46736b27203bf6ffb177f18601c09a899f47665a6c17bd9c6d0 \
+   --version 0.3.2 \
+   --root-hash 9ab4acbb734a85b0271f88d6db87f6d6ca3c6d96a3b27bacaa4ab11f67b6f0d7 \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
@@ -206,7 +206,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.1
+   blockchain_module 0.3.2
    delivery_module 0.3.2
    storage_module 3.0.2
    ```
@@ -260,9 +260,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.1` release starts a new blockchain with a new genesis.
+The blockchain module `0.3.1` release started a new blockchain with a new genesis, and `0.3.2` continues on it.
 
-Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
+If your node last ran a release earlier than `0.3.1`, start it with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over. A node upgrading from `0.3.1` keeps its state.
 :::
 
 1. Create the peer bootstrap file:

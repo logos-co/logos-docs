@@ -304,6 +304,7 @@ If your node last ran a release earlier than `0.3.1`, start it with an empty blo
    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
    | `state.base_folder` | State directory | Use a persistent local path |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
+   | `tracing.metrics.enable_open_metrics` | Node metrics | Generated as `false`. Set to `true` to [expose the node's metrics](./expose-logos-node-metrics-to-prometheus.md) |
 
 1. Start the blockchain module:
 

@@ -13,7 +13,7 @@ sidebar_position: 2
 
 # Expose Logos node metrics to Prometheus
 
-#### Serve the storage and delivery metrics of a running Logos node on one OpenMetrics endpoint and scrape it with Prometheus.
+#### Serve the blockchain, storage, and delivery metrics of a running Logos node on one OpenMetrics endpoint and scrape it with Prometheus.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
@@ -25,14 +25,14 @@ The steps continue from [Run a Logos node with blockchain, storage, and delivery
 
 :::info[Prerequisites]
 
-- A Logos node set up with [Run a Logos node with blockchain, storage, and delivery](./run-logos-node-blockchain-storage-delivery.md), with the daemon running and the storage and delivery modules started.
+- A Logos node set up with [Run a Logos node with blockchain, storage, and delivery](./run-logos-node-blockchain-storage-delivery.md), with the daemon running and the blockchain, storage, and delivery modules started.
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
 - A [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/) server that can reach the node over TCP, on the same host or on your private network.
 :::
 
 ## What to expect
 
-- You can scrape storage and delivery metrics from a single `/metrics` endpoint on the node.
+- You can scrape blockchain, storage, and delivery metrics from a single `/metrics` endpoint on the node.
 - You can see the node as a healthy target in Prometheus and query its series by `module` label.
 - You can keep the endpoint private and bring it back automatically after the node restarts.
 
@@ -63,7 +63,40 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 
    - The output must include `"module":"openmetrics","status":"ok"`.
 
-## Step 2: Start the metrics endpoint
+## Step 2: Turn on the blockchain node's metrics
+
+The blockchain node keeps its metrics off unless its configuration turns them on, and it reads that setting only when the module starts. The `user_config.yaml` that `generate_user_config` writes has them off.
+
+1. Turn the metrics on in the node configuration:
+
+   ```sh
+   sed -i 's/enable_open_metrics: false/enable_open_metrics: true/' /var/lib/logos-node/user_config.yaml
+   grep enable_open_metrics /var/lib/logos-node/user_config.yaml
+   ```
+
+   - The output must show `enable_open_metrics: true`. The setting is under `tracing.metrics`.
+   - If you are setting up a new node, make this change after `generate_user_config` and before the first `start` call, and skip the next step.
+
+1. Restart the blockchain module so it reads the new setting:
+
+   ```sh
+   logosctl module unload blockchain_module
+   logosctl module load blockchain_module
+   logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+   ```
+
+   - The node keeps its state and resumes from the blocks it already stored.
+   - The `start` call can return `RPC call failed` while the node replays its stored blocks. Wait a few minutes, then check `logosctl call blockchain_module get_cryptarchia_info`.
+
+1. Check that the node reports metrics:
+
+   ```sh
+   logosctl call blockchain_module collectOpenMetricsText
+   ```
+
+   - The result is an OpenMetrics document with `# TYPE` lines. An empty result means the metrics are still off or the node is not running.
+
+## Step 3: Start the metrics endpoint
 
 Tell `openmetrics` which port to listen on and which modules to collect from.
 
@@ -76,6 +109,7 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
    {
      "port": 9464,
      "modules": [
+       { "name": "blockchain_module", "format": "text" },
        "storage_module",
        { "name": "delivery_module", "format": "text" }
      ]
@@ -91,8 +125,7 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
    | `modules[].format` | `data` (the default, also used for a bare name) or `text` for modules that already produce OpenMetrics text |
 
    - `storage_module` returns structured metrics, so a bare name is enough.
-   - `delivery_module` returns OpenMetrics text and needs `"format": "text"`. Listed as a bare name, it contributes no metrics.
-   - `blockchain_module` does not expose metrics yet, so it is not listed.
+   - `blockchain_module` and `delivery_module` return OpenMetrics text and need `"format": "text"`. Listed as a bare name, they contribute no metrics.
 
 1. Start the endpoint:
 
@@ -110,7 +143,7 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
 
    - The result must contain `\"running\":true` and `\"port\":9464`.
 
-## Step 3: Check the endpoint
+## Step 4: Check the endpoint
 
 1. Check that the server answers:
 
@@ -123,12 +156,16 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
 1. Fetch the metrics:
 
    ```sh
-   curl -s http://127.0.0.1:9464/metrics | grep -E 'libp2p_peers|kad_routing_table_peers|repostore_bytes_used'
+   curl -s http://127.0.0.1:9464/metrics | grep -E 'consensus_tip_height|consensus_peers_connected|libp2p_peers|kad_routing_table_peers|repostore_bytes_used'
    ```
 
-   - **Expected result:** gauges from both modules, each tagged with the module that reported it. Your values differ:
+   - **Expected result:** gauges from all three modules, each tagged with the module that reported it. Your values differ:
 
    ```text
+   # TYPE consensus_peers_connected gauge
+   consensus_peers_connected{module="blockchain_module",otel_scope_name="logos-blockchain-node"} 127
+   # TYPE consensus_tip_height gauge
+   consensus_tip_height{module="blockchain_module",otel_scope_name="logos-blockchain-node"} 3481
    # HELP libp2p_peers total connected peers
    # TYPE libp2p_peers gauge
    libp2p_peers{module="delivery_module"} 15.0
@@ -141,9 +178,11 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
    ```
 
    - The full document holds a few hundred metric families and ends with `# EOF`. Storage metrics start with `logos_storage_` and delivery metrics with `logos_delivery_`. The delivery module also reports its libp2p, discovery, and mix network metrics.
+   - Blockchain metrics have no common prefix (`consensus_`, `chainsync_`, `mempool_`, `network_`, `storage_`, and others) and no `# HELP` lines. Filter them by `module="blockchain_module"`.
+   - A blockchain series appears once the node has recorded it, so a node that just started reports fewer families.
    - A module that is not running, or that fails to answer, is left out of the scrape. The other modules are still reported.
 
-## Step 4: Keep the endpoint private
+## Step 5: Keep the endpoint private
 
 The metrics server listens on all network interfaces, not only on `127.0.0.1`. The metrics reveal peer counts, traffic, and storage use, so expose the port only to your Prometheus server.
 
@@ -163,7 +202,7 @@ The metrics server listens on all network interfaces, not only on `127.0.0.1`. T
 
    - Run this from an account with `sudo` access, not from the `logos` user shell.
 
-## Step 5: Scrape the node with Prometheus
+## Step 6: Scrape the node with Prometheus
 
 1. Add a scrape job for the node to your Prometheus configuration (`prometheus.yml`). Replace `<node-address>` with `127.0.0.1` if Prometheus runs on the node, or with the node's private address otherwise:
 
@@ -191,13 +230,13 @@ The metrics server listens on all network interfaces, not only on `127.0.0.1`. T
    count by (module) ({job="logos-node"})
    ```
 
-   - The result lists `storage_module` and `delivery_module`. A few series without a `module` label, such as `up`, are added by Prometheus itself.
+   - The result lists `blockchain_module`, `storage_module`, and `delivery_module`. A few series without a `module` label, such as `up`, are added by Prometheus itself.
 
-## Step 6: Start the endpoint with the node
+## Step 7: Start the endpoint with the node
 
 The endpoint does not persist across restarts: when the node daemon restarts, the `openmetrics` module is unloaded and the server stops.
 
-1. If you run the node with the [systemd service](./run-logos-node-blockchain-storage-delivery.md#optional-run-the-node-unattended-with-systemd), add these commands to the module bootstrap script, after the storage and delivery modules start:
+1. If you run the node with the [systemd service](./run-logos-node-blockchain-storage-delivery.md#optional-run-the-node-unattended-with-systemd), add these commands to the module bootstrap script, after the blockchain, storage, and delivery modules start:
 
    ```sh
    logosctl module load openmetrics
@@ -205,6 +244,7 @@ The endpoint does not persist across restarts: when the node daemon restarts, th
    ```
 
    - Collection only reports modules that are running, so start `openmetrics` after the modules it scrapes.
+   - The blockchain setting from Step 2 is stored in `user_config.yaml`, so the blockchain module keeps reporting metrics after a restart.
 
 1. To stop the endpoint without stopping the node, run:
 
@@ -225,5 +265,5 @@ The server did not start. The usual causes are:
 ### A module's metrics are missing from `/metrics`
 
 - Check that the module is loaded and started with `logosctl module ls --loaded` and the module's own status call, for example `logosctl call storage_module isRunning`.
-- Check that `delivery_module` is listed with `"format": "text"`. As a bare name it contributes no metrics.
-- `blockchain_module` does not expose metrics in Testnet v0.3. To monitor blockchain sync, use `logosctl call blockchain_module get_cryptarchia_info`.
+- Check that `blockchain_module` and `delivery_module` are listed with `"format": "text"`. As bare names they contribute no metrics.
+- If `blockchain_module` reports nothing, run `logosctl call blockchain_module collectOpenMetricsText`. An empty result means `enable_open_metrics` is not `true` in `user_config.yaml`, the module was not restarted after the change, or the node is not running. Repeat [Step 2](#step-2-turn-on-the-blockchain-nodes-metrics).

@@ -395,7 +395,7 @@ The `delivery_preset` differs across instances, or delivery has not reached `onl
 
 ### Why does `send_message` succeed but peers never receive the message?
 
-`chat_module` sends through `delivery_module`, which rate-limits with RLN (Rate-Limiting Nullifier) wherever the network preset enables it. The `delivery_module` that `chat_module` v0.3.0 pins does not enable RLN on `logos.test`, but `delivery_module` v0.3.0 and later do. With one of those—for example, when your module runs in Logos Basecamp alongside a newer `delivery_module`—sending on `logos.test` needs an active RLN membership; see [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md). Without one, the node starts and receives, but delivery retries each send and then gives up.
+`chat_module` sends through `delivery_module`, which rate-limits with RLN (Rate-Limiting Nullifier) wherever the network preset enables it. `delivery_module` v0.3.0 and later enable RLN on `logos.test`, so sending there needs an active RLN membership; see [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md). Without one, the node starts and receives, but delivery retries each send and then gives up.
 
 ### Why hasn't an invited member joined the group yet?
 

@@ -16,10 +16,12 @@ sidebar_position: 2
 #### Install the blockchain modules and run a syncing testnet node from the Basecamp desktop app.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md), from a [standalone application](../node-app/build-and-run-logos-blockchain-node-app-ui.md), or—as described here—from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md) or from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
+
+This procedure covers running the Logos Blockchain app via Basecamp, setting up a node through the onboarding wizard, confirming that it syncs, and funding its wallet so it can propose blocks.
 
 :::info[Prerequisites]
 
@@ -28,10 +30,12 @@ The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the bl
    - **Linux** (tested on Ubuntu 24.04)
    - **Windows 11 with WSL2** (plus WSLg for the GUI)
    - **Apple Silicon Mac** (M1 or later).
-- 2 Core CPU, 2Ghz. Modern multi-core processor.
-- Minimal RAM (1 Gb).
-- SSD with 100+ GB free with ability to expand storage on demand.
-- Relatively reliable network connection. 1Mbps of free bandwidth.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- Memory (RAM): Minimal (1 Gb).
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 :::
 
 Port forwarding is **not** required. A blockchain node participates outbound-only: it syncs, validates, and (once funded) proposes blocks. Forwarding only makes your node *reachable* so others can use it, which is out of scope here.
@@ -40,24 +44,27 @@ Port forwarding is **not** required. A blockchain node participates outbound-onl
 
 By the end of this procedure:
 
-- Basecamp will be running the Logos Blockchain app.
+- Basecamp will be running the Logos Blockchain [app](../../get-started/glossary.md#app).
 - Your node will be connected to testnet peers and syncing the chain.
 - You will confirm sync by observing an advancing block height.
 - Optionally, you can fund your wallet by mining so your node proposes blocks.
 
 ## Step 1: Install and launch the blockchain app
 
-1. In Basecamp, press **Install now** or the top left button on the bottom of the sidebar (highlighted in the image below) to open the **Applications** section. In the **Blockchain** category, select **Blockchain**.
+1. In Basecamp, press **Discover Applications** on the home screen or the top button of the group at the bottom of the sidebar on the left to open the **Applications** section.
+
+   ![Basecamp landing](../assets/run-a-logos-blockchain-node-from-basecamp/basecamp-landing.png)
+
+1. In the **Blockchain** category, select **Blockchain**.
 
    ![Blockchain node application](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-app.png)
 
-
-1. Make sure that `Blockchain` (the UI module) is set to `v0.2.1` and `Blockchain Module` (the core module) is set to `v0.2.4`, then click **Install**.
+1. Make sure that `Blockchain` (the UI module) is set to `v0.3.2` and `Blockchain Module` (the core module) is set to `v0.3.2`, then click **Install**.
 
    ![Install the Blockchain app](../assets/run-a-logos-blockchain-node-from-basecamp//blockchain-app-install.png)
 
    :::note
-   Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+   Individual [package](../../get-started/glossary.md#package) versions are pinned independently and do not necessarily match the testnet version number.
    :::
 
 1. Once the modules are installed, press **Launch**.
@@ -66,98 +73,151 @@ By the end of this procedure:
 
    - The Blockchain app will open.
 
-## Step 2: Configure the node
+## Step 2: Start the Node
 
-In the Blockchain app, add a node configuration.
+On first run, the app opens on a welcome screen titled **Blockchain Node**. A node needs a config and a keystore before it can start.
 
-1. Click **Generate a config**.
+The welcome screen offers **Quick start** and **Advanced**. [**Quick start**](#quick-start) generates a config for the public testnet with the bootstrap peers built into the release, creates your keys, and starts the node. To walk through the same choices one at a time, or to reuse a config you already have, click **Advanced** and follow [Step-by-step setup](#step-by-step-setup) instead.
 
    ![Blockchain app landing page](../assets/run-a-logos-blockchain-node-from-basecamp/blockchain-landing.png)
 
-1. In the **Initial peers** field, add the testnet bootstrap peers (one per line). For example, for release 0.2.4:
+### Quick start
 
-   ```text
-   /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
-   /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz
-   /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb
-   /ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
-   ```
+1.  Click **Quick start**.
 
-   :::info
-   Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
+   - The screen reads **Setting up your node…** while the app writes your config, creates your keys, and starts the node. The node view then opens.
+
+1.  Open the **Settings** tab. Until you back up your keys, the **Node** tab shows a **Back up your keys** notice that points here.
+
+1.  In the **Back up your keys** card, click **Download keystore.yaml** and choose where to save the copy.
+
+   ![The Back up your keys card in Settings](../assets/run-a-logos-blockchain-node-from-basecamp/settings-backup-keys.png)
+
+   - A **Keystore saved** message confirms the backup, and the card shows a **Done** badge.
+
+   :::warning
+   Your keystore holds the keys to your accounts, stake, and rewards. Nothing can reissue them. Keep the copy somewhere other than this machine.
    :::
 
-1. Leave the other fields at their defaults and click **Generate config**, then **Continue**.
+### Step-by-step-setup
 
-   ![Generate config screen](../assets/run-a-logos-blockchain-node-from-basecamp/generate-config.png)
+1. Click **Advanced**. The **Set up your node** wizard opens on step **1. Setup**.
+
+1. Under **How do you want to start?**, select **Generate a new node** and click **Continue**.
+
+   ![Set up your node](../assets/run-a-logos-blockchain-node-from-basecamp/advanced-setup.png)
+
+   - To reuse files you already have, select **Use an existing config** instead, fill in **User config** (and optionally **Deployment**) under **Point to your files**, and click **Start node**. The wizard ends there.
+
+1. On **2. Network**, leave **Default (public testnet)** selected. The **Bootstrap peers** field is already filled with the testnet peers built into the release. A custom deployment file or different bootstrap peers can also be provided via this page. Click **Generate config** to proceed.
+
+   ![Set up your node's network settings](../assets/run-a-logos-blockchain-node-from-basecamp/advanced-network.png)
 
    :::caution
-   A config generated with an empty **Initial peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
+   A config generated with an empty **Bootstrap peers** field produces a node that starts and reports success but never syncs. Make sure the peers above are present before generating.
    :::
 
-## Step 3: Start the node
+1. On **3. Keys**, click **Download keystore.yaml** and save the copy somewhere safe. Select **I've backed up my keys somewhere safe**, then click **Continue**.
 
-On the node view, select **Start Node**.
+   ![Back up your node's keys](../assets/run-a-logos-blockchain-node-from-basecamp/advanced-keys.png)
 
-   ![Start node](../assets/run-a-logos-blockchain-node-from-basecamp/start-node.png)
+1. To participate in consensus, your node needs some testnet notes. Notes can be obtained by engaging in PoW mining. On **4. Fund**, choose whether the node claims mined rewards automatically:
 
-The status moves to *Starting*, then *[Bootstrapping](../../get-started/glossary.md#bootstrapping)*, and the node begins connecting to peers.
+   - Leave **Claim mined rewards automatically** on. With this approach, your node will repeatedly claim more notes until the target accounts reach their cap. **Pays into** already lists the target from your generated config: your **PoWClaim** account, with **No cap**. To pay into another account as well, choose it, set a threshold or switch on **No cap**, and click **Add**.
+   - Alternatively, switch it off. You can still mine with the **Fund** button and claim rewards yourself from the **Mining** tab.
+
+   ![Choose a way to fund your node](../assets/run-a-logos-blockchain-node-from-basecamp/advanced-fund.png)
+
+   :::tip
+   Keeping all the defaults on this page is the recommended approach.
+   :::
+
+1. Click **Start node**. The app saves your mining settings, starts the node, and opens the node view.
+
+## Step 3: Verify that the node is syncing
+
+The **Node** tab shows the node's consensus status as a headline, with a lifecycle lane underneath it (**Started**, **Online**, **Funded**, **Aged**, **Proposing**, **Earning**) that lights up one stage at a time.
+
+1.  Watch the headline. It moves from **Starting** to **[Bootstrapping](../../get-started/glossary.md#bootstrapping)** (**Syncing with the chain**) while the node catches up, then to **Online** (**Following the chain**).
 
    ![Bootstrapping node](../assets/run-a-logos-blockchain-node-from-basecamp/bootstrapping-node.png)
-
-## Step 4: Verify that your node is syncing
-
-In the consensus tab, you will see the consensus status of your node. A syncing node returns a `Tip` that is not genesis and a `Height` that increases over time. The block list in the UI also begins filling within a minute or two.
 
    :::note
    If you were offline for a while, expect the node to sit in *Bootstrapping* while it catches up before it reports *Online*. A height that is far below the current [slot](../../get-started/glossary.md#slot) during initial sync is normal.
    :::
 
-## Step 5: Fund your node and propose blocks
+1.  Check the **Peers** tile. It shows the number of connected peers, and should be greater than `0`.
 
-A synced node validates the chain but does not **propose** blocks until its wallet has a balance. For consensus leadership, your wallet's notes participate automatically—there is no separate staking step.
+1.  Check the **Height** tile. Expect it to increase by about one block every 10 seconds once the node is **Online**. The timing is probabilistic, so some variance is normal.
 
-1. Fund your wallet by mining with the **Fund** button, as described in [Fund your node](../node-app/build-and-run-logos-blockchain-node-app-ui.md#step-4-fund-your-node). Make sure your node is *Online* first.
+   - You can compare the height with the [testnet block explorer](https://testnet.blockchain.logos.co/web/explorer/).
+   - The **Explorer** tab lists each new block that this node sees from now on.
 
-1. Your tokens become eligible for consensus after 3.5 hours. Confirm that your node is participating by checking that the consensus status remains `Online` and `Height` continues to increase.
+## Step 4: Fund your node and propose blocks
+
+A synced node validates the chain but does not propose blocks until its wallet holds testnet notes. Notes are obtained by PoW mining. 
+
+1. Wait until the node reaches **Online** mode. The **Fund** button at the top right stays disabled until then.
+
+   ![Online node](../assets/run-a-logos-blockchain-node-from-basecamp/online-node.png)
+
+1. Click **Fund**. The node starts mining in the background and the button changes to **Stop Mining**.
+
+   :::warning
+   Mining uses CPU for as long as it runs. It does not stop by itself: click **Stop Mining** when you have enough funds.
+   :::
+
+1. Open the **Mining** tab to follow mined tickets. A ticket pays nothing until it is claimed, and expires if it never is claimed.
+
+   - By default, the node claims tickets for you and pays them into your **PoWClaim** account, whether you used **Quick start** or step-by-step setup: the generated config lists that account as an auto-claim target.
+   - If you switched auto-claim off during [step-by-step setup](#step-by-step-setup), claim tickets yourself under **Manual claim**.
+   - The **Mining Rewards** tile on the **Node** tab shows how much has been claimed so far.
+
+   ![The header showing Stop Mining while the node mines](../assets/run-a-logos-blockchain-node-from-basecamp/node-mining.png)
+
+1. Open the **Wallet** tab, then click **Accounts**. Click **Refresh** and confirm the balance of your **PoWClaim** account, in TestToken.
+
+   ![Wallet > Accounts with a funded PoWClaim account](../assets/run-a-logos-blockchain-node-from-basecamp/wallet-accounts.png)
+
+1. Once the wallet is funded, the **Stake** tile on the **Node** tab shows the value of the notes that have aged into the leadership lottery. Tokens can take up to two [epochs](../../get-started/glossary.md#epoch) (3.5 hours) to become eligible for consensus. After that, the node takes part in the consensus lottery automatically and starts proposing blocks. Confirm that your node is participating by checking that the headline has reached **Aged** and **Proposing**
    
    :::info
    Block proposal is probabilistic. Your node will not propose on every slot; participation depends on your stake relative to total active stake in the network.
    :::
 
-1. Rewards appear under **Operations → Leader Rewards**, where **Claim** redeems them into your wallet.
+1. Rewards appear under the **Rewards**, where **Claim** redeems them into your wallet.
 
    ![Leader rewards](../assets/run-a-logos-blockchain-node-from-basecamp/leader-rewards.png)
 
-:::note
-Participating in the [Blend network](../../get-started/glossary.md#blend-network) as a [*Core* node](../../get-started/glossary.md#core-node) requires a separate locked [note](../../get-started/glossary.md#note) (staked funds) and does not affect block proposing. See [Join the Blend network as a Core node](../blend/join-the-blend-network-as-a-core-node.md).
-:::
+   :::note
+   Participating in the [Blend network](../../get-started/glossary.md#blend-network) as a [*Core* node](../../get-started/glossary.md#core-node) requires a separate locked [note](../../get-started/glossary.md#note) (staked funds) and does not affect block proposing. See [Join the Blend network as a Core node](../blend/join-the-blend-network-as-a-core-node.md).
+   :::
 
 ## Step 6: Keeping your node running
 
-The node runs only while Basecamp is open, and it does not resume automatically after a restart—reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-a-logos-blockchain-node-from-cli.md) with a service manager instead.
+The node runs only while Basecamp is open, and it does not resume automatically after a restart. To restart your node, reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-a-logos-blockchain-node-from-cli.md) with a service manager instead.
 
 ## Troubleshooting
 
-### The node is Online but Consensus shows `Call failed`, or Accounts won't load
+### The welcome screen only offers Set up your node
 
-This is a UI-side issue, not a node fault—the core is healthy but the UI cannot render the call. Recover least-destructively first:
+The app hides **Quick start** when it has no bootstrap peers: either it could not read the peers built into its `metadata.json`, or it was built from `master`, which has none. Click **Set up your node** and follow [Step-by-step setup](#step-by-step-setup). On **2. Network**, the **Bootstrap peers** field will be empty: copy the testnet peers from the `Initialize Your Node` section of the [Logos Blockchain release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) and paste them one per line. The release notes show them inside a CLI command: keep only the multiaddrs themselves, such as `/ip4/<ip>/udp/<port>/quic-v1/p2p/<peer-id>`, with no quotes, brackets, or commas.
 
-1. **Fully quit Basecamp and relaunch** (Quit, not just close the window), then reopen the node. This clears most cases with no data loss.
-1. **Check that the module versions match**: `Blockchain Module` should be `0.2.4` and `Blockchain` should be `0.2.1`. A version mismatch is a common cause.
-1. **If it persists**, reset the chain state while keeping your keys: quit Basecamp, delete `db/` and `state/` inside `module_data/blockchain_module/<id>/` (not the whole folder—that removes your wallet keystore), relaunch, and Start. The node re-syncs from genesis.
+### A dialogue says `Your config is out of date`
 
-If the consensus info on the **Node** page shows an advancing height, the node is syncing and a restart is enough—do not wipe a working node.
+The config was written for an older release, so the node won't start with it. Testnet v0.3 starts a new chain, so configs from Testnet v0.2 need updating. Click **Update config**: the app rebuilds the config for this release and keeps your settings and keys. If the dialogue reads `This config can't be updated` instead, there is no keystore next to the config, and **Start fresh** creates a new config with a new set of keys.
 
-### Height stays at 0
+### The headline stays in Bootstrapping mode
 
-Your Initial peers are empty. Quit Basecamp, delete `user_config.yaml`, `db/`, and `state/` inside `module_data/blockchain_module/<id>/` (leave `keystore.yaml`), relaunch, and redo Step 5 with the peers present.
+The node is still catching up, and the line beside the headline says why:
 
-### I need my wallet address but the Accounts panel is blank
+- `Catching up — replaying stored blocks.` or `Syncing with the chain`: wait. A first sync can take a while.
+- `No block progress for 10 minutes — the node may have lost its peers. Try stopping and starting it.`: click **Stop Node**, then **Start Node**.
+- `Genesis is … — the node can't finish syncing until then. Its config likely points at the wrong network.`: the config was generated for another network. In **Settings**, click **Start a new node** to generate a config for the public testnet.
 
-Your keys are safe in the keystore regardless of the UI. Retrieve an address directly:
+If the node is stuck or will not start at all, the **Reset the database** card in **Settings** shows the database folder. Stop the node, delete that folder, then start the node again. It re-syncs the chain from its peers, and your keys and config files are untouched.
 
-```bash
-cd ~/.local/share/Logos/LogosBasecamp/module_data/blockchain_module/<id>/
-grep -A20 public_keys keystore.yaml
-```
+### The headline reads Node stopped or Disconnected
+
+- **Node stopped** means the node process stopped unexpectedly. Click **Start Node**. If the same thing happens again, restart the app.
+- **Disconnected** means the app lost contact with the node service. Restart the app.

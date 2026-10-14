@@ -8,7 +8,7 @@ topics:
 steps_layout: sectioned
 authors: kashepavadan
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: inscribe-data-on-chain-using-zone-sdk
 sidebar_position: 1
 ---
@@ -18,20 +18,18 @@ sidebar_position: 1
 #### Learn how to write plain text as on-chain inscriptions using a simple Logos Zone.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 Applications built on Logos are implemented in execution environments known as [_Zones_](../concepts/about-zones.md), which post data _inscriptions_ on-chain via Logos channels. A Zone could host a versatile rollup with thousands of applications, such as the [Logos Execution Zone](../../lez/introduction-to-the-logos-execution-zone.md), or it could be a simple, standalone Zone tracking the state of just one application.
 
-The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions, based on the [TUI Zone demo](https://github.com/logos-blockchain/logos-blockchain/tree/master/deployment/tui-zone).
-
-:::tip
-You can try out a working version of the TUI Zone used in this tutorial directly from your [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node. Just run `./logos-blockchain-node inscribe`.
-:::
+The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use toolbox that handles basic interactions with a Logos Zone. This tutorial shows how to create a simple Logos Zone that writes plain text as on-chain inscriptions.
 
 :::info[Prerequisites]
 
-- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
+- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) that has reached `Online` mode.
+- A key in the node's wallet that holds funds, such as the `PoWClaim` key funded by [mining](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). The node spends this key's [notes](../../get-started/glossary.md#note) to pay each inscription's transaction fee.
+- [Git](https://git-scm.com/) and the [Rust toolchain](https://www.rust-lang.org/tools/install).
 :::
 
 ## What to expect
@@ -42,17 +40,20 @@ You can try out a working version of the TUI Zone used in this tutorial directly
 
 ## Step 1: Clone the Logos Blockchain repository
 
-Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain/tree/master) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone with space to fill in the relevant code. A more comprehensive implementation, which also supports decentralised sequencing, can be found in the `master` branch.
+Before you begin, clone the [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain) repository. The `tui-zone-tutorial` branch contains a skeleton implementation of the TUI Zone, built on the Zone SDK, with space to fill in the relevant code. A complete implementation of the TUI Zone exists on the `tui-zone-solution` branch.
 
 1.  Run the following in your desired path to clone the repository and switch to the tutorial branch:
 
     ```bash
     git clone https://github.com/logos-blockchain/logos-blockchain.git
-    cd logos-blockchain/deployment/tui-zone
+    cd logos-blockchain
 
     # To follow along with the tutorial
     git checkout tui-zone-tutorial
+    cd deployment/tui-zone
     ```
+
+    - The `deployment/tui-zone` directory exists only on the `tui-zone-tutorial` branch, so check out the branch before you change into it.
 
 ## Step 2: Initialise the `ZoneSequencer` struct
 
@@ -61,11 +62,19 @@ Sequencer functionality is provided via the `ZoneSequencer` struct from the Zone
 - `channel_id: ChannelId`—the ID of the channel associated with the Zone.
 - `signing_key: Ed25519Key`—a key authorised to post updates to the channel.
 - `node: Node`—a Node struct referring to your Logos Blockchain node, together with the credentials to access it. Created by `NodeHttpClient::new()`.
+- `funding: FundingConfig`—the node wallet key that pays transaction fees, and places limits on how much the sequencer pays.
 - `checkpoint: Option<SequencerCheckpoint>`—\[Optional] the checkpoint representing the most recently pushed channel update.
 
 Before posting to a new channel, the sequencer must first generate an Ed25519 public/private key pair. **This initial public key defines the channel ID, while the private key becomes the first authorised signing key.** The channel is created when the sequencer posts a [message](../../get-started/glossary.md#message) with this channel ID, unless it already exists. Initially, only the sequencer with the signing key can post messages to the channel. Additional keys can be authorised via the [CHANNEL\_CONFIG](https://nomos-tech.notion.site/v1-2-Mantle-Specification-2ce261aa09df805ea358d80c2046cf95) [Mantle](../../get-started/glossary.md#mantle) Operation.
 
 After the first channel message, further messages include a hash reference to the previous message in the channel. If a message is posted with an incorrect parent hash, it is rejected. **Providing a checkpoint lets the sequencer track the last message posted to its channel, allowing it to resume posting new updates after restarting.** A checkpoint is not necessary for the session during which a sequencer creates a new channel.
+
+Every transaction the sequencer publishes must pay a fee. Before signing a transaction, the sequencer asks your node to fund it from a key in the node's wallet: the node adds a fee transfer and proves it, so the key's secret never leaves the node. `FundingConfig` sets how this works:
+
+- `funding_pk`—the ZK public key, held by the node's wallet, whose notes pay the fees. The skeleton reads it from the `--funding-pk` command-line option into `args.funding_pk`.
+- `change_pk`—where change from an atomic withdrawal goes. `None` sends it to `funding_pk`. Plain inscriptions do not use it.
+- `max_tx_fee`—the highest fee the sequencer pays for a single transaction.
+- `priority_fee_percent`—a reserve on top of the required fee, so the transaction still lands if fees rise slightly before it is included. `FundingConfig::DEFAULT_PRIORITY_FEE_PERCENT` is 12%.
 
 1.  Add a function to create a new private signing key in `src/lib.rs`:
 
@@ -123,8 +132,16 @@ After the first channel message, further messages include a hash reference to th
         // Connect to node
         let node = NodeHttpClient::new(CommonHttpClient::new(None), node_url);
 
+        // Pay transaction fees from a funded key in the node's wallet
+        let funding = FundingConfig {
+            funding_pk: args.funding_pk,
+            change_pk: None,
+            max_tx_fee: GasCost::new(1_000_000),
+            priority_fee_percent: FundingConfig::DEFAULT_PRIORITY_FEE_PERCENT,
+        };
+
         // Initialise ZoneSequencer
-        let mut sequencer = ZoneSequencer::init(channel_id, signing_key, node, checkpoint);
+        let mut sequencer = ZoneSequencer::init(channel_id, signing_key, node, funding, checkpoint);
 
         // Wait to start reading from stdin until ready
         let (ready_tx, ready_rx) = tokio::sync::oneshot::channel();
@@ -142,12 +159,11 @@ For a centralised Zone—a single sequencer that owns its channel—event handli
 
 The status of the sequencer's backfill process, transactions sent by the sequencer, and any updates to the Zone state are communicated via the Zone SDK's `Event`. These events are:
 
-- `Ready`—the sequencer is caught up and ready to accept updates.
-- `BlocksProcessed`—a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries a `channel_update` (`adopted` / `orphaned` inscriptions), but that is only relevant when several sequencers share a channel—**a centralised Zone ignores it**.
-- `MempoolPending`—transaction was accepted by node API and is waiting in mempool.
+- `Ready`—the sequencer is caught up and ready to accept updates. It fires once when the sequencer finishes catching up with the chain, and again each time it reconnects to the node.
+- `BlocksProcessed`—a new block was processed. Includes the latest `checkpoint` and the list of `finalized` transactions. It also carries the `deposits` observed in the block and a `channel_update` reporting inscriptions that entered or left the channel, but those are only relevant to bridging and to channels shared by several sequencers—**a centralised Zone ignores them**.
 - `TurnNotification`—the sequencer's turn to write in a turn-based decentralised sequencing scenario (not applicable to our example).
 
-1.  In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint:
+1.  In `src/state.rs`, add the following struct to track Zone state in memory and maintain the checkpoint. It implements the skeleton's `ZoneState` trait, which the skeleton's `src/ui.rs` uses to render the state:
 
     ```rust
     // Keep track of Zone state in memory
@@ -169,9 +185,11 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
             self.published
                 .push(Msg::from_payload(info.this_msg, &info.payload));
         }
+    }
 
+    impl ZoneState for InMemoryZoneState {
         // Move our finalised publishes out of `published` and into `finalized`.
-        pub fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
+        fn on_finalized(&mut self, inscriptions: &[InscriptionInfo]) {
             for info in inscriptions {
                 if let Some(i) = self
                     .published
@@ -187,19 +205,19 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
             }
         }
 
-        pub fn published(&self) -> &[Msg] {
+        fn published(&self) -> &[Msg] {
             &self.published
         }
 
-        pub fn finalized(&self) -> &[Msg] {
+        fn finalized(&self) -> &[Msg] {
             &self.finalized
         }
 
-        pub fn save_checkpoint(&mut self, checkpoint: SequencerCheckpoint) {
+        fn save_checkpoint(&mut self, checkpoint: SequencerCheckpoint) {
             self.checkpoint = Some(checkpoint);
         }
 
-        pub fn load_checkpoint(&self) -> Option<&SequencerCheckpoint> {
+        fn load_checkpoint(&self) -> Option<&SequencerCheckpoint> {
             self.checkpoint.as_ref()
         }
     }
@@ -237,14 +255,17 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
     // state: Zone state
     fn apply_finalized(items: &[FinalizedTx], state: &mut InMemoryZoneState) {
 
-        // TUI only cares about inscriptions for rendering; deposit / withdraw
-        // ops have no inscription payload.
+        // TUI only cares about inscriptions for rendering; deposit, withdraw,
+        // config and channel transfer ops have no inscription payload.
         let inscriptions: Vec<InscriptionInfo> = items
             .iter()
             .flat_map(|t| t.ops.iter())
             .filter_map(|op| match op {
                 FinalizedOp::Inscription(i) => Some(i.clone()),
-                FinalizedOp::Deposit(_) | FinalizedOp::Withdraw(_) => None,
+                FinalizedOp::Deposit(_)
+                | FinalizedOp::Withdraw(_)
+                | FinalizedOp::Config(_)
+                | FinalizedOp::ChannelTransfer(_) => None,
             })
             .collect();
         state.on_finalized(&inscriptions);
@@ -277,7 +298,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
                 }
                 state.save_checkpoint(checkpoint);
             }
-            Event::MempoolPending(_) | Event::TurnNotification { .. } => {}
+            Event::TurnNotification { .. } => {}
         }
     }
     ```
@@ -312,7 +333,7 @@ The status of the sequencer's backfill process, transactions sent by the sequenc
 
 ## Step 4: Publish data
 
-Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handler's `publish` function. Once the transaction is submitted to the Zone SDK, this function returns a struct consisting of the [inscription](../../get-started/glossary.md#inscription) (message) ID and the current checkpoint.
+Once the `ZoneSequencer` is set up, posting data to the channel is as easy as passing a vector of bytes to the sequencer handle's asynchronous `publish` function. `publish` first asks your node to fund the transaction, then queues it for posting and returns the queued [inscription](../../get-started/glossary.md#inscription) together with the current checkpoint. It returns `Error::Unavailable` while the sequencer is still catching up with the chain or reconnecting to the node, and an error if the node cannot fund the transaction.
 
 1.  Add the following code to process user input text in the `run` function in `src/lib.rs`:
 
@@ -347,7 +368,7 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
                     };
 
                     // Publish data
-                    match sequencer.handle().publish(inscription) {
+                    match sequencer.handle().publish(inscription).await {
 
                         // Get result and checkpoint, update Zone state
                         Ok((result, checkpoint)) => {
@@ -362,7 +383,7 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
                         Err(lb_zone_sdk::sequencer::Error::Unavailable { reason }) => {
                             warn!("publish rejected: {reason}");
                             eprintln!(
-                                "  \x1b[33msequencer is still starting up, try again in a moment\x1b[0m"
+                                "  \x1b[33msequencer is not ready (starting up or reconnecting), try again in a moment\x1b[0m"
                             );
                             ui::prompt();
                         }
@@ -385,12 +406,33 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
 ## Step 5: Build and run the sequencer
 
+1.  Find the public key of the node wallet key that pays the fees. If your node mines, use its `PoWClaim` key, which is the `public_key` of the auto-claim target:
+
+    ```bash
+    logosctl call blockchain_module pow_status | jq -r .result.value | jq .auto_claim.targets
+    ```
+
+1.  Check that the key holds funds. Replace `<FUNDING_KEY>` with the key from the previous step:
+
+    ```bash
+    curl -s http://localhost:8080/wallet/<FUNDING_KEY>/balance | jq .
+    ```
+
+    - If the request returns `404`, the key holds no notes yet. [Mine tokens](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) until it does.
+
 1.  With the code filled in, build and run the sequencer from the `deployment/tui-zone` directory. The binary is named `tui-sequencer`:
 
     ```bash
-    cargo run --bin tui-sequencer -- --node-url <Your Node URL>
+    cargo run --bin tui-sequencer -- --node-url <YOUR_NODE_URL> --funding-pk <FUNDING_KEY>
     ```
 
-    The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has bootstrapped. Type a message and press Enter to publish it as an on-chain inscription.
+    - `--node-url` defaults to `http://localhost:8080`, so you can omit it for a local node.
+    - You can set `NODE_URL` and `FUNDING_PK` as environment variables instead of passing the options.
 
-    Each message first appears under **Published** (pending). Once your node finalises the block containing it, the message moves to **Finalised**—confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.
+    The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has caught up with the chain. Type a message and press Enter to publish it as an on-chain inscription. The first message creates the channel.
+
+    Each message first appears under `Published` (pending). A block includes it within a few minutes, but it only moves to `Finalized` once that block is behind the last irreversible block (LIB). On the testnet the LIB trails the tip by about 44,000 slots, so this takes roughly 12 hours. Keep the sequencer running if you want to watch the move. Press Ctrl-D or enter an empty line to exit.
+
+    - To confirm that your messages are on-chain before they finalise, query the channel using the `Channel ID` the sequencer printed at startup: `curl -s http://localhost:8080/channel/<CHANNEL_ID> | jq .`. It returns `Channel not found` until a block includes your first message, then the channel's state, where `tip_slot` is the slot of your latest included inscription.
+
+    - If the sequencer exits with `failed to publish: network error: funding failed`, the node could not fund the transaction. Check that `--funding-pk` is a key in your node's wallet and that it holds funds.

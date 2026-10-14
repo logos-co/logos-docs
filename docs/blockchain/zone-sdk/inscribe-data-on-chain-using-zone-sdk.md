@@ -431,6 +431,8 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
 
     The sequencer connects to your node, derives the channel ID from your signing key, and prints `Ready.` once it has caught up with the chain. Type a message and press Enter to publish it as an on-chain inscription. The first message creates the channel.
 
-    Each message first appears under `Published` (pending). Once your node finalises the block containing it, the message moves to `Finalized`, confirming the inscription is on-chain. Press Ctrl-D or enter an empty line to exit.
+    Each message first appears under `Published` (pending). A block includes it within a few minutes, but it only moves to `Finalized` once that block is behind the last irreversible block (LIB). On the testnet the LIB trails the tip by about 44,000 slots, so this takes roughly 12 hours. Keep the sequencer running if you want to watch the move. Press Ctrl-D or enter an empty line to exit.
+
+    - To confirm that your messages are on-chain before they finalise, query the channel using the `Channel ID` the sequencer printed at startup: `curl -s http://localhost:8080/channel/<CHANNEL_ID> | jq .`. It returns `Channel not found` until a block includes your first message, then the channel's state, where `tip_slot` is the slot of your latest included inscription.
 
     - If the sequencer exits with `failed to publish: network error: funding failed`, the node could not fund the transaction. Check that `--funding-pk` is a key in your node's wallet and that it holds funds.

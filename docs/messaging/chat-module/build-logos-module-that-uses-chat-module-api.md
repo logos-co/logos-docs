@@ -194,6 +194,10 @@ Ongoing activity—incoming messages, new conversations, delivery-state changes�
 `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
 :::
 
+:::warning
+In `chat_module` v0.3.0, `online` arrives a few seconds before the delivery node can send. An invite or message sent in that window is lost, even though the call succeeds. Wait about 10 seconds after `online` before calling `create_conversation`, `add_group_member`, or `send_message`.
+:::
+
 `init()` takes a single `ChatConfig` record, generated as the `ChatModule::ChatConfig` struct. Both fields are optional:
 
 | Field | Type | Notes |
@@ -218,7 +222,7 @@ Ongoing activity—incoming messages, new conversations, delivery-state changes�
 
    - `delivery_module` runs one node per process, shared by every module that uses it. If another module already created that node, `chat_module` uses it as it is, with that module's preset, and reports `deliveryAdopted == true`.
 
-1. Read (or set) your installation's display name. It is local to this installation and not shown to peers:
+1. Read (or set) your installation's display name. It is saved in the instance directory and not shown to peers:
 
    ```cpp
    const QString myName = chat.get_installation_name();
@@ -356,7 +360,7 @@ A group conversation starts with its creator as the only member and grows one pe
 
 A chat is only proven end to end when a message travels between two running instances. Start two copies of your module—each with its own instance directory—and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (for example `nix run . -- --user-dir ~/.local/share/chat_a`).
 
-1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
+1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`, then about 10 seconds more (see [Step 4](#step-4-initialise-the-chat-client)).
 1. **In instance A**: call `get_address()` and share the returned address out of band (copy it into instance B).
 1. **In instance B**: call `create_conversation(addressFromA)`.
    - Instance B sees a `conversation_created` event (`isOutgoing == true`); instance A should receive one with `isOutgoing == false` once the invite lands.
@@ -394,6 +398,8 @@ The method returns a `LogosResult` with `success == false` and a reason in `getE
 The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. If `deliveryAdopted` is `true`, the node was created by another module and runs on that module's preset, not the one you passed to `init()`. All participants also need `chat_module` 0.3.0 or later: an instance on 0.2.x cannot reach one on 0.3.x. Each instance must also be able to reach the key-package registry at `https://devnet.chat-kc.logos.co` over HTTPS, which `init()` publishes to and `create_conversation` looks up. The registry is an API endpoint: opening its root URL in a browser returns `404 Not Found` even when it is working. For delivery-level detail, check the log file named by `get_log_path()`.
 
 ### Why does `send_message` succeed but peers never receive the message?
+
+If you sent within a few seconds of `online`, the delivery node had not started yet and dropped the message; `chat_module` v0.3.0 still reports success. The same applies to the invite `create_conversation` sends. Wait about 10 seconds after `online` and send again; if the peer never got a `conversation_created` event, open a new conversation.
 
 `chat_module` sends through `delivery_module`, which rate-limits with RLN (Rate-Limiting Nullifier) wherever the network preset enables it. `delivery_module` v0.3.0 and later enable RLN on `logos.test`, so sending there needs an active RLN membership; see [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md). Without one, the node starts and receives, but delivery retries each send and then gives up.
 

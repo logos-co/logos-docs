@@ -237,7 +237,7 @@ spel --idl program-idl.json --program <program-id> -- \
     freeze-authority-accept --caller <nominee-account-id>
 ```
 
-`--new-freeze-authority` takes the account id as 64 hex characters. Routine rotation needs only the holder, and the admin can nominate over the holder's choice. With the slot vacant only the admin can nominate, so this is also how the admin refills a renounced slot. A later nomination replaces an earlier one, nominating the all-zero id cancels, and transfer and renounce clear a pending nominee. Both instructions stay callable while the program is frozen.
+`--new-freeze-authority` takes the account id as 64 hex characters, not the base58 form the wallet prints. The same goes for `--target` above. [Hand over in two steps](admin-authority.md#hand-over-in-two-steps) on the admin page shows how to convert one. Routine rotation needs only the holder, and the admin can nominate over the holder's choice. With the slot vacant only the admin can nominate, so this is also how the admin refills a renounced slot. A later nomination replaces an earlier one, nominating the all-zero id cancels, and transfer and renounce clear a pending nominee. Both instructions stay callable while the program is frozen.
 
 ## Use a program (PDA) as freeze authority
 

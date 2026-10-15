@@ -206,11 +206,8 @@ wallet deploy-program target/riscv-guest/my_program-methods/my_program-guest/ris
 
 `admin_initialize` takes no arguments. The signing caller becomes the admin (self-election). There is no candidate argument at initialise because the LEZ duplicate-account rule rejects a transaction listing the same account twice, so a caller could never also pass itself as candidate evidence.
 
-The admin key must be owned by a program. A key that has never been used is owned by none, and on LEZ v0.2.1 to v0.2.4 such a key can sign once and is then rejected in every later transaction. `admin-authority` therefore refuses it as admin with program error 6112, `admin key is owned by no program`. Claim the key first:
+The admin key must be owned by a program. A key that has never been used is owned by none, and on LEZ v0.2.1 to v0.2.4 such a key can sign once and is then rejected in every later transaction. `admin-authority` therefore refuses it as admin with program error 6112, `admin key is owned by no program`. If your wallet has no public account yet, create one. It prints `Generated new account with account_id Public/<your-account-id>`, and the commands below take the id without the `Public/` prefix. Then claim the key:
 
-```bash
-wallet auth-transfer init --account-id Public/<your-account-id>
-```
 
 Every lifecycle command below reads your program's IDL from a file. Generate it once from the program you just built:
 
@@ -301,7 +298,8 @@ spel --idl program-idl.json --program <program-id> -- \
     admin-accept --caller <nominee-account-id>
 ```
 
-`--new-admin` is a raw 32 byte argument, pass the account id as 64 hex characters. Nothing changes until the nominee accepts, so a wrong id only costs a second nomination. A later nomination replaces an earlier one, nominating the all-zero id cancels, and `admin_transfer` and `admin_renounce` both clear a pending nominee. The nominee key needs a program owner. A PDA nominee accepts through its owning program, which chained-calls `admin_accept` with the seeds of the PDA.
+`--new-admin` is a raw 32 byte argument, pass the account id as 64 hex characters, not the base58 form the wallet prints. Convert a base58 id with:
+
 
 ## Use a program (PDA) as the admin
 

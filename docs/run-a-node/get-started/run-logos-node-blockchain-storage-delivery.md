@@ -370,6 +370,32 @@ Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
    - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
 
+### Claim leader rewards
+
+Once your mined funds have aged into the leadership lottery, which can take up to two [epochs](../../get-started/glossary.md#epoch), your node takes part in consensus automatically. Each block it proposes mints a leader-reward voucher. Vouchers are not credited automatically; claim them to turn them into spendable balance.
+
+Run these commands only while the node is `Online`. The chain-leader service is not available while the node is still `Bootstrapping`.
+
+1. Check which vouchers are claimable:
+
+   ```sh
+   logosctl call blockchain_module wallet_get_claimable_vouchers | jq -r .result.value | jq .
+   ```
+
+   - `vouchers` lists the vouchers your wallet can claim now. It is empty until your node has proposed a block, and again once every voucher has been claimed.
+   - `tip` is the block the vouchers were checked at.
+
+1. Claim a voucher:
+
+   ```sh
+   logosctl call blockchain_module leader_claim
+   ```
+
+   - On success, the call returns `success: true` with the claim transaction hash in `value`.
+   - Each call claims one voucher. To claim several, call `leader_claim` once per listed voucher, pausing a few seconds between calls.
+   - If there is nothing to claim, `result.error` reads `No claimable voucher found`. A voucher becomes claimable only once it is provable against the current tip, so this can happen shortly after your node proposes a block. Retry later.
+   - If the reply has `"status": "error"` and no `result` object, the call never reached the chain-leader service, either because it timed out or because the service is not running yet. Confirm the node is `Online` with `get_cryptarchia_info` rather than retrying the claim.
+
 ### Optional: Join the Blend Network
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).

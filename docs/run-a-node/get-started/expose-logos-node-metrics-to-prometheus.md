@@ -86,7 +86,7 @@ The blockchain node keeps its metrics off unless its configuration turns them on
    ```
 
    - The node keeps its state and resumes from the blocks it already stored.
-   - The `start` call can return `RPC call failed` while the node replays its stored blocks. Wait a few minutes, then check `logosctl call blockchain_module get_cryptarchia_info`.
+   - The `start` call can return `RPC call failed`, or `call to 'blockchain_module.start' timed out after 20000ms`, while the node replays its stored blocks. The node still starts. Wait a few minutes, then check `logosctl call blockchain_module get_cryptarchia_info`.
 
 1. Check that the node reports metrics:
 
@@ -204,15 +204,9 @@ The metrics server listens on all network interfaces, not only on `127.0.0.1`. T
 
 ## Step 6: Scrape the node with Prometheus
 
-1. Add a scrape job for the node to your Prometheus configuration (`prometheus.yml`). Replace `<node-address>` with `127.0.0.1` if Prometheus runs on the node, or with the node's private address otherwise:
+1. Add a scrape job for the node to your Prometheus configuration (`prometheus.yml`). Add it as a new item under the existing `scrape_configs:` key. A second `scrape_configs:` key makes Prometheus reject the file. Replace `<node-address>` with `127.0.0.1` if Prometheus runs on the node, or with the node's private address otherwise:
 
-   ```yaml
-   scrape_configs:
-     - job_name: logos-node
-       scrape_interval: 15s
-       static_configs:
-         - targets: ["<node-address>:9464"]
-   ```
+   
 
 1. Reload or restart Prometheus so it reads the new job.
 

@@ -25,7 +25,7 @@ This page lists the public endpoints for each Testnet version, so you can find t
 | Version | LEZ RPC | LEZ explorer | Blockchain explorer | LEZ release | Blockchain channel |
 |:---|:---|:---|:---|:---|:---|
 | 0.4 (actor model) | TBD | TBD | TBD | TBD | TBD |
-| 0.3 (current) | `https://testnet.lez.logos.co` | `https://explorer.testnet.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [0.3.0](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.0) | [0303030303030303030303030303030303030303030303030303030303030303](https://testnet.blockchain.logos.co/web/explorer/channel/0303030303030303030303030303030303030303030303030303030303030303) |
+| 0.3 (current) | `https://testnet.lez.logos.co` | `https://explorer.testnet.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.3.0`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.0) | [`0303030303030303030303030303030303030303030303030303030303030303`](https://testnet.blockchain.logos.co/web/explorer/channel/0303030303030303030303030303030303030303030303030303030303030303) |
 | 0.2.4 (legacy) | `https://testnet-legacy.lez.logos.co/` | `https://explorer.testnet-legacy.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.2.4-lez-legacy`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.2.4-lez-legacy) | [`0240240240240240240240240240240240240240240240240240240240240240`](https://testnet.blockchain.logos.co/web/explorer/channel/0240240240240240240240240240240240240240240240240240240240240240) |
 
 ## Related information

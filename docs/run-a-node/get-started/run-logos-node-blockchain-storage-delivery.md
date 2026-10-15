@@ -180,8 +180,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.1 \
-   --root-hash cfe0b7893b7fa46736b27203bf6ffb177f18601c09a899f47665a6c17bd9c6d0 \
+   --version 0.3.2 \
+   --root-hash 9ab4acbb734a85b0271f88d6db87f6d6ca3c6d96a3b27bacaa4ab11f67b6f0d7 \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
@@ -206,7 +206,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.1
+   blockchain_module 0.3.2
    delivery_module 0.3.2
    storage_module 3.0.2
    ```
@@ -260,9 +260,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.1` release starts a new blockchain with a new genesis.
+The blockchain module `0.3.1` release started a new blockchain with a new genesis, and `0.3.2` continues on it.
 
-Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
+If your node last ran a release earlier than `0.3.1`, start it with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over. A node upgrading from `0.3.1` keeps its state.
 :::
 
 1. Create the peer bootstrap file:
@@ -369,6 +369,32 @@ Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
    ```
 
    - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
+
+### Claim leader rewards
+
+Once your mined funds have aged into the leadership lottery, which can take up to two [epochs](../../get-started/glossary.md#epoch), your node takes part in consensus automatically. Each block it proposes mints a leader-reward voucher. Vouchers are not credited automatically; claim them to turn them into spendable balance.
+
+Run these commands only while the node is `Online`. The chain-leader service is not available while the node is still `Bootstrapping`.
+
+1. Check which vouchers are claimable:
+
+   ```sh
+   logosctl call blockchain_module wallet_get_claimable_vouchers | jq -r .result.value | jq .
+   ```
+
+   - `vouchers` lists the vouchers your wallet can claim now. It is empty until your node has proposed a block, and again once every voucher has been claimed.
+   - `tip` is the block the vouchers were checked at.
+
+1. Claim a voucher:
+
+   ```sh
+   logosctl call blockchain_module leader_claim
+   ```
+
+   - On success, the call returns `success: true` with the claim transaction hash in `value`.
+   - Each call claims one voucher. To claim several, call `leader_claim` once per listed voucher, pausing a few seconds between calls.
+   - If there is nothing to claim, `result.error` reads `No claimable voucher found`. A voucher becomes claimable only once it is provable against the current tip, so this can happen shortly after your node proposes a block. Retry later.
+   - If the reply has `"status": "error"` and no `result` object, the call never reached the chain-leader service, either because it timed out or because the service is not running yet. Confirm the node is `Online` with `get_cryptarchia_info` rather than retrying the claim.
 
 ### Optional: Join the Blend Network
 

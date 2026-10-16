@@ -193,15 +193,6 @@ const config: Config = {
             from: '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
             to: '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
           },
-          // removed AMM pages
-          {
-            from: '/lez/programs/trade-tokens-on-lez-amm-program',
-            to: '/lez',
-          },
-          {
-            from: '/build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone',
-            to: '/lez',
-          },
         ],
       } satisfies PluginClientRedirects.Options,
     ],

@@ -151,6 +151,7 @@ const sidebars: SidebarsConfig = {
         slug: '/build-an-app',
       },
       items: [
+        'build-an-app/integrate-logos-into-your-application',
         {
           type: 'category',
           label: 'Build modules',

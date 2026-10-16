@@ -54,7 +54,3 @@ As an example, the LEZ could be used to host private DeFi applications. With sup
 - Private Exchanges: Trading platforms where order books or individual trades are obscured.
 - Confidential Lending/Borrowing Protocols: Financial services where loan details or collateral information are private.
 - Confidential Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
-
-:::tip
-Check out the tutorial on how to create your own [Automated Market Maker (AMM) trading pool](../build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone.md) program on the LEZ.
-:::

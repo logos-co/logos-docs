@@ -181,7 +181,6 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Tutorials',
           items: [
-            'build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone',
             'build-an-app/tutorials/build-app-with-logos-zone-sdk',
           ],
         },

@@ -37,7 +37,7 @@ If your program needs a permanent pause with no recovery, use `admin_renounce` a
 
 Same toolchain as the admin-authority page: a stable Rust toolchain, git, the native build packages, and the `spel` CLI. See [Prerequisites](admin-authority.md#prerequisites) and [Install the `spel` CLI](admin-authority.md#install-the-spel-cli) there, plus the `spel init` command in [Annotate the module](admin-authority.md#annotate-the-module) if you do not have a program crate yet, and [Build and deploy the program](admin-authority.md#build-and-deploy-the-program) to get it on chain. Those are all you need from that page. You do not have to work through the admin integration first: the dependency block below already carries `admin-authority`, and its five instructions arrive with your build. Everything below assumes the toolchain and the CLI are in place.
 
-Verified in a clean Ubuntu 24.04 container on rustc 1.99.0: the auto mode example builds and deploys, the manual and embedded examples compile with the IDL shown below, and every command on this page ran against a local LEZ v0.2.4 sequencer, both handovers included. The toolchain floors from the admin-authority page apply here unchanged.
+Verified in a clean Ubuntu 24.04 container on rustc 1.99.0: the auto mode example builds and deploys, the manual and embedded examples compile with the IDL shown below, and every command on this page ran against a local LEZ v0.2.4 sequencer, both handovers included. On the public legacy testnet, the deploy, initialisation, program and account freezes, the two-step handover and renounce also ran as documented. The toolchain floors from the admin-authority page apply here unchanged.
 
 ## Add the dependency
 
@@ -372,7 +372,7 @@ Plus your own instructions. In embedded mode neither `admin_initialize` nor `fre
 
 ## Security notes
 
-- **Initialisation order matters.** `freeze_initialize` requires admin signature and an initialised `admin_config`. Submit both initialisation transactions back to back immediately after deployment, admin first.
+- **Initialisation order matters.** `freeze_initialize` requires admin signature and an initialised `admin_config`. Send `admin_initialize` right after deployment and `freeze_initialize` as soon as it lands. Both come from the admin key, so the second waits until the first has landed, see [Build and deploy the program](admin-authority.md#build-and-deploy-the-program).
 - **Renounce is recoverable (unlike admin).** Vacating the freeze authority slot is reversible by the admin via `freeze_authority_transfer` or a nomination. Plan accordingly if your operational model assumes the role is permanent, only renouncing admin first locks it down.
 - **Exempt is shallow.** A `#[freeze_exempt]` consumer function that uses `chained_call` to invoke a gated function still hits the gated function's check. Frozen-state behaviour of chained calls is determined by the called function's exemption status, not the caller's.
 - **Auto mode covers all dispatched instructions.** Including admin operations? No, admin-authority's five management instructions are exempt by an explicit entry in freeze-authority's metadata. Admin can still transfer or renounce while the program is frozen. This is by design to avoid deadlock from a lost admin key during freeze.

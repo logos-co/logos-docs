@@ -39,7 +39,7 @@ You need a stable Rust toolchain, git, and the native build tools the dependency
 sudo apt-get update && sudo apt-get install -y curl git build-essential pkg-config libssl-dev ca-certificates unzip python3 python3-dev cmake libpcsclite-dev jq
 ```
 
-Two different floors apply here, and neither comes from `admin-authority` itself, which declares only `rust-version = "1.88"`. Building your program needs rustc 1.90 or newer whenever `ruint` resolves freely, the floor its 1.20.0 release sets. A `spel init` scaffold pins `ruint = "=1.17.0"` in its guest manifest, so that particular floor does not apply on the scaffold route. Installing the `spel` CLI needs rustc 1.94.0 or newer: a transitive `logos-blockchain` crate uses `strict_overflow_ops`, which older toolchains reject as an unstable feature. The CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, but `cargo install --git` does not apply a dependency's toolchain file, so your default toolchain has to meet that floor itself. Verified in a clean Ubuntu 24.04 container on rustc 1.99.0: the CLI installs from the tag, the scaffolded program builds and deploys, and every command on this page ran against a local LEZ v0.2.4 sequencer, both handovers included.
+Two different floors apply here, and neither comes from `admin-authority` itself, which declares only `rust-version = "1.88"`. Building your program needs rustc 1.90 or newer whenever `ruint` resolves freely, the floor its 1.20.0 release sets. A `spel init` scaffold pins `ruint = "=1.17.0"` in its guest manifest, so that particular floor does not apply on the scaffold route. Installing the `spel` CLI needs rustc 1.94.0 or newer: a transitive `logos-blockchain` crate uses `strict_overflow_ops`, which older toolchains reject as an unstable feature. The CLI pins `channel = "1.94.0"` in its own `rust-toolchain.toml`, but `cargo install --git` does not apply a dependency's toolchain file, so your default toolchain has to meet that floor itself. Verified in a clean Ubuntu 24.04 container on rustc 1.99.0: the CLI installs from the tag, the scaffolded program builds and deploys, and every command on this page ran against a local LEZ v0.2.4 sequencer, both handovers included. The deploy and the lifecycle commands, both handovers and renounce included, also ran on the public legacy testnet.
 
 ## Add the dependency
 
@@ -195,10 +195,37 @@ cargo build --release -p my_program-methods
 spel program-id target/riscv-guest/my_program-methods/my_program-guest/riscv32im-risc0-zkvm-elf/release/my_program.bin
 ```
 
-The value under `ImageID (hex bytes)` is the program id every command below takes as `--program`. Deploy the same file with the LEZ `wallet` CLI, installed from the LEZ release your `nssa_core` pin names. The wallet reads its configuration, including the sequencer address, from the directory `LEE_WALLET_HOME_DIR` points at.
+The value under `ImageID (hex bytes)` is the program id every command below takes as `--program`. Deploy the same file with the LEZ `wallet` CLI, installed from the LEZ release your `nssa_core` pin names. The wallet and the `spel` CLI both read their configuration, including the sequencer address, from the directory `LEE_WALLET_HOME_DIR` points at.
+
+The public LEZ legacy testnet runs v0.2.4, the release this page builds against. Point a new wallet home at its sequencer, check the connection, and deploy:
 
 ```bash
 cargo install --git https://github.com/logos-blockchain/logos-execution-zone.git --tag v0.2.4 wallet
+export LEE_WALLET_HOME_DIR=~/lez-wallet
+wallet change-network https://testnet-legacy.lez.logos.co
+wallet check-health
+wallet deploy-program target/riscv-guest/my_program-methods/my_program-guest/riscv32im-risc0-zkvm-elf/release/my_program.bin
+```
+
+On a new wallet home, `change-network` first sets up the wallet. It asks for a password and prints a recovery phrase. The [legacy testnet explorer](https://explorer.testnet-legacy.lez.logos.co/) shows the blocks.
+
+Blocks on the legacy testnet are about a minute apart, so a command can report `Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks` and still land a block later. `wallet account get --account-id Public/<account-id>` shows the `nonce` of a key, which goes up by one when a transaction it signed lands. Wait for that before you send the next transaction from the same key. A transaction built while the previous one is still pending reuses its nonce and does not land.
+
+To test against a local sequencer instead, build the standalone sequencer from the same LEZ release and start it in its own terminal. It listens on `127.0.0.1:3040` and keeps its state in the directory you start it from:
+
+```bash
+git clone --branch v0.2.4 https://github.com/logos-blockchain/logos-execution-zone.git ~/lez
+(cd ~/lez && cargo build --release --features standalone -p sequencer_service)
+mkdir -p ~/lez-sequencer && cp ~/lez/lez/sequencer/service/configs/debug/sequencer_config.json ~/lez-sequencer/
+cd ~/lez-sequencer && RUST_LOG=info ~/lez/target/release/sequencer_service ./sequencer_config.json
+```
+
+In another terminal, from the project root, point a wallet home at that sequencer and deploy:
+
+```bash
+mkdir -p ~/lez-wallet-local && cp ~/lez/lez/wallet/configs/debug/wallet_config.json ~/lez-wallet-local/
+export LEE_WALLET_HOME_DIR=~/lez-wallet-local
+wallet check-health
 wallet deploy-program target/riscv-guest/my_program-methods/my_program-guest/riscv32im-risc0-zkvm-elf/release/my_program.bin
 ```
 
@@ -208,6 +235,10 @@ wallet deploy-program target/riscv-guest/my_program-methods/my_program-guest/ris
 
 The admin key must be owned by a program. A key that has never been used is owned by none, and on LEZ v0.2.1 to v0.2.4 such a key can sign once and is then rejected in every later transaction. `admin-authority` therefore refuses it as admin with program error 6112, `admin key is owned by no program`. If your wallet has no public account yet, create one. It prints `Generated new account with account_id Public/<your-account-id>`, and the commands below take the id without the `Public/` prefix. Then claim the key:
 
+```bash
+wallet account new public
+wallet auth-transfer init --account-id Public/<your-account-id>
+```
 
 Every lifecycle command below reads your program's IDL from a file. Generate it once from the program you just built:
 
@@ -223,7 +254,7 @@ spel --idl program-idl.json --program <program-id> -- \
     admin-initialize --caller <your-account-id>
 ```
 
-When the sequencer rejects a transaction, the CLI only reports `Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks`. The reason is in the sequencer log as program error 6000 plus the library's error code, for example `Program error [6103]: ... signer is not the current admin`. The [library README](https://github.com/mmlado/spel-admin-authority#errors) lists the codes.
+When the sequencer rejects a transaction, the CLI only reports `Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks`. The reason is in the sequencer log as program error 6000 plus the library's error code, for example `Program error [6103]: ... signer is not the current admin`. The public testnet does not publish its log, so to see the code, run the failing call against a local sequencer. The [library README](https://github.com/mmlado/spel-admin-authority#errors) lists the codes.
 
 To hand the role to a different keyholder or a PDA, initialise first and then call `admin_transfer`, or nominate a successor, see [Hand over in two steps](#hand-over-in-two-steps).
 
@@ -300,6 +331,11 @@ spel --idl program-idl.json --program <program-id> -- \
 
 `--new-admin` is a raw 32 byte argument, pass the account id as 64 hex characters, not the base58 form the wallet prints. Convert a base58 id with:
 
+```bash
+python3 -c 'import sys,functools;a="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";print(functools.reduce(lambda n,c:n*58+a.index(c),sys.argv[1],0).to_bytes(32,"big").hex())' <account-id>
+```
+
+Nothing changes until the nominee accepts, so a wrong id only costs a second nomination. A later nomination replaces an earlier one, nominating the all-zero id cancels, and `admin_transfer` and `admin_renounce` both clear a pending nominee. The nominee key needs a program owner. A PDA nominee accepts through its owning program, which chained-calls `admin_accept` with the seeds of the PDA.
 
 ## Use a program (PDA) as the admin
 

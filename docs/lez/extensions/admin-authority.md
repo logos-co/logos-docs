@@ -209,7 +209,7 @@ wallet deploy-program target/riscv-guest/my_program-methods/my_program-guest/ris
 
 On a new wallet home, `change-network` first sets up the wallet. It asks for a password and prints a recovery phrase. The [legacy testnet explorer](https://explorer.testnet-legacy.lez.logos.co/) shows the blocks.
 
-Blocks on the legacy testnet are about a minute apart, so a command can report `Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks` and still land a block later. `wallet account get --account-id Public/<account-id>` shows the `nonce` of a key, which goes up by one when a transaction it signed lands. Wait for that before you send the next transaction from the same key. A transaction built while the previous one is still pending reuses its nonce and does not land.
+Blocks on the legacy testnet are about a minute apart, so a command can report `Transaction NOT confirmed: Transaction not found in preconfigured amount of blocks` from `spel`, or `Error: All pollers failed` from `wallet auth-transfer init`, and still land a block later. `wallet account get --account-id Public/<account-id>` shows the `nonce` of a key, which goes up by one when a transaction it signed lands. Wait for that before you send the next transaction from the same key. A transaction built while the previous one is still pending reuses its nonce and does not land.
 
 To test against a local sequencer instead, build the standalone sequencer from the same LEZ release and start it in its own terminal. It listens on `127.0.0.1:3040` and keeps its state in the directory you start it from:
 

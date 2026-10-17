@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3**.
 :::
 
-[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones. A Zone's [channel](../../get-started/glossary.md#channel) holds the bridged funds as **channel notes**: ledger notes registered to the channel, which only the channel's accredited keys can spend.
+[Logos Zones](../concepts/about-zones.md) are customizable, high-performance blockchains for applications built on Logos. [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [notes](../../get-started/glossary.md#note) can be bridged from [Bedrock](../concepts/about-bedrock.md) to Zones. A Zone's [channel](../../get-started/glossary.md#channel) holds the bridged funds as [**channel notes**](../../get-started/glossary.md#channel-note): ledger notes registered to the channel, which only the channel's accredited keys can spend.
 
 This procedure covers creating a channel, depositing notes from the Blockchain into a Zone, and withdrawing notes from a Zone back to the Blockchain, using the [Zone SDK](../../get-started/glossary.md#zone-sdk)'s `ZoneSequencer`. It applies to Zone developers building sequencers and indexers; the Zone itself defines how the channel's funds map to its internal accounts, while the SDK only surfaces the on-chain events.
 

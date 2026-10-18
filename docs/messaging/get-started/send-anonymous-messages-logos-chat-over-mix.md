@@ -73,6 +73,8 @@ If you are running A and B on two separate machines, do the first action on each
 
    **Expected result:** both apps appear on that instance's app grid.
 
+   ![Logos Basecamp Applications page with Delivery Demo and Chat installed](../assets/send-anonymous-messages-logos-chat-over-mix/basecamp-apps-installed.png)
+
 ## Step 3: Create a mix-enabled delivery node
 
 Open Delivery Demo before Chat. If Chat starts first, it creates the delivery node itself with its own defaults and no anonymity, and the anonymity level of a node can't be changed once it is created.
@@ -89,10 +91,15 @@ Open Delivery Demo before Chat. If Chat starts first, it creates the delivery no
    | `anonymityLevel` | `Required` |
 
    - `Required` routes every send over mix and never falls back to a direct send. `Preferred` falls back when no mix path is available, and `None` (the default) doesn't use mix at all.
+
+   ![Delivery Demo node creation panel set to logos.test, Core and Required](../assets/send-anonymous-messages-logos-chat-over-mix/delivery-demo-create-node.png)
+
 1. Click **Call** to create the node.
 1. Wait for the status badge to show `Connected`.
 
    - With `anonymityLevel` set to `Required`, this takes longer than usual: the node needs a pool of at least four mix nodes plus a member that serves [light push](../../get-started/glossary.md#light-push) as the exit.
+
+   ![Delivery Demo showing the CONNECTED badge after the node is created](../assets/send-anonymous-messages-logos-chat-over-mix/delivery-demo-connected.png)
 
 ## Step 4: Open Logos Chat
 
@@ -101,6 +108,8 @@ Open Delivery Demo before Chat. If Chat starts first, it creates the delivery no
 1. Open the **Chat** app.
 
    **Expected result:** the account card reaches **Online** within 5 to 20 seconds.
+
+   ![Logos Chat app with the account card Online](../assets/send-anonymous-messages-logos-chat-over-mix/chat-online.png)
 
 ## Step 5: Send and receive messages
 

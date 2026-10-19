@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Use the wallet and SPEL CLIs to create custom tokens, transfer them, mint or burn supply, and rotate the mint authority.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The Logos Execution Zone ([LEZ](../../get-started/glossary.md#lez)) is a programmable blockchain that cleanly separates public and private state while keeping them fully interoperable. LEZ's [token program](../../get-started/glossary.md#token-program) is a single, shared [program](../../get-started/glossary.md#program) that creates and manages custom tokens—there's no separate contract deployment per token. You drive it with the [SPEL CLI](https://github.com/logos-co/spel) (`spel`), which sends the program's instructions directly, and the `wallet` CLI, which creates and lists the accounts those instructions use.

@@ -6,7 +6,7 @@ topics: blockchain
 steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
-doc_version: 1
+doc_version: 2
 slug: run-a-logos-blockchain-node-from-cli
 sidebar_position: 3
 ---
@@ -16,24 +16,34 @@ sidebar_position: 3
 #### Start a node and verify runtime and consensus signals.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 With this tutorial, you will install the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, connect to the public testnet, and verify that your node is running. The Logos Blockchain is the blockchain component of the Logos technology stack, providing a privacy-preserving and censorship-resistant framework for decentralised applications. This procedure is for node operators setting up a node for the first time.
 
 :::info[Prerequisites]
 
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+    - Check whether your CPU has ADX support by running:
+
+    ```sh
+    # Linux
+    grep -o adx /proc/cpuinfo | head -1
+
+    # macOS
+    sysctl -a | grep -i adx
+    ```
 - A supported OS:
     - Linux x86_64
     - macOS aarch64 (recent versions)
     - Raspberry Pi 5 with [Raspberry Pi OS](https://www.raspberrypi.com/software/)
 - glibc version 2.39 or later (Linux only)
 - FUSE, required by the `logosctl` AppImage (Linux only). On Debian/Ubuntu: `sudo apt install fuse libfuse2t64`. Without it, `logosctl` fails with `No suitable fusermount binary found on the $PATH`.
-- On x86_64, a CPU with ADX instruction support: Intel Broadwell or later, or any AMD Zen. On virtual machines, configure the hypervisor to pass through host CPU features. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
-- 2 Core CPU, 2Ghz. Modern multi-core processor.
-- Minimal RAM (1 Gb).
-- SSD with 100+ GB free with ability to expand storage on demand.
-- Relatively reliable network connection. 1Mbps of free bandwidth.
+- Memory (RAM): Minimal (1 Gb).
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
+- Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 :::
@@ -48,28 +58,31 @@ With this tutorial, you will install the [Logos Blockchain](../../get-started/gl
 
 Download the Logos Blockchain [module](../../get-started/glossary.md#module) from the [catalogue](../../get-started/glossary.md#catalogue), then load it in `logosctl`.
 
-1.  Start `logosctl`:
+1.  Start `logosctl` from the directory where you want the node's files to live, for example your home directory:
 
     ```sh
+    cd ~
     logosctl daemon start
     ```
 
-1.  In a new terminal window with the same user, refresh the official module catalogue:
+    - The blockchain module writes `user_config.yaml`, `keystore.yaml`, the `state/` directory and the node log files to the daemon's working directory, and resolves relative config paths against it.
+
+1.  In a new terminal window with the same user, refresh the official module catalogue. Run this even if the daemon was already running, because it does not see packages published after it last refreshed:
 
     ```sh
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module package version 0.2.4. The root hash ensures you select the published package identity that exactly matches the pinned version:
+1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.2:
 
     ```sh
     logosctl package install blockchain_module \
-    --version 0.2.4 \
+    --version 0.3.2 \
     --yes
     ```
 
     :::note
-    Individual module package versions (for example, Blockchain module version 0.2.4) are pinned independently and do not necessarily match the testnet version number (0.2.1).
+    Individual module package versions are pinned independently and do not necessarily match the testnet version number.
     :::
 
 1.  Load the Logos Blockchain module:
@@ -88,7 +101,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files (written to `$HOME`) by running `generate_user_config` with the bootstrap peer addresses. For example, for release 0.2.4:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.2:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{
@@ -111,9 +124,9 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
 
     | Field | Purpose | Guidance |
     |-------|---------|----------|
-    | `network.initial_peers` | Bootstrap peers | Use the current network document |
-    | `network.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-    | `api.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
+    | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
+    | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
+    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
     | `state.base_folder` | State directory | Use a persistent local path |
     | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
@@ -123,6 +136,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     logosctl call blockchain_module start "$HOME/user_config.yaml" ""
     ```
 
+    - A relative path is resolved against the daemon's working directory. If you started the daemon elsewhere, pass the absolute path to `user_config.yaml`.
     - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
 
     :::info
@@ -206,10 +220,10 @@ Wait for your node to finish syncing and reach `Online` mode before mining. Pipe
 
 ## Step 4: Mine tokens to fund your node
 
-A synced node validates the chain but does not propose blocks until its wallet holds stake. You fund it by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
+A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
 
 :::warning
-Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
 :::
 
 1.  After your node reaches `Online` mode, start mining:
@@ -327,6 +341,18 @@ If the module shows `not_loaded` again after a successful `load-module`, or call
 If the count is greater than `0`, the crash has a different cause. Collect the complete `FATAL` lines from the daemon output, including the backtrace addresses, together with the last lines of the newest node log file in the directory where the daemon runs, and report them to the Logos team.
 
 Loaded modules don't persist across daemon restarts, so always re-run `load-module` after restarting the daemon. A `METHOD_FAILED` error such as `Call to blockchain_module.<method> failed.` means the daemon is reachable but the call itself failed. The most common causes are a module that isn't loaded or a missing required argument, such as calling `generate_user_config` without the JSON `initial_peers` argument.
+
+### My node stays in `Bootstrapping` for hours and its height stops increasing?
+
+Check the node log (the `<number>.latest` file in the directory where you started the daemon). If it repeats `failed to process block; cancelling the download err=BlockProcessing(Cryptarchia(FutureBlock { block_slot: ..., current_slot: ... }))`, the initial block download has stalled. Restart the module; it keeps its state and resumes from the blocks it already stored:
+
+```sh
+logosctl module unload blockchain_module
+logosctl module load blockchain_module
+logosctl call blockchain_module start user_config.yaml ""
+```
+
+The `start` call can return `RPC call failed` while the node replays its stored blocks. Wait a few minutes, then check `get_cryptarchia_info` again: `height` should be increasing towards the network tip.
 
 ### How do I look up a transaction on the testnet explorer?
 

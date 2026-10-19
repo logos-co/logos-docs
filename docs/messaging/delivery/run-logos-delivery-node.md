@@ -97,7 +97,7 @@ Follow the instructions for your chosen path.
    ```
 
    :::note
-   Individual module package versions (for example, delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
+   Individual module [package](../../get-started/glossary.md#package) versions (for example, delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
    :::
 
 1. Write the testnet config:

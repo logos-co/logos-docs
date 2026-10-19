@@ -16,7 +16,7 @@ sidebar_position: 3
 #### Get started locking wallet notes into a Logos Zone, including the LEZ, using the Logos Blockchain UI app.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 This procedure covers how to lock one or more of your wallet [notes](../../get-started/glossary.md#note) (UTXOs) into a Logos [Zone](../../get-started/glossary.md#zone) (such as the [LEZ](../../get-started/glossary.md#lez)) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on Testnet v0.3 who need to fund a [channel](../../get-started/glossary.md#channel) without hand-assembling note IDs, keys, and fees on a CLI.
@@ -56,10 +56,10 @@ The wizard collects the deposit payload across two input steps and a review step
 
 1. On **Step 2 of 4**, enter the deposit parameters:
 
-   - **Channel ID hex**: the target channel. For the public LEZ testnet, select **LEZ testnet** and the app fills in the channel ID. For any other Zone, paste the 64-hex-character channel ID.
+   - **Channel ID hex**: the target channel. For the public LEZ testnet, select **LEZ testnet** and the [app](../../get-started/glossary.md#app) fills in the channel ID. For any other Zone, paste the 64-hex-character channel ID.
    - **Change goes to**: the account that receives any leftover value. It defaults to the account you deposit from.
    - **Accounts funding the gas fee**: the accounts the node draws the transaction fee from. The account you deposit from is added for you. To add another, choose it in the **Account…** dropdown and click **Add**.
-   - **Max tx fee**: the maximum fee you allow, in LGO.
+   - **Max tx fee**: the maximum fee you allow, in TestToken.
    - **Metadata (base58, optional)**: data for the Zone, usually specific to it. For the LEZ, paste the ID of the public account that receives the deposit: in the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md#create-a-new-public-account), click the copy button next to one of your public accounts. For other Zones, leave it empty if the Zone does not need any.
 
      :::warning
@@ -109,7 +109,7 @@ The node is not running. Start it with **Start Node** in the header and wait for
 
 Either the account has no spendable notes, or the node was not running when you chose the account, so its notes were never loaded.
 
-- If the node was not running, start it and wait for **Online**. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
+- If the node was not running, start it and wait for it to reach **Online** mode. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
 - If the node was running, the account has nothing to deposit. Fund it first, or choose another account.
 
 ### The LEZ testnet checkbox is missing

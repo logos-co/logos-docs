@@ -66,7 +66,7 @@ A given threshold of sequencers may also modify the sequencer list or change oth
 
 ### Token bridging
 
-Logos channels also enable token bridging and inter-Zone token transfers for Zones via the use of token balances. A channel’s balance represents the total token value bridged to that Zone, which increases when an equivalent-value note is destroyed on Mantle as part of a deposit operation. Conversely, a new Mantle note is created when a Zone token balance is decreased as a result of a withdrawal operation. Logos channel balances can also be used to effect atomic token transfers between Zones.
+Logos channels also enable token bridging and inter-Zone token transfers for Zones via the use of channel notes. Channel notes are notes that can only be spent by a channel's accredited keys, created when note value is bridged to the channel's Zone as part of a deposit operation. Conversely, channel notes are destroyed during a withdrawal operation, with new Mantle notes of equivalent value credited to recipients. Logos channel note transfers can also be used to effect atomic token transfers between Zones. While channel notes cannot be locked for [SDP participation](./about-the-blend-network.md#service-declaration-protocol), they remain eligible for the consensus lottery.
 
 ### Cross-Zone messaging
 

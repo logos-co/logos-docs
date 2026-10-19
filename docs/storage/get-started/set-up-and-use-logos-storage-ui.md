@@ -116,7 +116,7 @@ git config --global http.maxRequestBuffer 100M
 
 ## Step 2: Configure your node through onboarding
 
-On first launch, the app opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
+On first launch, the [app](../../get-started/glossary.md#app) opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
 
 The Guided option will use the default configuration and start the node automatically.
 The Advanced option allows you to edit the configuration before starting the node.
@@ -257,7 +257,7 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
 1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
 
-   - `.lgx` files have no trash icon: they are module packages downloaded from the Logos Package Manager in Basecamp.
+   - `.lgx` files have no trash icon: they are module [packages](../../get-started/glossary.md#package) downloaded from the Logos Package Manager in Basecamp.
 
 ## Troubleshooting Logos Storage
 

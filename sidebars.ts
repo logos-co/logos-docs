@@ -100,6 +100,7 @@ const sidebars: SidebarsConfig = {
   ],
   runANodeSidebar: [
     'run-a-node/get-started/run-logos-node-blockchain-storage-delivery',
+    'run-a-node/get-started/expose-logos-node-metrics-to-prometheus',
     {
       type: 'category',
       label: 'Blockchain node',
@@ -190,7 +191,6 @@ const sidebars: SidebarsConfig = {
           type: 'category',
           label: 'Tutorials',
           items: [
-            'build-an-app/tutorials/create-and-use-an-amm-liquidity-pool-on-the-logos-execution-zone',
             'build-an-app/tutorials/build-app-with-logos-zone-sdk',
           ],
         },

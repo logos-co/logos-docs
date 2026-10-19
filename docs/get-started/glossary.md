@@ -56,7 +56,11 @@ A repository that lists the [packages](#package) available to install in Basecam
 
 ### Channel
 
-A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](../blockchain/concepts/about-mantle.md).
+A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](../blockchain/concepts/about-mantle.md#logos-channels).
+
+### Channel note
+
+A note locked by a channel, representing the value bridged into that channel's Zone. See [About Mantle](../blockchain/concepts/about-mantle.md#token-bridging)
 
 ### CID
 

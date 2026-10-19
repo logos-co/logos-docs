@@ -16,11 +16,7 @@ sidebar_position: 3
 :::warning
 This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
 
-This page tracks unreleased code. The dependency snippets pin the framework at an upstream commit, the one that merged the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)). The pin becomes a release tag once upstream cuts a release that contains it.
-:::
-
-:::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+The dependency snippets pin the framework at the upstream `v0.7.0` tag, the first release that carries the extension mechanism ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)).
 :::
 
 SPEL extension libraries ship reusable on-chain primitives, access control, freeze switches, multisig, etc., that consuming [programs](../../get-started/glossary.md#program) adopt with a single attribute. This guide is for library authors. App developers consuming an existing extension should follow that extension's own integration guide instead.
@@ -68,7 +64,7 @@ extension_attr = "my_extension"
 
 [dependencies]
 borsh = { version = "1", features = ["derive"] }
-spel-framework = { git = "https://github.com/logos-co/spel", rev = "8183b011b1a00dbc73ca9209f6b902c622d899af" }
+spel-framework = { git = "https://github.com/logos-co/spel", tag = "v0.7.0" }
 my-extension-macros = { path = "../my-extension-macros" }
 ```
 
@@ -211,7 +207,7 @@ Never read or strip `#[account(...)]` attributes in a gate macro. That attribute
 
 ```toml
 [dev-dependencies]
-spel-framework-core = { git = "https://github.com/logos-co/spel", rev = "8183b011b1a00dbc73ca9209f6b902c622d899af", features = ["idl-gen"] }
+spel-framework-core = { git = "https://github.com/logos-co/spel", tag = "v0.7.0", features = ["idl-gen"] }
 ```
 
 To spare consumers declaring your gate's account parameters on every gated instruction, declare them in your `Cargo.toml`:
@@ -305,10 +301,10 @@ A body-inject gate that references parameters by name only, the way `#[require_a
 
 Some extensions naturally build on others. `freeze-authority` depends on `admin-authority`, its freeze-authority slot is governed by admin signatures. When your extension does this:
 
-1. **Declare a normal Cargo dependency** on the other extension in your `Cargo.toml`, path or git. `freeze-authority` uses a git dependency on `admin-authority` pinned to its `v0.1.3` tag. Consumers get both extensions in their dependency graph automatically.
+1. **Declare a normal Cargo dependency** on the other extension in your `Cargo.toml`, path or git. `freeze-authority` uses a git dependency on `admin-authority` pinned to its `v0.2.0` tag. Consumers get both extensions in their dependency graph automatically.
 1. **Add both markers to the consumer's mod.** Consumers write `#[admin_authority] #[my_extension]` on their `#[lez_program]` mod. Each marker triggers its own discovery.
 1. **Import the gate attributes you compose with.** For example, `use admin_authority::require_admin;` in your library source, then `#[require_admin]` on instructions that should require an admin signature (like an initialisation that creates your config PDA).
-1. **List the other extension's exempt-while-wrapped instructions** in your `wrap_instructions.exempt` if applicable. freeze-authority lists admin-authority's three management instructions so they stay callable while the program is frozen.
+1. **List the other extension's exempt-while-wrapped instructions** in your `wrap_instructions.exempt` if applicable. freeze-authority lists admin-authority's five management instructions so they stay callable while the program is frozen.
 
 The framework deduplicates path-dependency directories, so admin-authority is scanned once even if both your extension and the consumer name it as a path dependency.
 
@@ -319,14 +315,14 @@ A consumer adds your extension to their `Cargo.toml`:
 ```toml
 [dependencies]
 my-extension = { git = "https://github.com/you/my-extension" }
-spel-framework = { git = "https://github.com/logos-co/spel", rev = "8183b011b1a00dbc73ca9209f6b902c622d899af" }
+spel-framework = { git = "https://github.com/logos-co/spel", tag = "v0.7.0" }
 nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.2.4", package = "lee_core" }
 serde = { version = "1", features = ["derive"] }
 ```
 
 `nssa_core` and `serde` are named directly by `#[lez_program]`'s expansion, so the consumer must declare both even though their own source never mentions either.
 
-The `spel-framework` pin must be a revision that carries the extension scanner, and it must be the exact revision your library pins, spelt the same way. Upstream `logos-co/spel` carries the scanner since [logos-co/spel#257](https://github.com/logos-co/spel/pull/257), the revision above is that merge commit, and a branch reference fails to unify with a rev pin even at the same commit, cargo keys git sources by reference kind. The revision becomes a tag once upstream cuts a release that contains it.
+The `spel-framework` pin must carry the extension scanner, which upstream `logos-co/spel` does from `v0.7.0` ([logos-co/spel#257](https://github.com/logos-co/spel/pull/257)), and it must be the same reference your library pins, spelt the same way. Cargo keys git sources by their reference, so a branch, or a `rev` pointing at the same commit, does not unify with a tag pin.
 
 Path, git, and registry dependencies are all discoverable. Discovery is restricted to the consumer's direct dependencies, a transitive crate can never contribute instructions by claiming a matching `extension_attr`, and the generated call paths use your `[package].name`, never a directory name.
 

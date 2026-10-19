@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Get started sharing and downloading files on the Logos Storage network
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS, or on Windows through Basecamp.
@@ -116,7 +116,7 @@ git config --global http.maxRequestBuffer 100M
 
 ## Step 2: Configure your node through onboarding
 
-On first launch, the app opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
+On first launch, the [app](../../get-started/glossary.md#app) opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
 
 The Guided option will use the default configuration and start the node automatically.
 The Advanced option allows you to edit the configuration before starting the node.
@@ -257,7 +257,7 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 
 1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
 
-   - `.lgx` files have no trash icon: they are module packages downloaded from the Logos Package Manager in Basecamp.
+   - `.lgx` files have no trash icon: they are module [packages](../../get-started/glossary.md#package) downloaded from the Logos Package Manager in Basecamp.
 
 ## Troubleshooting Logos Storage
 

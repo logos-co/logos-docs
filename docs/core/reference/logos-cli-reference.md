@@ -17,7 +17,7 @@ slug: logos-cli-reference
 This document is accurate for **Testnet v0.3**.
 :::
 
-This reference describes [`logosctl` 0.3.1](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1). The complete manual, including every configuration key, is [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.1/docs/logosctl.md) in `logos-logoscore-cli`.
+This reference describes [`logosctl` 0.3.2](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2). The complete manual, including every configuration key, is [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md) in `logos-logoscore-cli`.
 
 ## Install
 
@@ -26,7 +26,7 @@ This reference describes [`logosctl` 0.3.1](https://github.com/logos-co/logos-lo
 | Linux x86_64 or aarch64, macOS arm64 | `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh \| sudo sh` |
 | Windows x86_64 (PowerShell) | `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 \| iex` |
 
-Both scripts install the release assets published on the [release page](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1). There is no build for macOS on Intel. To build `logosctl` from source, run `nix build github:logos-co/logos-logoscore-cli#ctl`.
+Both scripts install the release assets published on the [release page](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2). There is no build for macOS on Intel. To build `logosctl` from source, run `nix build github:logos-co/logos-logoscore-cli#ctl`.
 
 ## Sessions
 
@@ -178,7 +178,7 @@ The daemon configuration is a YAML document that you install with `logosctl daem
 | `access_policy` | Which caller modules may call which modules, as a JSON document in a string |
 | `logging` | Log file name, rotation size and number of files kept |
 
-See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.1/docs/logosctl.md) for every key.
+See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md) for every key.
 
 ## Exit codes
 
@@ -203,5 +203,5 @@ See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.
 ## Further reading
 
 - [Start a Logos module from the CLI](../build-modules/start-a-logos-module-from-the-cli.md): build a module, install it with `logosctl` and call it.
-- [`logosctl` manual](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.1/docs/logosctl.md): every command, configuration key and example.
+- [`logosctl` manual](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md): every command, configuration key and example.
 - [LGX package format and bundling reference](./lgx-package-format-and-bundling-reference.md)

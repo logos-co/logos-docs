@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'  # the PS 5.1 progress bar slows downloads to a crawl
 
 # Pinned tool release.
-$tag = if ($env:LOGOSCTL_TAG) { $env:LOGOSCTL_TAG } else { '0.3.1' }
+$tag = if ($env:LOGOSCTL_TAG) { $env:LOGOSCTL_TAG } else { '0.3.2' }
 
 if ($env:PROCESSOR_ARCHITECTURE -ne 'AMD64') {
   throw "unsupported architecture: $env:PROCESSOR_ARCHITECTURE (need Windows x86_64)"

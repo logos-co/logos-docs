@@ -30,7 +30,7 @@ For a production example, see [logos-libp2p-module](https://github.com/logos-co/
    - macOS arm64 (Apple Silicon)
 - Git
 - A C compiler (`gcc` or `clang`) to build the C library.
-- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.1) installed.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
@@ -477,7 +477,7 @@ logos-calc-module/
    - The first build takes 5 to 15 minutes while Nix downloads Qt, the Logos SDK and their dependencies. Later builds use the Nix cache.
    - Keep the quotes around `'.#lib'`. Some shells, notably zsh, interpret `#` otherwise.
 
-1. Build the full package:
+1. Build the full [package](../../get-started/glossary.md#package):
 
    ```bash
    nix build

@@ -42,7 +42,7 @@ While a Zone can be implemented with just one sequencer updating the Zone state,
 
 ### Token bridging
 
-Users can also take advantage of built-in token bridging to transfer value between Bedrock and Zones. A Zone’s associated [channel](../../get-started/glossary.md#channel) maintains a token balance, which keeps track of the total token value stored in the Zone. This balance is updated as value is deposited to or withdrawn from a Zone, with notes of equivalent value destroyed or created on Bedrock as a result of these operations.
+Users can also take advantage of built-in token bridging to transfer value between Bedrock and Zones. A Zone’s associated [channel](../../get-started/glossary.md#channel) maintains locked channel tokens, which together represent the total token value stored in the Zone. [Channel notes](../../get-started/glossary.md#channel-note) are updated as value is deposited to or withdrawn from a Zone, with notes of equivalent value destroyed or created on Bedrock as a result of these operations.
 
 Note that it is the Zone’s responsibility to ensure that token transfers are executed correctly within its own state. Bedrock only ensures that the total token value withdrawn from a Zone does not exceed the value deposited.
 

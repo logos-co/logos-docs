@@ -22,7 +22,7 @@ This document is accurate for **Testnet v0.3**.
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 :::note
-Individual module package versions are pinned independently and do not necessarily match the testnet version number.
+Individual module [package](../../get-started/glossary.md#package) versions are pinned independently and do not necessarily match the testnet version number.
 :::
 
 The default paths used throughout this procedure are:
@@ -40,9 +40,20 @@ The default paths used throughout this procedure are:
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
-- CPU: 2 Cores, 2Ghz. Modern multi-core processor. Must have ADX instruction support (on x86_64), such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+- CPU: 2 Cores, 2Ghz. Modern multi-core processor. **Must have ADX instruction support (on x86_64)**, such as Intel Broadwell or later, or any AMD Zen. Generic CPU models such as `kvm64` and `qemu64` hide ADX and cause the blockchain module to crash with `signal 4`.
+   - Check whether your CPU has ADX support by running:
+
+   ```sh
+   # Linux
+   grep -o adx /proc/cpuinfo | head -1
+
+   # macOS
+   sysctl -a | grep -i adx
+   ```
 - Memory (RAM): Minimal (1 Gb).
-- Storage: SSD with 100+ GB free with ability to expand storage on demand.
+- Storage:
+   - For joining the testnet or a short-lived node: SSD with 1-2 GB free.
+   - Expected for a long-lived mainnet node: SSD with 100+ GB free with ability to expand storage on demand.
 - Network: Relatively reliable network connection. 1Mbps of free bandwidth.
 
 To run a Blend node, make sure you have:
@@ -67,19 +78,19 @@ Install the system dependencies and download the `logosctl` CLI.
    apt-get install -y curl jq tar fuse3
    ```
 
-1. Download the release archive for `logosctl` version 0.3.1. For x86_64 Linux, download:
+1. Download the release archive for `logosctl` version 0.3.2. For x86_64 Linux, download:
 
    ```sh
    curl -fL \
    -o logosctl-x86_64-linux.tar.gz \
-   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.1/logosctl-x86_64-linux.tar.gz
+   https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.2/logosctl-x86_64-linux.tar.gz
    ```
 
    Verify the archive against the SHA-256 digest for the pinned GitHub release asset, then extract it:
 
    ```sh
    sha256sum --check <<'EOF'
-   27eaecc233e79e84337b7a95e919f5c5f901aff20880ed6f9680baba54180751  logosctl-x86_64-linux.tar.gz
+   294fbcc6409a8851b7471582bdad2dbfaf681b5d1c67dfffec38ada925dc6762  logosctl-x86_64-linux.tar.gz
    EOF
    
    tar -xzf logosctl-x86_64-linux.tar.gz
@@ -89,7 +100,7 @@ Install the system dependencies and download the `logosctl` CLI.
 
    ```sh
    sha256sum --check <<'EOF'
-   01f87931943dba0b2df2153ad8da7ce7dd5b4a8d5207d1931432613abbc34929  logosctl-x86_64.AppImage
+   dc2a7e67c7326dada2b9302fb15f9df2cacbe6de3b9db50502ad7831608ffd56  logosctl-x86_64.AppImage
    EOF
    ```
 
@@ -159,7 +170,7 @@ Download and install the three module packages from the configured module [catal
 
    - The detached command returns after the Logos node is ready to accept commands.
 
-1. Refresh the official module catalogue:
+1. Refresh the official module catalogue. Run this even if the daemon was already running, because it does not see packages published after it last refreshed:
 
    ```sh
    logosctl catalog refresh
@@ -169,16 +180,16 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.0 \
-   --root-hash 90c0117480d693724f3134231faaa713fff7ab582fb05cdd65af1706c23261c4 \
+   --version 0.3.2 \
+   --root-hash 9ab4acbb734a85b0271f88d6db87f6d6ca3c6d96a3b27bacaa4ab11f67b6f0d7 \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
    --root-hash 810c39c610c0f37cc6e48e5fb115df69f72de4df7c052cdb1e17f53b7897cc97 \
    --yes
    logosctl package install delivery_module \
-   --version 0.3.0 \
-   --root-hash 31583b977f7370c8fc7ed70351daef1069f718c0a005e74306921da2b8aee76f \
+   --version 0.3.2 \
+   --root-hash 824ccb2cd21b54f196dd3d32659df7f67e6df4298b1ab8cab60b48f704e2feac \
    --yes
    ```
 
@@ -195,8 +206,8 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.0
-   delivery_module 0.3.0
+   blockchain_module 0.3.2
+   delivery_module 0.3.2
    storage_module 3.0.2
    ```
 
@@ -249,9 +260,9 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.0` release starts a new blockchain with a new genesis.
+The blockchain module `0.3.1` release started a new blockchain with a new genesis, and `0.3.2` continues on it.
 
-Blockchain nodes must start with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over.
+If your node last ran a release earlier than `0.3.1`, start it with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over. A node upgrading from `0.3.1` keeps its state.
 :::
 
 1. Create the peer bootstrap file:
@@ -293,6 +304,7 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
    | `state.base_folder` | State directory | Use a persistent local path |
    | logger filters | Log verbosity | Use `INFO` for unattended operation |
+   | `tracing.metrics.enable_open_metrics` | Node metrics | Generated as `false`. Set to `true` to [expose the node's metrics](./expose-logos-node-metrics-to-prometheus.md) |
 
 1. Start the blockchain module:
 
@@ -311,7 +323,7 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
 
    :::warning
-   Do not call `pow_status` before the node is `Online`. In blockchain module `0.3.0` the call never returns, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
+   Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
    :::
 
 1. To participate in consensus, your node needs funds. Fund it by mining, as described in the next section.
@@ -321,24 +333,26 @@ Blockchain nodes must start with an empty blockchain state directory. Balances a
 The generated `user_config.yaml` includes a `pow` section that deals with automatically claiming mining rewards to the node's `PoWClaim` key. Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
 Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
-1. Leave the `pow` section as generated. If desired, you can optionally limit the number of mining threads by editing `pow.mining.max_threads`, which uses one thread per CPU core by default (with the `null` value). Edit `pow.mining.max_threads` in `/var/lib/logos-node/user_config.yaml`:
+1. Leave the `pow` section as generated. The generated defaults look like this:
 
    ```yaml
    pow:
      mining:
-       max_threads: 2
-       max_tickets_per_block: 4
+       max_threads: 1
+       max_tickets_per_block: 1
      auto_claim:
        targets:
        - public_key: <your PoWClaim key>
-         threshold: 18446744073709551615
+         threshold: 2000000000
        tick:
          unit: seconds
          value: 10
    ```
 
-   - Leave the rest of the `pow` section as generated. `auto_claim.targets` is already filled with your node's `PoWClaim` key.
-   - Restart the blockchain module for the change to take effect.
+   - `auto_claim.targets` is already filled with your node's `PoWClaim` key.
+   - `max_threads` sets how many CPU threads mine. To mine faster, raise it, or set it to `null` to use one thread per CPU core.
+   - `threshold` is the balance, in tokens, that auto-claim pays the target up to. Once a target reaches its threshold, auto-claim stops paying it, and once every target has, auto-claim and mining both stop.
+   - If you edit the `pow` section, restart the blockchain module for the change to take effect.
 
 1. After your node reaches `Online` mode, start mining:
 
@@ -357,11 +371,37 @@ Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
 
    - `is_mining` is `true`, and the `balance` of the auto-claim target grows as auto-claim collects rewards.
 
+### Claim leader rewards
+
+Once your mined funds have aged into the leadership lottery, which can take up to two [epochs](../../get-started/glossary.md#epoch), your node takes part in consensus automatically. Each block it proposes mints a leader-reward voucher. Vouchers are not credited automatically; claim them to turn them into spendable balance.
+
+Run these commands only while the node is `Online`. The chain-leader service is not available while the node is still `Bootstrapping`.
+
+1. Check which vouchers are claimable:
+
+   ```sh
+   logosctl call blockchain_module wallet_get_claimable_vouchers | jq -r .result.value | jq .
+   ```
+
+   - `vouchers` lists the vouchers your wallet can claim now. It is empty until your node has proposed a block, and again once every voucher has been claimed.
+   - `tip` is the block the vouchers were checked at.
+
+1. Claim a voucher:
+
+   ```sh
+   logosctl call blockchain_module leader_claim
+   ```
+
+   - On success, the call returns `success: true` with the claim transaction hash in `value`.
+   - Each call claims one voucher. To claim several, call `leader_claim` once per listed voucher, pausing a few seconds between calls.
+   - If there is nothing to claim, `result.error` reads `No claimable voucher found`. A voucher becomes claimable only once it is provable against the current tip, so this can happen shortly after your node proposes a block. Retry later.
+   - If the reply has `"status": "error"` and no `result` object, the call never reached the chain-leader service, either because it timed out or because the service is not running yet. Confirm the node is `Online` with `get_cryptarchia_info` rather than retrying the claim.
+
 ### Optional: Join the Blend Network
 
 With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) node, it is possible - but not necessary - to participate in the [Blend Network](../../get-started/glossary.md#blend-network).
 
-1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining, then claim the rewards into each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
+1. Fund both the `BlendZk` and `SdpFunding` keys from your `keystore.yaml` by mining into your `PoWClaim` key, then transferring funds from it to each key, as described in [Join the Blend Network as a core node](../../blockchain/blend/join-the-blend-network-as-a-core-node.md).
 
    :::info
    The public keys and [note](../../get-started/glossary.md#note) IDs below are examples. Use the corresponding values from your own `keystore.yaml` and wallet responses when running these commands.
@@ -427,7 +467,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 
 ## Step 6: Configure and start the storage module
 
-In `logosctl` 0.3.1, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
+In `logosctl` 0.3.2, the package downloader starts Storage automatically using its saved configuration, or defaults on first use.
 
 1. Check that the [Storage module](../../get-started/glossary.md#storage-module) is running:
 
@@ -576,6 +616,8 @@ Run health checks against the Logos node and all three loaded modules to confirm
    ```sh
    logosctl call delivery_module getNodeInfo MyBoundPorts
    ```
+
+1. (Optional) To monitor the node continuously, [expose its metrics to Prometheus](./expose-logos-node-metrics-to-prometheus.md).
 
 ### Optional: Run the node unattended with systemd
 

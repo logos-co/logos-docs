@@ -14,7 +14,7 @@ slug: faq
 #### Fix the most common problems of a storage node.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 ## `logosctl` fails with a FUSE error

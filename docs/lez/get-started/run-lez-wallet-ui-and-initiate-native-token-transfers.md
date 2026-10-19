@@ -16,12 +16,12 @@ sidebar_position: 1
 #### Use the wallet UI to set up accounts and try every type of native token transfer on the LEZ testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.0**.
 :::
 
 The wallet UI is a simple entrypoint for getting started on the [LEZ](../../get-started/glossary.md#lez). This procedure walks you through running the wallet UI, syncing it with the public LEZ testnet, creating [accounts](../../get-started/glossary.md#account), executing all combinations of public, private, shielded, and deshielded native token transfers, and withdrawing tokens to the L1 through the bridge. The LEZ testnet runs the centralised LEZ sequencer, which processes the transactions the wallet UI submits, while the wallet UI itself manages your accounts locally and can execute transfers with any combination of private and public accounts.
 
-This page describes the **LEZ Wallet** app version 1.2.0 (`lez_wallet_ui`), which requires the `lez_core` module version 0.5.0 or later.
+This page describes the **LEZ Wallet** [app](../../get-started/glossary.md#app) version 1.2.0 (`lez_wallet_ui`), which requires the `lez_core` module version 0.5.0 or later.
 
 :::note
 Recovering a wallet from its recovery phrase is not yet supported.
@@ -29,7 +29,8 @@ Recovering a wallet from its recovery phrase is not yet supported.
 
 :::info[Prerequisites]
 
-- To run the wallet in Logos Basecamp: [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md) on macOS (Apple silicon) or Linux (x86-64 or ARM64). The catalogue publishes the wallet for these platforms only.
+- To run the wallet in Logos Basecamp:
+    - [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md) on macOS (Apple silicon) or Linux (x86-64 or ARM64). The catalogue publishes the wallet for these platforms only.
 - To build the wallet from source: **Nix** with flakes enabled, on macOS (Apple silicon) or Linux (x86-64 or ARM64).
     - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -56,7 +57,7 @@ Install the official release from the Basecamp catalogue, or build the same rele
 1. In the **Add Application** dialogue, click **Install**. **Install** also installs the `lez_core` [module](../../get-started/glossary.md#module) listed under **Required Packages**.
 1. Wait until the button changes to **Launch**, then click it. A **LEZ Wallet** icon appears in the sidebar, so you can reopen the wallet from there later.
 
-To install packages one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
+To install [packages](../../get-started/glossary.md#package) one by one instead, see [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
 
 ### Build from source
 
@@ -123,13 +124,13 @@ A new wallet starts with one public account and one private account, both empty.
 
 1.  In the **Accounts** panel, click **+ Create** next to **Public Accounts**. If your account list is empty, click **+ Public account** instead.
 
-    The new [public account](../../get-started/glossary.md#public-account) appears in the account list with its account ID and balance in LGO. The edit (pencil) and copy buttons sit on the right of each account.
+    The new [public account](../../get-started/glossary.md#public-account) appears in the account list with its account ID and balance in TestToken. The edit (pencil) and copy buttons sit on the right of each account.
 
     ![A public account with its edit and copy buttons highlighted](../assets/run-lez-wallet-ui-and-initiate-native-token-transfers/account-actions.png)
 
 1.  Optional: to name the account, click the edit (pencil) button next to it, enter a name in the **Add name** dialogue, and click **Save**. Each name must be unique in the wallet, and the edit button shows only on accounts that don't have a name yet.
 
-1.  Fund the account. Next to the account, click the copy button to copy its account ID, then have another testnet user send LGO to it, or [bridge tokens from the L1](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md).
+1.  Fund the account. Next to the account, click the copy button to copy its account ID, then have another testnet user send TestToken to it, or [bridge tokens from the L1](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md).
 
 ## Send a public transfer
 
@@ -138,7 +139,7 @@ This task moves tokens from a funded public account to another public account.
 1. In the transfer panel, select **Send**, then select the **Public** tab.
 1. In the **From** field, choose a public account with a positive balance.
 1. In the **To** field, either paste the recipient's account ID, or tick **Use owned account** and choose one of your own public accounts.
-1. In **Amount (LGO)**, enter the amount to send.
+1. In **Amount (TestToken)**, enter the amount to send.
 1.  Click **Send**.
 
     A result line displays below the **Send** button and reads `Success. Tx:` followed by the transaction hash. Use its copy button to copy the hash for the next task.
@@ -171,7 +172,7 @@ The **Bridge** section withdraws native tokens from one of your public accounts 
 1. In the transfer panel, select **Bridge**.
 1. In the **From** field, choose a public account with a positive balance.
 1. In **Bedrock (L1) public key**, paste the recipient's Bedrock public key as hex.
-1. In **Amount (LGO)**, enter the amount to withdraw.
+1. In **Amount (TestToken)**, enter the amount to withdraw.
 1.  Click **Withdraw**.
 
     A result line displays below the **Withdraw** button. On success, it reads `Success. Tx:` followed by the transaction hash.

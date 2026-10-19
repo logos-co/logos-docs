@@ -6,7 +6,7 @@ topics: zone-sdk
 steps_layout: sectioned
 authors: pradovic, hansieodendaal, kashepavadan
 owner: logos
-doc_version: 2
+doc_version: 3
 slug: operate-decentralised-zone-with-round-robin-sequencer-rotation
 sidebar_position: 3
 ---
@@ -16,10 +16,10 @@ sidebar_position: 3
 #### Get started with multi-sequencer channels using the Zone SDK and round-robin slot windows.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-This tutorial covers how to configure and operate a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [channel](../../get-started/glossary.md#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](../../get-started/glossary.md#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) who need to move from a single-sequencer setup to a decentralised one.
+This tutorial covers how to configure and operate a [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) [channel](../../get-started/glossary.md#channel) with a committee of accredited sequencers that take turns publishing inscriptions to a Logos [Zone](../../get-started/glossary.md#zone). It is intended for zone developers using the [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/0.3.2/zone-sdk) who need to move from a single-sequencer setup to a decentralised one.
 
 The Zone SDK currently supports **round-robin** rotation only. Each sequencer publishes inscriptions for `posting_timeframe` slots before the rotation advances to the next sequencer in the `accredited_keys` list. Other scheduling schemes (such as First-Write-Wins) are not yet available.
 
@@ -81,7 +81,7 @@ The Zone SDK queues inscriptions locally when it is not your sequencer's turn an
 
    ```rust
    // From the drive task, once `Event::Ready` has fired.
-   let (result, checkpoint) = sequencer.handle().publish(zone_block)?;
+   let (result, checkpoint) = sequencer.handle().publish(zone_block).await?;
    // `result.tx` is a `PendingTx::Inscription(...)`.
    // `checkpoint` is up to date with the new pending entry.
    // The post may not have hit the node yet if it is not our turn.
@@ -130,113 +130,109 @@ The Zone SDK queues inscriptions locally when it is not your sequencer's turn an
 
      The view also carries `pending_publish_txs` and `queued_messages` so the UI can show how many inscriptions are waiting for the next turn.
 
-1. Handle competing writes by listening for `Event::BlocksProcessed` events and checking `channel_update.orphaned` for orphaned transactions. Republish these transactions with the latest parent.
+1. Handle competing writes by listening for `Event::BlocksProcessed` events and checking `channel_update.orphaned()` for orphaned transactions. Republish these transactions with the latest parent.
 
-:::info
-Two sequencers can race on the same parent slot during rotation transitions or after a resync. The on-chain rule is: the first valid [inscription](../../get-started/glossary.md#inscription) wins; the loser's transaction is surfaced in `channel_update.orphaned`.
-::: 
+   :::info
+   Two sequencers can race on the same parent slot during rotation transitions or after a resync. The on-chain rule is: the first valid [inscription](../../get-started/glossary.md#inscription) wins; the loser's transaction is surfaced in `channel_update.orphaned()`.
+   :::
 
    ```rust
    use lb_zone_sdk::sequencer::{ChannelUpdateTx, Event};
 
    if let Event::BlocksProcessed { channel_update, .. } = event {
-       for entry in channel_update.orphaned {
+       for entry in channel_update.orphaned() {
            if let ChannelUpdateTx::Inscription(info) = entry {
-               let (result, checkpoint) = sequencer.handle().publish(info.payload)?;
+               let (result, checkpoint) = sequencer.handle().publish(info.payload.clone()).await?;
                // Persist `result` + `checkpoint` exactly as on the original publish.
            }
        }
    }
    ```
 
-   - See `OrphanRepublishPolicy` in `tests/src/cucumber/steps/manual_zone/support.rs` for the reference policy used in integration tests.
+   - `channel_update` is a `ChannelUpdate` object. It is a `ChannelUpdate::Extension { adopted }` when nothing you hold became invalid, and a `ChannelUpdate::Conflict { common_prefix, adopted, orphaned }` when entries left the channel view. `orphaned()` is empty on an extension.
+   - To keep your own state in step with a conflict, either revert every orphaned entry and apply every adopted one, or reset to finalised state and replay `channel_update.canonical_chain()`, the whole non-finalised view at the new tip. Your own publishes are applied at publish time and appear in `adopted` only after they were first reported orphaned.
+   - `tests/src/cucumber/steps/zone/operations/policies.rs` in the `logos-blockchain` repository contains reference policies for this republish loop: `OrphanRepublishPolicy` (simple republish), `RepublishLineagePolicy` (for repeating payloads, so each intent lands once), `SortedConflictPolicy` (republish only when it preserves the channel's sorted order), and `BalanceAwarePolicy` (republish only when the account balance still allows it).
    - If the orphan was caused by an application-level conflict rather than a race, you can choose to drop the payload or deduplicate it against a higher-level transaction stream, or apply any other custom rule instead of republishing.
 
    :::note
-   Channel transactions built outside the publish API are classified by shape, not by how they were submitted: a tx that looks like publish output (a single inscription, optionally with withdraws and one funding transfer) surfaces as `ChannelUpdateTx::Inscription` / `ChannelUpdateTx::AtomicWithdraw`; anything else surfaces as `ChannelUpdateTx::Custom(SignedMantleTx)`.
-   
-   The SDK hands back the whole transaction and it is up to the consumer to parse it (the `channel_inscriptions` helper extracts its inscriptions) and decide how to recover it. The main API is `publish` and `publish_atomic_withdraw`.
+   Channel transactions built outside the publish API are classified by shape, not by how they were submitted. One inscription plus at most one funding transfer surfaces as `ChannelUpdateTx::Inscription`; with withdrawals added, as `ChannelUpdateTx::AtomicWithdraw`; with one channel transfer and no withdrawals, as `ChannelUpdateTx::PinDeposit`. A lone channel config surfaces as `ChannelUpdateTx::Config`. Anything else surfaces as `ChannelUpdateTx::Custom(SignedOps)`.
+
+   For `Custom` entries the SDK hands back the whole transaction, and it is up to the consumer to parse it (the `channel_inscriptions` helper extracts its inscriptions) and decide how to recover it. The main API is `publish`, `publish_atomic_withdraw`, and `publish_pin_deposit`.
+   :::
+
+   :::info[Stuck transactions]
+   A pending transaction that stays out of a block for longer than `SequencerConfig::stale_refund_slots` (default 30 slots of the last irreversible block, `0` disables it) is recovered automatically when the SDK can sign it alone. Transactions from `publish`, `publish_atomic_withdraw`, and `publish_pin_deposit` are re-funded, re-signed, and posted again with the same message ID. Multi-signature and custom transactions are shed instead and reported in `orphaned()`, together with everything chained on them, so you prepare them, collect signatures, and submit them again.
    :::
 
 ## Step 3: Update the committee with a channel config op
 
-Submit a `ChannelConfigOp` to add or remove sequencers from `accredited_keys`. Because `ChannelConfigOp` overwrites the entire key list, you should re-include any keys that should remain accredited after the update.
+Submit a channel config to add or remove sequencers from `accredited_keys`. Because a channel config overwrites the entire key list, you should re-include any keys that should remain accredited after the update.
 
-1. Use `channel_config` directly when `configuration_threshold == 1` - that is, when you only need one sequencer's signature to change the configuration.
+1. Use `channel_config` directly when `configuration_threshold == 1`, that is, when you only need one sequencer's signature to change the configuration.
 
    ```rust
-   use lb_core::mantle::channel::{SlotTimeframe, SlotTimeout};
-   use lb_core::mantle::ops::channel::config::Keys;
+   use lb_core::mantle::{
+       channel::{SlotTimeframe, SlotTimeout},
+       ops::channel::VerifiedChannelKeys,
+   };
 
-   let new_keys = Keys::from(vec![
+   let new_keys = VerifiedChannelKeys::from([
        admin_pk,
        new_sequencer_b_pk,
        new_sequencer_c_pk,
    ]);
 
-   let (result, checkpoint, signed_tx) = sequencer.handle().channel_config(
-       new_keys,
-       SlotTimeframe::from(60),   // ~3 blocks per turn at 20 slots/block
-       SlotTimeout::from(180),    // skip after 3 turn windows of inactivity
-       1,                          // configuration_threshold (still single-admin)
-       1,                          // withdraw_threshold
-   )?;
+   let ((result, checkpoint), signed_tx) = sequencer
+       .handle()
+       .channel_config(
+           new_keys,
+           SlotTimeframe::from(60), // ~3 blocks per turn at 20 slots/block
+           SlotTimeout::from(180),  // skip after 3 turn windows of inactivity
+           1,                       // configuration_threshold (still single-admin)
+           1,                       // transfer_threshold
+       )
+       .await?;
    ```
 
-   On finalisation, `refresh_channel_state` picks up the new config and the next `BlocksProcessed` event recomputes `our_turn_to_write` for every running sequencer.
+   `channel_config` funds, signs with the local key only, and submits the transaction. On finalisation, the SDK picks up the new config and the next `BlocksProcessed` event recomputes `our_turn_to_write` for every running sequencer.
 
-1. Use the `prepare_tx` + `submit_signed_tx` flow when `configuration_threshold > 1`. In this case, collecting signatures from other sequencers is the responsibility of the application rather than the Zone SDK.
+1. Use the `prepare_channel_config` → `sign_with` → `submit_channel_config` flow when `configuration_threshold > 1`. In this case, collecting signatures from other sequencers is the responsibility of the application rather than the Zone SDK.
 
-:::info
-Multi-admin config changes are not yet exercised by integration tests; treat the flow below as the reference path until full SDK support lands.
-::: 
-
-   - The proposer calls `prepare_tx` with a `ChannelConfigOp` payload and distributes the unsigned transaction to the rest of the committee.
-   - Each co-signer calls `sign_tx` and returns an `IndexedSignature`.
-   - The proposer assembles a `ChannelMultiSigProof` from the collected signatures and submits via `submit_signed_tx`.
+   - The proposer calls `prepare_channel_config` with the new configuration. The SDK builds and funds the config transaction and returns a `PreparedChannelConfig`.
+   - Each key holder inspects `prepared.tx()` and signs with `prepared.sign_with(&key)`, which returns an `IndexedSignature` indexed against the channel's current accredited keys. A key holder without a running sequencer can call `sign_prepared(&key, &prepared.accredited_keys, &prepared.sign_payload)` instead.
+   - The proposer gathers `prepared.signing_threshold` signatures, the channel's current `configuration_threshold`, into `IndexedSignatures` and submits them with `submit_channel_config`.
 
    ```rust
    use lb_core::mantle::{
-       Op, SignedMantleTx,
-       ops::{OpProof, channel::config::ChannelConfigOp},
+       channel::{SlotTimeframe, SlotTimeout},
+       ops::channel::VerifiedChannelKeys,
    };
-   use lb_core::proofs::channel_multi_sig_proof::{ChannelMultiSigProof, IndexedSignature};
+   use lb_zone_sdk::sequencer::{IndexedSignature, IndexedSignatures};
 
-   // 1. Read this sequencer's index from the channel view.
-   let view = sequencer.subscribe_channel_view().borrow().clone();
-   let own_key_index = view.own_key_index.ok_or("not an accredited key")?;
+   // 1. Propose the new configuration. The SDK builds and funds the tx.
+   let prepared = sequencer
+       .handle()
+       .prepare_channel_config(
+           VerifiedChannelKeys::from([admin_pk, sequencer_b_pk, sequencer_c_pk]),
+           SlotTimeframe::from(60),
+           SlotTimeout::from(180),
+           2, // configuration_threshold
+           1, // transfer_threshold
+       )
+       .await?;
 
-   // 2. Build the unsigned config tx and get this sequencer's own signature.
-   let config = ChannelConfigOp {
-       channel,
-       keys: new_keys,
-       posting_timeframe,
-       posting_timeout,
-       configuration_threshold,
-       withdraw_threshold,
-   };
-   let (tx, msg_id, own_sig) = sequencer.handle().prepare_tx(
-       [Op::ChannelConfig(config)].into(),
-       inscription_payload,
-   )?;
+   // 2. Distribute `prepared` to the rest of the committee; each key holder
+   //    signs with `prepared.sign_with(&key)`. Transport is application-defined.
+   let collected: Vec<IndexedSignature> = collect_signatures_from_committee(&prepared).await?;
 
-   // 3. Distribute `tx` to the rest of the committee, collect their
-   //    `IndexedSignature`s. Transport is application-defined.
-   let signatures: Vec<IndexedSignature> = collect_signatures_from_committee(
-       &tx,
-       IndexedSignature::new(own_key_index, own_sig.clone()),
-   ).await?;
-
-   // 4. Assemble the threshold proof and submit.
-   let config_proof = ChannelMultiSigProof::new(signatures)?;
-   let signed_tx = SignedMantleTx::new(
-       tx,
-       vec![
-           OpProof::ChannelMultiSigProof(config_proof),
-           OpProof::Ed25519Sig(own_sig),
-       ],
-   )?;
+   // 3. Gather the signatures, ordered by key index with at most one per key,
+   //    and submit.
+   let signatures = IndexedSignatures::try_from_iter(collected.into_iter().map(Into::into))?;
    let (result, checkpoint) = sequencer
        .handle()
-       .submit_signed_tx(signed_tx, msg_id)?;
+       .submit_channel_config(prepared, signatures)?;
    ```
+
+   - A signature authorises every channel operation in the prepared transaction, not only the config, so signers should inspect the whole of `prepared.tx()` before signing.
+   - A config position holds one pending continuation, so `prepare_channel_config` refuses a second config on a parent that already has one pending until it lands or expires.
+   - An orphaned multi-signature config surfaces as `ChannelUpdateTx::Config`. Recover it by running the prepare → collect signatures → submit flow again.

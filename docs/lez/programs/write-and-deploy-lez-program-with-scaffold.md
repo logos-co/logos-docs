@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Use `logos-scaffold` to create, build, and deploy a guest program on a local Logos Execution Zone sequencer.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, which pins LEZ **v0.1.2**. It deploys to a local sequencer only; see [Deploy to the testnet](#deploy-to-the-testnet).
 :::
 
 [`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
@@ -40,8 +40,8 @@ This guide walks each stage separately so you can see what the tool does. Once t
     rzup install cargo-risczero 3.0.5
     ```
 
-    `rust` builds the guest programs. `cargo-risczero` provides `r0vm`, which the sequencer needs to execute transactions, and it must be the version LEZ `v0.1.2` pins, `3.0.5`: scaffold only looks for that version. Without it, `localnet start` still reports `localnet ready`, with a warning about `RISC0_SERVER_PATH`, and `deploy` then fails.
-- Optionally, [Docker](https://docs.docker.com/get-docker/) or Podman. `logos-scaffold doctor` checks for one, but guest programs build with the local RISC Zero toolchain.
+    `rust` builds the guest programs. `cargo-risczero` provides `r0vm`, which the sequencer needs to execute transactions, and it must be the version LEZ `v0.1.2` pins, `3.0.5`: scaffold only looks for that version, under `~/.risc0/extensions/`. Without it, `localnet start` still reports `localnet ready`, with a warning about `RISC0_SERVER_PATH`, and `deploy` then fails. If you installed `rzup` with a custom `RISC0_HOME`, export `RISC0_SERVER_PATH` with the full path to that `r0vm`.
+- [Docker](https://docs.docker.com/get-docker/), with the daemon running. Scaffold builds guest programs inside the pinned `risczero/risc0-guest-builder` container by default, so that a `program_id` is the same on every machine. Without Docker, opt out as described in [Step 5](#step-5-build-the-project).
 - About 5 GB of free disk space for the pinned LEZ and `spel` builds.
 
 Nix is not needed for this guide, only for scaffold's `basecamp` commands. If it is not installed, `logos-scaffold doctor` reports a `tool nix` warning that you can ignore.
@@ -55,13 +55,13 @@ Nix is not needed for this guide, only for scaffold's `basecamp` commands. If it
 
 ## Step 1: Install logos-scaffold
 
-1. Install the CLI from crates.io:
+1. Install the CLI from the scaffold repository, pinned to the commit this guide was tested with:
 
     ```bash
-    cargo install logos-scaffold
+    cargo install --locked --git https://github.com/logos-co/scaffold --rev d4b15ff logos-scaffold
     ```
 
-    This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical. To build from source instead, clone [`logos-co/scaffold`](https://github.com/logos-co/scaffold) and run `cargo install --path .` in it.
+    This installs two binaries on your PATH: `logos-scaffold` and the shorter alias `lgs`. They are functionally identical. The `logos-scaffold` 0.4.0 release on [crates.io](https://crates.io/crates/logos-scaffold) predates the Docker guest build in [Step 5](#step-5-build-the-project), so `cargo install logos-scaffold` gives you a CLI without `--guest` and with guest artifacts in a different place.
 
 1. Verify the installation:
 
@@ -126,7 +126,7 @@ Nix is not needed for this guide, only for scaffold's `basecamp` commands. If it
     logos-scaffold doctor
     ```
 
-    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. [Step 6](#step-6-start-a-local-sequencer) clears them.
+    At this point expect three `WARN` rows about the sequencer, because the localnet is not running yet. [Step 6](#step-6-start-a-local-sequencer) clears them. A `FAIL` on the `guest build` row means `docker` or `cargo-risczero` is not on your `PATH`; see [Step 5](#step-5-build-the-project).
 
 ## Step 4: Write your guest program
 
@@ -153,7 +153,28 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     RISC0_DEV_MODE=1 logos-scaffold build
     ```
 
-    The build compiles your guest programs and produces `.bin` artifacts under `target/riscv-guest/…/riscv32im-risc0-zkvm-elf/release/`. The first build takes a few minutes.
+    The build compiles the workspace, then builds each guest program inside the pinned `risczero/risc0-guest-builder` Docker image and writes the `.bin` artifacts to `target/riscv-guest-docker/riscv32im-risc0-zkvm-elf/docker/`. The same source then produces the same bytes, and therefore the same `program_id`, on any machine. The first build takes several minutes.
+
+    If the Docker daemon is not running, `build` stops straight away:
+
+    ```text
+    error: [build].guest = "docker" needs a running Docker daemon; `docker info` failed.
+    ```
+
+1. To build without Docker, use the host RISC Zero toolchain instead. For one build, pass `--guest local`:
+
+    ```bash
+    RISC0_DEV_MODE=1 logos-scaffold build --guest local
+    ```
+
+    To make it the project default, which [`logos-scaffold run`](#use-logos-scaffold-run-for-the-inner-loop) needs because it has no `--guest` flag, add this to `scaffold.toml`:
+
+    ```toml
+    [build]
+    guest = "local"
+    ```
+
+    A local build writes the artifacts to `target/riscv-guest/…/riscv32im-risc0-zkvm-elf/release/` instead. Its `program_id` depends on your host's Rust and clang versions, so it can differ from the one another machine builds from the same source. Each `build` removes the other mode's artifacts, so `deploy` always ships the output of the last `build`. `logos-scaffold doctor` shows the active mode in its `guest build` row.
 
 ## Step 6: Start a local sequencer
 
@@ -166,7 +187,7 @@ Guest programs run inside the [RISC0 zkVM](https://dev.risczero.com/) and define
     `start` returns once the sequencer process is alive and its RPC port answers. The sequencer is daemonised and survives terminal or tmux session closure. Use `logos-scaffold localnet status` to check that it is running and `logos-scaffold localnet stop` to stop it.
 
     :::warning
-    The local sequencer always uses port `3040`. If something else already listens there, such as another scaffold project's sequencer, `localnet start` fails with `Address already in use (os error 98)`, and `localnet status` reports `ownership: foreign`. Stop the other process first. Changing `port` under `[localnet]` in `scaffold.toml` does not help in `logos-scaffold` 0.4.0: the sequencer still binds `3040` and the wallet keeps pointing at it, so `deploy` and `wallet topup` would talk to the other sequencer.
+    The local sequencer always uses port `3040`. If something else already listens there, such as another scaffold project's sequencer, `localnet start` fails with `Address already in use (os error 98)`, and `localnet status` reports `ownership: foreign`. Stop the other process first. Changing `port` under `[localnet]` in `scaffold.toml` does not help: the sequencer still binds `3040` and the wallet keeps pointing at it, so `deploy` and `wallet topup` would talk to the other sequencer.
 
     For any other failure, read the sequencer log with `logos-scaffold localnet logs --tail 200`. To wipe chain state and start over, run `logos-scaffold localnet reset --yes`.
     :::
@@ -289,6 +310,7 @@ Hooks run through `sh -c` from the project root with these variables set:
 | `NSSA_WALLET_HOME_DIR`, `LEE_WALLET_HOME_DIR` | The project wallet directory, under both the name LEZ `v0.1.2` reads and the one v0.2.0 and later read. |
 | `SCAFFOLD_PROJECT_ROOT`, `SCAFFOLD_IDL_DIR` | Absolute paths to the project root and the IDL output directory. |
 | `SCAFFOLD_TOPUP_SKIPPED`, `SCAFFOLD_DEPLOY_SKIPPED` | `1` or `0`. Always set, so branch on the value rather than on whether the variable exists. |
+| `SCAFFOLD_PROGRAMS` | Space-separated names of the project's deployable programs. |
 | `SCAFFOLD_PROGRAM_ID`, `SCAFFOLD_GUEST_BIN` | The deployed program's image ID and guest binary. Set only when the project has exactly one deployable program, so a multi-program project fails loudly instead of picking the wrong one. |
 
 `run` covers the deploy loop only. It does not run any `basecamp` command; for that side of scaffold see [Develop a Logos module with Logos Scaffold](../../scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md).
@@ -296,12 +318,12 @@ Hooks run through `sh -c` from the project root with these variables set:
 ## Deploy to the testnet
 
 :::warning
-`logos-scaffold` 0.4.0 cannot deploy to the current LEZ public testnet. Use the local sequencer from this guide.
+`logos-scaffold` cannot deploy to the current LEZ public testnet. Use the local sequencer from this guide.
 :::
 
-The public testnet runs a newer LEZ release than the `v0.1.2` that scaffold 0.4.0 pins by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` stops with `Local ID for authenticated transfer program is different from remote`, and `logos-scaffold doctor` reports the wallet as unusable.
+The public testnet runs LEZ v0.3, and scaffold pins `v0.1.2` by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` panics with `Missing authenticated transfer ID from remote`, and `logos-scaffold doctor` reports `FAIL | wallet usability`.
 
-To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.2.4` passes against the testnet and one built from `v0.2.1` does not.
+To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.3.1` passes against the testnet and one built from scaffold's `v0.1.2` pin does not.
 
 ## Related documentation
 

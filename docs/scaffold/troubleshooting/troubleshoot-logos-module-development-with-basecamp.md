@@ -15,7 +15,7 @@ sidebar_position: 1
 #### Diagnose the failures that show up while iterating on a module.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, and Basecamp **0.3.0**.
+This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
 Most problems in the module development loop share a shape: the build succeeds, no error is printed, and the running application does not do what the source says it should. This page maps those symptoms to their causes.

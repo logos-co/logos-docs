@@ -19,7 +19,7 @@ sidebar_position: 1
 Scaffold ships two binaries with identical behaviour: `logos-scaffold` and the shorter alias `lgs`. Use either.
 
 :::info
-The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`, and the crate is published on [crates.io](https://crates.io/crates/logos-scaffold). The `logos-co/logos-scaffold` URL redirects to the same repository. This section is accurate for `logos-scaffold` **0.4.0**, which supports Basecamp **0.3.0** only.
+The repository is [`logos-co/scaffold`](https://github.com/logos-co/scaffold); the crate and the binary are named `logos-scaffold`, and the crate is published on [crates.io](https://crates.io/crates/logos-scaffold). The `logos-co/logos-scaffold` URL redirects to the same repository. This section is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, which supports Basecamp **0.3.0** only. That commit adds the reproducible Docker guest build to the 0.4.0 release.
 :::
 
 ## What Logos Scaffold covers
@@ -79,12 +79,13 @@ Profile state is always project-local under `.scaffold/basecamp/profiles/`. Scaf
 
 ## Pinned versions
 
-Scaffold builds every tool a project depends on from a pinned commit recorded in `scaffold.toml`, so two machines building the same project get the same toolchain. The defaults in `logos-scaffold` 0.4.0 are:
+Scaffold builds every tool a project depends on from a pinned commit recorded in `scaffold.toml`, so two machines building the same project get the same toolchain. The defaults at that commit are:
 
 | Component | Default pin | Override in `scaffold.toml` |
 |:---|:---|:---|
 | LEZ (sequencer and wallet) | `v0.1.2` | `[repos.lez]` |
 | `spel` | `v0.5.0` | `[repos.spel]` |
+| Guest build image | `risczero/risc0-guest-builder:r0.1.97.0` | `[build].risc0_docker_tag` |
 | Basecamp | `0.3.0` | `[repos.basecamp]` |
 | `lgpm` | The `logos-package-manager` revision that Basecamp 0.3.0 locks | `[repos.lgpm]` |
 | `delivery_module`, when a module depends on it | The newest `logos-delivery-module` commit built with `logos-module-builder` 0.3.0 | `[modules.delivery_module]` |

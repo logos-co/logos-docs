@@ -15,7 +15,7 @@ sidebar_position: 1
 #### Look up the `scaffold.toml` keys, launch environment, and directories behind `lgs basecamp`.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, and Basecamp **0.3.0**.
+This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
 This page lists what [Logos Scaffold](../about-logos-scaffold.md) reads and sets when it builds, installs, and launches Logos modules in Basecamp. For the workflow itself, see [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md). The full module-project contract is also available offline with `lgs basecamp docs`.

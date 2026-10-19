@@ -16,7 +16,7 @@ sidebar_position: 1
 #### Build a module, install it into Basecamp, and iterate on it.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, and Basecamp **0.3.0**.
+This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
 [Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats all day: build the [`.lgx`](../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide covers that loop, including running two instances side by side to exercise peer-to-peer features.
@@ -33,7 +33,8 @@ This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, an
         ```bash
         mkdir my_ui && cd my_ui && git init
         nix flake init -t github:logos-co/logos-module-builder/0.3.0#ui-qml
-        sed -i 's#github:logos-co/logos-module-builder"#github:logos-co/logos-module-builder/0.3.0"#' flake.nix
+        sed -i.bak 's#github:logos-co/logos-module-builder"#github:logos-co/logos-module-builder/0.3.0"#' flake.nix
+        rm flake.nix.bak
         git add -A
         ```
 
@@ -51,15 +52,15 @@ This document is accurate for **Testnet v0.2.1**, `logos-scaffold` **0.4.0**, an
 
 ## Step 1: Install Logos Scaffold
 
-1. Install both binaries from crates.io:
+1. Install both binaries from the scaffold repository, pinned to the commit this guide was tested with:
 
    ```bash
-   cargo install logos-scaffold
+   cargo install --locked --git https://github.com/logos-co/scaffold --rev d4b15ff logos-scaffold
    ```
 
    This installs `logos-scaffold` and its shorter alias `lgs`. They are functionally identical; this guide uses `lgs`.
 
-   To build from source instead, clone [`logos-co/scaffold`](https://github.com/logos-co/scaffold) and run `cargo install --path .` in it.
+   The `basecamp` commands behave the same in the `logos-scaffold` 0.4.0 release on [crates.io](https://crates.io/crates/logos-scaffold), so `cargo install logos-scaffold` also works for this guide. Use the pinned commit if you also follow [Write and deploy an LEZ program with `logos-scaffold`](../../lez/programs/write-and-deploy-lez-program-with-scaffold.md).
 
 1. Confirm the install:
 
@@ -245,7 +246,7 @@ Peer-to-peer features need two instances, each with its own base directory and i
     lgs basecamp launch bob
     ```
 
-    **Expected result:** two Basecamp windows, each with its own data under `.scaffold/basecamp/profiles/<profile>/`, its own runtime directory under `/tmp`, and `LOGOS_PROFILE` set to the profile name. An action in `alice` should be observable in `bob`.
+    **Expected result:** two Basecamp windows, each with its own data under `.scaffold/basecamp/profiles/<profile>/`, its own runtime directory under `/tmp`, and `LOGOS_PROFILE` set to the profile name. If your module implements peer communication, an action in `alice` should be observable in `bob`. The `ui-qml` template only logs its button clicks locally, so with it you can check isolation but not peer communication.
 
 To add more profiles, such as a `maker` and a `taker`, declare them under `[basecamp.profiles.<name>]` in `scaffold.toml`; see [`[basecamp.profiles.<name>]`](../reference/logos-scaffold-basecamp-configuration-reference.md#basecampprofilesname). Unknown profiles are seeded on first launch.
 

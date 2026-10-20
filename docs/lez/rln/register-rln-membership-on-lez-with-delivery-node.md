@@ -1,5 +1,5 @@
 ---
-title: Run a Logos delivery node with an RLN membership on LEZ
+title: Register an RLN membership on LEZ with a Delivery node
 doc_type: procedure
 product: messaging
 topics: [messaging, LEZ, RLN]
@@ -7,11 +7,11 @@ steps_layout: sectioned
 authors: adklempner, kashepavadan
 owner: logos
 doc_version: 1
-slug: run-logos-delivery-node-with-rln-membership
-sidebar_position: 4
+slug: register-rln-membership-on-lez-with-delivery-node
+sidebar_position: 2
 ---
 
-# Run a Logos delivery node with an RLN membership on LEZ
+# Register an RLN membership on LEZ with a Delivery node
 
 #### Start a Logos Delivery node on the DoS-protected logos.test network, register its RLN membership on the Logos Execution Zone, and send a rate-limited message.
 
@@ -19,22 +19,20 @@ sidebar_position: 4
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure shows how to run a [Logos Delivery](../../get-started/glossary.md#logos-delivery) node on the `logos.test` network, which uses Rate-Limiting Nullifiers (RLN) to protect against denial-of-service attacks. Every node on `logos.test` needs an RLN membership, registered on a registry program on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone) (LEZ), and attaches a proof to each message it publishes. It is intended for node operators who want to join the DoS-protected network, and touches Logos Core, Logos Delivery, and LEZ in a single flow.
-
-You use `logosctl` to host the `delivery_module` and the RLN [modules](../../get-started/glossary.md#module) (`liblogos_rln_module` and `liblogos_lez_rln_module`). The node creates its own wallet and payer account; once you fund that account with native LEZ tokens, the node registers its membership by itself and starts generating a proof for every send.
-
-The flow takes 15 to 30 minutes once the payer account is funded. Funding by bridge deposit adds about an hour.
+This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), used to protect against denial-of-service attacks. Messages published on the LEZ must include a proof of membership. It is intended for node operators who want to join the DoS-protected network, and touches Logos Core, Logos Delivery, and LEZ in a single flow.
 
 :::info[Prerequisites]
 
 - A supported OS:
    - macOS (Apple Silicon)
    - Linux (x86-64 or aarch64)
-- `curl`, `tar`, and `python3`
-- Network access to `github.com` for the release and catalogue downloads, and to the testnet sequencer at `https://testnet.lez.logos.co/`
-- About 1 GB of free disk space. The `logosctl` release is about 100 MB and the modules about 300 MB.
+- [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+   - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+- `curl` and `python3`
+- Network access to `github.com` for the catalogue downloads, and to the testnet sequencer at `https://testnet.lez.logos.co/`
+- About 1 GB of free disk space. The modules take about 300 MB.
 - `250000000` units of native LEZ tokens for the node's payer account, from one of these sources:
-   - A Logos Blockchain wallet you can [bridge assets](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md) from. Testnet has no faucet.
+   - A Logos Blockchain wallet you can [bridge assets](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md) from. Testnet has no faucet.
    - A LEZ account you already hold on the testnet zone, with about `270000000` units so it can cover the transfer's fee reserve.
 
 :::
@@ -45,45 +43,15 @@ The flow takes 15 to 30 minutes once the payer account is funded. Funding by bri
 - You can fund the node's payer account and watch the node register its membership by itself.
 - You can send a message that carries an RLN proof and confirm that it propagated and used up part of your epoch quota.
 
-## Step 1: Download `logosctl`
+## Step 1: Set up a working directory
 
 Run every command in this procedure in one shell, from one working directory.
 
 1. Create a working directory and change into it:
 
    ```bash
-   mkdir -p ~/logos-cli && cd ~/logos-cli
+   mkdir -p ~/logos-rln && cd ~/logos-rln
    ```
-
-1. Download `logosctl` 0.3.0 for your platform. Set `PLAT` to one of `aarch64-macos`, `x86_64-linux`, or `aarch64-linux`:
-
-   ```bash
-   PLAT=aarch64-macos
-   curl -fsSL https://github.com/logos-co/logos-logoscore-cli/releases/download/0.3.0/logosctl-$PLAT.tar.gz | tar xz
-   ```
-
-1. Point `LOGOSCTL` at the binary:
-
-   - On macOS, the archive holds a `bin/`, `lib/`, and `modules/` directory. Run the binary where it was unpacked, not through a symlink; it finds its libraries and bundled modules relative to its own path:
-
-     ```bash
-     LOGOSCTL=$PWD/logosctl-$PLAT/bin/logosctl
-     ```
-
-   - On Linux, the archive holds a single AppImage. Unpack it, which avoids needing FUSE, and use its `AppRun`:
-
-     ```bash
-     ./logosctl-*.AppImage --appimage-extract >/dev/null
-     LOGOSCTL=$PWD/squashfs-root/AppRun
-     ```
-
-1. Check the version:
-
-   ```bash
-   $LOGOSCTL --version
-   ```
-
-   **Expected result:** `logosctl version 0.3.0`.
 
 1. Set the session directory. Every `logosctl` command in this shell uses it to hold the daemon's state, its logs, and the installed modules:
 
@@ -106,7 +74,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
    ```bash
    LEE_WALLET_HOME_DIR=$PWD/wallet-home \
    NSSA_WALLET_HOME_DIR=$PWD/wallet-home \
-     $LOGOSCTL daemon start --detach
+     logosctl daemon start --detach
    ```
 
    **Expected result:** `Daemon started (pid N)` and the path of its log, `session/logs/daemon.log`. The command returns once the daemon is ready.
@@ -114,7 +82,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
 1. Check the daemon's status:
 
    ```bash
-   $LOGOSCTL daemon status --json
+   logosctl daemon status --json
    ```
 
    **Expected result:** `"daemon":{"status":"running",...}`, with `capability_module`, `package_manager`, and `package_downloader` loaded.
@@ -124,13 +92,13 @@ The node keeps its wallet, including its private key, in a wallet home directory
 1. Install the [delivery module](../../get-started/glossary.md#delivery-module) and the RLN module from the official [catalogue](../../get-started/glossary.md#catalogue). `liblogos_rln_module` pulls in `liblogos_lez_rln_module`:
 
    ```bash
-   $LOGOSCTL package install delivery_module liblogos_rln_module -y
+   logosctl package install delivery_module liblogos_rln_module -y
    ```
 
 1. List the installed packages:
 
    ```bash
-   $LOGOSCTL package ls
+   logosctl package ls
    ```
 
    **Expected result:** `delivery_module` 0.3.3 or later, `liblogos_rln_module` 0.12.0 or later, and `liblogos_lez_rln_module` 5.1.0 or later, each with source `user`.
@@ -140,8 +108,8 @@ The node keeps its wallet, including its private key, in a wallet home directory
 1. Load the delivery module. This also loads the RLN modules, which are its optional dependencies:
 
    ```bash
-   $LOGOSCTL module load delivery_module
-   $LOGOSCTL module ls --loaded
+   logosctl module load delivery_module
+   logosctl module ls --loaded
    ```
 
    **Expected result:** `liblogos_lez_rln_module`, `liblogos_rln_module`, and `delivery_module` are loaded.
@@ -151,7 +119,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
 1. Capture the node's events in the background. The watcher only sees events emitted after it attaches, so start it first:
 
    ```bash
-   $LOGOSCTL --json watch delivery_module >> events.jsonl 2>&1 &
+   logosctl --json watch delivery_module >> events.jsonl 2>&1 &
    ```
 
 1. Write the node config and create the node:
@@ -160,7 +128,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
    cat > node.json <<'EOF'
    {"mode": "Core", "preset": "logos.test"}
    EOF
-   $LOGOSCTL --json call delivery_module createNode @$PWD/node.json
+   logosctl --json call delivery_module createNode @$PWD/node.json
    ```
 
    | Field | Purpose |
@@ -174,7 +142,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
 1. Poll the RLN state until it reports `"state":"Ready"`:
 
    ```bash
-   $LOGOSCTL --json call delivery_module rlnState
+   logosctl --json call delivery_module rlnState
    ```
 
    **Expected result:** the reply names the RLN scope the node uses:
@@ -197,7 +165,7 @@ The node derives a payer account from its wallet. To register, it must hold the 
 1. Poll the wallet status until `state` is `ready`:
 
    ```bash
-   $LOGOSCTL --json call liblogos_lez_rln_module wallet_status
+   logosctl --json call liblogos_lez_rln_module wallet_status
    ```
 
    **Expected result:** `{"status":"ok","result":{... "state":"ready", "network":"testnet", "payer":"<ACCOUNT>" ...}}`. While the wallet syncs, `state` is `pending`.
@@ -226,7 +194,7 @@ The node derives a payer account from its wallet. To register, it must hold the 
 
    ```bash
    : > self.arg
-   $LOGOSCTL --json call liblogos_lez_rln_module get_native_balance @$PWD/self.arg
+   logosctl --json call liblogos_lez_rln_module get_native_balance @$PWD/self.arg
    ```
 
    **Expected result:** `balance` is at or above the amount you sent.
@@ -238,7 +206,7 @@ The node registers itself on the LEZ registry, typically one to three minutes af
 1. Poll the membership state until `state` is `active`:
 
    ```bash
-   $LOGOSCTL --json call liblogos_rln_module get_membership_state $REGISTRY @$PWD/rln-id.arg
+   logosctl --json call liblogos_rln_module get_membership_state $REGISTRY @$PWD/rln-id.arg
    ```
 
    - While registering, the reply shows `"state":"unknown"` and `"provisioning":{"step":"awaiting_funding"}` or `"step":"registering"`.
@@ -253,7 +221,7 @@ The node only starts with an active membership.
 1. Start the node and check that it reported `nodeStarted`:
 
    ```bash
-   $LOGOSCTL --json call delivery_module start
+   logosctl --json call delivery_module start
    until grep nodeStarted events.jsonl; do sleep 1; done
    ```
 
@@ -262,13 +230,13 @@ The node only starts with an active membership.
    ```bash
    sleep 15
    TOPIC=/my-app/1/hello/proto
-   $LOGOSCTL --json call delivery_module subscribe $TOPIC
+   logosctl --json call delivery_module subscribe $TOPIC
    ```
 
 1. Note the epoch quota before sending. The `str:` prefix passes the timestamp as a string:
 
    ```bash
-   $LOGOSCTL --json call liblogos_rln_module get_epoch_quota $REGISTRY @$PWD/rln-id.arg str:$(date +%s)
+   logosctl --json call liblogos_rln_module get_epoch_quota $REGISTRY @$PWD/rln-id.arg str:$(date +%s)
    ```
 
    **Expected result:** `{"epoch_index":N,"rate_limit":N,"remaining":N}`.
@@ -277,7 +245,7 @@ The node only starts with an active membership.
 
    ```bash
    printf '%s' "hello from my node" > payload.arg
-   $LOGOSCTL --json call delivery_module send $TOPIC @$PWD/payload.arg
+   logosctl --json call delivery_module send $TOPIC @$PWD/payload.arg
    ```
 
    **Expected result:** `"success":true`, with a `requestId` as the value.
@@ -303,7 +271,7 @@ The node only starts with an active membership.
 1. Stop the daemon when you're finished:
 
    ```bash
-   $LOGOSCTL daemon stop
+   logosctl daemon stop
    ```
 
    - The wallet, membership, and installed packages stay in `wallet-home/` and `session/`. To run the node again, start the daemon with the same environment as in [Step 2](#step-2-start-the-daemon-with-a-wallet-home), then `module load delivery_module`, start the event watcher, run `createNode` with the same `node.json`, and `start` once `rlnState` is `Ready`. The existing membership is picked up; nothing is registered or paid again.
@@ -320,17 +288,17 @@ Spell the preset exactly `logos.test`. `logostest` is rejected, not treated as a
 
 ### `rlnState` stays `Disabled`
 
-The installed `delivery_module` is older than 0.3.0, where `logos.test` has RLN turned off. Check the version with `$LOGOSCTL package ls` and upgrade with `$LOGOSCTL package install delivery_module -y`.
+The installed `delivery_module` is older than 0.3.0, where `logos.test` has RLN turned off. Check the version with `logosctl package ls` and upgrade with `logosctl package install delivery_module -y`.
 
 ### `rlnState` reports `Failed`
 
 The reply carries the reason. A common one is a hand-written `wallet_config.json`, or a `LEZ_RLN_SEQUENCER` variable, pointing at a sequencer that isn't the testnet one, so the registry can't be found on-chain. Start with an empty `wallet-home/` to let the module pick the sequencer. The module reads `LEZ_RLN_SEQUENCER` only when `wallet-home/` has no `wallet_config.json` yet, and never rewrites an existing one.
 
-Another is a `delivery_module` older than 0.3.3, whose `logos.test` preset names the old registry `logos:testnet:841312e9…`, which is no longer used. Compare the `registryId` from `rlnState` with the one under [Known constraints](#known-constraints), and upgrade with `$LOGOSCTL package install delivery_module -y`.
+Another is a `delivery_module` older than 0.3.3, whose `logos.test` preset names the old registry `logos:testnet:841312e9…`, which is no longer used. Check the version with `logosctl package ls`, and upgrade with `logosctl package install delivery_module -y`.
 
 ### `wallet_status` reports `failed`, or `daemon.log` shows `Unexpected variant tag`
 
-The installed `liblogos_lez_rln_module` is older than 5.1.0 and links a LEZ v0.3.0 wallet, which can't read LEZ v0.3.1 blocks. The log line reads `Sync failed: Parse error: Unexpected variant tag`. Run `$LOGOSCTL catalog refresh`, upgrade with `$LOGOSCTL package install liblogos_lez_rln_module -y`, and start again with a fresh `wallet-home/`.
+The installed `liblogos_lez_rln_module` is older than 5.1.0 and links a LEZ v0.3.0 wallet, which can't read LEZ v0.3.1 blocks. The log line reads `Sync failed: Parse error: Unexpected variant tag`. Run `logosctl catalog refresh`, upgrade with `logosctl package install liblogos_lez_rln_module -y`, and start again with a fresh `wallet-home/`.
 
 ### `wallet_status` stays `pending` with the network selected
 
@@ -392,23 +360,8 @@ Without a terminal, `package install` refuses to proceed unless given `-y`.
 
 ### `package install` can't find `liblogos_rln_module`
 
-The session's catalogue index is stale. Run `$LOGOSCTL catalog refresh`. `$LOGOSCTL catalog ls` lists the enabled catalogues; the official one, `logos-modules-official`, must be enabled.
+The session's catalogue index is stale. Run `logosctl catalog refresh`. `logosctl catalog ls` lists the enabled catalogues; the official one, `logos-modules-official`, must be enabled.
 
 ### After a restart the membership reads `unknown` and sends fail
 
-A module process from the previous daemon outlived `daemon stop` and still holds the node's ports and the RLN keystore. Stop the daemon, look for leftover processes started from the `logosctl` directory with `ps -ef | grep logosctl-`, end them, and start again.
-
-### Known constraints
-
-For Testnet v0.3, the RLN registry is deployed to the LEZ testnet zone, which runs LEZ v0.3.1. The `logos.test` preset of `delivery_module` 0.3.3 uses it:
-
-| Item | Value |
-|:-----|:------|
-| Sequencer RPC | `https://testnet.lez.logos.co/` |
-| Explorer | `https://explorer.testnet.lez.logos.co/` |
-| Registry ID | `logos:testnet:fd322d32a46ddf57eece9db8d68e9b722262d1f770760fca63b8cb9e7775b971` |
-| Config account | `J3NXPWUspX2zqJU3tUbR6MHmm83aJc5AzvidEaBBKnat` |
-
-Memberships registered under the previous registry (`logos:testnet:841312e9…`) don't carry over; that registry is no longer used. Register a new membership from a funded payer on the LEZ v0.3.1 zone.
-
-For more detail, see the [delivery module's RLN documentation](https://github.com/logos-co/logos-delivery-module/blob/v0.3.3/docs/pages/rln.md).
+A module process from the previous daemon outlived `daemon stop` and still holds the node's ports and the RLN keystore. Stop the daemon, look for processes left over from the previous daemon with `ps -ef | grep logos`, end them, and start again.

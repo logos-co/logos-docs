@@ -8,6 +8,7 @@ authors: adklempner, kashepavadan
 owner: logos
 doc_version: 1
 slug: register-rln-membership-from-basecamp
+sidebar_position: 1
 ---
 
 # Register an RLN membership from Basecamp

@@ -219,7 +219,7 @@ The node derives a payer account from its wallet. To register, it must hold the 
 
 1. Send `250000000` native units to the payer account:
 
-   - To bridge from the Logos Blockchain, follow [Bridge assets between the blockchain and a zone](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md). A deposit is credited on LEZ only once it is final on the blockchain, about an hour after you submit it. The deposit's fee is paid on the blockchain side.
+   - To bridge from the Logos Blockchain, follow [Bridge assets between the blockchain and a zone](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md). A deposit is credited on LEZ only once it is final on the blockchain. On the current testnet that is about 10 hours after the deposit is included in a block, and the payer balance stays unchanged until then. The deposit's fee is paid on the blockchain side.
    - To transfer from an existing LEZ account, send to the `Public/<base58>` address. A transfer carries a fee reserve of about `19000000` on top of the amount, at the minimum fee for the wallet's standard 2M gas limit; all but the actual fee (about `100000`) is refunded to the sender.
 
 1. Check the payer's balance. An empty argument file means the node's own payer:
@@ -242,8 +242,9 @@ The node registers itself on the LEZ registry, typically one to three minutes af
    ```
 
    - While registering, the reply shows `"state":"unknown"` and `"provisioning":{"step":"awaiting_funding"}` or `"step":"registering"`.
+   - Once the registration is submitted, the reply shows `"state":"pending"` with a `leaf_index`, until the transaction is in a LEZ block.
 
-   **Expected result:** `"state":"active"` (or `"grace_period"`), with a `leaf_index` and a `membership_hash`. `"state":"failed"` means registration failed; see [Troubleshooting](#troubleshooting-rln-membership).
+   **Expected result:** `"state":"active"` (or `"grace_period"`), with a `leaf_index` and a `membership_hash`. `"state":"failed"` means registration failed; see [Troubleshooting](#troubleshooting-rln-membership). If `daemon.log` says `no membership within 300s`, the module only stopped waiting: check that the sequencer is producing blocks with `getLastBlockId`, and keep polling.
 
 ## Step 7: Start the node and send a message
 
@@ -253,7 +254,7 @@ The node only starts with an active membership.
 
    ```bash
    $LOGOSCTL --json call delivery_module start
-   grep nodeStarted events.jsonl
+   until grep nodeStarted events.jsonl; do sleep 1; done
    ```
 
 1. Wait about 15 seconds for the node to join the [Relay](../../get-started/glossary.md#relay) mesh, then subscribe to a [content topic](../../get-started/glossary.md#content-topic):

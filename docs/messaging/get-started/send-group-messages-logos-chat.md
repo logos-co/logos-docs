@@ -109,6 +109,8 @@ Each instance needs its own session directory. Each delivery node picks its own 
 
    **Expected result:** the group opens as the current conversation, with Alice as its only member. A right-hand column appears with the **Members** roster and **Add member** at its foot.
 
+   ![Logos Chat showing the new Book Club group with Alice as its only member and Add member at the foot of the Members roster](../assets/send-group-messages-logos-chat/group-created.png)
+
 ## Step 4: Invite Bob
 
 Membership changes are asynchronous. The group's steward batches an add into an MLS commit after a commit-inactivity window of about 60 seconds, and the welcome goes out only after the commit lands, so a new member joins minutes after the invite. Wait for Bob to join before inviting Carol, so that the second add starts from a settled group.
@@ -119,6 +121,8 @@ Membership changes are asynchronous. The group's steward batches an add into an 
 1. Paste Bob's address, then click **Add**.
 1. An explainer appears: "Adding a member isn't instant. Membership updates apply on a timer, so a new member can take up to a minute to appear." Click **Add member** to confirm.
 
+   ![The Adding a member explainer with the Don't show this again option and the Add member button](../assets/send-group-messages-logos-chat/add-member-explainer.png)
+
    - Select **Don't show this again** to skip the explainer next time.
 
    **Expected result:** Bob appears on Alice's roster as a dimmed row reading **Waiting to join**. Some minutes later, the group appears in Bob's conversation list with the name Alice gave it, and his row on the roster stops being dimmed.
@@ -128,9 +132,14 @@ Membership changes are asynchronous. The group's steward batches an add into an 
 1. In Alice's window, repeat [Step 4](#step-4-invite-bob) with Carol's address.
 
    - Any member can add another; the invite routes from whoever proposed it.
+
+   ![Alice's Members roster with Bob joined and Carol as a dimmed row reading Waiting to join](../assets/send-group-messages-logos-chat/member-waiting-to-join.png)
+
 1. Wait until the group appears in Carol's conversation list.
 
    **Expected result:** all three rosters converge on three members, none of them dimmed or reading **Waiting to join**. The conversation's **Details** panel, opened with the toggle in the thread header, shows **3 joined**.
+
+   ![The Details panel of the Book Club group showing 3 joined above a roster of three members](../assets/send-group-messages-logos-chat/group-details-three-joined.png)
 
 ## Step 6: Send a message to the group
 
@@ -140,6 +149,8 @@ Membership changes are asynchronous. The group's steward batches an add into an 
 1. In Bob's window, reply to the group.
 
    **Expected result:** Bob's reply reaches both Alice and Carol.
+
+   ![Carol's Book Club thread showing Alice's message and Bob's reply as incoming messages, each with the sender's name and avatar](../assets/send-group-messages-logos-chat/group-messages-received.png)
 
 ## Troubleshooting Logos Chat groups
 

@@ -29,13 +29,8 @@ Each launch of the app starts a new identity with a new address. Conversations f
    - Linux
    - macOS
 - Network access, so that the three instances can reach the `logos.test` network and the key-package registry
-- For the local build only: **Nix** with flakes enabled.
-   - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
-
-   ```bash
-   mkdir -p ~/.config/nix
-   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-   ```
+- [Basecamp installed](../../basecamp/install-logos-basecamp.md).
+- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
 
 :::
 
@@ -47,49 +42,12 @@ Each launch of the app starts a new identity with a new address. Conversations f
 
 ## Step 1: Run three instances of the Logos Chat app
 
-You need three running instances. Each instance can use either option below; they interoperate.
+One Basecamp instance is one chat identity, so use this option when the three participants are on separate machines.
 
-### Option A—Run in Logos Basecamp
-
-One Basecamp instance is one chat identity, so use this option when the three participants are on separate machines. Each instance needs an RLN membership on `logos.test`: the `delivery_module` that **Chat** installs can't send without one, so Bob never receives the group in Step 4.
-
-1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos [Basecamp](../../get-started/glossary.md#basecamp) from `github.com/logos-co/logos-basecamp/releases`.
 1. In the left bar, select **Package Manager**.
 1. Find **Chat** in the [package](../../get-started/glossary.md#package) list and click **INSTALL** in its row. Click **Install** in the **Install Package?** dialogue to confirm, along with the `chat_module` and `delivery_module` packages it depends on.
 1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
 1. In the left bar, select the chat icon to launch the Logos Chat app.
-
-### Option B—Run three standalone apps on one host
-
-Each instance needs its own session directory. Each delivery node picks its own ports, so nothing else needs to be set.
-
-1. Clone the repository and check out the release:
-
-   ```bash
-   git clone https://github.com/logos-co/logos-chat-ui
-   cd logos-chat-ui
-   git checkout v0.3.0
-   ```
-
-1. Start Alice's instance in one terminal window:
-
-   ```bash
-   nix run . -- --user-dir ~/.local/share/chat_a
-   ```
-
-1. Start Bob's instance in a second terminal window:
-
-   ```bash
-   nix run . -- --user-dir ~/.local/share/chat_b
-   ```
-
-1. Start Carol's instance in a third terminal window:
-
-   ```bash
-   nix run . -- --user-dir ~/.local/share/chat_c
-   ```
-
-   **Expected result:** each window's account card, at the bottom left, goes from **Initialising...** to **Online**, and its address appears beside a copy button. Allow 5 to 20 seconds per window; with three full instances on one host, allow up to a few minutes.
 
 ## Step 2: Collect Bob's and Carol's addresses
 

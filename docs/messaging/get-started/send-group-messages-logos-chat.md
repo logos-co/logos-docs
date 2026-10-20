@@ -51,7 +51,7 @@ You need three running instances. Each instance can use either option below; the
 
 ### Option A—Run in Logos Basecamp
 
-One Basecamp instance is one chat identity, so use this option when the three participants are on separate machines.
+One Basecamp instance is one chat identity, so use this option when the three participants are on separate machines. Each instance needs an RLN membership on `logos.test`: the `delivery_module` that **Chat** installs can't send without one, so Bob never receives the group in Step 4.
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos [Basecamp](../../get-started/glossary.md#basecamp) from `github.com/logos-co/logos-basecamp/releases`.
 1. In the left bar, select **Package Manager**.

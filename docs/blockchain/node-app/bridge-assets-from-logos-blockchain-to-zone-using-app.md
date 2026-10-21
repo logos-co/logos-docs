@@ -25,7 +25,7 @@ This procedure covers how to lock one or more of your wallet [notes](../../get-s
 
 - The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) running, with the node **Online**.
 - At least one wallet account with a positive balance, for example one funded by [mining](./build-and-run-logos-blockchain-node-app-ui.md#step-4-fund-your-node).
-- The channel ID of the target Zone. For the public LEZ testnet, the **LEZ testnet** checkbox in the deposit wizard fills it in for you.
+- The channel ID of the target Zone. For the public LEZ testnet, it is `0101010101010101010101010101010101010101010101010101010101010101`, as listed in [Testnet endpoints](../../get-started/testnet-endpoints.md).
 - For a LEZ deposit, a public account in the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md) to receive the funds.
 
 :::
@@ -56,7 +56,10 @@ The wizard collects the deposit payload across two input steps and a review step
 
 1. On **Step 2 of 4**, enter the deposit parameters:
 
-   - **Channel ID hex**: the target channel. For the public LEZ testnet, select **LEZ testnet** and the [app](../../get-started/glossary.md#app) fills in the channel ID. For any other Zone, paste the 64-hex-character channel ID.
+   - **Channel ID hex**: the target channel. For the public LEZ testnet, paste `0101010101010101010101010101010101010101010101010101010101010101`. For any other Zone, paste the 64-hex-character channel ID.
+
+     The **LEZ testnet** checkbox in [app](../../get-started/glossary.md#app) versions 0.3.1 and 0.3.2 fills in `0303030303030303030303030303030303030303030303030303030303030303`, a channel the LEZ testnet no longer reads. A deposit sent to it locks your notes but never arrives on the LEZ, so leave the checkbox clear and paste the ID instead. To confirm the current ID, run the `getChannelId` call in [The LEZ testnet checkbox is missing](#the-lez-testnet-checkbox-is-missing).
+
    - **Change goes to**: the account that receives any leftover value. It defaults to the account you deposit from.
    - **Accounts funding the gas fee**: the accounts the node draws the transaction fee from. The account you deposit from is added for you. To add another, choose it in the **Account…** dropdown and click **Add**.
    - **Max tx fee**: the maximum fee you allow, in TestToken.

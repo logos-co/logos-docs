@@ -24,7 +24,7 @@ In the context of Logos modules, a user-facing bundle of a UI package combined w
 
 ### Basecamp
 
-A local-first launcher for peer-to-peer apps built on Logos, which facilitates installing and running Logos modules and apps.
+A local-first launcher for peer-to-peer apps built on Logos, where users install and run Logos modules and apps.
 
 ### Bedrock
 
@@ -32,15 +32,15 @@ The foundational layer of the Logos Blockchain, operating as a decentralised pee
 
 ### Blend Network
 
-A service that adds anonymity for block proposers on the Logos Blockchain. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
+A service that improves privacy protections for block proposers on the Logos Blockchain. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
 
 ### Blend node
 
-A Logos Blockchain node that chooses to participate in the Blend Network. Also known as a **core node**. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
+A Logos Blockchain node that participates in the Blend Network. Also known as a **core node**. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
 
 ### Blend Protocol
 
-The protocol underlying the Blend Network, which provides anonymity for Logos Blockchain block proposers. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
+The protocol underlying the Blend Network, which improves privacy protections for Logos Blockchain block proposers. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
 
 ### Bootstrapping
 
@@ -68,7 +68,7 @@ A note locked by a channel, representing the value bridged into that channel's Z
 
 ### Codex
 
-The old name for the Logos Storage component of the Logos technology stack.
+A preceding protocol that informed the development of Logos Storage.
 
 ### Content topic
 
@@ -76,7 +76,7 @@ A string attached to messages sent via Logos Delivery to enable protocol-level f
 
 ### Core module
 
-A Logos module that does not include a user interface view and provides backend functionality.
+A module that does not include a user interface view and provides backend functionality.
 
 ### Core node
 
@@ -84,7 +84,7 @@ A Logos Blockchain node that chooses to participate in the Blend Network. Also k
 
 ### Cover traffic
 
-Dummy messages sent by Blend nodes to improve proposer anonymity. See [Cover traffic](../blockchain/concepts/about-the-blend-network.md#cover-traffic).
+Dummy messages sent by Blend nodes that, together with the other components of the Blend Protocol, improves proposer privacy guarantees. See [Cover traffic](../blockchain/concepts/about-the-blend-network.md#cover-traffic).
 
 ### Cryptarchia
 
@@ -256,7 +256,7 @@ An old name for the Logos Execution Environment. See [Introduction to the Logos 
 
 ### Mantle
 
-The execution layer of Bedrock, enabling participation in the Blend Network and facilitating interactions with Zones. See [About Mantle](../blockchain/concepts/about-mantle.md).
+The execution layer of Bedrock, provides operations that allow nodes to participate in the Blend Network, as well as an execution environment that allows for interactions with Zones. See [About Mantle](../blockchain/concepts/about-mantle.md).
 
 ### Message
 
@@ -268,7 +268,11 @@ The process of obtaining notes via Proof of Work. See [About Mantle](../blockcha
 
 ### Mix
 
-Traffic obfuscation used to improve privacy properties.
+Traffic routing used to improve privacy properties.
+
+### Mixnet
+
+A privacy-preserving network layer, which uses traffic routing to improve privacy properties. See [Mixnet](../mixnet/get-started/send-anonymised-messages-over-the-mix-network.md).
 
 ### Module
 
@@ -444,7 +448,7 @@ An LEZ account that is able to hold a custom token. See [Create and transfer cus
 
 ### Token program
 
-An LEZ program that facilitates the creation of custom LEZ tokens. See [Create and transfer custom tokens on the Logos Execution Zone](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
+An LEZ program that provides the functionality for the creation of custom LEZ tokens. See [Create and transfer custom tokens on the Logos Execution Zone](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
 
 ### Transport
 
@@ -500,4 +504,4 @@ An SDK provided by Logos to facilitate the creation of custom Logos Zones. See [
 
 ### Zone
 
-An L2 blockchain that defines its own state but uses the Logos Blockchain for consensus. See [About Zones](../blockchain/concepts/about-zones.md).
+An L2 blockchain that defines its own state and execution environment but uses the Logos Blockchain for consensus and data availability. See [About Zones](../blockchain/concepts/about-zones.md).

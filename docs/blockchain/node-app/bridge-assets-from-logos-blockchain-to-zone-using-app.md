@@ -69,7 +69,7 @@ The wizard collects the deposit payload across two input steps and a review step
 
    - **Next** is enabled once the channel ID, change account, at least one funding account, and max fee are present, and any metadata entered is valid base58. Click **Next**.
 
-   ![Step 2 of 4 with LEZ testnet selected](../assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step2.png)
+   ![Step 2 of 4 with the LEZ testnet channel ID and a LEZ account ID in Metadata](../assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step2.png)
 
 1. On **Step 3 of 4**, review the exact payload: channel ID, notes to consume and total amount, change and funding public keys, max transaction fee, metadata, and tip. Then click **Confirm & deposit**.
 

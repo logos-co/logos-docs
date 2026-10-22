@@ -19,7 +19,7 @@ sidebar_position: 1
 This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
-[Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats all day: build the [`.lgx`](../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide covers that loop, including running two instances side by side to exercise peer-to-peer features.
+[Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats often: build the [`.lgx`](../../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide describes that loop, including running two instances side by side to exercise peer-to-peer features.
 
 :::info[Prerequisites]
 
@@ -60,7 +60,7 @@ This document is accurate for `logos-scaffold` **0.4.0** built from `master` at 
 
    This installs `logos-scaffold` and its shorter alias `lgs`. They are functionally identical; this guide uses `lgs`.
 
-   The `basecamp` commands behave the same in the `logos-scaffold` 0.4.0 release on [crates.io](https://crates.io/crates/logos-scaffold), so `cargo install logos-scaffold` also works for this guide. Use the pinned commit if you also follow [Write and deploy an LEZ program with `logos-scaffold`](../../lez/programs/write-and-deploy-lez-program-with-scaffold.md).
+   The `basecamp` commands behave the same in the `logos-scaffold` 0.4.0 release on [crates.io](https://crates.io/crates/logos-scaffold), so `cargo install logos-scaffold` also works for this guide. Use the pinned commit if you also follow [Write and deploy an LEZ program with `logos-scaffold`](../../../lez/programs/write-and-deploy-lez-program-with-scaffold.md).
 
 1. Confirm the install:
 
@@ -89,14 +89,13 @@ Run these commands from the root of your module project.
    `init` overwrites an existing `AGENTS.md` at the project root without prompting, and unlike `scaffold.toml` it leaves no `.bak` copy. If your project already has an `AGENTS.md`, commit it or copy it somewhere safe before you run `init`, then merge your content back into the new file.
    :::
 
-1. Pin and build Basecamp and [`lgpm`](../../get-started/glossary.md#lgpm), and seed the `alice` and `bob` profiles:
+1. Pin and build Basecamp and [`lgpm`](../../../get-started/glossary.md#lgpm), and seed the `alice` and `bob` profiles:
 
    ```bash
    lgs basecamp setup
    ```
 
-   - The first run evaluates and builds a lot; later runs reuse the build and print `basecamp (.#app) already built at /nix/store/…; skipping nix build`.
-   - Projects still on the default pins of an earlier scaffold release, such as Basecamp 0.2.3, are moved to the 0.3.0 set first, one printed line per change. See [Pinned versions](../about-logos-scaffold.md#pinned-versions).
+   - The first run evaluates and builds for a long time; later runs reuse the build and print `basecamp (.#app) already built at /nix/store/…; skipping nix build`.
    - Neither binary lands on your `PATH`; both live under scaffold's [cache root](../about-logos-scaffold.md#project-layout). Build logs go to `.scaffold/logs/<timestamp>-setup-*.log`.
 
    If the build fails with `signal: 9 (SIGKILL)`, the machine ran out of memory. See [Basecamp setup is killed](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#basecamp-setup-is-killed).
@@ -164,7 +163,7 @@ Run these commands from the root of your module project.
 
    `launch` stops the instance this profile started last time, removes the profile's data and cache, rebuilds and reinstalls every captured module, and starts Basecamp with the profile's [launch environment](../reference/logos-scaffold-basecamp-configuration-reference.md#launch-environment). It fails before deleting anything if `[modules]` is empty or the profile's runtime directory cannot be used.
 
-   - Before starting Basecamp it prints a variant check of the installed core modules, such as `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`. The count covers core modules only, so a project of QML-only modules reports `0 module(s)`.
+   - Before starting Basecamp, it prints a variant check of the installed core modules, such as `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`. The count covers core modules only, so a project of QML-only modules reports `0 module(s)`.
    - Add `--log-file` to also write the output to `.scaffold/basecamp/profiles/<profile>/basecamp.log`, or `--log-file=PATH` to pick the file.
 
 1. Confirm your module appears in the Basecamp window. A UI module gets an entry in the sidebar, showing its icon, or its initials when it ships none; click it to open the module.
@@ -177,7 +176,7 @@ To see the directories and environment a profile resolves without launching it, 
 
 ## Step 5: Iterate on a source change
 
-Building a module does not update a running Basecamp. Basecamp loads modules once, at startup, from the copies installed in its base directory, so a rebuilt `.lgx` reaches a running instance only after it is reinstalled there and Basecamp restarts.
+Building a module does not update a running Basecamp instance. Basecamp loads modules once, at startup, from the copies installed in its base directory, so a rebuilt `.lgx` reaches a running instance only after it is reinstalled there and Basecamp restarts.
 
 1. Edit your source. If you add a file, stage it before the next build:
 
@@ -285,14 +284,14 @@ Profiles run the Basecamp build that `basecamp setup` pinned. To test your modul
 
     **Expected result:** scaffold prints the built packages in load order and links them into `.scaffold/basecamp/portable/` as `<NN>-<module_name>.lgx`.
 
-1. In the released Basecamp, install each package through its install button, in the printed order.
+1. In the released Basecamp instance, install each package through its install button, in the printed order.
 
-To run a portable Basecamp in your scaffold profiles instead, set `attr` in `[repos.basecamp]`; see [`[repos.basecamp]` and `[repos.lgpm]`](../reference/logos-scaffold-basecamp-configuration-reference.md#reposbasecamp-and-reposlgpm).
+To run a portable Basecamp instance in your scaffold profiles instead, set `attr` in `[repos.basecamp]`; see [`[repos.basecamp]` and `[repos.lgpm]`](../reference/logos-scaffold-basecamp-configuration-reference.md#reposbasecamp-and-reposlgpm).
 
 ## Next steps
 
 - [Troubleshoot Logos module development with Basecamp](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md)
 - [Logos Scaffold Basecamp configuration reference](../reference/logos-scaffold-basecamp-configuration-reference.md)
 - [About Logos Scaffold](../about-logos-scaffold.md)
-- [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md)
-- [Write and deploy an LEZ program with `logos-scaffold`](../../lez/programs/write-and-deploy-lez-program-with-scaffold.md), for the other half of scaffold's surface
+- [Install and load a module in Logos Basecamp](../../../basecamp/install-and-load-a-module-in-logos-basecamp.md)
+- [Write and deploy an LEZ program with `logos-scaffold`](../../../lez/programs/write-and-deploy-lez-program-with-scaffold.md), for the other half of scaffold's surface

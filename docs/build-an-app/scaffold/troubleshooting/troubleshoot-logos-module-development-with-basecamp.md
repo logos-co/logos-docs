@@ -434,4 +434,4 @@ lgs basecamp install --print-output
 - [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md)
 - [Logos Scaffold Basecamp configuration reference](../reference/logos-scaffold-basecamp-configuration-reference.md)
 - [About Logos Scaffold](../about-logos-scaffold.md)
-- [Build and run a Logos core module](../../core/build-modules/build-and-run-a-logos-core-module.md)
+- [Build and run a Logos core module](../../../core/build-modules/build-and-run-a-logos-core-module.md)

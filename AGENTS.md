@@ -17,7 +17,7 @@ Several pages under `docs/` (notably `docs/basecamp/swap-eth-and-lez-tokens-in-l
 
 For the swap page specifically, ground truth lives in `logos-co/eth-lez-atomic-swaps` at the `swap_ui-vX.Y.Z` tags: `swap-ui/src/qml/SetupSteps.js` derives the Setup step order, titles, numbering and page subtitle for both onboarding flows, `swap-ui/src/qml/SetupView.qml` holds the card copy, and `docs/DEVELOPMENT.md` documents which flow ships by default. Read those at the tag rather than the repo's working tree, since `master` can be ahead of the released catalogue build.
 
-The `docs/scaffold/` pages and the LEZ scaffold guide describe `logos-co/scaffold` at a release tag (its `docs/commands.md`, `docs/basecamp-module-requirements.md`, and `src/constants.rs` for pins). Version-specific facts are concentrated in the version banners, the Pinned versions table on the About page, and the Basecamp configuration reference page; update those first on a scaffold release. Claims about runtime behaviour (install errors, launch environment, builder compatibility) have been wrong when taken from code alone, so confirm them with a real run before editing.
+The `docs/build-an-app/scaffold/` pages and the LEZ scaffold guide describe `logos-co/scaffold` at a release tag (its `docs/commands.md`, `docs/basecamp-module-requirements.md`, and `src/constants.rs` for pins). Version-specific facts are concentrated in the version banners, the Pinned versions table on the About page, and the Basecamp configuration reference page; update those first on a scaffold release. Claims about runtime behaviour (install errors, launch environment, builder compatibility) have been wrong when taken from code alone, so confirm them with a real run before editing.
 
 ## Public URLs and renames
 

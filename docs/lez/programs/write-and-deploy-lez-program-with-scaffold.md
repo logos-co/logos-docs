@@ -23,7 +23,7 @@ This document is accurate for `logos-scaffold` **0.4.0** built from `master` at 
 
 [`logos-scaffold`](https://github.com/logos-co/scaffold) is a project scaffold and CLI tool that manages the full lifecycle of a [LEZ](../../get-started/glossary.md#lez) guest [program](../../get-started/glossary.md#program)—from project creation to deployment. It pins LEZ and SPEL dependencies, builds a project-local sequencer, and handles wallet interactions, so you can focus on writing your program logic.
 
-This guide walks each stage separately so you can see what the tool does. Once the pieces are familiar, [`logos-scaffold run`](#use-logos-scaffold-run-for-the-inner-loop) chains them into a single command. For what else scaffold manages, including Basecamp modules, see [About Logos Scaffold](../../scaffold/about-logos-scaffold.md).
+This guide walks each stage separately so you can see what the tool does. Once the pieces are familiar, [`logos-scaffold run`](#use-logos-scaffold-run-for-the-inner-loop) chains them into a single command. For what else scaffold manages, including Basecamp modules, see [About Logos Scaffold](../../build-an-app/scaffold/about-logos-scaffold.md).
 
 :::info[Prerequisites]
 
@@ -313,7 +313,7 @@ Hooks run through `sh -c` from the project root with these variables set:
 | `SCAFFOLD_PROGRAMS` | Space-separated names of the project's deployable programs. |
 | `SCAFFOLD_PROGRAM_ID`, `SCAFFOLD_GUEST_BIN` | The deployed program's image ID and guest binary. Set only when the project has exactly one deployable program, so a multi-program project fails loudly instead of picking the wrong one. |
 
-`run` covers the deploy loop only. It does not run any `basecamp` command; for that side of scaffold see [Develop a Logos module with Logos Scaffold](../../scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md).
+`run` covers the deploy loop only. It does not run any `basecamp` command; for that side of scaffold see [Develop a Logos module with Logos Scaffold](../../build-an-app/scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md).
 
 ## Deploy to the testnet
 
@@ -327,8 +327,8 @@ To deploy to the testnet today, set up a standalone wallet as described in [Run 
 
 ## Related documentation
 
-- [About Logos Scaffold](../../scaffold/about-logos-scaffold.md)
-- [Develop a Logos module with Logos Scaffold](../../scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md)
-- [Troubleshoot Logos module development with Basecamp](../../scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md)
+- [About Logos Scaffold](../../build-an-app/scaffold/about-logos-scaffold.md)
+- [Develop a Logos module with Logos Scaffold](../../build-an-app/scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md)
+- [Troubleshoot Logos module development with Basecamp](../../build-an-app/scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md)
 - [Run the LEZ wallet via CLI](../get-started/run-lez-wallet-via-cli.md)
 - [Scaffold command reference](https://github.com/logos-co/scaffold/blob/master/docs/commands.md) and [`scaffold.toml` run configuration](https://github.com/logos-co/scaffold/blob/master/docs/configuration.md) in the scaffold repository

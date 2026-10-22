@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3**.
 :::
 
-The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md) or from [**Basecamp**](../../get-started/glossary.md#basecamp), the modular Logos desktop app, by installing the blockchain module and its UI.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md) or from [**Basecamp**](../../get-started/glossary.md#basecamp), the local-first launcher for peer-to-peer apps built on Logos, by installing the blockchain module and its UI.
 
 This procedure covers running the Logos Blockchain app via Basecamp, setting up a node through the onboarding wizard, confirming that it syncs, and funding its wallet so it can propose blocks.
 

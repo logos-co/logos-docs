@@ -42,7 +42,7 @@ const choosePath: CardItem[] = [
 const exploreLogos: CardItem[] = [
   {
     title: 'λ Basecamp',
-    description: 'The desktop shell for Logos',
+    description: 'A local-first launcher for peer-to-peer apps built on Logos',
     to: '/basecamp',
   },
   {

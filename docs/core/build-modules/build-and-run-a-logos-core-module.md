@@ -433,7 +433,7 @@ Check out [Logos CLI Reference](../reference/logos-cli-reference.md) for more de
 
 ### Run with Logos Basecamp
 
-Logos [Basecamp](../../get-started/glossary.md#basecamp) is a desktop shell that provides a graphical interface for managing and running modules. Its **Module Inspector** lists every loaded core module and lets you call its methods, so you can try your module without writing a UI module for it.
+Logos [Basecamp](../../get-started/glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos, with a graphical interface for managing and running modules. Its **Module Inspector** lists every loaded core module and lets you call its methods, so you can try your module without writing a UI module for it.
 
 These steps use a development build of Logos Basecamp, which installs the development package from Step 5, with a data directory of its own. To use the released Logos Basecamp instead, install the portable package as described in [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
 

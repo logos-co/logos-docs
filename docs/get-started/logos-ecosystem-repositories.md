@@ -30,7 +30,7 @@ These repositories explain what Logos is building and how to take part, with no 
  
 ## Logos Basecamp
 
-Logos [Basecamp](glossary.md#basecamp) is the desktop shell for Logos.
+Logos [Basecamp](glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos.
 
 | Repository | Description |
 |:---|:---|

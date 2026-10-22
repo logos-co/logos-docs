@@ -24,7 +24,7 @@ In the context of Logos modules, a user-facing bundle of a UI package combined w
 
 ### Basecamp
 
-The desktop shell for Logos, which facilitates installing and running Logos modules and apps.
+A local-first launcher for peer-to-peer apps built on Logos, which facilitates installing and running Logos modules and apps.
 
 ### Bedrock
 

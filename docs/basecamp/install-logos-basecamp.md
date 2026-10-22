@@ -21,7 +21,7 @@ import YouTube from '@site/src/components/YouTube';
 This document is accurate for **Testnet v0.3.1**.
 :::
 
-Logos [Basecamp](../get-started/glossary.md#basecamp) is the desktop shell for Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and [apps](../get-started/glossary.md#app) using its graphical interface as an alternative to the command line.
+Logos [Basecamp](../get-started/glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos. You can discover, install, and run Logos [modules](../get-started/glossary.md#module) and [apps](../get-started/glossary.md#app) using its graphical interface as an alternative to the command line.
 
 You can install Logos Basecamp in two ways:
 

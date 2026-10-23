@@ -58,7 +58,7 @@ Make sure your hardware meets the following requirements for running a blockchai
 
 To run a Blend node, make sure you have:
 - A stable and accessible external IP.
-- A stable, low-latency connection (10 Mbps+ recommended) to handle multiple concurrent connections (recommended). This is beneficial for effective message blending and timing obfuscation.
+- A stable, low-latency connection (10 Mbps+ recommended) to handle multiple concurrent connections (recommended). This is beneficial for effective message blending and random delays.
 :::
 
 ## What to expect

@@ -31,7 +31,7 @@ Instead, follow the CLI instructions below, but navigate to your Basecamp Logos 
 
 - [A running blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md).
 - A publicly reachable IP and port (or DNS) combination for the node.
-- Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation.
+- Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and random delays.
 :::
 
 ## What to expect

@@ -18,7 +18,7 @@ sidebar_position: 1
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-The [Bedrock](../../get-started/glossary.md#bedrock) layer is the basis on top of which the broader [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is built, operating as a large and decentralised peer-to-peer blockchain network. Bedrock functions as a solid foundation for [Zones](./about-zones.md) built on Logos, allowing Zone applications to leverage the Logos Blockchain's consensus guarantees. Bedrock also facilitates interoperability between Zones and Bedrock itself with support for asynchronous messaging and token bridging. By handling the logic allowing several parties to participate in sequencing a Zone, Bedrock contributes to the decentralisation of the Logos stack.
+The [Bedrock](../../get-started/glossary.md#bedrock) layer is the basis on top of which the broader [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is built, operating as a large and decentralised peer-to-peer blockchain network. Bedrock functions as a solid foundation for [Zones](./about-zones.md) built on Logos, allowing Zone applications to leverage the Logos Blockchain's consensus guarantees. Bedrock also supports interoperability between Zones and Bedrock itself with support for asynchronous messaging and token bridging. By handling the logic allowing several parties to participate in sequencing a Zone, Bedrock contributes to the decentralisation of the Logos stack.
 
 ## The basics
 

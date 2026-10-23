@@ -16,15 +16,15 @@ sidebar_position: 1
 
 **Logos is a toolbox for building decentralised applications requiring privacy, composability, and resilience.** As a modular, microkernel-based technology stack, its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
 
-Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](glossary.md#peer-discovery), connection management, and privacy-preserving communication through a mixnet. Above that sit the **[modules](glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **[apps](glossary.md#app)** that compose these modules into applications.
+Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](glossary.md#peer-discovery), connection management, and privacy-preserving communication through a mixnet. Above that sit the **[modules](glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **[apps](glossary.md#app)** that compose these modules into usable products.
 
 Logos ships with a default configuration consisting of the runtime plus storage, messaging, and blockchain modules. This configuration is not fixed: developers can assemble other distributions from a different selection of modules.
 
 ## The basics
 
-- Logos is organised into four layers: a runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and decentralised applications on top that compose those modules.
+- Logos is organised into four layers: a runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and applications on top that are composed of those modules.
 - [Logos Basecamp](../basecamp/install-logos-basecamp.md) is a local-first launcher for peer-to-peer apps built on Logos, and the default entry point to the stack. It runs the Logos runtime locally, loads a configured module profile, and provides a unified interface. The **Logos Node** runs the same runtime without a user interface, for validators, operators, or backend services.
-- Privacy is implemented at the infrastructure layer rather than the application layer. An application built on Logos inherits metadata protection and support for private state regardless of whether its developer has implemented anonymity measures directly.
+- An application built on Logos inherits metadata protection and support for private state from the infrastructure layer regardless of whether its developer has implemented privacy-preserving measures directly.
 
 ## Design principles
 
@@ -52,13 +52,13 @@ This separation allows individual modules to be developed, tested, and updated i
 
 ### The networking layer
 
-The networking layer sits above the runtime and is represented in the stack as discovery, peering, and mixnet. It determines how Logos nodes locate one another, establish connections, and exchange messages. Unlike a conventional networking stack, this layer is designed to prevent observers from determining who is communicating with whom, as a property of the network rather than of any individual application.
+The networking layer sits above the runtime and is represented in the stack as discovery, peering, and mixnet. It determines how Logos nodes locate one another, establish connections, and exchange messages. Unlike a conventional networking stack, this layer is designed to protect the privacy of communications between participants, as a property of the network rather than of any individual application.
 
 This layer comprises several components. **Service Discovery** allows a node to locate other nodes that offer a required capability without consulting a central directory. It adapts the DISC-NG protocol for use with libp2p's Kademlia-DHT: each node publishes a signed record describing its address and capabilities, and other nodes query for records that match the capabilities they require without participating in the full distributed hash table.
 
 **The libp2p mixnet** is the privacy-preserving transport layer, based on the design principles used in anonymity networks such as Tor and Nym. Messages are routed through a sequence of intermediary relay nodes that shuffle and delay traffic before forwarding it, preventing an observer from correlating senders with receivers using timing or volume analysis. The protocol supports both one-way messages and request-response interactions, and includes cover traffic to maintain a sufficient set of plausible senders.
 
-**RLN and Zerokit** add spam protection to the anonymous network. A Rate Limiting Nullifier allows each network participant to send messages up to a defined rate while remaining anonymous. If a participant exceeds that rate, the protocol reveals their identity, allowing them to be slashed or removed. This cryptography is implemented in [Zerokit](https://github.com/vacp2p/zerokit) and is used both for denial-of-service protection on the mixnet and for rate limiting within Logos Delivery.
+**RLN and Zerokit** add spam protection to the network. A Rate Limiting Nullifier allows each network participant to send messages up to a defined rate while remaining anonymous. If a participant exceeds that rate, the protocol reveals their identity, allowing them to be slashed or removed. This cryptography is implemented in [Zerokit](https://github.com/vacp2p/zerokit) and is used both for denial-of-service protection on the mixnet and for rate limiting within Logos Delivery.
 
 **De-MLS** extends private messaging from one-to-one conversations to group conversations. It is a decentralised implementation of Messaging Layer Security in which a group is managed by multiple stewards rather than a single administrator.
 
@@ -68,7 +68,7 @@ The networking layer is itself packaged as a module and loaded by the runtime in
 
 Modules are self-contained components that sit above the networking layer, each providing a defined capability. Logos includes three foundational modules, and the architecture supports the addition of further modules.
 
-The [**Blockchain**](../blockchain/introduction-to-the-logos-blockchain.md) module provides decentralised compute and consensus. It is built on **[Cryptarchia](glossary.md#cryptarchia)**, a private proof-of-stake consensus mechanism in which block proposers cannot be linked to their proposals, with additional privacy by the **[Blend Network](glossary.md#blend-network)**. The **Logos Execution Zone (LEZ)**, a Layer 2 execution environment, supports [program](glossary.md#program) deployment with both public and private [account](glossary.md#account) states.
+The [**Blockchain**](../blockchain/introduction-to-the-logos-blockchain.md) module provides decentralised compute and consensus. It is built on **[Cryptarchia](glossary.md#cryptarchia)**, a private proof-of-stake consensus mechanism that makes it computationally infeasible for block proposers to be linked to their proposals, with stronger privacy provided by the **[Blend Network](glossary.md#blend-network)**. The **Logos Execution Zone (LEZ)**, a Layer 2 execution environment, supports [program](glossary.md#program) deployment with both public and private [account](glossary.md#account) states.
 
 The [**Messaging**](../messaging/introduction-to-logos-messaging.md) module provides private, censorship-resistant communication between parties and consists of two components. [Logos Delivery](https://github.com/logos-messaging/logos-delivery) provides the [transport](glossary.md#transport) layer, implementing publish-subscribe messaging for reliable delivery. [Logos Chat](https://github.com/logos-messaging/logos-chat) uses Delivery as its transport and provides encrypted one-to-one conversations, implemented with double-ratchet encryption, with support for group conversations under development using de-MLS.
 

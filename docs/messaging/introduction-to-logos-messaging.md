@@ -11,7 +11,7 @@ sidebar_position: 0
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-[Logos Messaging](../get-started/glossary.md#logos-messaging) is the messaging layer of the Logos technology stack. It lets applications send messages, relay data, and coordinate with one another without relying on centralised servers or exposing metadata to surveillance. It uses a peer-to-peer relay network where messages propagate across nodes with no central broker, supporting private one-to-one messaging, group messaging, and public broadcast channels.
+[Logos Messaging](../get-started/glossary.md#logos-messaging) is the messaging layer of the Logos technology stack. It lets applications send messages, relay data, and coordinate with one another without relying on centralised servers or exposing metadata. It uses a peer-to-peer relay network where messages propagate across nodes with no central broker, supporting private one-to-one messaging, group messaging, and public broadcast channels.
 
 ## The basics
 
@@ -54,4 +54,4 @@ Logos Messaging's [security guarantees](concepts/understand-logos-delivery-secur
 
 ### Logos Messaging and libp2p
 
-Logos Messaging is [built on top of libp2p](concepts/learn-the-differences-between-logos-delivery-and-libp2p.md) and shares much of its terminology, but it goes further in two ways. It is a service network: developers can use it without deploying their own infrastructure, though anyone can choose to run a node to help decentralise the network. It is also a turnkey solution for privacy-preserving, censorship-resistant, platform-agnostic messaging, including out-of-the-box support for offline and resource-limited devices through Store, Filter, and Light Push, plus economic spam protection through RLN Relay, which libp2p does not provide on its own.
+Logos Messaging is [built on top of libp2p](concepts/learn-the-differences-between-logos-delivery-and-libp2p.md) and shares much of its terminology, but it goes further in two ways. Developers can use it without deploying their own infrastructure, though anyone can choose to run a node to help decentralise the network. It is also a turnkey solution for privacy-preserving, censorship-resistant, platform-agnostic messaging, including out-of-the-box support for offline and resource-limited devices through Store, Filter, and Light Push, plus economic spam protection through RLN Relay, which libp2p does not provide on its own.

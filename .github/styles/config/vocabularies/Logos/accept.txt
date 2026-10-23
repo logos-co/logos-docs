@@ -115,6 +115,7 @@ impl
 indexer
 initializer
 instruction's
+[Ii]ntegrator(s|'s)?
 IPs
 ISPs
 journald

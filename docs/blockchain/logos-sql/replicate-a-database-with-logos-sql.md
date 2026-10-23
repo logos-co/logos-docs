@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Run the password-manager example and follow its SQL writes between two local databases.
 
 :::tip[Version]
-This guide uses the source on `master`, not a tagged release. Build the example and the node from the same revision for a local test network. Compatibility with a deployed test network must be checked separately.
+This guide was tested on a local network with the example and node built from revision `47a65ab3c`.
 :::
 
 This guide uses the [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/master/logos_sql/examples/password_manager) maintained in the node repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.

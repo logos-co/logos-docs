@@ -111,6 +111,8 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
 
    Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. If you funded the `PoWClaim` key, use the hexadecimal value at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml` as the funding key. The example does not create or fund a wallet.
 
+   This walkthrough was tested on the public testnet with `blockchain_module` version `0.3.2`, example source at commit `f8b3816` and `LOGOS_SQL_MAX_TX_FEE=1000000`. This value is a fee cap, not a fixed charge. Required fees can change with network conditions.
+
 1. Start the application with its own state directory:
 
    ```bash

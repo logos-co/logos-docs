@@ -35,8 +35,8 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
 - The OpenSSL command-line tool to generate an encryption key for the example.
-- A running, compatible Logos Blockchain node with a reachable HTTP API.
-- A channel reserved for this example, an authorised Ed25519 signing key and a funded public key for inscription fees.
+- A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) to set one up.
+- A funded key in the node's wallet for inscription fees. Follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key.
 - A maximum inscription fee appropriate for your test network.
 
 :::

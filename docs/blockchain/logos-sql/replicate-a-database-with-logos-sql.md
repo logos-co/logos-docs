@@ -263,6 +263,8 @@ This step applies if channel history changes and the application reports displac
 
 1. In terminal B, run `show email` until it prints `credential not found`.
 
+   If the entry keeps appearing, run `displacements` in terminal A. If the removal is listed, review it as described in [Step 6](#step-6-review-a-displaced-write).
+
 1. Enter `exit` in both terminals. The example calls `shutdown().await` to stop replication. Shutdown does not wait for finality.
 
 1. Restart either instance with its original command and state directory, then enter `list`.

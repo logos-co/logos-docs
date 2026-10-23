@@ -34,7 +34,7 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 :::info[Prerequisites]
 
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
-- The OpenSSL command-line tool to generate an encryption key for the example.
+- The OpenSSL command-line tool to generate keys for the example.
 - A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) to set one up.
 - A funded key in the node's wallet for inscription fees. Follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key.
 - A maximum inscription fee appropriate for your test network.
@@ -75,7 +75,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
 
 ## Step 2: Configure and start the application
 
-1. Generate a separate encryption key for this example:
+1. In terminal A, generate a separate encryption key for this example:
 
    ```bash
    (umask 077; openssl rand -out password-manager.key 32)
@@ -83,20 +83,33 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
 
    Run this once, before starting either instance. Do not overwrite an existing key. The file contains 32 random bytes, not a password or a hexadecimal string. Keep it private and backed up: without it, the encrypted data cannot be read. Do not use the channel signing key for encryption.
 
-1. In terminal A, set these values from your test-network setup:
+1. Generate a channel signing key:
+
+   ```bash
+   (umask 077; openssl genpkey -algorithm ed25519 -out channel-signing.pem)
+   ```
+
+   Generate this key only once and keep the file private. Do not overwrite it when restarting or adding a participant. Its public key identifies the new channel; you do not need to create the channel separately.
+
+1. Extract the signing key and channel ID in the hexadecimal format the example accepts:
+
+   ```bash
+   export LOGOS_SQL_SIGNING_KEY=$(openssl pkey -in channel-signing.pem -outform DER | tail -c 32 | od -An -tx1 | tr -d ' \n')
+   export LOGOS_SQL_CHANNEL_ID=$(openssl pkey -in channel-signing.pem -pubout -outform DER | tail -c 32 | od -An -tx1 | tr -d ' \n')
+   ```
+
+   These are 32-byte values without a `0x` prefix. See the [Zone SDK channel setup](../zone-sdk/inscribe-data-on-chain-using-zone-sdk.md#step-2-initialise-the-zonesequencer-struct) for channel identity and signing authority.
+
+1. Set the remaining values from your test-network setup:
 
    ```bash
    export LOGOS_SQL_NODE_URL='<node-http-url>'
-   export LOGOS_SQL_CHANNEL_ID='<channel-id-hex>'
-   export LOGOS_SQL_SIGNING_KEY='<signing-key-hex>'
    export LOGOS_SQL_FUNDING_KEY='<funding-public-key-hex>'
    export LOGOS_SQL_MAX_TX_FEE='<maximum-fee>'
    export LOGOS_SQL_ENCRYPTION_KEY_FILE="$PWD/password-manager.key"
    ```
 
-   Replace every angle-bracket placeholder. The channel ID and signing key are 32-byte hexadecimal values without a `0x` prefix. The funding key uses the hexadecimal public-key encoding from your funding setup. Keep the signing key private.
-
-   See the [Zone SDK channel setup](../zone-sdk/inscribe-data-on-chain-using-zone-sdk.md#step-2-initialise-the-zonesequencer-struct) for channel identity and signing authority. The example does not create or fund a wallet.
+   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. If you funded the `PoWClaim` key, use the hexadecimal value at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml` as the funding key. The example does not create or fund a wallet.
 
 1. Start the application with its own state directory:
 
@@ -168,7 +181,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
 
 ## Step 4: Read from another participant
 
-1. In terminal B, enter the same source checkout and set the environment variables from step 2. For this local demonstration, use the same test channel, credentials and encryption key file. Do not generate another encryption key. On separate machines, each instance needs a securely transferred copy of the same key.
+1. In terminal B, enter the same source checkout and repeat only the `export` commands from step 2. They reuse the existing `channel-signing.pem` and `password-manager.key` files. Do not generate new keys: both instances must use the same channel and encryption key. On separate machines, each instance needs a securely transferred copy of the encryption key.
 
    The example has no read-only startup mode: both instances have writer credentials, even when you only issue read commands. Keep these test credentials on your own machine.
 

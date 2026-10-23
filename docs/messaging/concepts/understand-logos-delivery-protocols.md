@@ -28,7 +28,7 @@ This document reflects the state of this Logos component as it will exist on mai
 
 ## Relay
  
-[`Relay` protocol](https://lip.logos.co/messaging/core/stable/11/relay.html) employs a Pub/Sub architecture to facilitate the sending and receiving of messages among peers. It extends the [libp2p GossipSub protocol](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md) to create a privacy-focused peer-to-peer messaging protocol that enables secure communication channels, encryption, and protection against censorship.
+[`Relay` protocol](https://lip.logos.co/messaging/core/stable/11/relay.html) employs a Pub/Sub architecture to support the sending and receiving of messages among peers. It extends the [libp2p GossipSub protocol](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md) to create a privacy-focused peer-to-peer messaging protocol that enables secure communication channels, encryption, and protection against censorship.
 
 ## RLN Relay
  

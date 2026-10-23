@@ -16,7 +16,7 @@ sidebar_position: 3
 
 # Run a Mix network of storage nodes
 
-#### Stand up a local Mix network and download a file through it, with the content lookup anonymised.
+#### Stand up a local Mix network and download a file through it, with the content lookup routed through Mix for privacy.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
@@ -39,7 +39,7 @@ This procedure stands up a small local [Mix](../concepts/mix.md) network using `
 ## What to expect
 
 - You can run several `logosctl` daemons side by side, each in its own session (`--config-dir`).
-- You can set up a private Mix network and configure storage nodes to anonymise their lookups through it.
+- You can set up a private Mix network and configure storage nodes to route their lookups through it for privacy.
 - You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
 
 ## Download and install the storage module

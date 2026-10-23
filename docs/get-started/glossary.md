@@ -386,6 +386,10 @@ The address assigned to an LEZ program, also known as a **PDE**. See [Introducti
 
 The ZK proof that a note's owner is eligible to propose a block. Also known as **PoL**. See [About Cryptarchia](../blockchain/concepts/about-cryptarchia.md).
 
+### Proposer privacy
+
+The difficulty of linking a block proposer on the Logos Blockchain to the block they proposed. See [Blockchain FAQ](../blockchain/faq-logos-blockchain.md#how-is-the-logos-blockchain-private-if-mantle-notes-are-public-utxos).
+
 ### Public account
 
 A type of LEZ account whose state is publicly available. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
@@ -409,6 +413,10 @@ The **Service Declaration Protocol** - used to keep track of Logos Blockchain no
 ### Sealing keys
 
 A key pair used by users of a shared LEZ account, together with the Group Master Secret, to derive a local instance of a shared account. See [Set up a shared private LEZ account](../lez/accounts/set-up-shared-private-lez-account.md).
+
+### Service
+
+An opt-in protocol of the Logos Blockchain that requires a known and agreed-upon list of participants to function. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md#service-declaration-protocol).
 
 ### Service Declaration Protocol
 

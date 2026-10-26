@@ -336,6 +336,10 @@ The imported private keys are public test keys from the debug configuration, so 
 
 ## Troubleshooting
 
+### Step 1 panics with `Failed to execute genesis transaction: ProgramExecutionFailed("No such file or directory (os error 2)")`
+
+`r0vm`, the Risc0 zkVM the guest programs run in, is not installed or not on `PATH`. The build succeeds without it and only the genesis execution fails, so this appears after the full release build. Run `r0vm --version` - it should report `risc0-r0vm 3.0.5`, matching the `risc0-zkvm` version the repository pins. If the command is missing, run `rzup install` again and make sure `~/.risc0/bin` is on your `PATH`.
+
 ### The wallet prints `Incorrect fee`
 
 The sequencer refused the transaction at admission, and the payer's nonce didn't advance. The error gives no further detail. The usual causes are:

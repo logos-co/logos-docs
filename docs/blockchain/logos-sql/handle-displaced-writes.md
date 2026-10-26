@@ -17,6 +17,10 @@ sidebar_position: 2
 
 #### Find out why a write was blocked, review displaced writes and decide how to continue.
 
+:::tip[Version]
+This document is accurate for **Testnet v0.3**.
+:::
+
 A write can succeed in your local database but later be removed: another writer may publish before it, or a blockchain reorganisation may replace the branch containing it. Logos SQL reports that write as displaced and blocks new writes until the application has reviewed it.
 
 Review does not have to involve a user. An application can automatically retry writes designed to remain safe after other changes, or mark them handled if they are no longer needed. The [password-manager example](replicate-a-database-with-logos-sql.md) leaves retry decisions to the user.

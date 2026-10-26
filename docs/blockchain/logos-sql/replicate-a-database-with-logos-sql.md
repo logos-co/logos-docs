@@ -18,7 +18,7 @@ sidebar_position: 1
 #### Run the password-manager example and follow its SQL writes between two local databases.
 
 :::tip[Version]
-This guide was tested on a local network with the example and node built from revision `47a65ab3c`.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This guide uses the [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/master/logos_sql/examples/password_manager) maintained in the node repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
@@ -56,7 +56,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    ```bash
    git clone https://github.com/logos-blockchain/logos-blockchain.git
    cd logos-blockchain
-   git checkout master
+   git checkout 47a65ab3c
    ```
 
 1. Build the password manager:
@@ -89,7 +89,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    (umask 077; openssl genpkey -algorithm ed25519 -out channel-signing.pem)
    ```
 
-   Generate this key only once and keep the file private. Do not overwrite it when restarting or adding a participant. Its public key identifies the new channel; you do not need to create the channel separately.
+   Generate this key only once and keep the file private. Do not overwrite it when restarting or adding a participant. Its public key identifies the new [channel](../../get-started/glossary.md#channel); you do not need to create the channel separately.
 
 1. Extract the signing key and channel ID in the hexadecimal format the example accepts:
 
@@ -109,9 +109,9 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    export LOGOS_SQL_ENCRYPTION_KEY_FILE="$PWD/password-manager.key"
    ```
 
-   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. If you funded the `PoWClaim` key, use the hexadecimal value at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml` as the funding key. The example does not create or fund a wallet.
+   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`. On a local standalone node, which configures no auto-claim targets, use any funded key from the node's `wallet.known_keys`. The example does not create or fund a wallet.
 
-   This walkthrough was tested on the public testnet with `blockchain_module` version `0.3.2`, example source at commit `f8b3816` and `LOGOS_SQL_MAX_TX_FEE=1000000`. This value is a fee cap, not a fixed charge. Required fees can change with network conditions.
+   This walkthrough was tested with example source at commit `47a65ab3c` and `LOGOS_SQL_MAX_TX_FEE=1000000`. This value is a fee cap, not a fixed charge. Required fees can change with network conditions.
 
 1. Start the application with its own state directory:
 
@@ -274,6 +274,10 @@ This step applies if channel history changes and the application reports displac
    **Expected result:** it resumes from saved state and follows the channel. If the deletion remains in the current history, `email` is absent. A chain reorganisation can still change non-finalised data.
 
 ## Troubleshooting
+
+### Startup prints nothing and does not return
+
+`LogosSql::start` processes channel history before it returns, so the example stays silent for as long as it cannot reach the node. If the prompt never appears, check that the node is running, that it reports `mode: Online`, and that `LOGOS_SQL_NODE_URL` matches its `api.backend.listen_address`. The state directory is created before the first connection attempt, so finding database files there does not mean startup succeeded.
 
 ### A credential cannot be decrypted
 

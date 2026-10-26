@@ -121,7 +121,7 @@ Run every command in the following steps in a second terminal, from the reposito
 
    | Field | Meaning |
    |:---|:---|
-   | `height` | The block the quote applies to. |
+   | `height` | The block the quote applies to. It advances every 15 seconds while the sequencer runs, so expect a larger number than the sample above. |
    | `base_fee_exec` | Price of one cycle of execution gas. Starts at the minimum of `8`. |
    | `base_fee_stor` | Price of one byte of storage gas. Starts at the minimum of `8`. |
    | `next_base_fee_*_floor`, `next_base_fee_*_ceiling` | The range each base fee can move to in the next block. It moves by at most 12.5% per block, and by at least `1` when the previous block was above its target. |
@@ -164,7 +164,7 @@ A native transfer meters no execution gas, so it pays storage gas only. The wall
    **Expected result:** the wallet prints the transaction hash, the block that includes it, and the transaction data, which contains the fee declaration the wallet built:
 
    ```text
-   Transaction is included in block 3
+   Transaction is included in block <n>
    ... fee: Some(FeeDeclaration { payer: CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r, gas_limit: 2000000, tip: 0, max_fee: 134400000 }) ...
    ```
 

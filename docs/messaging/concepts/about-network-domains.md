@@ -28,7 +28,7 @@ This document reflects the state of this Logos component as it will exist on mai
 
 ## Discovery domain
  
-[Peer discovery](../../get-started/glossary.md#peer-discovery) in Logos Delivery facilitates locating other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](understand-peer-discovery/about-discv5.md) and [Peer Exchange](understand-peer-discovery/about-peer-exchange.md). These mechanisms allow developers to choose the most suitable options for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
+[Peer discovery](../../get-started/glossary.md#peer-discovery) in Logos Delivery lets nodes locate other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](understand-peer-discovery/about-discv5.md) and [Peer Exchange](understand-peer-discovery/about-peer-exchange.md). These mechanisms allow developers to choose the most suitable options for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
  
 ## Gossip domain
  
@@ -42,7 +42,7 @@ Logos Delivery provides a set of protocols to optimise its performance in resour
  
 - [Store](https://docs.waku.org/learn/concepts/protocols#store) enables the retrieval of historical messages.
 - [Filter](https://docs.waku.org/learn/concepts/protocols#filter) efficiently retrieves a subset of messages to conserve bandwidth.
-- [Light Push](https://docs.waku.org/learn/concepts/protocols#light-push) facilitates message publication for nodes with limited bandwidth and short connection windows.
+- [Light Push](https://docs.waku.org/learn/concepts/protocols#light-push) supports message publication for nodes with limited bandwidth and short connection windows.
  
 ## Overview of protocol interaction
  

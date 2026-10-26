@@ -56,15 +56,15 @@ Zones can implement almost anything, ranging from applications to virtual machin
 
 ### Logos Execution Zone
 
-The [Logos Execution Zone (LEZ)](../../lez/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It serves as the home for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the Logos Execution Zone, see the page below:
+The [Logos Execution Zone (LEZ)](../../lez/introduction-to-the-logos-execution-zone.md) is the flagship Zone on the Logos Blockchain. It is the initial Zone for applications built using the complete Logos stack, including its messaging and storage modules. It also provides support for private accounts and [program](../../get-started/glossary.md#program) execution, with the state being verified via zero knowledge proofs. For more information about the Logos Execution Zone, see the page below:
 
 ### Other uses
 
 In addition to the LEZ, anybody can make a Zone on Logos. The Logos Team has already prepared a [Zone SDK](https://github.com/logos-blockchain/logos-blockchain/tree/master/zone-sdk) that makes it easy to build a Logos Zone. Some possibilities of Sovereign Zone applications include:
 
-- Self-Sovereign Digital Nations/Communities: Logos Blockchain can power the core identity, communication, and governance layers for nascent digital nations. This would involve:
+- Self-Sovereign Digital Communities: Logos Blockchain can power the core identity, communication, and governance layers for online communities. This would involve:
   - Self-Sovereign Identity (SSI) Solutions: Users can control their digital identities and share verifiable credentials privately and selectively.
-  - Secure Communication Channels: The Logos ecosystem can be used to build encrypted and censorship-resistant collaboration tools for citizens of network states.
-  - Decentralised Justice Systems: Building frameworks for dispute resolution and legal agreements within a network state, potentially leveraging zero-knowledge proofs for privacy.
+  - Secure Communication Channels: The Logos ecosystem can be used to build encrypted and censorship-resistant collaboration tools for community members.
+  - Decentralised Dispute Resolution: Building frameworks for resolving disputes and recording agreements between community members, potentially leveraging zero-knowledge proofs for privacy.
 - Gaming Applications: Games often rely on rapid state changes to function correctly, making them ideal for implementation as Zone applications on Logos.
 - Small-scale Networked Applications: Networked applications can use the Logos Blockchain to store their state updates on-chain, with users recreating the state locally based on these updates. This makes the Logos Blockchain a low cost, easy alternative for self-hosting - especially for small-scale applications.

@@ -13,7 +13,7 @@ sidebar_position: 1
 
 # Send anonymised messages over the mix network
 
-#### Get started sending and receiving messages with sender anonymity using the Logos Chat UI.
+#### Get started sending and receiving messages with improved sender privacy using the Logos Chat UI.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.2.1**.
@@ -38,7 +38,7 @@ This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co
 
 ## What to expect
 
-- You can connect to the testnet-0.2 mix fleet and watch the status bar reach **MIX 5/4**, which confirms the mix node pool is ready for anonymous sends.
+- You can connect to the testnet-0.2 mix fleet and watch the status bar reach **MIX 5/4**, which confirms the mix node pool is ready for privacy-preserving sends.
 - You can exchange intro bundles between two instances and send messages that are routed sender-unlinkably through the 3-hop mixnet.
 - You can confirm end-to-end delivery by matching the sender's `Message sent via mix successfully` log with the recipient's `ChatBackend: New message: …` log.
 

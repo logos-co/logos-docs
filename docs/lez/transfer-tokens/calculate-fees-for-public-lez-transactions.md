@@ -60,7 +60,7 @@ This procedure runs a standalone sequencer on your machine, sends a native trans
    rzup install
    ```
 
-- [`just`](https://github.com/casey/just), `curl`, and `git`.
+- [`just`](https://github.com/casey/just) (**1.38 or later**), `curl`, and `git`.
 - About 30 minutes, most of it for the first release build.
 
 :::

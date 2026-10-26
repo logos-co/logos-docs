@@ -24,7 +24,7 @@ This document reflects the state of this Logos component as it will exist on mai
 
 - Mantle serves as Bedrock's execution layer, providing operations that allow nodes to participate in Bedrock Services, as well as an execution environment that allows for interactions between Zones and Bedrock.
 - Mantle maintains a limited ledger for fee payment, tracking fungible assets called notes with UTXO-based transactions.
-- Mantle supports channels, which enforce immediate transaction ordering for Zones and support decentralised sequencing and token bridging.
+- Mantle supports channels, which enforce immediate transaction ordering for Zones and facilitate decentralised sequencing and token bridging.
 
 ## Operations and transactions
 

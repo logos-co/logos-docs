@@ -1,5 +1,5 @@
 ---
-title: Send privacy-preserving messages over the mix network
+title: Send anonymised messages over the mix network
 doc_type: procedure
 product: mixnet
 topics: [chat, mix]
@@ -11,7 +11,7 @@ slug: send-anonymised-messages-over-the-mix-network
 sidebar_position: 1
 ---
 
-# Send privacy-preserving messages over the mix network
+# Send anonymised messages over the mix network
 
 #### Get started sending and receiving messages with improved sender privacy using the Logos Chat UI.
 

@@ -36,7 +36,7 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
 - The OpenSSL command-line tool to generate keys for the example.
 - A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) to set one up.
-- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use a funded key from its `wallet.known_keys` instead.
+- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use the funded genesis key from its `wallet.known_keys` instead, as [Step 2](#step-2-configure-and-start-the-application) sets out.
 - A maximum inscription fee appropriate for your test network.
 
 :::
@@ -399,7 +399,7 @@ This step applies if channel history changes and the application reports displac
 
 ### Startup prints nothing and does not return
 
-`LogosSql::start` processes channel history before it returns, so the example stays silent for as long as it cannot reach the node. If the prompt never appears, check that the node is running, that it reports `mode: Online`, and that `LOGOS_SQL_NODE_URL` matches its `api.backend.listen_address`. The state directory is created before the first connection attempt, so finding database files there does not mean startup succeeded.
+`LogosSql::start` processes channel history before it returns, so the example is silent while it catches up — a few minutes is normal on a local node, even when everything is configured correctly. If the prompt has not appeared after that, check that the node is running, that it reports `mode: Online`, and that `LOGOS_SQL_NODE_URL` matches its `api.backend.listen_address`. The state directory is created before the first connection attempt, so finding database files there does not mean startup succeeded.
 
 ### A credential cannot be decrypted
 

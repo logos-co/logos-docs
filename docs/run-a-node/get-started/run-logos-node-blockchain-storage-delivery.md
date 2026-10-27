@@ -19,6 +19,14 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3**.
 :::
 
+:::note
+This document describes how to run Blockchain, Storage, and Delivery nodes together via the CLI. To run these nodes separately (for example, just a Blockchain node or just a Storage node), see their respective tutorial pages:
+
+- [Run a Logos Blockchain Node from the CLI](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md)
+- [Run a Logos Delivery Node](../../messaging/delivery/run-logos-delivery-node.md)
+- [Run a Logos Storage Node](../../storage/get-started/run-logos-storage-node.md)
+:::
+
 This procedure covers installing and running a single [Logos node](../../get-started/glossary.md#logos-node) via one `logosctl` session. `logosctl` starts and controls the node and manages the `blockchain_module`, `storage_module`, and `delivery_module` from within that session. It is intended for node operators who want to join the testnet and contribute to the Logos network. The steps assume a Linux host.
 
 :::note

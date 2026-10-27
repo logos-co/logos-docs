@@ -21,7 +21,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3**.
 :::
 
-This guide uses the [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/master/logos_sql/examples/password_manager) maintained in the node repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
+This guide uses the [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/47a65ab3c/logos_sql/examples/password_manager) maintained in the node repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
 
 The example separates startup configuration, database operations and terminal commands. The same library calls apply to other applications. Read the [introduction](introduction-to-logos-sql.md) first for the relationship between local data and shared history.
 
@@ -36,7 +36,7 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
 - The OpenSSL command-line tool to generate keys for the example.
 - A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) to set one up.
-- A funded key in the node's wallet for inscription fees. Follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key.
+- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use a funded key from its `wallet.known_keys` instead.
 - A maximum inscription fee appropriate for your test network.
 
 :::
@@ -51,7 +51,7 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 
 Logos SQL is not yet published to crates.io. Build the example inside its source workspace.
 
-1. Clone the repository and select `master`:
+1. Clone the repository and check out the tested revision:
 
    ```bash
    git clone https://github.com/logos-blockchain/logos-blockchain.git
@@ -109,7 +109,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    export LOGOS_SQL_ENCRYPTION_KEY_FILE="$PWD/password-manager.key"
    ```
 
-   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`. On a local standalone node, which configures no auto-claim targets, use any funded key from the node's `wallet.known_keys`. The example does not create or fund a wallet.
+   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`. On a local standalone node, which configures no auto-claim targets, use a funded key from the node's `wallet.known_keys` — check a candidate with `curl -s http://127.0.0.1:8080/wallet/<key>/balance` first, because the genesis keys are not all funded. The example does not create or fund a wallet.
 
    This walkthrough was tested with example source at commit `47a65ab3c` and `LOGOS_SQL_MAX_TX_FEE=1000000`. This value is a fee cap, not a fixed charge. Required fees can change with network conditions.
 

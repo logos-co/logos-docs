@@ -15,13 +15,13 @@ sidebar_position: 1
 
 # Build an application with Logos SQL
 
-#### Run the password-manager example and follow its SQL writes between two local databases.
+#### Run a password-manager example and follow its SQL writes between two local databases.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
 :::
 
-This guide uses the [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/47a65ab3c/logos_sql/examples/password_manager) maintained in the node repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
+This guide demonstrates how Logos SQL can be used to maintain an application's database on the Logos Blockchain. It does this by walking through a [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/47a65ab3c/logos_sql/examples/password_manager) in the `logos-blockchain` repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
 
 The example separates startup configuration, database operations and terminal commands. The same library calls apply to other applications. Read the [introduction](introduction-to-logos-sql.md) first for the relationship between local data and shared history.
 
@@ -109,9 +109,14 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    export LOGOS_SQL_ENCRYPTION_KEY_FILE="$PWD/password-manager.key"
    ```
 
-   Replace every angle-bracket placeholder. For a local node, the default HTTP URL is `http://127.0.0.1:8080`. On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`. On a local standalone node, which configures no auto-claim targets, use a funded key from the node's `wallet.known_keys`—check a candidate with `curl -s http://127.0.0.1:8080/wallet/<key>/balance` first, because the genesis keys are not all funded. The example does not create or fund a wallet.
+   Replace every angle-bracket placeholder:
+   - For a local node, the default HTTP URL is `http://127.0.0.1:8080`.
+   - On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4 of the "Run a Blockchain node" tutorial](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`.
+   - On a local standalone node, which configures no auto-claim targets, use a funded key from the node's `wallet.known_keys`—check a candidate with `curl -s http://127.0.0.1:8080/wallet/<key>/balance` first, because the genesis keys are not all funded. The example does not create or fund a wallet.
 
+   :::note
    This walkthrough was tested with example source at commit `47a65ab3c` and `LOGOS_SQL_MAX_TX_FEE=1000000`. This value is a fee cap, not a fixed charge. Required fees can change with network conditions.
+   :::
 
 1. Start the application with its own state directory:
 
@@ -127,13 +132,67 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    password-manager>
    ```
 
-1. Open `logos_sql/examples/password_manager/passwords.rs` and find `PasswordManager::start`.
+### Understand how it works  
+
+1. Open `logos_sql/examples/password_manager/passwords.rs` and find `PasswordManager::start`:
+
+   ```rust
+   /// Starts `λSQL`, catches up with the channel, and prepares the database.
+   pub async fn start(config: LogosSqlConfig, encryption: Encryption) -> AppResult<Self> {
+      let manager = Self {
+         logos_sql: LogosSql::start(config).await?,
+         encryption,
+      };
+
+      match manager.initialize().await {
+         // Keep the terminal available if schema creation was displaced.
+         Ok(()) | Err(AppError::LogosSql(LogosSqlError::UnhandledDisplacements)) => {}
+         Err(error) => {
+               manager.shutdown().await?;
+               return Err(error);
+         }
+      }
+
+      Ok(manager)
+   }
+   ```
 
    It calls `LogosSql::start(config).await?`, then checks whether the `credentials` table exists. If needed, it submits `CREATE TABLE` through Logos SQL. A later participant obtains the schema by replaying channel history.
 
-   `config.rs` constructs `LogosSqlConfig` with signing and funding credentials in `WriterConfig`. Publication settings control batching and queue limits. The library drives replication in the background; the application does not run a separate Zone SDK event loop.
+1. Then, open `config.rs`. This file handles constructing `LogosSqlConfig`, with signing and funding credentials in `WriterConfig`:
 
+   ```rust
+   /// Parses startup options and builds the `λSQL` configuration.
+   pub fn from_args() -> AppResult<(LogosSqlConfig, Encryption)> {
+      let options = Options::parse();
+      let encryption =
+         Encryption::from_file(&options.encryption_key_file, options.channel_id.as_ref())?;
+
+      let config = LogosSqlConfig {
+         channel_id: options.channel_id,
+         node_url: options.node_url,
+         writer: Some(WriterConfig {
+               publication: PublicationConfig::default(),
+               signing_key: options.signing_key,
+               funding: FundingConfig {
+                  funding_pk: options.funding_key,
+                  change_pk: None,
+                  max_tx_fee: options.max_tx_fee.into(),
+                  priority_fee_percent: options.priority_fee_percent,
+               },
+         }),
+         state_dir: options.state_dir,
+      };
+
+      Ok((config, encryption))
+   }
+   ```   
+   
+   Publication settings control batching and queue limits. The library drives replication in the background; the application does not run a separate Zone SDK event loop.
+
+   :::note
    Encryption belongs to the application, not `LogosSqlConfig`. The example uses XChaCha20-Poly1305 from RustCrypto to encrypt each field and detect tampering. It stores the nonce with the encrypted value; the key stays in the local key file and is never submitted to Logos SQL.
+   :::
 
 ## Step 3: Add and read a credential
 
@@ -160,6 +219,8 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
      notes:
    ```
 
+### Understand how it works
+
 1. Find `prepare_credential_insert` in `passwords.rs`:
 
    ```rust
@@ -175,15 +236,74 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    }
    ```
 
-   The application's `add` method encrypts the account, password and initially empty notes into a `StoredCredential`. Each `bind` supplies the next parameter through the standard `rusqlite::ToSql` interface: a readable label and three encrypted binary values. The app then passes this builder to `self.logos_sql.execute(...).await?`.
+1. In the same file, find the application's `add` method. It encrypts the account, password and initially empty notes into a `StoredCredential`:
+   
+   ```rust
+   /// Adds one credential.
+   ///
+   /// Concurrent attempts to use the same label produce a primary-key
+   /// conflict.
+   pub async fn add(&self, label: String, account: String, password: String) -> AppResult<TxId> {
+      let credential = StoredCredential {
+         account: self.encryption.encrypt(&label, "account", &account)?,
+         password: self.encryption.encrypt(&label, "password", &password)?,
+         notes: self.encryption.encrypt(&label, "notes", "")?,
+         label,
+      };
 
+      Ok(self
+         .logos_sql
+         .execute(prepare_credential_insert(&credential))
+         .await?)
+   }
+   ```
+
+   Each `bind` above supplies the next parameter through the standard `rusqlite::ToSql` interface: a readable label and three encrypted binary values. The app then passes this builder to `self.logos_sql.execute(...).await?`.
+
+   :::tip
    For multiple statements in one SQL transaction, append `.query(sql)` and its bindings. They commit or roll back together under one transaction ID. The library owns `BEGIN` and `COMMIT`; do not include them in the SQL.
+   :::
 
-1. Find `credential` in the same file. It calls `stored_credential`, which opens `self.logos_sql.read_connection()?` and queries `credentials` with ordinary SQLite calls. The app decrypts the fields before displaying them. Reads use the local database, not a network request.
+1. Find `credential` in the same file:
+
+   ```rust
+   /// Reads one credential from the local `SQLite` database.
+   pub fn credential(&self, label: &str) -> AppResult<Option<Credential>> {
+      self.stored_credential(label)?
+         .map(|credential| credential.decrypt(&self.encryption))
+         .transpose()
+   }
+
+   fn stored_credential(&self, label: &str) -> AppResult<Option<StoredCredential>> {
+      if !self.schema_exists()? {
+         return Ok(None);
+      }
+
+      let connection = self.logos_sql.read_connection()?;
+
+      let mut statement = connection.prepare(
+         "SELECT label, account, password, notes
+            FROM credentials WHERE label = ?1",
+      )?;
+
+      Ok(statement
+         .query_row([label], |row| {
+               Ok(StoredCredential {
+                  label: row.get("label")?,
+                  account: row.get("account")?,
+                  password: row.get("password")?,
+                  notes: row.get("notes")?,
+               })
+         })
+         .optional()?)
+   }
+   ```
+
+ It calls `stored_credential`, which opens `self.logos_sql.read_connection()?` and queries `credentials` with ordinary SQLite calls. The app decrypts the fields before displaying them. Reads use the local database, not a network request.
 
 ## Step 4: Read from another participant
 
-1. In terminal B, enter the same source checkout and repeat only the `export` commands from step 2. They reuse the existing `channel-signing.pem` and `password-manager.key` files. Do not generate new keys: both instances must use the same channel and encryption key. On separate machines, each instance needs a securely transferred copy of the encryption key.
+1. In terminal B, enter the same source checkout and repeat only the `export` commands from [Step 2](#step-2-configure-and-start-the-application). They reuse the existing `channel-signing.pem` and `password-manager.key` files. Do not generate new keys: both instances must use the same channel and encryption key. On separate machines, each instance needs a securely transferred copy of the encryption key.
 
    The example has no read-only startup mode: both instances have writer credentials, even when you only issue read commands. Keep these test credentials on your own machine.
 
@@ -215,6 +335,8 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    ```text
    email (demo@example.org)
    ```
+
+### Understand how it works
 
 1. Find `prepare_password_update` in `passwords.rs`:
 

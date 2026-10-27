@@ -15,7 +15,7 @@ sidebar_position: 2
 
 # Handle displaced writes
 
-#### Find out why a write was blocked, review displaced writes and decide how to continue.
+#### Find out why a Logos SQL write was blocked, review displaced writes and decide how to continue.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
@@ -83,9 +83,11 @@ The flow is: catch the blocked-write error, list the displaced writes, inspect t
 
    Neither reason means the SQL failed a constraint. Even writes to unrelated rows can compete for a channel position.
 
-1. Use the transaction ID to identify the original operation, then read the current data. In the password manager, the user can use `show` or `list` before deciding what to do.
+1. Use the transaction ID to identify the original operation, then read the current data. In the password manager example, the user can use `show` or `list` before deciding what to do.
 
+   :::tip
    If your application needs descriptions such as “changed the email password”, save that description with the transaction ID when preparing the original write. The builder exposes it through `transaction.tx_id()`. Save the association persistently if it must survive restart. Logos SQL already retains the SQL needed for a retry; the application does not need to store another copy.
+   :::
 
 1. Keep the returned `Displacement` value for the retry or handle call. It identifies the specific item you reviewed, so an old action cannot clear a newer displacement of the same write.
 
@@ -115,11 +117,9 @@ Choose separately for each displaced write. The password manager asks the user; 
    }
    ```
 
-   Both parameters contain encrypted bytes. The application encrypts the replacement before preparing the SQL and keeps the original stored bytes for the condition. A retry reuses both values without encrypting them again.
-
-   The condition and update execute together. Changes to notes or other entries do not affect this condition. If this entry's stored password is different, the statement changes no rows.
-
-   SQLite considers zero matching rows successful. `execute` returns a transaction ID, not an affected-row count, so success alone does not tell the application whether this update changed the password.
+   - Both parameters contain encrypted bytes. The application encrypts the replacement before preparing the SQL and keeps the original stored bytes for the condition. A retry reuses both values without encrypting them again.
+   - The condition and update execute together. Changes to notes or other entries do not affect this condition. If this entry's stored password is different, the statement changes no rows.
+   - SQLite considers zero matching rows successful. `execute` returns a transaction ID, not an affected-row count, so success alone does not tell the application whether this update changed the password.
 
 1. Decide which operations the application can retry automatically. Their SQL conditions should express the assumptions that must still hold, and the application must decide what to do when those conditions fail.
 
@@ -144,7 +144,7 @@ Once you have decided, use one of the following calls for the selected `displace
    }
    ```
 
-   A successful call executes the original SQL and parameters, creates a new transaction ID and marks the selected displacement handled. It is allowed while other displacements await review. Time and random functions are evaluated again for the new write.
+   A successful call executes the original SQL and parameters, creates a new transaction ID and marks the selected displacement handled. This is allowed while other displacements await review. Time and random functions are evaluated again for the new write.
 
    If the call fails or is interrupted, the retry may already have committed. Do not respond to every error by submitting the same operation again.
 

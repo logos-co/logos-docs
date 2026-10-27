@@ -399,7 +399,7 @@ This step applies if channel history changes and the application reports displac
 
 ### Startup prints nothing and does not return
 
-`LogosSql::start` processes channel history before it returns, so the example is silent while it catches up — a few minutes is normal on a local node, even when everything is configured correctly. If the prompt has not appeared after that, check that the node is running, that it reports `mode: Online`, and that `LOGOS_SQL_NODE_URL` matches its `api.backend.listen_address`. The state directory is created before the first connection attempt, so finding database files there does not mean startup succeeded.
+`LogosSql::start` processes channel history before it returns, so the example is silent while it catches up—a few minutes is normal on a local node, even when everything is configured correctly. If the prompt has not appeared after that, check that the node is running, that it reports `mode: Online`, and that `LOGOS_SQL_NODE_URL` matches its `api.backend.listen_address`. The state directory is created before the first connection attempt, so finding database files there does not mean startup succeeded.
 
 ### A credential cannot be decrypted
 

@@ -84,7 +84,7 @@ flowchart LR
     BN <-->|p2p| BP(("Other Blockchain nodes"))
 ```
 
-- **Wallet modules** handle keys, derivation, signing, and proving. Both chains need proofs generated on the client: LEZ executes and proves transactions on [private accounts](../get-started/glossary.md#private-account) locally, and Logos Blockchain value transfers carry a zero-knowledge proof in place of a signature. Wallet modules therefore run where the keys are, which is normally in the user's application.
+- **Wallet modules** handle keys, derivation, signing, and proving. Both chains need proofs generated on the client: LEZ executes and proves transactions on [private accounts](../get-started/glossary.md#private-account) locally, and Logos Blockchain value transfers carry a zero-knowledge proof in place of a signature. Wallet modules therefore run where the keys are, which is normally in the user's application. Support for hardware signers, starting with Keycard, is planned.
 - **Node modules** follow their network over peer-to-peer connections, serve chain state, and relay the transactions the wallets produce.
 - **A LEZ node depends on a Logos Blockchain node** to obtain the finalised LEZ state.
 - **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet. The node API is an interface that more than one module can implement, so a wallet depends on the interface and not on a particular node module.
@@ -100,7 +100,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 - **The whole stack by composition.** Blockchain, LEZ, Storage, and Delivery are modules your modules depend on. An application composed from them inherits their metadata protection and private state support, whether or not its developer built anonymity measures directly.
 - **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A separate process contains faults; it is not a security sandbox by itself. Sandbox and container isolation, and finer permission management, are in development.
 - **A fault and audit boundary.** Each module is developed, audited, and upgraded independently.
-- **Distribution without a central service** (in development). Once Basecamp is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue) and distributed over the Logos stack itself, with developer signatures and integrity checks.
+- **Distribution without a central service.** Once Basecamp is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue), and downloading them over Logos Storage instead of HTTP is being rolled out. Signature checks are planned: Logos's own keys are trusted by default, users can add the publishers they trust, and each package is checked when it is downloaded and again before it runs.
 - **An ecosystem around your modules.** Other developers' modules can depend on yours and call it, the same way yours call the Logos modules. A native Basecamp integration makes your product part of the stack rather than a client of it.
 
 ### Platforms
@@ -110,7 +110,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 | Linux and macOS desktop, in Basecamp | Available |
 | Linux server, with `logosctl` | Available |
 | Windows | Planned |
-| Android and iOS, in Basecamp | Planned for Testnet v0.4.0 |
+| Android and iOS, in Basecamp | Planned |
 
 ### Start building
 
@@ -133,7 +133,7 @@ Your application keeps its own code, user interface, and distribution, and hosts
 1. Your application ships the runtime and the module [packages](../get-started/glossary.md#package) it needs inside its own bundle.
 1. At start-up, your application starts the runtime through the Logos Core host library for its language. The host libraries wrap a small C interface, which is what makes bindings for further languages practical, and your application does not need to run a particular event loop.
 1. Logos Core loads the modules, resolves their dependencies, and manages their lifecycle, exactly as it does in Basecamp.
-1. Your application calls modules through typed clients generated from each module's contract (a `.lidl` file), and subscribes to their events.
+1. Your application calls modules through typed clients generated from each module's contract (a [CDDL](https://www.rfc-editor.org/rfc/rfc8610) schema), and subscribes to their events.
 
 Your own code does not need to be a module. You can still write modules, and doing so lets the same logic run in Basecamp later.
 
@@ -170,7 +170,7 @@ The table shows where a Logos SDK exists or is planned. Any language that can pr
 ## Mobile
 
 :::note[Planned]
-Logos Basecamp for Android and iOS is planned for Testnet v0.4.0. Kotlin and Swift libraries that let a mobile application host Logos Core, with its modules bundled inside the application package, are also planned. Integrator feedback is welcome on which comes first.
+Logos Basecamp for Android and iOS is planned. Kotlin and Swift libraries that let a mobile application host Logos Core, with its modules bundled inside the application package, are also planned. Integrator feedback is welcome on which comes first.
 :::
 
 The Logos Core design includes a mode intended for mobile and simple packaged applications, in which the modules are linked into the application and called directly.
@@ -225,7 +225,7 @@ If your integration depends on this, [tell us](#tell-us-what-you-need) how many 
 ### Why remote module access
 
 - **One interface, local or remote.** The same contract and the same generated client serve a module wherever it runs. Moving a node from the application to another device is a deployment change, not a code change.
-- **Typed contracts and generated clients.** Every module publishes a `.lidl` contract, and clients are generated from it for each supported language. There is no request format to hand-write or keep in sync, and a module can describe its own contract at run time.
+- **Typed contracts and generated clients.** Every module publishes its contract as a CDDL schema, and clients are generated from it for each supported language. There is no request format to hand-write or keep in sync, and a module can describe its own contract at run time.
 - **Events built in.** Subscriptions work across the network, so an application receives new blocks or incoming messages as they happen, without polling and without a separate notification service.
 - **No API server to build.** A module's contract is its remote interface. Exposing a module is a deployment setting, not a separate service to write, version, and operate.
 - **Any module, not only nodes.** Storage, Delivery, and your own modules are exposed and reached the same way as the chain nodes.

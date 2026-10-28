@@ -132,7 +132,7 @@ Run every command in the following steps in a second terminal, from the reposito
 
 ## Step 3: Import the funded test accounts
 
-1. Import the two accounts that the debug genesis funds:
+1. Import the two funded genesis accounts that the recipe ships private keys for:
 
    ```bash
    just wallet-import-test-accounts
@@ -140,15 +140,14 @@ Run every command in the following steps in a second terminal, from the reposito
 
    The first wallet command builds the wallet, asks you to set a password, and prints a recovery phrase for the new local wallet.
 
-   **Expected result:** the command lists both accounts, below the local pair the wallet just derived for itself:
+   **Expected result:** the command lists both accounts, above the local pair the wallet just derived for itself:
 
    ```text
    Public/2RHZhw9h534Zr3eq2RGhQete2Hh667foECzXPmSkGni2
    Public/CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
    / Public/<derived-public-id>
    / Private/<derived-private-id>
-
-   `CbgR6tj5…` starts with a balance of `10000000000000` and `2RHZhw9h…` with `20000000000000`.
+   
 
 ## Step 4: Calculate the fee of a native transfer
 

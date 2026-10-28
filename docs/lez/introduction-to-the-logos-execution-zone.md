@@ -53,4 +53,4 @@ As an example, the LEZ could be used by users to run private DeFi applications. 
 
 - Private Exchanges: Trading platforms where order books or individual trades are obscured.
 - Private Lending/Borrowing Protocols: Financial services where loan details or collateral information are private.
-- Private Transfers: Securely sending and receiving digital assets with transaction details obscured using zero knowledge proofs, ensuring financial privacy for individuals and businesses.
+- Private Transfers: Securely sending and receiving digital assets with transaction details kept private using zero knowledge proofs, ensuring financial privacy for individuals and businesses.

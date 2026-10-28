@@ -26,7 +26,7 @@ Because the Logos Blockchain's Bedrock layer (which maintains the [Mantle ledger
 
 Transaction privacy needs differ vastly for different use cases, so this type of privacy is not provided directly by Bedrock for most cases. [Notes](../get-started/glossary.md#note) and their transfers are recorded openly on the ledger, similar to Bitcoin, and the Bedrock layer makes no attempt to hide that data. Despite this, it is possible to mine new notes and write arbitrary data on-chain in a private way by submitting these types of transactions via the [Blend Network](../get-started/glossary.md#blend-network). Bedrock therefore supports privacy-preserving consensus participation and [inscriptions](../get-started/glossary.md#inscription), but not note transfers or other transaction types.
 
-Developers that need to hide their app's data, such as balances or message contents, must implement their desired level of transaction privacy at the [Zone](concepts/about-zones.md) layer instead of relying on Bedrock for it. **Transaction privacy is supported natively on the [LEZ](../get-started/glossary.md#lez), in addition to public transactions**.
+Developers that need to protect their app's data, such as balances or message contents, must implement their desired level of transaction privacy at the [Zone](concepts/about-zones.md) layer instead of relying on Bedrock for it. **Transaction privacy is supported natively on the [LEZ](../get-started/glossary.md#lez), in addition to public transactions**.
 
 :::note
 For more information on proposer privacy on Logos, see [Anonymous Block Proposers](https://blog.logos.co/article/anonymous-block-proposers).

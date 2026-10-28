@@ -14,7 +14,7 @@ sidebar_position: 1
 
 #### Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
 
-**Logos is a toolbox for building decentralised applications requiring privacy, composability, and resilience.** As a modular, microkernel-based technology stack, its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
+**Logos is a toolbox for building decentralised applications.** As a modular, microkernel-based technology stack, its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
 
 Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](glossary.md#peer-discovery), connection management, and privacy-preserving communication through a mixnet. Above that sit the **[modules](glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **[apps](glossary.md#app)** that compose these modules into usable products.
 
@@ -25,16 +25,6 @@ Logos ships with a default configuration consisting of the runtime plus storage,
 - Logos is organised into four layers: a runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and applications on top that are composed of those modules.
 - [Logos Basecamp](../basecamp/install-logos-basecamp.md) is a local-first launcher for peer-to-peer apps built on Logos, and the default entry point to the stack. It runs the Logos runtime locally, loads a configured module profile, and provides a unified interface. The **Logos Node** runs the same runtime without a user interface, for validators, operators, or backend services.
 - An application built on Logos inherits metadata protection and support for private state from the infrastructure layer regardless of whether its developer has implemented privacy-preserving measures directly.
-
-## Design principles
-
-Logos was designed around modularity, structural privacy, and sovereignty.
-
-Modularity determines how the system tolerates failure and change. Each layer and module can be developed, audited, and upgraded independently of the others. A defect in the storage module does not affect the messaging layer, and an upgrade to consensus does not require changes to the networking layer.
-
-Structural privacy means that privacy guarantees are properties of the infrastructure rather than features that individual applications must implement. The mixnet obscures communication patterns at the networking layer, [Cryptarchia and the Blend Network](https://press.logos.co/article/why-proposer-anonymity) hide validator identities and stake amounts at the consensus layer, and the [Logos Execution Zone](glossary.md#logos-execution-zone) supports private state at the execution layer.
-
-Sovereignty refers to the operator's control over the infrastructure they run. A Logos node does not route messages through a third-party server, does not store files in a third-party data centre, and does not require permission from an intermediary to process a transaction. Because the stack is modular, an operator selects only the capabilities their use case requires.
 
 ## Architecture
 

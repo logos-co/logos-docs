@@ -22,7 +22,7 @@ The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the found
 
 ## The basics
 
-- The Logos Blockchain is used for building decentralised applications and institutions that require high levels of privacy and resilience.
+- The Logos Blockchain is used for building decentralised applications.
 - Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low and improves decentralisation.
 - Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) is used to improve proposer privacy.
 

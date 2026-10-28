@@ -114,6 +114,7 @@ IPs
 ISPs
 journald
 Kademlia
+Keycard
 keyholder
 keypair
 keypairs

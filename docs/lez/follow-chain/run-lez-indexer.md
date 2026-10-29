@@ -30,7 +30,7 @@ The [LEZ](../../get-started/glossary.md#lez) Indexer is a service that reads the
 - An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) set up and funded.
 - [`just`](https://github.com/casey/just) installed.
 - [Docker](https://docs.docker.com/get-docker/) installed.
-- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md) (if not deploying locally).
+- A running [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) (if not deploying locally).
 - Port `8779` free on your machine.
 :::
 

@@ -20,7 +20,7 @@ import Figure from '@site/src/components/Figure';
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-[Logos storage](../get-started/glossary.md#logos-storage) is a filesharing protocol that allows users building on the Logos stack to publish and share files in a decentralised manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-logos-storage-node.md), and requires the Logos runtime and tooling to work.
+[Logos storage](../get-started/glossary.md#logos-storage) is a filesharing protocol that allows users building on the Logos stack to publish and share files in a decentralised manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](./get-started/run-storage-node-from-cli.md), and requires the Logos runtime and tooling to work.
 
 ## The basics
 
@@ -35,7 +35,7 @@ The key functionality of Logos Storage is _file sharing_: you can make files ava
 
 <Figure id="fig:1" src={require("./assets/logos-intro.png").default} caption="Logos storage workflow." number={1} />
 
-1. A user [uploads a file to their Logos Storage node `p`](./get-started/run-logos-storage-node.md#publish-a-file).
+1. A user [uploads a file to their Logos Storage node `p`](./get-started/run-storage-node-from-cli.md#publish-a-file).
 1. Node `p` stores the file internally.
 1. Node `p` produces a *Content Identifier* (CID for short) that uniquely identifies the file. The CID functions very much like a "file share link."
 1. The user shares the CID with other users via a third-party communication mechanism (such as [Logos Messaging](../messaging/introduction-to-logos-messaging.md)).
@@ -59,4 +59,4 @@ Privacy in Logos Storage has been focused on protecting the privacy of both prov
 
 ## How to use Logos Storage
 
-The [Storage UI App](./get-started/set-up-and-use-logos-storage-ui.md) is probably the fastest and simplest way to try out Logos Storage. To run a node on a more permanent basis or build on Logos Storage, check out [how to run a storage node](./get-started/run-logos-storage-node.md) and the [Storage module API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html).
+The [Storage App](./get-started/run-storage-node-from-basecamp.md) is probably the fastest and simplest way to try out Logos Storage. To run a node on a more permanent basis or build on Logos Storage, check out [how to run a storage node](./get-started/run-storage-node-from-cli.md) and the [Storage module API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html).

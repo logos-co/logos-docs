@@ -104,56 +104,56 @@ const config: Config = {
           },
           {
             from: '/run-an-app/blockchain-ui-app/build-and-run-logos-blockchain-node-app-ui',
-            to: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
+            to: '/blockchain/get-started/run-blockchain-node-from-basecamp',
           },
           {
             from: '/run-an-app/blockchain-ui-app/move-assets-using-logos-blockchain-app',
-            to: '/blockchain/node-app/move-assets-using-logos-blockchain-app',
+            to: '/blockchain/transfer-tokens/move-blockchain-assets-on-basecamp',
           },
           {
             from: '/run-an-app/blockchain-ui-app/bridge-assets-from-logos-blockchain-to-zone-using-app',
-            to: '/blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app',
+            to: '/blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp',
           },
           {
             from: '/run-an-app/blockchain-ui-app/claim-leader-rewards-in-logos-blockchain-ui-app',
-            to: '/blockchain/node-app/claim-leader-rewards-in-logos-blockchain-ui-app',
+            to: '/blockchain/get-started/claim-leader-rewards-in-basecamp',
           },
           {
             from: '/run-an-app/blockchain-ui-app/readme',
-            to: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
+            to: '/blockchain/get-started/run-blockchain-node-from-basecamp',
           },
           {
             from: '/run-an-app/lez-wallet-ui/run-lez-wallet-ui-and-initiate-native-token-transfers',
-            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
+            to: '/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers',
           },
           {
             from: '/run-an-app/lez-wallet-ui/readme',
-            to: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
+            to: '/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers',
           },
           // run-a-node (-> blockchain / messaging / storage)
           {
             from: '/run-a-node/blockchain-node/run-a-logos-blockchain-node-from-cli',
-            to: '/blockchain/get-started/run-a-logos-blockchain-node-from-cli',
+            to: '/blockchain/get-started/run-blockchain-node-from-cli',
           },
           {
             from: '/run-a-node/blockchain-node/readme',
-            to: '/blockchain/get-started/run-a-logos-blockchain-node-from-cli',
+            to: '/blockchain/get-started/run-blockchain-node-from-cli',
           },
           {
             from: '/run-a-node/delivery-node/run-logos-delivery-node',
-            to: '/messaging/delivery/run-logos-delivery-node',
+            to: '/messaging/delivery/run-delivery-node-from-cli',
           },
           {
             from: '/run-a-node/delivery-node/readme',
-            to: '/messaging/delivery/run-logos-delivery-node',
+            to: '/messaging/delivery/run-delivery-node-from-cli',
           },
           {
             from: '/run-a-node/storage-node/run-logos-storage-node',
-            to: '/storage/get-started/run-logos-storage-node',
+            to: '/storage/get-started/run-storage-node-from-cli',
           },
           {
             from: '/run-a-node/storage-node/readme',
-            to: '/storage/get-started/run-logos-storage-node',
+            to: '/storage/get-started/run-storage-node-from-cli',
           },
           // build-an-app (-> core)
           // Note: /build-an-app itself is NOT redirected — it's a real
@@ -172,7 +172,7 @@ const config: Config = {
           },
           {
             from: '/build-an-app/build-modules/install-and-load-a-module-in-logos-basecamp',
-            to: '/basecamp/install-and-load-a-module-in-logos-basecamp',
+            to: '/basecamp/install-and-load-module-in-basecamp',
           },
           {
             from: '/build-an-app/build-modules/readme',
@@ -188,10 +188,77 @@ const config: Config = {
             from: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
             to: '/basecamp/atomic-swaps-poc',
           },
-          // renamed page
+          // Removed Zone SDK tutorial (and its earlier `dapp` URL), superseded
+          // by the Logos SQL guide.
           {
-            from: '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
-            to: '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
+            from: [
+              '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
+              '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
+            ],
+            to: '/blockchain/logos-sql/build-application-with-logos-sql',
+          },
+          // Logos SQL guide's original slug.
+          {
+            from: '/blockchain/logos-sql/replicate-a-database',
+            to: '/blockchain/logos-sql/build-application-with-logos-sql',
+          },
+          // Pages renamed or moved by the journey audit. Every previous path
+          // keeps redirecting to the page's new home.
+          {
+            from: '/basecamp/install-and-load-a-module-in-logos-basecamp',
+            to: '/basecamp/install-and-load-module-in-basecamp',
+          },
+          {
+            from: '/blockchain/get-started/run-a-logos-blockchain-node-from-basecamp',
+            to: '/blockchain/get-started/run-blockchain-node-from-basecamp',
+          },
+          {
+            from: '/blockchain/get-started/run-a-logos-blockchain-node-from-cli',
+            to: '/blockchain/get-started/run-blockchain-node-from-cli',
+          },
+          {
+            from: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
+            to: '/blockchain/get-started/run-blockchain-node-from-basecamp',
+          },
+          {
+            from: '/blockchain/node-app/move-assets-using-logos-blockchain-app',
+            to: '/blockchain/transfer-tokens/move-blockchain-assets-on-basecamp',
+          },
+          {
+            from: '/blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app',
+            to: '/blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp',
+          },
+          {
+            from: '/blockchain/node-app/claim-leader-rewards-in-logos-blockchain-ui-app',
+            to: '/blockchain/get-started/claim-leader-rewards-in-basecamp',
+          },
+          {
+            from: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
+            to: '/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers',
+          },
+          {
+            from: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone',
+            to: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez',
+          },
+          {
+            from: '/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone',
+            to: '/lez/transfer-tokens/transfer-native-tokens-on-lez',
+          },
+          {
+            from: '/messaging/delivery/run-logos-delivery-node',
+            to: '/messaging/delivery/run-delivery-node-from-cli',
+          },
+          {
+            from: '/messaging/delivery/use-logos-delivery-module-api-from-app',
+            to: '/messaging/delivery/use-delivery-module-api-in-app',
+          },
+          {
+            from: '/storage/get-started/run-logos-storage-node',
+            to: '/storage/get-started/run-storage-node-from-cli',
+          },
+          {
+            from: '/storage/get-started/set-up-and-use-logos-storage-ui',
+            to: '/storage/get-started/run-storage-node-from-basecamp',
           },
         ],
       } satisfies PluginClientRedirects.Options,

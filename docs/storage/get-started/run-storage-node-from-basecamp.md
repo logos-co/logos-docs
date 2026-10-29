@@ -1,5 +1,5 @@
 ---
-title: Set up and use the Logos Storage UI
+title: Run a Storage Node from Basecamp
 doc_type: procedure
 product: storage
 topics: storage
@@ -7,11 +7,11 @@ steps_layout: sectioned
 authors: gmega, kashepavadan, arnaud
 owner: logos
 doc_version: 1
-slug: set-up-and-use-logos-storage-ui
-sidebar_position: 2
+slug: run-storage-node-from-basecamp
+sidebar_position: 1
 ---
 
-# Set up and use the Logos Storage UI
+# Run a Storage Node from Basecamp
 
 #### Get started sharing and downloading files on the Logos Storage network
 
@@ -19,100 +19,31 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3**.
 :::
 
-The [Logos Storage](../../get-started/glossary.md#logos-storage) UI is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application (through Logos [Basecamp](../../get-started/glossary.md#basecamp) or by building it with Nix), configuring your node through the onboarding wizard, and using the UI to share, download, and delete files. It is intended for node operators running the application on Linux or macOS, or on Windows through Basecamp.
+The [Logos Storage](../../get-started/glossary.md#logos-storage) app is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application through Logos [Basecamp](../../get-started/glossary.md#basecamp), configuring your node through the onboarding wizard, and using the app to share, download, and delete files. It is intended for node operators running the application on Linux, macOS, or Windows through Basecamp.
+
+:::info[Prerequisites]
+
+- A supported OS:
+    - Linux
+    - Mac OS (should work, but not tested)
+    - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
+- [Logos Basecamp](../../basecamp/install-logos-basecamp.md) installed and running.
+:::
 
 ## What to expect
 
-- You can build and run a standalone Logos Storage UI application using a single `nix build` command.
+- You can build and run a standalone Logos Storage app application using a single `nix build` command.
 - You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
 - You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
 - You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.
 
 ## Step 1: Run the application
 
-You can install the application through Logos Basecamp (Option A), or build it from source with Nix (Option B).
-
-### Option A—Run in Logos Basecamp
-
-1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp.
-1. In the left bar, select **Package Manager**.
+1. In the left bar of Basecamp, select **Package Manager**.
 1. Select `Storage` in `Categories`, then click **INSTALL** in the **Storage** row.
 1. In the **Install Package?** dialogue, which lists the `storage_module` [module](../../get-started/glossary.md#module) as a dependency to install alongside the UI, click **Install**.
 1. Wait until the **Action** column of the **Storage** row reads **INSTALLED**. A new **Storage** icon appears in the left bar.
-1. In the left bar, select the **Storage** icon to launch the Logos Storage UI.
-
-### Option B—Build and run locally with Nix
-
-This option needs Nix, so it is available on Linux and macOS only. On Windows, use Option A.
-
-The application is built using Nix flakes. The output includes the storage UI plugin and supporting binaries. You need:
-
-- **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
-
-  ```bash
-  mkdir -p ~/.config/nix
-  echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-  ```
-
-  Verify: `nix flake --help >/dev/null 2>&1 && echo "Flakes enabled"`
-
-- **Git**
-
-1. Clone the [`logos-storage-ui`](https://github.com/logos-co/logos-storage-ui) repository and enter the project directory:
-
-   ```bash
-   git clone --recurse-submodules https://github.com/logos-co/logos-storage-ui.git
-   cd logos-storage-ui
-   ```
-
-1. Run the build command:
-
-   ```bash
-   nix build
-   ```
-
-1. Confirm the build succeeded by checking the `result/` directory for the following outputs on macOS (`.dylib` files are replaced with `.so` files on Linux):
-
-   ```
-   result/
-   └── lib/
-       ├── storage_ui_plugin.dylib           # Qt plugin (loaded by the app)
-       └── storage_ui_replica_factory.dylib
-   ```
-
-1. Launch the application:
-
-   ```bash
-   nix run
-   ```
-
-   - To override a dependency with a local version, use `--override-input`. For example:
-
-     ```bash
-     nix run --override-input storage_module/logos-storage git+file:///somewhere/logos-storage-nim?submodules=1
-     ```
-
-:::info
-The first build compiles the storage engine and can take a long time; subsequent builds use the Nix cache. To work on the code, `nix develop` opens a shell with all dependencies available.
-:::
-
-#### Build fails with HTTP 500 on BoringSSL fetch
-
-**Symptom:** The build fails with the following error:
-
-```
-error: Failed to fetch git repository https://boringssl.googlesource.com/boringssl : error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500
-fatal: unable to write request to remote: Broken pipe
-```
-
-**Cause:** Git's HTTP request size limits are too low for large repositories.
-
-**Fix:** Increase the limits and retry:
-
-```bash
-git config --global http.postBuffer 524288000
-git config --global http.maxRequestBuffer 100M
-```
+1. In the left bar, select the **Storage** icon to launch the Logos Storage app.
 
 ## Step 2: Configure your node through onboarding
 
@@ -133,7 +64,7 @@ This guide follows the `Guided` setup.
 
 1. Wait for the dashboard to open and the node status icon to be green.
 
-   ![Storage UI dashboard with the node running](../assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
+   ![Storage app dashboard with the node running](../assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
 
    A red status dot means the node is not running.
 
@@ -150,19 +81,12 @@ This guide follows the `Guided` setup.
 
 ### Configuration
 
-After onboarding, the settings are saved to a file whose location depends on the OS. If you are running the UI inside the Basecamp application:
+After onboarding, the settings are saved to a file whose location depends on the OS:
 
 | OS    | Path                                                |
 |:------|:-----------------------------------------------------|
 | Linux | `~/.config/Logos/LogosBasecamp.conf`                  |
 | macOS | `~/Library/Preferences/com.logos.LogosBasecamp.plist` |
-
-If you are running the standalone app built with Nix:
-
-| OS    | Path                                                  |
-|:------|:------------------------------------------------------|
-| Linux | `~/.config/Logos/LogosStandalone.conf`                 |
-| macOS | `~/Library/Preferences/com.logos.LogosStandalone.plist` |
 
 ## Step 3: Share a file
 

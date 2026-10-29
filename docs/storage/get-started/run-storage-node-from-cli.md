@@ -1,5 +1,5 @@
 ---
-title: Run a Logos storage node
+title: Run a Storage node from the CLI
 doc_type: procedure
 product: storage
 topics:
@@ -9,13 +9,13 @@ steps_layout: flat
 authors: gmega, kashepavadan, arnaud
 owner: logos
 doc_version: 1
-slug: run-logos-storage-node
-sidebar_position: 1
+slug: run-storage-node-from-cli
+sidebar_position: 2
 ---
 
-# Run a Logos storage node
+# Run a Storage node from the CLI
 
-#### Get started running a Logos storage node and uploading your first file to the Logos network.
+#### Get started running a Logos Storage node and uploading your first file to the Logos network.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
@@ -45,9 +45,9 @@ In this tutorial, you will:
 - Publish a file to the network.
 - Download an existing file - the Logos book, [Farewell to Westphalia](https://logos.co/book) - from the Logos storage network.
 
-## Load the Logos storage module
+## Load the Logos Storage module
 
-`logosctl` ships the Logos storage [module](../../get-started/glossary.md#module) and loads it when the daemon starts, because the package downloader uses it as an optional dependency to fetch [packages](../../get-started/glossary.md#package). The package downloader may also have started the storage node already, with the default configuration or the one saved by your last `init`. Stop it first so that you can start it with your own configuration.
+`logosctl` ships the Logos Storage [module](../../get-started/glossary.md#module) and loads it when the daemon starts, because the package downloader uses it as an optional dependency to fetch [packages](../../get-started/glossary.md#package). The package downloader may also have started the Storage node already, with the default configuration or the one saved by your last `init`. Stop it first so that you can start it with your own configuration.
 
 1.  Start `logosctl`:
 
@@ -72,10 +72,10 @@ In this tutorial, you will:
     - A `module load` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
 
     :::note
-    Individual module package versions (for example, storage module version 3.0.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
+    Individual module package versions (for example, Storage module version 3.0.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
     :::
 
-1.  Check whether the storage node is already running:
+1.  Check whether the Storage node is already running:
 
     ```sh
     logosctl call storage_module isRunning
@@ -94,7 +94,7 @@ In this tutorial, you will:
 
 ## Configure and start the node
 
-Initialise and start the storage module with `logosctl`.
+Initialise and start the Storage module with `logosctl`.
 
 Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logosctl call` client does not subscribe to them, so they do **not** appear in the daemon log (`~/.logosctl/logs/daemon.log`). Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
 
@@ -142,7 +142,7 @@ To see every method the module exposes (the same methods you can `call`), run `l
 
 ## Publish a file
 
-We will now publish a file to the Logos storage network. We create a simple file just for this tutorial, but you could publish any file you'd like.
+We will now publish a file to the Logos Storage network. We create a simple file just for this tutorial, but you could publish any file you'd like.
 
 1.  Create a file to publish:
 
@@ -170,7 +170,7 @@ We will now publish a file to the Logos storage network. We create a simple file
 
 ## Download Farewell to Westphalia
 
-We will now download the Logos book, [Farewell to Westphalia](https://logos.co/book), from the Logos storage network.
+We will now download the Logos book, [Farewell to Westphalia](https://logos.co/book), from the Logos Storage network.
 
 1. We will use `downloadToUrl` to download the file from the network and place it into your local disk. It takes:
     * the CID;
@@ -206,7 +206,7 @@ We will now download the Logos book, [Farewell to Westphalia](https://logos.co/b
 
 ## Remove content and shut everything down
 
-To clear your local storage, destroy the storage node, and stop the daemon, follow the steps below.
+To clear your local storage, destroy the Storage node, and stop the daemon, follow the steps below.
 
 1.  Remove content from local storage by its CID. `remove` returns immediately; the outcome arrives as a `storageRemoveDone` event:
 
@@ -226,7 +226,7 @@ To clear your local storage, destroy the storage node, and stop the daemon, foll
     # false
     ```
 
-1.  Stop the storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to the daemon log). The node can be started and stopped multiple times:
+1.  Stop the Storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to the daemon log). The node can be started and stopped multiple times:
 
     ```sh
     logosctl call storage_module stop

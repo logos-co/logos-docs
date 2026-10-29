@@ -28,7 +28,7 @@ Since [Logos Delivery](../../get-started/glossary.md#logos-delivery) is built on
 
 ## Logos Delivery as an open network
 
-Logos Delivery intends to incentivise mechanisms to run nodes, but it is not part of libp2p's scope. Additionally, users and developers can use Logos Delivery without deploying their own infrastructure, though anyone can choose to [run a node](../delivery/run-logos-delivery-node.md) to help decentralise the network.
+Logos Delivery intends to incentivise mechanisms to run nodes, but it is not part of libp2p's scope. Additionally, users and developers can use Logos Delivery without deploying their own infrastructure, though anyone can choose to [run a node](../delivery/run-delivery-node-from-cli.md) to help decentralise the network.
 
 ## Logos Delivery as a turnkey solution
 

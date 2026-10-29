@@ -32,7 +32,7 @@ This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership
 - Network access to `github.com` for the catalogue downloads, and to the testnet sequencer at `https://testnet.lez.logos.co/`
 - About 1 GB of free disk space. The modules take about 300 MB.
 - `250000000` units of native LEZ tokens for the node's payer account, from one of these sources:
-   - A Logos Blockchain wallet you can [bridge assets](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md) from. Testnet has no faucet.
+   - A Logos Blockchain wallet you can [bridge assets](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md) from. Testnet has no faucet.
    - A LEZ account you already hold on the testnet zone, with about `270000000` units so it can cover the transfer's fee reserve.
 
 :::

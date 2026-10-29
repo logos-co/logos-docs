@@ -1,5 +1,5 @@
 #!/bin/sh
-# Install logosctl, per docs/messaging/delivery/run-logos-delivery-node.md Step 1.
+# Install logosctl, per docs/messaging/delivery/run-delivery-node-from-cli.md Step 1.
 #
 # Downloads a pinned logosctl release for the host OS/arch and installs it.
 # Works on Linux (x86_64/aarch64) and macOS (Apple Silicon); on Windows, use

@@ -1,5 +1,5 @@
 ---
-title: Create and transfer custom tokens on the Logos Execution Zone
+title: Create and transfer custom tokens on the LEZ
 doc_type: procedure
 product: lez
 topics: lez
@@ -7,11 +7,11 @@ steps_layout: flat
 authors: cheny0, jorge-campo, moudyellaz, kashepavadan
 owner: logos
 doc_version: 2
-slug: create-and-transfer-custom-tokens-on-the-logos-execution-zone
+slug: create-and-transfer-custom-tokens-on-lez
 sidebar_position: 2
 ---
 
-# Create and transfer custom tokens on the Logos Execution Zone
+# Create and transfer custom tokens on the LEZ
 
 #### Use the wallet and SPEL CLIs to create custom tokens, transfer them, mint or burn supply, and rotate the mint authority.
 

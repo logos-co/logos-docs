@@ -1,5 +1,5 @@
 ---
-title: Use the Logos Delivery module API from an app
+title: Use the Delivery module API in an app
 doc_type: procedure
 product: messaging
 topics: delivery
@@ -7,11 +7,11 @@ steps_layout: sectioned
 authors: igor-sirotin, kashepavadan
 owner: logos
 doc_version: 1
-slug: use-logos-delivery-module-api-from-app
+slug: use-delivery-module-api-in-app
 sidebar_position: 1
 ---
 
-# Use the Logos Delivery module API from an app
+# Use the Delivery module API in an app
 
 #### Get started integrating Logos messaging into a C++ module.
 

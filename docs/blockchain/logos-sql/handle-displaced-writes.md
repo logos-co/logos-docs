@@ -23,9 +23,9 @@ This document is accurate for **Testnet v0.3**.
 
 A write can succeed in your local database but later be removed: another writer may publish before it, or a blockchain reorganisation may replace the branch containing it. Logos SQL reports that write as displaced and blocks new writes until the application has reviewed it.
 
-Review does not have to involve a user. An application can automatically retry writes designed to remain safe after other changes, or mark them handled if they are no longer needed. The [password-manager example](replicate-a-database-with-logos-sql.md) leaves retry decisions to the user.
+Review does not have to involve a user. An application can automatically retry writes designed to remain safe after other changes, or mark them handled if they are no longer needed. The [password-manager example](build-application-with-logos-sql.md) leaves retry decisions to the user.
 
-The flow is: catch the blocked-write error, list the displaced writes, inspect the current data, then retry or continue without each write. The [password-manager guide](replicate-a-database-with-logos-sql.md) shows the terminal commands for this. This page explains the library calls behind them.
+The flow is: catch the blocked-write error, list the displaced writes, inspect the current data, then retry or continue without each write. The [password-manager guide](build-application-with-logos-sql.md) shows the terminal commands for this. This page explains the library calls behind them.
 
 :::info[Prerequisites]
 

@@ -9,7 +9,7 @@ steps_layout: sectioned
 authors: andrussal
 owner: logos
 doc_version: 1
-slug: /blockchain/logos-sql/replicate-a-database
+slug: /blockchain/logos-sql/build-application-with-logos-sql
 sidebar_position: 1
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Run a Logos Blockchain node from Basecamp
+title: Run a Blockchain node from Basecamp
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -7,11 +7,11 @@ steps_layout: sectioned
 authors: xalisher, kashepavadan
 owner: logos
 doc_version: 2
-slug: run-a-logos-blockchain-node-from-basecamp
-sidebar_position: 2
+slug: run-blockchain-node-from-basecamp
+sidebar_position: 1
 ---
 
-# Run a Logos Blockchain node from Basecamp
+# Run a Blockchain node from Basecamp
 
 #### Install the blockchain modules and run a syncing testnet node from the Basecamp desktop app.
 
@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3**.
 :::
 
-The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-a-logos-blockchain-node-from-cli.md) or from [**Basecamp**](../../get-started/glossary.md#basecamp), the local-first launcher for peer-to-peer apps built on Logos, by installing the blockchain module and its UI.
+The [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) is the blockchain [module](../../get-started/glossary.md#module) of the Logos technology stack. You can run a node [from the CLI](./run-blockchain-node-from-cli.md) or from [**Basecamp**](../../get-started/glossary.md#basecamp), the local-first launcher for peer-to-peer apps built on Logos, by installing the blockchain module and its UI.
 
 This procedure covers running the Logos Blockchain app via Basecamp, setting up a node through the onboarding wizard, confirming that it syncs, and funding its wallet so it can propose blocks.
 
@@ -195,7 +195,7 @@ A synced node validates the chain but does not propose blocks until its wallet h
 
 ## Step 6: Keeping your node running
 
-The node runs only while Basecamp is open, and it does not resume automatically after a restart. To restart your node, reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-a-logos-blockchain-node-from-cli.md) with a service manager instead.
+The node runs only while Basecamp is open, and it does not resume automatically after a restart. To restart your node, reopen Basecamp, open the blockchain module, and select **Start Node** again. For an unattended, always-on node, use the [CLI setup](./run-blockchain-node-from-cli.md) with a service manager instead.
 
 ## Troubleshooting
 

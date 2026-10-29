@@ -30,7 +30,7 @@ Bridging has two directions:
 
 :::info[Prerequisites]
 
-- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) reachable over HTTP, with a funded key in its wallet to pay transaction fees.
+- A running [Logos Blockchain node](../get-started/run-blockchain-node-from-cli.md) reachable over HTTP, with a funded key in its wallet to pay transaction fees.
 - The Zone SDK (`lb_zone_sdk`) and `lb_core` crates from release 0.3.2 added to your project.
 - You have completed the [Zone SDK inscription tutorial](./inscribe-data-on-chain-using-zone-sdk.md).
 :::

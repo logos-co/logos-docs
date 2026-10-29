@@ -25,51 +25,50 @@ const sidebars: SidebarsConfig = {
             },
             {
               type: 'link',
-              label: 'Install and load a module in Logos Basecamp',
-              href: '/basecamp/install-and-load-a-module-in-logos-basecamp',
+              label: 'Install and load a module in Basecamp',
+              href: '/basecamp/install-and-load-module-in-basecamp',
             },
             {
               type: 'link',
-              label: 'Swap ETH and LEZ tokens in Logos Basecamp',
+              label: 'Swap ETH and LEZ tokens in Basecamp',
               href: '/basecamp/atomic-swaps-poc',
             },
           ],
         },
         {
           type: 'category',
-          label: 'Blockchain UI app',
+          label: 'Blockchain app',
           items: [
             {
               type: 'link',
-              label: 'Build and run the Logos Blockchain UI app',
-              href: '/blockchain/node-app/build-and-run-logos-blockchain-node-app-ui',
+              label: 'Run a Blockchain node from Basecamp',
+              href: '/blockchain/get-started/run-blockchain-node-from-basecamp',
             },
             {
               type: 'link',
-              label: 'Move assets using the Logos Blockchain UI app',
-              href: '/blockchain/node-app/move-assets-using-logos-blockchain-app',
+              label: 'Move Blockchain assets on Basecamp',
+              href: '/blockchain/transfer-tokens/move-blockchain-assets-on-basecamp',
             },
             {
               type: 'link',
-              label:
-                'Bridge assets from Logos Blockchain to a Zone using the Logos Blockchain app',
-              href: '/blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app',
+              label: 'Bridge assets from Logos Blockchain to a Zone on Basecamp',
+              href: '/blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp',
             },
             {
               type: 'link',
-              label: 'Claim leader rewards in the Logos Blockchain UI app',
-              href: '/blockchain/node-app/claim-leader-rewards-in-logos-blockchain-ui-app',
+              label: 'Claim leader rewards in Basecamp',
+              href: '/blockchain/get-started/claim-leader-rewards-in-basecamp',
             },
           ],
         },
         {
           type: 'category',
-          label: 'LEZ wallet UI',
+          label: 'LEZ wallet app',
           items: [
             {
               type: 'link',
-              label: 'Run the LEZ wallet UI and initiate native token transfers',
-              href: '/lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers',
+              label: 'Run the LEZ wallet app and initiate native token transfers',
+              href: '/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers',
             },
           ],
         },
@@ -86,12 +85,12 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Storage UI',
+          label: 'Storage app',
           items: [
             {
               type: 'link',
-              label: 'Set up and use the Logos Storage UI',
-              href: '/storage/get-started/set-up-and-use-logos-storage-ui',
+              label: 'Run a Storage Node from Basecamp',
+              href: '/storage/get-started/run-storage-node-from-basecamp',
             },
           ],
         },
@@ -107,13 +106,13 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'link',
-          label: 'Run a Logos Blockchain node from Basecamp',
-          href: '/blockchain/get-started/run-a-logos-blockchain-node-from-basecamp',
+          label: 'Run a Blockchain node from Basecamp',
+          href: '/blockchain/get-started/run-blockchain-node-from-basecamp',
         },
         {
           type: 'link',
-          label: 'Run a Logos Blockchain node on the public testnet from the CLI',
-          href: '/blockchain/get-started/run-a-logos-blockchain-node-from-cli',
+          label: 'Run a Blockchain node from the CLI',
+          href: '/blockchain/get-started/run-blockchain-node-from-cli',
         },
       ],
     },
@@ -123,8 +122,8 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'link',
-          label: 'Run a Logos delivery node',
-          href: '/messaging/delivery/run-logos-delivery-node',
+          label: 'Run a Delivery node from the CLI',
+          href: '/messaging/delivery/run-delivery-node-from-cli',
         },
       ],
     },
@@ -134,8 +133,8 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'link',
-          label: 'Run a Logos storage node',
-          href: '/storage/get-started/run-logos-storage-node',
+          label: 'Run a Storage node from the CLI',
+          href: '/storage/get-started/run-storage-node-from-cli',
         },
       ],
     },
@@ -172,8 +171,8 @@ const sidebars: SidebarsConfig = {
             },
             {
               type: 'link',
-              label: 'Install and load a module in Logos Basecamp',
-              href: '/basecamp/install-and-load-a-module-in-logos-basecamp',
+              label: 'Install and load a module in Basecamp',
+              href: '/basecamp/install-and-load-module-in-basecamp',
             },
           ],
         },

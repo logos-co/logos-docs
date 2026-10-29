@@ -435,7 +435,7 @@ Check out [Logos CLI Reference](../reference/logos-cli-reference.md) for more de
 
 Logos [Basecamp](../../get-started/glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos, with a graphical interface for managing and running modules. Its **Module Inspector** lists every loaded core module and lets you call its methods, so you can try your module without writing a UI module for it.
 
-These steps use a development build of Logos Basecamp, which installs the development package from Step 5, with a data directory of its own. To use the released Logos Basecamp instead, install the portable package as described in [Install and load a module in Logos Basecamp](../../basecamp/install-and-load-a-module-in-logos-basecamp.md).
+These steps use a development build of Logos Basecamp, which installs the development package from Step 5, with a data directory of its own. To use the released Logos Basecamp instead, install the portable package as described in [Install and load a module in Basecamp](../../basecamp/install-and-load-module-in-basecamp.md).
 
 1. Build the development version of Logos Basecamp and the `lgpm` package manager, which installs packages into a directory of your choice:
 
@@ -476,7 +476,7 @@ These steps use a development build of Logos Basecamp, which installs the develo
    - **Call** passes no arguments, so a method that takes parameters reports `invalid_args`. Call those methods with `logosctl call` instead.
 
 :::tip
-Try running the [Blockchain module](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-logos-storage-node.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the [Logos module catalogue](https://github.com/logos-co/logos-modules-release#module-set). `logosctl package search` lists it from the command line.
+Try running the [Blockchain module](../../blockchain/get-started/run-blockchain-node-from-cli.md), [Storage module](../../storage/get-started/run-storage-node-from-cli.md) or [Chat module](../../messaging/get-started/send-1-1-messages-logos-chat.md) or browse the [Logos module catalogue](https://github.com/logos-co/logos-modules-release#module-set). `logosctl package search` lists it from the command line.
 :::
 
 ## Troubleshooting

@@ -1,5 +1,5 @@
 ---
-title: Run a Logos delivery node
+title: Run a Delivery node from the CLI
 doc_type: procedure
 product: messaging
 topics: messaging
@@ -7,27 +7,19 @@ steps_layout: sectioned
 authors: NagyZoltanPeter, kashepavadan
 owner: logos
 doc_version: 1
-slug: run-logos-delivery-node
+slug: run-delivery-node-from-cli
 sidebar_position: 2
 ---
 
-# Run a Logos delivery node
+# Run a Delivery node from the CLI
 
-#### Use the Logos Delivery module to run a Logos delivery node
+#### Use the Delivery module to run a Logos Delivery node on the CLI
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.3). It is intended for node operators who want to run their own Delivery node and join the network. Three installation paths are available—Docker, prebuilt binaries, and Nix—so you can choose the one that fits your environment.
-
-Choose one of the three installation paths based on your environment:
-
-| Path | Method | Best for |
-|:-----|:-------|:---------|
-| **A** | Docker with Compose | Quickest start |
-| **B** | Prebuilt binaries | No build, no clone required |
-| **C** | Nix | From source; most reproducible |
+This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.3). It is intended for node operators who want to run their own Delivery node and join the network.
 
 :::info[Prerequisites]
 
@@ -41,17 +33,7 @@ Choose one of the three installation paths based on your environment:
    - UDP `9000`: discv5 discovery (`discv5UdpPort`).
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
-- Some prerequisites differ between paths:
-   - **Path A**: Docker with Compose
-   - **Path B**: `curl` and a shell
-   - **Path C**: **Nix** with flakes enabled.
-      - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
-
-      ```bash
-      mkdir -p ~/.config/nix
-      echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-      ```
-
+- `curl` and a shell
 :::
 
 ## What to expect
@@ -61,20 +43,6 @@ Choose one of the three installation paths based on your environment:
 - You can configure the node for a different network preset by swapping the config file passed to `createNode`.
 
 ## Step 1: Install and start the daemon
-
-Follow the instructions for your chosen path.
-
-**Path A—Docker**
-
-1. Clone the repository and start the daemon container:
-
-   ```bash
-   git clone https://github.com/logos-co/logos-delivery-module.git
-   cd logos-delivery-module
-   docker compose up -d --build
-   ```
-
-**Path B—Prebuilt binaries**
 
 1. Start `logosctl`:
 
@@ -133,52 +101,6 @@ Follow the instructions for your chosen path.
    | `kernelConf.discv5Discovery` | Enable discv5 discovery |
    | `kernelConf.nat` | Public IP advertisement mode |
 
-**Path C—Nix**
-
-1. Clone the repository and build the [module](../../get-started/glossary.md#module):
-
-   ```bash
-   git clone https://github.com/logos-co/logos-delivery-module.git
-   cd logos-delivery-module
-   git checkout v0.3.0
-
-   nix build '.#lgx-portable' -o delivery-lgx
-   ```
-
-   - `v0.3.0` is the release Path B installs, so both paths run the same module.
-   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `linux-amd64-dev`) that `logosctl package install` rejects with `Package does not contain variant for platform: linux-x86_64`.
-
-1. Start `logosctl`:
-
-   ```sh
-   logosctl daemon start
-   ```
-
-1. In a new terminal window with the same user, install the module:
-
-   ```bash
-   logosctl package install delivery-lgx/*.lgx --yes
-   ```
-
-1. Write the testnet config:
-
-   ```bash
-   cat > logos-test.json <<EOF
-   {
-      "entryLayer": "kernel",
-      "kernelConf": {
-         "preset": "logos.test",
-         "relay": true,
-         "logLevel": "INFO",
-         "tcpPort": 30303,
-         "discv5UdpPort": 9000,
-         "discv5Discovery": true,
-         "nat": "extip:<public-ip>"
-      }
-   }
-   EOF
-   ```
-
 ## Step 2: Load the module and boot the node
 
 Run these commands for your path.
@@ -186,40 +108,18 @@ Run these commands for your path.
 1. Load the delivery module:
 
    ```bash
-   # Path A (Docker)
-   docker exec logos-node logosctl module load delivery_module --json
-
-   # Paths B and C
    logosctl module load delivery_module
    ```
 
 1. Create the node with the testnet config:
 
-   - Path A (config is mounted at `/conf` in the container):
-
-     ```bash
-     docker exec logos-node logosctl call delivery_module createNode @/conf/logos-test.json --json
-     ```
-
-   - Path B:
-
-     ```bash
-     logosctl call delivery_module createNode @logos-test.json
-     ```
-   
-   - Path C:
-
-     ```bash
-     logosctl call delivery_module createNode @logos-test.json
-     ```
+   ```bash
+   logosctl call delivery_module createNode @logos-test.json
+   ```
 
 1. Start the node:
 
    ```bash
-   # Path A
-   docker exec logos-node logosctl call delivery_module start --json
-
-   # Paths B and C
    logosctl call delivery_module start
    ```
 
@@ -230,20 +130,12 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 1. Verify the status of the node:
 
    ```bash
-   # Path A
-   docker exec logos-node logosctl daemon status --json
-
-   # Paths B and C
    logosctl daemon status
    ```
 
 1. Run the [health query](https://github.com/logos-co/logos-delivery-module/blob/master/docs/pages/query-node.md):
 
    ```bash
-   # Path A
-   docker exec logos-node logosctl call delivery_module getNodeInfo MyENR --json | jq
-
-   # Paths B and C
    logosctl call delivery_module getNodeInfo MyENR --json | jq
    ```
 
@@ -267,8 +159,9 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 
 1. Stop the node when finished:
 
-   - Path A: `docker compose down`
-   - Paths B and C: `logosctl daemon stop`
+   ```bash
+   logosctl daemon stop
+   ```
 
 ## Troubleshooting delivery node setup
 

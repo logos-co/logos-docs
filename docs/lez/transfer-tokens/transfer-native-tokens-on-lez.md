@@ -1,5 +1,5 @@
 ---
-title: Transfer native tokens on the Logos Execution Zone
+title: Transfer native tokens on the LEZ
 doc_type: procedure
 product: LEZ
 topics: LEZ
@@ -7,11 +7,11 @@ steps_layout: flat
 authors: cheny0, jorge-campo, moudyellaz
 owner: logos
 doc_version: 2
-slug: transfer-native-tokens-on-the-logos-execution-zone
+slug: transfer-native-tokens-on-lez
 sidebar_position: 1
 ---
 
-# Transfer native tokens on the Logos Execution Zone
+# Transfer native tokens on the LEZ
 
 #### Use the wallet CLI to send native tokens to public and private accounts.
 
@@ -52,7 +52,7 @@ Transfers are irreversible. Double-check all details before proceeding.
 ## What to expect
 
 - The authenticated-transfers program manages native token transfers and enforces authenticated debits. When making transfers, you use the wallet CLI to interact with the program.
-  - Unlike the [token program](create-and-transfer-custom-tokens-on-the-logos-execution-zone.md), the authenticated-transfers program is built into LEZ rather than published in [`lez-programs`](https://github.com/logos-blockchain/lez-programs) with an IDL, so the [SPEL CLI](https://github.com/logos-co/spel) can't drive it.
+  - Unlike the [token program](create-and-transfer-custom-tokens-on-lez.md), the authenticated-transfers program is built into LEZ rather than published in [`lez-programs`](https://github.com/logos-blockchain/lez-programs) with an IDL, so the [SPEL CLI](https://github.com/logos-co/spel) can't drive it.
 - You can initialise accounts by sending tokens to them. The authenticated-transfers program claims any uninitialised account used in a transfer.
 - You can transfer native tokens to public accounts and verify balances on-chain.
 - Your private account balances are in your local wallet storage and rely on zero-knowledge proofs for privacy.
@@ -85,7 +85,7 @@ Transfers are irreversible. Double-check all details before proceeding.
     wallet account ls
     ```
     
-1.  Fund the sender account. Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md), pasting the account ID without its `Public/` prefix in **Metadata**, or have another testnet user transfer native tokens to it. A deposit can only fund a public account.
+1.  Fund the sender account. Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md), pasting the account ID without its `Public/` prefix in **Metadata**, or have another testnet user transfer native tokens to it. A deposit can only fund a public account.
 1.  Confirm your account balance after funding using the `wallet account get` command:
 
     ```sh
@@ -100,8 +100,8 @@ When transferring native tokens using the `wallet auth-transfer send` command, y
 
 There are two ways to specify the recipient account depending on the account type:
 
-- [Method 1: Use the recipient account ID](transfer-native-tokens-on-the-logos-execution-zone.md#method-1-transfer-tokens-using-the-recipient-account-id)
-- [Method 2: Use the recipient account `npk` and `vpk`](transfer-native-tokens-on-the-logos-execution-zone.md#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk)
+- [Method 1: Use the recipient account ID](transfer-native-tokens-on-lez.md#method-1-transfer-tokens-using-the-recipient-account-id)
+- [Method 2: Use the recipient account `npk` and `vpk`](transfer-native-tokens-on-lez.md#method-2-transfer-tokens-using-the-recipient-account-npk-and-vpk)
 
 With the recipient account ID, you can transfer native tokens across the following account types:
 

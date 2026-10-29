@@ -436,15 +436,15 @@ A protocol that enables the storage of relayed messages in the Logos Delivery ne
 
 ### Token definition account
 
-An LEZ account that defines the properties and behaviour of a custom token. See [Create and transfer custom tokens on the Logos Execution Zone](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
+An LEZ account that defines the properties and behaviour of a custom token. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
 
 ### Token holding account
 
-An LEZ account that is able to hold a custom token. See [Create and transfer custom tokens on the Logos Execution Zone](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
+An LEZ account that is able to hold a custom token. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
 
 ### Token program
 
-An LEZ program that facilitates the creation of custom LEZ tokens. See [Create and transfer custom tokens on the Logos Execution Zone](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md).
+An LEZ program that facilitates the creation of custom LEZ tokens. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
 
 ### Transport
 

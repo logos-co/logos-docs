@@ -37,7 +37,7 @@ The implementation skeleton already has most of the password manager code writte
 
 :::info[Prerequisites]
 
-- A running [Logos Blockchain node](../../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md).
+- A running [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md).
 - [Git](https://git-scm.com/)
 - [Rust toolchain](https://www.rust-lang.org/tools/install) (stable)
 :::

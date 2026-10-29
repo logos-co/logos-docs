@@ -30,13 +30,6 @@ Identity, conversations, and message history exist only while the app is running
     - macOS
     - Windows 10 or 11 x86_64 (Option A only)
 - Network access
-- For the local build only: **Nix** with flakes enabled.
-    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
-
-    ```bash
-    mkdir -p ~/.config/nix
-    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-    ```
 :::
 
 ## What to expect
@@ -47,13 +40,7 @@ Identity, conversations, and message history exist only while the app is running
 
 ## Step 1: Run the Logos Chat app
 
-You need two running instances to complete this procedure. Each instance can use either of the options below independently.
-
-:::info
-When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and `liblogoschat`—are fetched automatically.
-:::
-
-### Option A—Run in Logos Basecamp
+You need two running instances to complete this procedure. Each instance can be started with the instructions below.
 
 1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
 1.  In the left bar, select **Package Manager**.
@@ -64,24 +51,6 @@ When using Nix, all build dependencies—including Qt6, `logos-chat-module`, and
     ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
 1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
 1. In the left bar, select the new chat icon to launch the Logos Chat app.
-
-### Option B—Build and run locally with Nix
-
-1.  Clone the repository and check out the target release:
-
-    ```bash
-    git clone https://github.com/logos-co/logos-chatsdk-ui
-    cd logos-chatsdk-ui
-    git checkout v0.2.2
-    ```
-
-    `v0.2.2` is the release the Basecamp catalogue ships as **Chat**, so both options run the same app. Older tags such as `v0.1.0` use the retired intro-bundle flow and cannot talk to the current release.
-1.  Run the standalone app:
-
-    ```bash
-    # Nix fetches all dependencies automatically
-    nix run
-    ```
 
 ## Step 2: Start a conversation
 

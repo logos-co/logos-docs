@@ -122,7 +122,7 @@ In this task, wallet account and transfer commands interact with the `authentica
 
 1. Send native tokens to the sender account in one of these ways:
 
-   - Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/node-app/bridge-assets-from-logos-blockchain-to-zone-using-app.md). In **Metadata**, paste the sender account ID without its `Public/` prefix.
+   - Bridge tokens from the Logos Blockchain with a [channel deposit](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md). In **Metadata**, paste the sender account ID without its `Public/` prefix.
    - Have another testnet user transfer native tokens to the sender account ID.
 
 1. Check the sender account balance:
@@ -177,5 +177,5 @@ This should show `Balance 37`.
 
 ## Next steps
 
-- [Transfer native tokens on the Logos Execution Zone](../transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone.md)
-- [Create and transfer custom tokens on the Logos Execution Zone](../transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone.md)
+- [Transfer native tokens on the LEZ](../transfer-tokens/transfer-native-tokens-on-lez.md)
+- [Create and transfer custom tokens on the LEZ](../transfer-tokens/create-and-transfer-custom-tokens-on-lez.md)

@@ -1,5 +1,5 @@
 ---
-title: Install and load a module in Logos Basecamp
+title: Install and load a module in Basecamp
 doc_type: procedure
 product: core
 topics: core
@@ -7,13 +7,13 @@ steps_layout: sectioned
 authors: iurimatias, cheny0
 owner: logos
 doc_version: 1
-slug: install-and-load-a-module-in-logos-basecamp
+slug: install-and-load-module-in-basecamp
 sidebar_position: 2
 ---
 
 import YouTube from '@site/src/components/YouTube';
 
-# Install and load a module in Logos Basecamp
+# Install and load a module in Basecamp
 
 #### Access features and functionalities through modules in Logos Basecamp.
 

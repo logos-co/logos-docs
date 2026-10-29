@@ -1,5 +1,5 @@
 ---
-title: Run a Logos Blockchain node on the public testnet from the CLI
+title: Run a Blockchain node from the CLI
 doc_type: procedure
 product: blockchain
 topics: blockchain
@@ -7,13 +7,13 @@ steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
 doc_version: 2
-slug: run-a-logos-blockchain-node-from-cli
-sidebar_position: 3
+slug: run-blockchain-node-from-cli
+sidebar_position: 2
 ---
 
-# Run a Logos Blockchain node on the public testnet from the CLI
+# Run a Blockchain node from the CLI
 
-#### Start a node and verify runtime and consensus signals.
+#### Start a node on the public testnet and verify runtime and consensus signals.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.

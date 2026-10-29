@@ -293,5 +293,5 @@ To run a portable Basecamp instance in your scaffold profiles instead, set `attr
 - [Troubleshoot Logos module development with Basecamp](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md)
 - [Logos Scaffold Basecamp configuration reference](../reference/logos-scaffold-basecamp-configuration-reference.md)
 - [About Logos Scaffold](../about-logos-scaffold.md)
-- [Install and load a module in Logos Basecamp](../../../basecamp/install-and-load-a-module-in-logos-basecamp.md)
+- [Install and load a module in Basecamp](../../../basecamp/install-and-load-module-in-basecamp.md)
 - [Write and deploy an LEZ program with `logos-scaffold`](../../../lez/programs/write-and-deploy-lez-program-with-scaffold.md), for the other half of scaffold's surface

@@ -30,5 +30,5 @@ This page lists the public endpoints for each Testnet version, so you can find t
 
 ## Related information
 
-- [Run the LEZ wallet UI and initiate native token transfers](../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md)
-- [Run a Logos Blockchain node from the CLI](../blockchain/get-started/run-a-logos-blockchain-node-from-cli.md)
+- [Run the LEZ wallet app and initiate native token transfers](../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md)
+- [Run a Blockchain node from the CLI](../blockchain/get-started/run-blockchain-node-from-cli.md)

@@ -27,8 +27,8 @@ The [**Zone SDK**](../../get-started/glossary.md#zone-sdk) is a ready-to-use too
 
 :::info[Prerequisites]
 
-- A running [Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) that has reached `Online` mode.
-- A key in the node's wallet that holds funds, such as the `PoWClaim` key funded by [mining](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). The node spends this key's [notes](../../get-started/glossary.md#note) to pay each inscription's transaction fee.
+- A running [Logos Blockchain node](../get-started/run-blockchain-node-from-cli.md) that has reached `Online` mode.
+- A key in the node's wallet that holds funds, such as the `PoWClaim` key funded by [mining](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). The node spends this key's [notes](../../get-started/glossary.md#note) to pay each inscription's transaction fee.
 - [Git](https://git-scm.com/) and the [Rust toolchain](https://www.rust-lang.org/tools/install).
 :::
 
@@ -418,7 +418,7 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
     curl -s http://localhost:8080/wallet/<FUNDING_KEY>/balance | jq .
     ```
 
-    - If the request returns `404`, the key holds no notes yet. [Mine tokens](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) until it does.
+    - If the request returns `404`, the key holds no notes yet. [Mine tokens](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) until it does.
 
 1.  With the code filled in, build and run the sequencer from the `deployment/tui-zone` directory. The binary is named `tui-sequencer`:
 

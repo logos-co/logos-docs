@@ -35,8 +35,8 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
 - The OpenSSL command-line tool to generate keys for the example.
-- A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-a-logos-blockchain-node-from-cli.md) to set one up.
-- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use the funded genesis key from its `wallet.known_keys` instead, as [Step 2](#step-2-configure-and-start-the-application) sets out.
+- A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-blockchain-node-from-cli.md) to set one up.
+- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use the funded genesis key from its `wallet.known_keys` instead, as [Step 2](#step-2-configure-and-start-the-application) sets out.
 - A maximum inscription fee appropriate for your test network.
 
 :::
@@ -111,7 +111,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
 
    Replace every angle-bracket placeholder:
    - For a local node, the default HTTP URL is `http://127.0.0.1:8080`.
-   - On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4 of the "Run a Blockchain node" tutorial](../get-started/run-a-logos-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`.
+   - On a testnet node, use the auto-claim target's `public_key` as the funding key: `pow_status` prints it in [Step 4 of the "Run a Blockchain node" tutorial](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node), and it is also at `pow.auto_claim.targets[0].public_key` in the node's `user_config.yaml`.
    - On a local standalone node, which configures no auto-claim targets, use a funded key from the node's `wallet.known_keys`—check a candidate with `curl -s http://127.0.0.1:8080/wallet/<key>/balance` first, because the genesis keys are not all funded. The example does not create or fund a wallet.
 
    :::note

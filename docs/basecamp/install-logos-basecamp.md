@@ -80,7 +80,7 @@ You can install Logos Basecamp in two ways:
 Not every module in the catalogue has a Windows build yet. Of the apps covered in these docs, these run on native Windows:
 
 - **Chat**: the `chat_ui`, `chat_module`, and `delivery_module` [packages](../get-started/glossary.md#package). See [Send 1:1 messages with the Logos Chat app](../messaging/get-started/send-1-1-messages-logos-chat.md).
-- **Storage**: the `storage_ui` and `storage_module` packages. See [Set up and use the Logos Storage UI](../storage/get-started/set-up-and-use-logos-storage-ui.md).
+- **Storage**: the `storage_ui` and `storage_module` packages. See [Run a Storage Node from Basecamp](../storage/get-started/run-storage-node-from-basecamp.md).
 
 For other apps, such as the blockchain node or the swap app, run the Linux AppImage under WSL2.
 

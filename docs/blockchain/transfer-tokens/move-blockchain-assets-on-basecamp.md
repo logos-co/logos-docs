@@ -1,5 +1,5 @@
 ---
-title: Move assets using the Logos Blockchain UI app
+title: Move Blockchain assets on Basecamp
 doc_type: procedure
 product: blockchain
 topics: [blockchain-app]
@@ -7,11 +7,11 @@ steps_layout: flat
 authors: danielsanchezq, kashepavadan
 owner: logos
 doc_version: 2
-slug: move-assets-using-logos-blockchain-app
-sidebar_position: 2
+slug: move-blockchain-assets-on-basecamp
+sidebar_position: 1
 ---
 
-# Move assets using the Logos Blockchain UI app
+# Move Blockchain assets on Basecamp
 
 #### Get started with token transfers between wallet accounts directly from the dashboard UI.
 
@@ -19,12 +19,12 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to send funds from one of your wallet accounts to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the **Transfer** form of the Logos Blockchain UI [app](../../get-started/glossary.md#app). It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
+This procedure covers how to send funds from one of your wallet accounts to a recipient on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) using the **Transfer** form of the Logos Blockchain [app](../../get-started/glossary.md#app) on Basecamp. It is intended for users who need to move tokens between accounts without using the CLI or crafting transactions manually.
 
 :::info[Prerequisites]
 
-- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) running, with a node set up.
-- At least one wallet account with a positive balance, for example one funded by [mining](./build-and-run-logos-blockchain-node-app-ui.md#step-4-fund-your-node).
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
+- At least one wallet account with a positive balance, for example one funded by [mining](../get-started/run-blockchain-node-from-basecamp.md#step-4-fund-your-node-and-propose-blocks).
 - The recipient's 64-hex-character public key.
 :::
 

@@ -1,5 +1,5 @@
 ---
-title: Run a Mix network of storage nodes
+title: Run a Mix network of Storage nodes
 doc_type: procedure
 product: storage
 topics:
@@ -14,7 +14,7 @@ slug: run-mix-network-of-storage-nodes
 sidebar_position: 3
 ---
 
-# Run a Mix network of storage nodes
+# Run a Mix network of Storage nodes
 
 #### Stand up a local Mix network and download a file through it, with the content lookup anonymised.
 

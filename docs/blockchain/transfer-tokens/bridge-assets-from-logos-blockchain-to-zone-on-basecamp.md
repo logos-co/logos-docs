@@ -1,5 +1,5 @@
 ---
-title: Bridge assets from Logos Blockchain to a Zone using the Logos Blockchain app
+title: Bridge assets from Logos Blockchain to a Zone on Basecamp
 doc_type: procedure
 product: blockchain
 topics: [lez, bridging]
@@ -7,26 +7,26 @@ steps_layout: flat
 authors: danielsanchezq, kashepavadan
 owner: logos
 doc_version: 2
-slug: bridge-assets-from-logos-blockchain-to-zone-using-app
-sidebar_position: 3
+slug: bridge-assets-from-logos-blockchain-to-zone-on-basecamp
+sidebar_position: 2
 ---
 
-# Bridge assets from Logos Blockchain to a Zone using the Logos Blockchain app
+# Bridge assets from Logos Blockchain to a Zone on Basecamp
 
-#### Get started locking wallet notes into a Logos Zone, including the LEZ, using the Logos Blockchain UI app.
+#### Get started locking wallet notes into a Logos Zone, including the LEZ, using Basecamp.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers how to lock one or more of your wallet [notes](../../get-started/glossary.md#note) (UTXOs) into a Logos [Zone](../../get-started/glossary.md#zone) (such as the [LEZ](../../get-started/glossary.md#lez)) using the [Logos Blockchain desktop app](./build-and-run-logos-blockchain-node-app-ui.md), and receive the resulting transaction hash. It is intended for wallet users on Testnet v0.3 who need to fund a [channel](../../get-started/glossary.md#channel) without hand-assembling note IDs, keys, and fees on a CLI.
+This procedure covers how to lock one or more of your Logos Blockchain wallet [notes](../../get-started/glossary.md#note) (UTXOs) into a Logos [Zone](../../get-started/glossary.md#zone) (such as the [LEZ](../../get-started/glossary.md#lez)) using the Logos Blockchain app on Basecamp, and receive the resulting transaction hash. It is intended for wallet users on Testnet v0.3 who need to fund a [channel](../../get-started/glossary.md#channel) without hand-assembling note IDs, keys, and fees on a CLI.
 
 :::info[Prerequisites]
 
-- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) running, with the node **Online**.
-- At least one wallet account with a positive balance, for example one funded by [mining](./build-and-run-logos-blockchain-node-app-ui.md#step-4-fund-your-node).
-- The channel ID of the target Zone. For the public LEZ testnet, it is `0101010101010101010101010101010101010101010101010101010101010101`, as listed in [Testnet endpoints](../../get-started/testnet-endpoints.md).
-- For a LEZ deposit, a public account in the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md) to receive the funds.
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
+- At least one wallet account with a positive balance, for example one funded by [mining](../get-started/run-blockchain-node-from-basecamp.md#step-4-fund-your-node-and-propose-blocks).
+- The channel ID of the target Zone. For the public LEZ testnet address, see [Testnet endpoints](../../get-started/testnet-endpoints.md).
+- For an LEZ deposit, a public account in the [LEZ wallet app](../../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) to receive the funds.
 
 :::
 
@@ -56,14 +56,16 @@ The wizard collects the deposit payload across two input steps and a review step
 
 1. On **Step 2 of 4**, enter the deposit parameters:
 
-   - **Channel ID hex**: the target channel. For the public LEZ testnet, paste `0101010101010101010101010101010101010101010101010101010101010101`. For any other Zone, paste the 64-hex-character channel ID.
+   - **Channel ID hex**: the target channel. For the public LEZ testnet, paste the relevant address from [Testnet endpoints](../../get-started/testnet-endpoints.md). For any other Zone, paste the 64-hex-character channel ID.
 
-     The **LEZ testnet** checkbox in [app](../../get-started/glossary.md#app) versions 0.3.1 and 0.3.2 fills in `0303030303030303030303030303030303030303030303030303030303030303`, a channel the LEZ testnet no longer reads. A deposit sent to it locks your notes but never arrives on the LEZ, so leave the checkbox clear and paste the ID instead. To confirm the current ID, run the `getChannelId` call in [The LEZ testnet checkbox is missing](#the-lez-testnet-checkbox-is-missing).
+      :::warning
+      The **LEZ testnet** checkbox in [app](../../get-started/glossary.md#app) versions 0.3.1 and 0.3.2 fills in `0303030303030303030303030303030303030303030303030303030303030303`, a channel the LEZ testnet no longer reads. A deposit sent to it locks your notes but never arrives on the LEZ, so leave the checkbox clear and paste the ID instead. To confirm the current ID, run the `getChannelId` call in [The LEZ testnet checkbox is missing](#the-lez-testnet-checkbox-is-missing).
+      :::
 
    - **Change goes to**: the account that receives any leftover value. It defaults to the account you deposit from.
    - **Accounts funding the gas fee**: the accounts the node draws the transaction fee from. The account you deposit from is added for you. To add another, choose it in the **Account…** dropdown and click **Add**.
    - **Max tx fee**: the maximum fee you allow, in TestToken.
-   - **Metadata (base58, optional)**: data for the Zone, usually specific to it. For the LEZ, paste the ID of the public account that receives the deposit: in the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md#create-a-new-public-account), click the copy button next to one of your public accounts. For other Zones, leave it empty if the Zone does not need any.
+   - **Metadata (base58, optional)**: data for the Zone, usually specific to it. For the LEZ, paste the ID of the public account that receives the deposit: in the [LEZ wallet app](../../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md#create-a-new-public-account), click the copy button next to one of your public accounts. For other Zones, leave it empty if the Zone does not need any.
 
      :::warning
      A LEZ deposit without a public account ID in **Metadata** is locked on the Logos Blockchain but never credited on the LEZ.
@@ -100,7 +102,7 @@ The wizard collects the deposit payload across two input steps and a review step
 
 1. For a LEZ deposit, wait for the funds to arrive in the LEZ wallet. The LEZ credits a deposit only once the block that includes it is [final](../concepts/about-cryptarchia.md#fork-choice-rule) on the Logos Blockchain, which takes 120 blocks, or about an hour on the testnet. The deposit is then credited in the next LEZ block.
 
-   - To check, open the [LEZ wallet UI](../../lez/get-started/run-lez-wallet-ui-and-initiate-native-token-transfers.md) and click **Refresh** in the **Accounts** panel. The public account whose ID you pasted in **Metadata** shows the deposited amount added to its balance.
+   - To check, open the [LEZ wallet app](../../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) and click **Refresh** in the **Accounts** panel. The public account whose ID you pasted in **Metadata** shows the deposited amount added to its balance.
 
 ## Troubleshooting channel deposits
 

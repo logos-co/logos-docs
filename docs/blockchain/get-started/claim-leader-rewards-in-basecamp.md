@@ -1,5 +1,5 @@
 ---
-title: Claim leader rewards in the Logos Blockchain UI app
+title: Claim leader rewards in Basecamp
 doc_type: procedure
 product: blockchain
 topics: []
@@ -7,11 +7,11 @@ steps_layout: flat
 authors: andrussal, kashepavadan
 owner: logos
 doc_version: 2
-slug: claim-leader-rewards-in-logos-blockchain-ui-app
-sidebar_position: 4
+slug: claim-leader-rewards-in-basecamp
+sidebar_position: 3
 ---
 
-# Claim leader rewards in the Logos Blockchain UI app
+# Claim leader rewards in Basecamp
 
 #### Learn how to get rewarded for having your Logos Blockchain node propose blocks.
 
@@ -19,11 +19,11 @@ sidebar_position: 4
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Every block your node leads through [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership) mints a reward voucher, and claiming a voucher redeems it into spendable balance. It is intended for node operators running their node via the Blockchain UI [app](../../get-started/glossary.md#app). The procedure also covers claiming the proof-of-work tickets that [mining](../../get-started/glossary.md#mining) produces.
+This procedure covers how to claim rewards for participating in the consensus protocol of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Every block your node leads through [Proof of Leadership](../../get-started/glossary.md#proof-of-leadership) mints a reward voucher, and claiming a voucher redeems it into spendable balance. It is intended for node operators running their node via the Logos Blockchain [app](../../get-started/glossary.md#app) on Basecamp. The procedure also covers claiming the proof-of-work tickets that [mining](../../get-started/glossary.md#mining) produces.
 
 :::info[Prerequisites]
 
-- The [Blockchain UI app](./build-and-run-logos-blockchain-node-app-ui.md) running, with the node **Online**.
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
 - A funded node that has proposed at least one block. The lifecycle lane on the **Node** tab reaches **Earning** once a reward voucher is ready to claim.
 :::
 

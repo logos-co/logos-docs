@@ -184,9 +184,23 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'category',
-          label: 'Tutorials',
+          label: 'Logos SQL',
           items: [
-            'build-an-app/tutorials/build-app-with-logos-zone-sdk',
+            {
+              type: 'link',
+              label: 'Introduction to Logos SQL',
+              href: '/blockchain/logos-sql',
+            },
+            {
+              type: 'link',
+              label: 'Build an application with Logos SQL',
+              href: '/blockchain/logos-sql/build-application-with-logos-sql',
+            },
+            {
+              type: 'link',
+              label: 'Handle displaced writes',
+              href: '/blockchain/logos-sql/handle-displaced-writes',
+            },
           ],
         },
       ],

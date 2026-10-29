@@ -103,5 +103,5 @@ Each participant keeps a separate persistent state directory. On restart, it res
 - **Plan for provisional results.** Use finalised reads where needed, and decide how the application responds to displaced writes.
 
 :::tip
-Follow [Build an application with Logos SQL](replicate-a-database-with-logos-sql.md) to run the password-manager example, follow its writes between participants and review displaced writes.
+Follow [Build an application with Logos SQL](build-application-with-logos-sql.md) to run the password-manager example, follow its writes between participants and review displaced writes.
 :::

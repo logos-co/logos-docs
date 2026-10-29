@@ -188,10 +188,19 @@ const config: Config = {
             from: '/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp',
             to: '/basecamp/atomic-swaps-poc',
           },
-          // renamed page
+          // Removed Zone SDK tutorial (and its earlier `dapp` URL), superseded
+          // by the Logos SQL guide.
           {
-            from: '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
-            to: '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
+            from: [
+              '/build-an-app/tutorials/build-app-with-logos-zone-sdk',
+              '/build-an-app/tutorials/build-dapp-with-logos-zone-sdk',
+            ],
+            to: '/blockchain/logos-sql/build-application-with-logos-sql',
+          },
+          // Logos SQL guide's original slug.
+          {
+            from: '/blockchain/logos-sql/replicate-a-database',
+            to: '/blockchain/logos-sql/build-application-with-logos-sql',
           },
         ],
       } satisfies PluginClientRedirects.Options,

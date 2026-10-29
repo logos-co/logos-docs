@@ -135,7 +135,7 @@ The welcome screen offers **Quick start** and **Advanced**. **Quick start** gene
 
     - Generating writes your config. You cannot change these settings afterwards without editing the file by hand.
 
-1.  On **3. Keys**, click **Download keystore.yaml** and save the copy somewhere safe. Select **I've backed up my keys somewhere safe**, then click **Continue**.
+1.  On **3. Keys**, click **Download keystore.yaml** and save the copy somewhere safe. Then click **Continue**.
 
     ![Step 3. Keys with the Download keystore.yaml button](../assets/build-and-run-logos-blockchain-node-app-ui/wizard-3-keys.png)
 

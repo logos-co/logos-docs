@@ -63,21 +63,24 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 
    - The output must include `"module":"openmetrics","status":"ok"`.
 
-## Step 2: Turn on the blockchain node's metrics
+## Step 2: Check the blockchain node's metrics
 
-The blockchain node keeps its metrics off unless its configuration turns them on, and it reads that setting only when the module starts. The `user_config.yaml` that `generate_user_config` writes has them off.
+Since blockchain module `0.3.4`, the node reports its metrics by default. The setting is `tracing.metrics.open_metrics.enabled`, and it is `true` unless `user_config.yaml` sets it to `false`. A `0.3.2` configuration that the node upgrades on its first `0.3.4` start also has metrics on.
 
-1. Turn the metrics on in the node configuration:
+1. Check that the node reports metrics:
 
    ```sh
-   sed -i 's/enable_open_metrics: false/enable_open_metrics: true/' /var/lib/logos-node/user_config.yaml
-   grep enable_open_metrics /var/lib/logos-node/user_config.yaml
+   logosctl call blockchain_module collectOpenMetricsText
    ```
 
-   - The output must show `enable_open_metrics: true`. The setting is under `tracing.metrics`.
-   - If you are setting up a new node, make this change after `generate_user_config` and before the first `start` call, and skip the next step.
+   - The result is an OpenMetrics document with `# TYPE` lines. If it is, continue with [Step 3](#step-3-start-the-metrics-endpoint).
+   - An empty result means the metrics are off or the node is not running. Check the node with `logosctl call blockchain_module get_cryptarchia_info`, and look for the setting in the configuration:
 
-1. Restart the blockchain module so it reads the new setting:
+   ```sh
+   grep -n -A1 open_metrics /var/lib/logos-node/user_config.yaml
+   ```
+
+1. If the configuration has `enabled: false` under `tracing.metrics.open_metrics`, remove those lines or change the value to `true`, then restart the blockchain module so it reads the new setting:
 
    ```sh
    logosctl module unload blockchain_module
@@ -88,13 +91,7 @@ The blockchain node keeps its metrics off unless its configuration turns them on
    - The node keeps its state and resumes from the blocks it already stored.
    - The `start` call can return `RPC call failed`, or `call to 'blockchain_module.start' timed out after 20000ms`, while the node replays its stored blocks. The node still starts. Wait a few minutes, then check `logosctl call blockchain_module get_cryptarchia_info`.
 
-1. Check that the node reports metrics:
-
-   ```sh
-   logosctl call blockchain_module collectOpenMetricsText
-   ```
-
-   - The result is an OpenMetrics document with `# TYPE` lines. An empty result means the metrics are still off or the node is not running.
+1. Run `collectOpenMetricsText` again. The result is now an OpenMetrics document with `# TYPE` lines.
 
 ## Step 3: Start the metrics endpoint
 
@@ -238,7 +235,7 @@ The endpoint does not persist across restarts: when the node daemon restarts, th
    ```
 
    - Collection only reports modules that are running, so start `openmetrics` after the modules it scrapes.
-   - The blockchain setting from Step 2 is stored in `user_config.yaml`, so the blockchain module keeps reporting metrics after a restart.
+   - The blockchain module reports metrics after every restart, unless `user_config.yaml` turns them off.
 
 1. To stop the endpoint without stopping the node, run:
 
@@ -260,4 +257,4 @@ The server did not start. The usual causes are:
 
 - Check that the module is loaded and started with `logosctl module ls --loaded` and the module's own status call, for example `logosctl call storage_module isRunning`.
 - Check that `blockchain_module` and `delivery_module` are listed with `"format": "text"`. As bare names they contribute no metrics.
-- If `blockchain_module` reports nothing, run `logosctl call blockchain_module collectOpenMetricsText`. An empty result means `enable_open_metrics` is not `true` in `user_config.yaml`, the module was not restarted after the change, or the node is not running. Repeat [Step 2](#step-2-turn-on-the-blockchain-nodes-metrics).
+- If `blockchain_module` reports nothing, run `logosctl call blockchain_module collectOpenMetricsText`. An empty result means `user_config.yaml` sets `tracing.metrics.open_metrics.enabled` to `false`, the module was not restarted after the change, or the node is not running. Repeat [Step 2](#step-2-check-the-blockchain-nodes-metrics).

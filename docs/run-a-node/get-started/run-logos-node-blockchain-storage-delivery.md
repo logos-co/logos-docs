@@ -188,8 +188,8 @@ Download and install the three module packages from the configured module [catal
 
    ```sh
    logosctl package install blockchain_module \
-   --version 0.3.2 \
-   --root-hash 9ab4acbb734a85b0271f88d6db87f6d6ca3c6d96a3b27bacaa4ab11f67b6f0d7 \
+   --version 0.3.4 \
+   --root-hash 911a849083727457c25df4c29b2f2efd7c5b2906cd8f45eaa7f0cd89178aa08e \
    --yes
    logosctl package install storage_module \
    --version 3.0.2 \
@@ -214,7 +214,7 @@ Download and install the three module packages from the configured module [catal
    - The output must list:
 
    ```text
-   blockchain_module 0.3.2
+   blockchain_module 0.3.4
    delivery_module 0.3.2
    storage_module 3.0.2
    ```
@@ -268,9 +268,13 @@ runuser -u logos -- env HOME=/var/lib/logos-node bash
 Load the blockchain module, generate the node config, and start the module.
 
 :::warning
-The blockchain module `0.3.1` release started a new blockchain with a new genesis, and `0.3.2` continues on it.
+The blockchain module `0.3.1` release started a new blockchain with a new genesis, and `0.3.2` and `0.3.4` continue on it.
 
-If your node last ran a release earlier than `0.3.1`, start it with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over. A node upgrading from `0.3.1` keeps its state.
+If your node last ran a release earlier than `0.3.1`, start it with an empty blockchain state directory. Balances and Blend declarations from the previous blockchain do not carry over. A node upgrading from `0.3.1` or `0.3.2` keeps its state.
+:::
+
+:::info[Upgrading from `0.3.2`]
+Keep your existing `user_config.yaml` and `keystore.yaml`. On its first start, the `0.3.4` module rewrites a `0.3.2` `user_config.yaml` in the new format, keeps a copy of the original next to it as `user_config.yaml.0.3.2.bak`, and removes settings that only repeat the defaults. To upgrade, install the `0.3.4` package as in [Step 3](#step-3-install-modules), restart the daemon, load the module, and run the `start` command below. Do not run `generate_user_config` again.
 :::
 
 1. Create the peer bootstrap file:
@@ -299,20 +303,32 @@ If your node last ran a release earlier than `0.3.1`, start it with an empty blo
    ```
 
    :::info
-   `user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
+   `keystore.yaml` holds the node's secret keys, and the node reads it together with `user_config.yaml`. Keep both files private, restrict file permissions, and do not publish them. Generate fresh files for each node.
    :::
 
-   - `generate_user_config` writes `user_config.yaml` to the Logos node's working directory (`/var/lib/logos-node/user_config.yaml` with this guide's layout).
-   - Important fields in `user_config.yaml` include:
+   - `generate_user_config` writes `user_config.yaml` and `keystore.yaml` to the Logos node's working directory (`/var/lib/logos-node/` with this guide's layout).
+   - The generated `user_config.yaml` lists only the bootstrap peers. Every other setting uses its default value, so it does not appear in the file. To change a setting, add it to `user_config.yaml` under its full path and restart the blockchain module. For example, to change the P2P port:
 
-   | Field | Purpose | Guidance |
+   ```yaml
+   network:
+     backend:
+       swarm:
+         port: 3000
+   ```
+
+   - Settings you may want to change are listed below. For every setting and its default, see [Appendix: Full blockchain node configuration](#appendix-full-blockchain-node-configuration).
+
+   | Field | Purpose | Default and guidance |
    |-------|---------|----------|
-   | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
-   | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-   | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
-   | `state.base_folder` | State directory | Use a persistent local path |
-   | logger filters | Log verbosity | Use `INFO` for unattended operation |
-   | `tracing.metrics.enable_open_metrics` | Node metrics | Generated as `false`. Set to `true` to [expose the node's metrics](./expose-logos-node-metrics-to-prometheus.md) |
+   | `network.backend.initial_peers` | Bootstrap peers | Generated from `peers.json`. Use the current network document |
+   | `network.backend.swarm.port` | Public UDP P2P port | `3000`. Keep aligned with firewall/NAT |
+   | `api.backend.listen_address` | Local API bind | `127.0.0.1:8080`. Keep private |
+   | `state.base_folder` | State directory | `./state`, relative to the Logos node's working directory (`/var/lib/logos-node/state` with this guide's layout). Use a persistent local path |
+   | `tracing.level` | Log verbosity | `INFO`. Use `INFO` for unattended operation |
+   | `tracing.metrics.open_metrics.enabled` | Node metrics | `true`. See [expose the node's metrics](./expose-logos-node-metrics-to-prometheus.md) |
+   | `blend.core.backend.listening_address` | Blend listener | `/ip4/0.0.0.0/udp/3400/quic-v1`. Only used once the node [joins the Blend Network](#optional-join-the-blend-network) |
+
+   - The node writes hourly log files named `logos-blockchain.log.<date-hour>` to its working directory. `logos-blockchain.log.latest` links to the current one. A node upgraded from `0.3.2` keeps the log file prefix it used before, which `tracing.logger.file.prefix` in `user_config.yaml` shows.
 
 1. Start the blockchain module:
 
@@ -329,6 +345,14 @@ If your node last ran a release earlier than `0.3.1`, start it with an empty blo
    ```
 
    - Your node will take about an hour to finish [bootstrapping](../../get-started/glossary.md#bootstrapping) and enter the `Online` state.
+   - If no bootstrap peer answers when the node starts, the node stops itself, and `result.error` reads `The node is no longer running, most likely because one of its services panicked`. The node log shows `Initial Block Download failed: AllPeersFailed`. Check that outbound UDP traffic is allowed and that `peers.json` lists the current bootstrap peers, then restart the module:
+
+   ```sh
+   logosctl call blockchain_module stop
+   logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+   ```
+
+   - After a restart, the node first replays the blocks it already stored. The `start` call, and every `logosctl call blockchain_module` command until the replay ends, can return `RPC call failed`. The node still starts. The replay takes longer the more blocks the node has stored, from seconds on a new node to 10 minutes or more on a node that has synced the testnet. The node log reports `found <N> stored blocks to replay during chain recovery` when it begins.
 
    :::warning
    Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
@@ -338,10 +362,9 @@ If your node last ran a release earlier than `0.3.1`, start it with an empty blo
 
 ### Fund the node by mining
 
-The generated `user_config.yaml` includes a `pow` section that deals with automatically claiming mining rewards to the node's `PoWClaim` key. Find this public key at `pow.auto_claim.targets[].public_key` in `/var/lib/logos-node/user_config.yaml`.
-Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
+By default, the node automatically claims its mining rewards to its `PoWClaim` key. Find this public key at `public_keys.PoWClaim` in `/var/lib/logos-node/keystore.yaml`.
 
-1. Leave the `pow` section as generated. The generated defaults look like this:
+1. The `pow` settings do not appear in the generated `user_config.yaml`. Without a `pow` section, the node uses these defaults, where `<your PoWClaim key>` is the key from `keystore.yaml`:
 
    ```yaml
    pow:
@@ -357,9 +380,9 @@ Keep the generated value; `<your PoWClaim key>` below is only a placeholder.
          value: 10
    ```
 
-   - `auto_claim.targets` is already filled with your node's `PoWClaim` key.
-   - `max_threads` sets how many CPU threads mine. To mine faster, raise it, or set it to `null` to use one thread per CPU core.
+   - `max_threads` sets how many CPU threads mine. To mine faster, add `pow.mining.max_threads` to `user_config.yaml` with a higher value, or set it to `null` to use one thread per CPU core.
    - `threshold` is the balance, in tokens, that auto-claim pays the target up to. Once a target reaches its threshold, auto-claim stops paying it, and once every target has, auto-claim and mining both stop.
+   - If you add `pow.auto_claim.targets` to `user_config.yaml`, it replaces the default list, so include your `PoWClaim` key in it.
    - If you edit the `pow` section, restart the blockchain module for the change to take effect.
 
 1. After your node reaches `Online` mode, start mining:
@@ -434,7 +457,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
 1. Join the Blend Network by locking one of the notes held by your `BlendZk` key.
 
    :::info
-   Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
+   Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` is `3400` unless you set `blend.core.backend.listening_address` in `user_config.yaml`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
    :::
 
    ```sh
@@ -444,7 +467,7 @@ With a running [Logos Blockchain](../../get-started/glossary.md#logos-blockchain
    ```
 
    - `<YOUR_IP>`: Must be your external IP address
-   - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
+   - `<YOUR_BLEND_PORT>`: Your Blend port, `3400` by default, or the port in `blend.core.backend.listening_address` if you set it in `user_config.yaml`. Note that if you do port-mapping, the external mapped port must be used.
    - `<BLEND_ZK_NOTE_ID>`: The note ID of one of the notes held by your `BlendZk` key, as queried above.
    - The Blend core listener starts only after the node's declaration becomes active.
 
@@ -585,7 +608,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
    logosctl module ls --loaded
    ```
 
-   Expected modules in the output: `blockchain_module`, `capability_module`, `delivery_module`, `package_downloader`, `package_manager`, `storage_module`.
+   Expected modules in the output: `blockchain_module`, `capability_module`, `delivery_module`, `liblogos_lez_rln_module`, `liblogos_rln_module`, `libp2p_module`, `modules_state`, `package_downloader`, `package_manager`, `storage_module`.
 
 1. Verify all ports are bound correctly:
 
@@ -617,7 +640,7 @@ Run health checks against the Logos node and all three loaded modules to confirm
    ss -lun
    ```
 
-   - Confirm that the local UDP port from `blend.core.backend.listening_address` is present. If the public Blend port differs, also confirm that NAT forwards `<YOUR_BLEND_PORT>/udp` to this local port.
+   - Confirm that the local Blend UDP port (`3400` unless you set `blend.core.backend.listening_address`) is present. If the public Blend port differs, also confirm that NAT forwards `<YOUR_BLEND_PORT>/udp` to this local port.
 
 1. Check the delivery module bound ports:
 
@@ -668,3 +691,301 @@ MaxFileSec=1day
 ```
 
 Use the `INFO` log level for unattended operation; use `DEBUG` only for short troubleshooting windows.
+
+## Appendix: Full blockchain node configuration
+
+This is a complete, annotated `user_config.yaml` for `blockchain_module` `0.3.4`. It holds every setting with its default value, and the values the node otherwise reads from `keystore.yaml`, as they would be for the `user_config.yaml` and `keystore.yaml` that `generate_user_config` writes. Use it to look up the full path, meaning, and default value of a setting.
+
+:::danger
+The keys below are sample values from a throwaway keystore. Never use them for a node: anyone can read them here and spend funds held by these keys. Your own keys are in your `keystore.yaml`.
+:::
+
+- Keep your `user_config.yaml` short. Add only the settings you change, under their full path, and let the node fill in the rest.
+- Do not copy the `node_key`, `kms`, `wallet`, key ID, or `funding_pk` values into `user_config.yaml`. The node reads them from `keystore.yaml`, which `kms.keystore` points to.
+- To print the configuration your own node runs with, run the standalone node binary from the [`0.3.4` release](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4). It loads the configuration the same way the module does, and prints secret keys as `<secret>`:
+
+  ```sh
+  logos-blockchain-node /var/lib/logos-node/user_config.yaml --show-config
+  ```
+
+```yaml
+# P2P networking (libp2p) used for blocks, transactions, and peer discovery.
+network:
+  backend:
+    swarm:
+      # IPv4 address and UDP port the node listens on for QUIC. Port 0 picks a random port.
+      host: 0.0.0.0
+      port: 3000
+      # Ed25519 secret key of the node's libp2p identity (its peer ID), in hex.
+      # From the NetworkSwarm key in keystore.yaml.
+      node_key: 29e0b57939416954d4d739e8b5da733d73249c6c5e6f84dff534d5c15ba33cf9
+      # Gossipsub, the protocol that broadcasts blocks and transactions.
+      # These are libp2p gossipsub parameters; change them only if you know the protocol.
+      gossipsub:
+        history_length: 5            # Heartbeats of messages kept for gossip
+        history_gossip: 3            # Heartbeats of messages advertised in gossip
+        mesh_n: 6                    # Target number of mesh peers per topic
+        mesh_n_low: 5                # Add mesh peers below this
+        mesh_n_high: 12              # Remove mesh peers above this
+        retain_scores: 4             # Heartbeats to keep scores of disconnected peers
+        gossip_lazy: 6               # Minimum peers to gossip to
+        gossip_factor: 0.25          # Share of peers to gossip to
+        heartbeat_initial_delay: 5s
+        heartbeat_interval: 1s
+        fanout_ttl: 1m               # How long to keep fanout state for topics we publish to but do not join
+        check_explicit_peers_ticks: 300
+        duplicate_cache_time: 1day   # How long seen message IDs are remembered, so a re-broadcast is not propagated again
+        validate_messages: false
+        allow_self_origin: false
+        do_px: false                 # Peer exchange on prune
+        prune_peers: 0
+        prune_backoff: 1m
+        unsubscribe_backoff: 10s
+        backoff_slack: 1
+        flood_publish: true          # Publish own messages to all peers, not only the mesh
+        graft_flood_threshold: 10s
+        mesh_outbound_min: 2
+        opportunistic_graft_ticks: 60
+        opportunistic_graft_peers: 2
+        gossip_retransimission: 3
+        max_messages_per_rpc: null   # null: no limit
+        max_ihave_length: 5000
+        max_ihave_messages: 10
+        iwant_followup_time: 3s
+        published_message_ids_cache_time: 10s
+      # Kademlia DHT, used for peer discovery. null uses the libp2p default.
+      kademlia:
+        query_timeout: null          # Timeout for a single query
+        replication_factor: null     # Replication factor for records
+        parallelism: null            # Parallelism of iterative queries
+        disjoint_query_paths: null   # Require iterative queries to use disjoint paths
+        max_packet_size: null        # Maximum size of a Kademlia packet
+        kbucket_inserts: null        # k-bucket insertion strategy: OnConnected or Manual
+        cache_size: 1                # How many peers closest to a key cache its record; null disables caching
+        periodic_bootstrap_interval: null  # Interval of periodic bootstrap; 0s disables it
+      # Identify, which exchanges addresses and protocols with connected peers. null uses the libp2p default.
+      identify:
+        agent_version: null          # Agent version string to advertise
+        interval: null               # Interval between identify pushes
+        push_listen_addr_updates: null  # Push identify to all peers when listen addresses change
+        cache_size: null             # Number of discovered peers to keep
+        hide_listen_addrs: true      # Share only external addresses, not listen addresses
+      # Block download protocol between nodes.
+      chain_sync:
+        peer_response_timeout: 5s    # Maximum wait for each message from a peer
+        max_inbound_requests: 10     # Block download requests served at once
+        inbound_download_stream_timeout: 2m  # Maximum time to serve one block download stream
+      # How the node finds and announces its public address.
+      # type: traversal uses AutoNAT, port mapping (UPnP / NAT-PMP / PCP), and gateway monitoring.
+      # For a node with a fixed public IP, use instead:
+      #   nat:
+      #     type: static
+      #     external_address: /ip4/<public-ip>/udp/3000/quic-v1
+      nat:
+        type: traversal
+        autonat:
+          max_candidates: null       # Most address candidates to test; null uses the libp2p default
+          probe_interval: null       # Interval between tests of new candidates; null uses the libp2p default
+          retest_successful_external_addresses_interval: 1m  # How often to recheck a confirmed external address
+        mapping:
+          timeout: 1s                # Timeout for a request to the gateway
+          lease_duration: 2h         # Lease requested for a port mapping
+          max_retries: 3             # Attempts per mapping request
+          renewal_delay_fraction: 0.8  # Renew a mapping after this share of its lease
+          retry_interval: 30s        # Wait before retrying a failed mapping
+        gateway_monitor:
+          check_interval: 5m         # How often to check for a changed gateway address
+    # Peers to connect to on startup. Generated from peers.json.
+    initial_peers:
+    - /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
+    - /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz
+    - /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb
+    - /ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
+# Blend Network. Used once the node joins it as a core node.
+blend:
+  # Key ID of the BlendSigning key, the signing key registered in the node's Blend declaration.
+  non_ephemeral_signing_key_id: d66f3b05b9d62cf8d11d247b04afb386140485afc145ff01014ae40888077f59
+  core:
+    backend:
+      # Address of the Blend listener. Open this UDP port when you join the Blend Network.
+      listening_address: /ip4/0.0.0.0/udp/3400/quic-v1
+      max_dial_attempts_per_peer: 3  # Dial attempts before giving up on a Blend peer
+      peering_degree_check_interval: 1m  # How often to check the number of Blend peers and dial more if needed
+    zk:
+      # Key ID of the BlendZk key, which holds the note locked for the Blend declaration.
+      secret_key_kms_id: 20ec7228a837e396e045ec8843e2bad09fd645fa0903a1c6e38c6dcce7e5ec17
+  edge:
+    backend:
+      max_dial_attempts_per_peer_per_message: 1  # Dial attempts per message sent through a Blend node
+      replication_factor: 1          # Blend nodes each message is sent to
+  # true: do not fall back to broadcasting messages that Blend failed to deliver.
+  abstain_on_failure: false
+# Consensus (Cryptarchia).
+cryptarchia:
+  service:
+    bootstrap:
+      # After Initial Block Download, how long the node stays in Bootstrapping before going Online.
+      prolonged_bootstrap_period: 1h
+      # true: start in Bootstrapping even when the node has state past genesis.
+      force_bootstrap: false
+      offline_grace_period:
+        grace_period: 20m            # A node offline for longer than this starts in Bootstrapping again
+        state_recording_interval: 1m # How often the node records its time and state for this check
+    sync:
+      block_provider:
+        batch_size: 1000             # Most blocks sent per request to a peer that is syncing from this node
+  network:
+    bootstrap:
+      # Initial Block Download (IBD): how the node catches up when it starts.
+      ibd:
+        # Peer IDs to ask for the chain tip. Generated from the peer IDs in peers.json.
+        peers:
+        - 12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
+        - 12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz
+        - 12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb
+        - 12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
+        delay_before_new_download: 10s  # No longer used
+        tips_fetch_max_attempts: 3   # Attempts to fetch the tip from each IBD peer
+        tips_fetch_min_delay: 250ms  # Lower bound of the backoff between attempts
+        tips_fetch_max_delay: 1s     # Upper bound of the backoff between attempts
+        round_delay: 1s              # Delay between IBD rounds
+    sync:
+      orphan:
+        max_orphan_cache_size: 1000  # Blocks kept while their parents are downloaded
+        max_rejected_cache_size: 1000  # Rejected block IDs remembered so they are not downloaded again; 0 disables
+      tip_poll:
+        enabled: true                # Poll peers for their tip when the node falls behind
+        lag_threshold_blocks: 3      # Poll when the tip lags this many expected blocks behind the current slot
+        max_peers_to_sample: 5       # Peers asked on each poll
+    network:
+      max_connected_peers_to_try_download: 16   # Connected peers tried when downloading a block
+      max_discovered_peers_to_try_download: 16  # Discovered peers tried when downloading a block
+    seen_items_subscription_channel_size: 64
+  leader:
+    wallet:
+      max_tx_fee: 18446744073709551615  # Highest fee the leader pays for its own transactions; this default sets no limit
+      # Public key of the LeaderFunding key.
+      funding_pk: 6d7299756057b9d4903a05e88cf86140ffad8a101680251c5706148a89fd9a14
+# Clock synchronisation over NTP.
+time:
+  backend:
+    server: pool.ntp.org:123
+    client:
+      timeout: 5s
+      listening_interface: 0.0.0.0
+    update_interval: 15s             # How often to contact the NTP server
+# Service declarations (SDP), such as the Blend declaration.
+sdp:
+  # A service declaration the node already made, to resume after a restart:
+  # provider_id, zk_id, locators, and service_type. null: none in the config.
+  declaration: null
+  wallet:
+    max_tx_fee: 18446744073709551615  # Highest fee paid for SDP transactions; this default sets no limit
+    # Public key of the SdpFunding key, which pays for SDP transactions.
+    funding_pk: aa46382897b011a7aeb463eb61d55b4cb52521945c44b7d9ef4e67ade72ee110
+  active_message_tracker:
+    status_check_interval_in_tip_changes: 3  # Tip changes between checks of a submitted activity message
+# Local HTTP API.
+api:
+  backend:
+    listen_address: 127.0.0.1:8080   # Keep it on 127.0.0.1 unless you protect it
+    cors_origins: []
+    timeout: 30s
+    max_body_size: 10485760          # Bytes
+    max_concurrent_requests: 500
+# Block database.
+storage:
+  backend:
+    folder_name: ./db                # Relative to state.base_folder
+    read_only: false
+    column_family: blocks
+# Key management.
+kms:
+  # Keystore path, relative to user_config.yaml. When it exists, node_key, the key IDs,
+  # wallet, and kms are read from it, and user_config.yaml only overrides them.
+  keystore: keystore.yaml
+  backend:
+    # Every key from keystore.yaml, by key ID, with its secret key.
+    keys:
+      6d7299756057b9d4903a05e88cf86140ffad8a101680251c5706148a89fd9a14: !Zk 1789dcce3b54513dee33949f1df5faddb25223d00a6152eacf4e81aa99eda405      # LeaderFunding
+      8e7bc34ed67650847e1230902724820a2eaa280d7dce9731a3bd6c230cf0d108: !Zk 68e696d8f361ab1e7804a2e603fbe27c9e7c8f974b9c155e9d298b6e56b75c27      # Stake
+      20ec7228a837e396e045ec8843e2bad09fd645fa0903a1c6e38c6dcce7e5ec17: !Zk 8df24a369c861b09af3f3b7aa3bc906a5fe6887345c9bf55ca88e29a1c8ad01a      # BlendZk
+      cc74387c864f6a47c212f60115c0cacf1e7e11c578761af0d5f901c75ff48903: !Zk 2ae34ef989943bebebf101331276a7d46f8738bbd474d5fca98d00d32134091f      # VaucherMaster
+      6f43014a18add18bb1faab059c08500df232d4086162f3a8b944f3f346f9cd18: !Zk 31c4d35e1872792aa5657232b26906949f9d96ad9a3fe7d4e524a8bad4889818      # PoWClaim
+      aa46382897b011a7aeb463eb61d55b4cb52521945c44b7d9ef4e67ade72ee110: !Zk 0a62df8ed79e76919dfd7a9c7d3e6fb6422ddfe0129e9c841350e64e2a33ab2c      # SdpFunding
+      d66f3b05b9d62cf8d11d247b04afb386140485afc145ff01014ae40888077f59: !Ed25519 2db83159be41be189e41d4956f9a4eca58b020da4834730bedf3124a6d287dcd  # BlendSigning
+      3ae4efd339acb0ce0777314d36b9304ea036c07577fb10267ee20fb616902148: !Ed25519 29e0b57939416954d4d739e8b5da733d73249c6c5e6f84dff534d5c15ba33cf9  # NetworkSwarm
+# Pending transactions.
+mempool:
+  tx_ttl: 9h                         # How long a transaction can wait before it is dropped; null keeps it until included
+  seen_items_subscription_channel_size: 64
+  pow_claim_grace_slots: 0           # Slots a PoW claim stays after its acceptance window closes
+# Wallet.
+wallet:
+  # Every Zk key from keystore.yaml, by key ID. The wallet tracks the notes they hold.
+  known_keys:
+    6d7299756057b9d4903a05e88cf86140ffad8a101680251c5706148a89fd9a14: 6d7299756057b9d4903a05e88cf86140ffad8a101680251c5706148a89fd9a14  # LeaderFunding
+    8e7bc34ed67650847e1230902724820a2eaa280d7dce9731a3bd6c230cf0d108: 8e7bc34ed67650847e1230902724820a2eaa280d7dce9731a3bd6c230cf0d108  # Stake
+    20ec7228a837e396e045ec8843e2bad09fd645fa0903a1c6e38c6dcce7e5ec17: 20ec7228a837e396e045ec8843e2bad09fd645fa0903a1c6e38c6dcce7e5ec17  # BlendZk
+    cc74387c864f6a47c212f60115c0cacf1e7e11c578761af0d5f901c75ff48903: cc74387c864f6a47c212f60115c0cacf1e7e11c578761af0d5f901c75ff48903  # VaucherMaster
+    6f43014a18add18bb1faab059c08500df232d4086162f3a8b944f3f346f9cd18: 6f43014a18add18bb1faab059c08500df232d4086162f3a8b944f3f346f9cd18  # PoWClaim
+    aa46382897b011a7aeb463eb61d55b4cb52521945c44b7d9ef4e67ade72ee110: aa46382897b011a7aeb463eb61d55b4cb52521945c44b7d9ef4e67ade72ee110  # SdpFunding
+  # Key ID of the VaucherMaster key, used for leader-reward vouchers.
+  voucher_master_key_id: cc74387c864f6a47c212f60115c0cacf1e7e11c578761af0d5f901c75ff48903
+  pending_note_expiry_blocks: 10     # Immutable blocks after which a note reserved by an unconfirmed transaction can be spent again
+# Proof-of-work mining and reward claiming.
+pow:
+  mining:
+    max_threads: 1                   # CPU threads used for mining; null uses one per core
+    max_tickets_per_block: 1
+  auto_claim:
+    # Keys that auto-claim pays, each up to its threshold. Empty turns auto-claim off.
+    targets:
+    - public_key: 6f43014a18add18bb1faab059c08500df232d4086162f3a8b944f3f346f9cd18  # PoWClaim
+      threshold: 2000000000          # Balance, in tokens, to pay this key up to
+    tick:                            # Period between claim attempts: unit is seconds or slots
+      unit: seconds
+      value: 10
+# Logs, traces, and metrics.
+tracing:
+  logger:
+    file:
+      directory: .                   # Relative to the node's working directory
+      prefix: null                   # null names the files logos-blockchain.log.<date-hour>
+      appender_type: !Rolling
+        rotation: Hourly
+        retention: !MaxFiles
+          max_files: 10              # Keeps the last 10 hourly files
+        compression: None
+    loki: null                       # Grafana Loki: endpoint and host_identifier
+    gelf: null                       # Graylog GELF: addr
+    otlp: null                       # OpenTelemetry logs: endpoint, service_name, authorization_header, protocol
+    format: !Text Ansi               # !Text Ansi, !Text NoAnsi, or Json
+    stdout: true
+    stderr: false
+  tracing: None                      # OpenTelemetry traces: !Otlp with endpoint, sample_ratio, service_name, ...
+  # Per-target log levels. Derived from level when not set.
+  filter: !Env
+    filters:
+      '*': WARN
+      logos_blockchain: INFO
+      libp2p_gossipsub: ERROR
+      h2: WARN
+      hyper: WARN
+      hyper_util: WARN
+      opentelemetry: WARN
+      opentelemetry_sdk: WARN
+      reqwest: WARN
+      rustls: WARN
+      tonic: WARN
+      tower: WARN
+  metrics:
+    otlp: null                       # OpenTelemetry metrics export
+    open_metrics:
+      enabled: true                  # Serve metrics through the module's collectOpenMetricsText call
+  console: None                      # tokio-console: !Console with bind_address and port
+  level: INFO                        # Log level of the node's own logs
+# Node state.
+state:
+  base_folder: ./state               # Relative to the node's working directory
+```

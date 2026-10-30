@@ -26,19 +26,9 @@ The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the found
 - Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low and improves decentralisation.
 - Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) is used to improve proposer privacy.
 
-## Design principles
-
-The Logos Blockchain was designed around three principles: privacy, neutrality, and resilience.
-
-**Privacy** means the network protects information about all participants, regardless of their role. At the infrastructure level, nodes can propose blocks without having their identity linked to the blocks' content. Logos also gives developers tools to build applications with programmable privacy, so those applications can keep personal data hidden.
-
-**Neutrality** means activity is handled in a consistent way, without nodes having to make active decisions about which transactions to include in a block. Nodes process transactions according to simple criteria, without making their decisions about transaction inclusion public. As a result, nodes cannot effectively be pressured to exclude transactions originating from a certain party or containing certain information from a block, and are able to process all activity in an unbiased fashion.
-
-**Resilience** means the network stays operational and protects privacy under difficult conditions, including a partitioned internet, heavy censorship, and adversarial attacks. Running a node is meant to be easy enough to do on a laptop, which attracts more nodes and reduces points of failure. A consensus protocol that prioritises liveness lets the network keep operating in the worst conditions.
-
 ## Architecture
 
-The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](concepts/about-zones.md), which are built on a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) service extends Bedrock's privacy properties.
+The Logos Blockchain is implemented as two blockchain layers. Application execution happens on lightweight, permissionless blockchains called [Zones](concepts/about-zones.md), which are built on a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) Service extends Bedrock's privacy properties.
 
 ### Bedrock
 
@@ -48,7 +38,7 @@ Running a Bedrock validator node means leaving the [Logos node](../get-started/g
 
 ### Blend Network
 
-The Blend Network is an opt-in service that provides network-level privacy for consensus. It virtually eliminates the chance of linking a block proposer or transaction sender to their block or transaction, ensuring that they cannot be targeted. Node operators who join the Blend Network need more hardware than Bedrock validation alone requires.
+The Blend Network is a Blockchain Service, through which declared Blend nodes provide network-level privacy for block proposers participating in consensus. It virtually eliminates the chance of linking a block proposer or transaction sender to their block or transaction, ensuring that they cannot be targeted. Node operators who join the Blend Network need more hardware than Bedrock validation alone requires.
 
 ### Zones
 

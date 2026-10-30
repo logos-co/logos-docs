@@ -32,7 +32,7 @@ The foundational layer of the Logos Blockchain, operating as a decentralised pee
 
 ### Blend Network
 
-A service that improves privacy protections for block proposers on the Logos Blockchain. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
+A Service that improves privacy protections for block proposers on the Logos Blockchain. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md).
 
 ### Blend node
 

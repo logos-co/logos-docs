@@ -24,7 +24,7 @@ The [Logos Blockchain](../get-started/glossary.md#logos-blockchain) is the found
 
 - The Logos Blockchain is used for building decentralised applications.
 - Nodes can join with typical consumer hardware and any amount of stake, which keeps participation barriers low and improves decentralisation.
-- Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) is used to improve proposer privacy.
+- Logos Blockchain consists of two layers: lightweight, permissionless blockchains called [Zones](concepts/about-zones.md) built on top of a Layer 1 foundation called [Bedrock](concepts/about-bedrock.md). The [Blend Network](concepts/about-the-blend-network.md) is used to improve [proposer privacy](../get-started/glossary.md#proposer-privacy).
 
 ## Architecture
 
@@ -38,7 +38,7 @@ Running a Bedrock validator node means leaving the [Logos node](../get-started/g
 
 ### Blend Network
 
-The Blend Network is a Blockchain Service, through which declared Blend nodes provide network-level privacy for block proposers participating in consensus. It virtually eliminates the chance of linking a block proposer or transaction sender to their block or transaction, ensuring that they cannot be targeted. Node operators who join the Blend Network need more hardware than Bedrock validation alone requires.
+The Blend Network is a Blockchain [Service](../get-started/glossary.md#service), through which declared Blend nodes provide network-level privacy for block proposers participating in consensus. It virtually eliminates the chance of linking a block proposer or transaction sender to their block or transaction, ensuring that they cannot be targeted. Node operators who join the Blend Network need more hardware than Bedrock validation alone requires.
 
 ### Zones
 

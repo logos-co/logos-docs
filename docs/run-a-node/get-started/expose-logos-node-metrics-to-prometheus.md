@@ -44,7 +44,7 @@ Install the module into the running node. As root, open a shell as the `logos` u
 runuser -u logos -- env HOME=/var/lib/logos-node bash
 ```
 
-1. Install the pinned `openmetrics` package from the module [catalogue](../../get-started/glossary.md#catalogue):
+1. Install the pinned `openmetrics` [package](../../get-started/glossary.md#package) from the module [catalogue](../../get-started/glossary.md#catalogue):
 
    ```sh
    logosctl package install openmetrics \
@@ -177,7 +177,7 @@ Tell `openmetrics` which port to listen on and which modules to collect from.
    logos_storage_repostore_bytes_used{module="storage_module"} 31522926.0
    ```
 
-   - The full document holds a few hundred metric families and ends with `# EOF`. Storage metrics start with `logos_storage_` and delivery metrics with `logos_delivery_`. The delivery module also reports its libp2p, discovery, and mix network metrics.
+   - The full document holds a few hundred metric families and ends with `# EOF`. Storage metrics start with `logos_storage_` and delivery metrics with `logos_delivery_`. The [delivery module](../../get-started/glossary.md#delivery-module) also reports its libp2p, discovery, and mix network metrics.
    - Blockchain metrics have no common prefix (`consensus_`, `chainsync_`, `mempool_`, `network_`, `storage_`, and others) and no `# HELP` lines. Filter them by `module="blockchain_module"`.
    - A blockchain series appears once the node has recorded it, so a node that just started reports fewer families.
    - A module that is not running, or that fails to answer, is left out of the scrape. The other modules are still reported.

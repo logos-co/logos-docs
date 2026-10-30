@@ -74,11 +74,11 @@ The flow is: catch the blocked-write error, list the displaced writes, inspect t
 
    Each entry identifies one of this participant's writes by its transaction ID and gives the reason it was displaced.
 
-   With multiple writers, another participant's writes can arrive while yours are still waiting to be published. A chain reorganisation can also remove accepted writes, even with only one writer. The reasons below distinguish writes removed from channel history from those removed while still waiting locally:
+   With multiple writers, another participant's writes can arrive while yours are still waiting to be published. A chain reorganisation can also remove accepted writes, even with only one writer. The reasons below distinguish writes removed from [channel](../../get-started/glossary.md#channel) history from those removed while still waiting locally:
 
    | Reason | Meaning |
    | --- | --- |
-   | `Orphaned` | The Zone SDK removed a previously tracked write from channel history, for example because a competing channel write replaced it. This can happen without a blockchain reorganisation. |
+   | `Orphaned` | The [Zone SDK](../../get-started/glossary.md#zone-sdk) removed a previously tracked write from channel history, for example because a competing channel write replaced it. This can happen without a blockchain reorganisation. |
    | `PendingWriteInvalidated` | The write was still waiting locally to be published when other channel writes or a chain reorganisation changed the database it was based on. Logos SQL removed the local write rather than automatically applying it again to the changed data. |
 
    Neither reason means the SQL failed a constraint. Even writes to unrelated rows can compete for a channel position.

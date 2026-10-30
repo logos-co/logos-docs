@@ -37,7 +37,7 @@ Instead, follow the CLI instructions below, but navigate to your Basecamp Logos 
 ## What to expect
 
 - Your blockchain node is registered as a Blend core node.
-- Your node contributes to proposer privacy and becomes eligible for rewards.
+- Your node contributes to [proposer privacy](../../get-started/glossary.md#proposer-privacy) and becomes eligible for rewards.
 - Your declaration is confirmed on-chain and becomes active after two [epochs](../../get-started/glossary.md#epoch).
 
 ## Register your node as a Blend core node
@@ -205,7 +205,7 @@ Find the entry whose `zk_id` is your BlendZk key, with `"service_type": "BN"`. I
 
 ### Is my node participating in the Blend Network right now?
 
-Check the node log for the Blend Service lifecycle:
+Check the node log for the Blend [Service](../../get-started/glossary.md#service) lifecycle:
 
 ```bash
 grep -aE "blend::service" <node-log> | tail

@@ -18,13 +18,13 @@ sidebar_position: 4
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-The [Blend Network](../../get-started/glossary.md#blend-network) improves privacy protections for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) consensus protocol. Cryptarchia uses a private leadership election as a first line of defence against deanonymisation, but ensuring that proposer information cannot be easily inferred through network monitoring requires stronger privacy protections. The [Blend Protocol](../../get-started/glossary.md#blend-protocol) provides these: a privacy-preserving broadcasting protocol that makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a message to its sender through network analysis. The Blend Network is the Service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
+The [Blend Network](../../get-started/glossary.md#blend-network) improves privacy protections for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) consensus protocol. Cryptarchia uses a private leadership election as a first line of defence against deanonymisation, but ensuring that proposer information cannot be easily inferred through network monitoring requires stronger privacy protections. The [Blend Protocol](../../get-started/glossary.md#blend-protocol) provides these: a privacy-preserving broadcasting protocol that makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a message to its sender through network analysis. The Blend Network is the [Service](../../get-started/glossary.md#service) made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
 
 ## The basics
 
 - The Blend Network improves privacy protections for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
 - Messages are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
-- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake to benefit from the strongest proposer privacy.
+- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake to benefit from the strongest [proposer privacy](../../get-started/glossary.md#proposer-privacy).
 - Mantle transactions can also be sent through the Blend Network via a Proof of Work mechanism.
 
 ## Objectives

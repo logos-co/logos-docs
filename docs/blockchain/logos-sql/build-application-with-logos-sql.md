@@ -21,7 +21,7 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3**.
 :::
 
-This guide demonstrates how Logos SQL can be used to maintain an application's database on the Logos Blockchain. It does this by walking through a [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/47a65ab3c/logos_sql/examples/password_manager) in the `logos-blockchain` repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
+This guide demonstrates how Logos SQL can be used to maintain an application's database on the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). It does this by walking through a [password-manager example](https://github.com/logos-blockchain/logos-blockchain/tree/47a65ab3c/logos_sql/examples/password_manager) in the `logos-blockchain` repository. It shows how an application starts Logos SQL, prepares SQL transactions and reads its local database.
 
 The example separates startup configuration, database operations and terminal commands. The same library calls apply to other applications. Read the [introduction](introduction-to-logos-sql.md) first for the relationship between local data and shared history.
 
@@ -36,7 +36,7 @@ The walkthrough uses two instances on your own machine, each with a separate dat
 - Git, Rust and the [Logos Blockchain build prerequisites](https://github.com/logos-blockchain/logos-blockchain/blob/master/README.md#prerequisites).
 - The OpenSSL command-line tool to generate keys for the example.
 - A compatible Logos Blockchain node that has reached `Online`, with a reachable HTTP API (default: `http://127.0.0.1:8080`). Follow [Run a Logos Blockchain node](../get-started/run-blockchain-node-from-cli.md) to set one up.
-- A funded key in the node's wallet for inscription fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use the funded genesis key from its `wallet.known_keys` instead, as [Step 2](#step-2-configure-and-start-the-application) sets out.
+- A funded key in the node's wallet for [inscription](../../get-started/glossary.md#inscription) fees. On a testnet node, follow [Mine tokens to fund your node](../get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) to fund the `PoWClaim` key. A local standalone node configures no auto-claim targets, so use the funded genesis key from its `wallet.known_keys` instead, as [Step 2](#step-2-configure-and-start-the-application) sets out.
 - A maximum inscription fee appropriate for your test network.
 
 :::
@@ -188,7 +188,7 @@ Logos SQL is not yet published to crates.io. Build the example inside its source
    }
    ```   
    
-   Publication settings control batching and queue limits. The library drives replication in the background; the application does not run a separate Zone SDK event loop.
+   Publication settings control batching and queue limits. The library drives replication in the background; the application does not run a separate [Zone SDK](../../get-started/glossary.md#zone-sdk) event loop.
 
    :::note
    Encryption belongs to the application, not `LogosSqlConfig`. The example uses XChaCha20-Poly1305 from RustCrypto to encrypt each field and detect tampering. It stores the nonce with the encrypted value; the key stays in the local key file and is never submitted to Logos SQL.

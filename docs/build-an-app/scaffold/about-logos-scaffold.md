@@ -61,7 +61,7 @@ Scaffold appends `.scaffold` to the project's `.gitignore`, so none of this work
 Two things live outside the project directory:
 
 - **The cache root** holds the pinned LEZ, `spel`, and Basecamp checkouts and their builds, shared by every project on the machine. It defaults to `~/Library/Caches/logos-scaffold` on macOS and `$XDG_CACHE_HOME/logos-scaffold` (usually `~/.cache/logos-scaffold`) on Linux. Point it elsewhere with `--cache-root` on `lgs new`, or with the `LOGOS_SCAFFOLD_CACHE_ROOT` environment variable, which every command honours.
-- **The Basecamp runtime directory** of each profile, `/tmp/lgs-<project-hash>-<profile>` by default, holds the Unix sockets modules open while Basecamp runs. See [Runtime directory](./reference/logos-scaffold-basecamp-configuration-reference.md#runtime-directory).
+- **The Basecamp runtime directory** of each profile, `/tmp/lgs-<project-hash>-<profile>` by default, holds the Unix sockets [modules](../../get-started/glossary.md#module) open while Basecamp runs. See [Runtime directory](./reference/logos-scaffold-basecamp-configuration-reference.md#runtime-directory).
 
 :::warning
 Everything under `.scaffold/wallet/` is development-only key material, unlocked by a deterministic local password unless you set `LOGOS_SCAFFOLD_WALLET_PASSWORD`. Never point it at real funds.

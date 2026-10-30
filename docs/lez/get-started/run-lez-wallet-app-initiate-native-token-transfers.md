@@ -33,7 +33,7 @@ Recovering a wallet from its recovery phrase is not yet supported.
 
 ## What to expect
 
-- You can run the wallet app in Logos Basecamp or locally, and sync it with the live LEZ testnet.
+- You can run the wallet app in Logos Basecamp and sync it with the live LEZ testnet.
 - You can create and name public and private accounts, and fund them to test transfers.
 - You can complete public, private, shielded, and deshielded token transfers, verify finalisation on the L1, and withdraw tokens to the L1.
 

@@ -39,7 +39,7 @@ This procedure covers how to run the [`chat_ui_mix`](https://github.com/logos-co
 ## What to expect
 
 - You can connect to the testnet-0.2 mix fleet and watch the status bar reach **MIX 5/4**, which confirms the mix node pool is ready for privacy-preserving sends.
-- You can exchange intro bundles between two instances and send messages that are routed sender-unlinkably through the 3-hop mixnet.
+- You can exchange intro bundles between two instances and send messages that are routed sender-unlinkably through the 3-hop [mixnet](../../get-started/glossary.md#mixnet).
 - You can confirm end-to-end delivery by matching the sender's `Message sent via mix successfully` log with the recipient's `ChatBackend: New message: …` log.
 
 ## Start the first instance and connect to the mix fleet

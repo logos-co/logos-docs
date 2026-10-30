@@ -28,7 +28,8 @@ Recovering a wallet from its recovery phrase is not yet supported.
 :::
 
 :::info[Prerequisites]
-- [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md) on macOS (Apple silicon) or Linux (x86-64 or ARM64) only.
+- [Logos Basecamp installed and running](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
+- macOS (Apple silicon) or Linux (x86-64 or ARM64) only.
 :::
 
 ## What to expect

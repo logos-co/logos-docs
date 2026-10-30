@@ -23,7 +23,7 @@ This procedure covers how to claim rewards for participating in the consensus pr
 
 :::info[Prerequisites]
 
-- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, with the node in **Online** mode.
 - A funded node that has proposed at least one block. The lifecycle lane on the **Node** tab reaches **Earning** once a reward voucher is ready to claim.
 :::
 

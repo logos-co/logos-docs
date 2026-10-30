@@ -25,11 +25,8 @@ Identity, conversations, and message history exist only while the app is running
 
 :::info[Prerequisites]
 
-- A supported OS:
-    - Linux
-    - macOS
-    - Windows 10 or 11 x86_64 (Option A only)
-- Network access
+- [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
+- Network access.
 :::
 
 ## What to expect
@@ -42,8 +39,7 @@ Identity, conversations, and message history exist only while the app is running
 
 You need two running instances to complete this procedure. Each instance can be started with the instructions below.
 
-1. Download and [install](../../basecamp/install-logos-basecamp.md) the latest release of Logos Basecamp from `github.com/logos-co/logos-basecamp/releases`.
-1.  In the left bar, select **Package Manager**.
+1.  In the left bar of Logos Basecamp, select **Package Manager**.
 
     ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
 1.  Find **Chat** (type `ui_qml`) in the [package](../../get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.

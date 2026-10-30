@@ -23,7 +23,7 @@ This procedure covers how to lock one or more of your Logos Blockchain wallet [n
 
 :::info[Prerequisites]
 
-- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, with the node in **Online** mode.
 - At least one wallet account with a positive balance, for example one funded by [mining](../get-started/run-blockchain-node-from-basecamp.md#step-4-fund-your-node-and-propose-blocks).
 - The channel ID of the target Zone. For the public LEZ testnet address, see [Testnet endpoints](../../get-started/testnet-endpoints.md).
 - For an LEZ deposit, a public account in the [LEZ wallet app](../../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) to receive the funds.

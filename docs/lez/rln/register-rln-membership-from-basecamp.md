@@ -25,7 +25,7 @@ Registration pays with native tokens from the payer account. There is no faucet:
 
 :::info[Prerequisites]
 
-- [Logos Basecamp installed](../../basecamp/install-logos-basecamp.md).
+- [Logos Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
 - Network access to the testnet sequencer [`https://testnet.lez.logos.co/`](https://testnet.lez.logos.co/).
 - A way to send `250000000` native units to an account on the LEZ testnet, such as Logos Blockchain notes that you can [bridge to the zone](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md).
 - Approximately 1 GB free disk for the downloaded module packages.

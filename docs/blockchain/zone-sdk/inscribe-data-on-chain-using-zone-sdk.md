@@ -436,3 +436,10 @@ Once the `ZoneSequencer` is set up, posting data to the channel is as easy as pa
     - To confirm that your messages are on-chain before they finalise, query the channel using the `Channel ID` the sequencer printed at startup: `curl -s http://localhost:8080/channel/<CHANNEL_ID> | jq .`. It returns `Channel not found` until a block includes your first message, then the channel's state, where `tip_slot` is the slot of your latest included inscription.
 
     - If the sequencer exits with `failed to publish: network error: funding failed`, the node could not fund the transaction. Check that `--funding-pk` is a key in your node's wallet and that it holds funds.
+
+## Next steps
+
+For more examples of what can be built with the Zone SDK, see the following links:
+
+- [Bridge assets between Logos Blockchain and a Zone](./bridge-assets-between-blockchain-and-zone.md)
+- [Operate a decentralised Zone with round-robin sequencer rotation](./operate-decentralised-zone-with-round-robin-sequencer-rotation.md)

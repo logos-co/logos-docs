@@ -27,7 +27,7 @@ The [Logos Storage](../../get-started/glossary.md#logos-storage) app is a file-s
     - Linux
     - Mac OS (should work, but not tested)
     - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
-- [Logos Basecamp](../../basecamp/install-logos-basecamp.md) installed and running.
+- [Logos Basecamp](../../basecamp/install-logos-basecamp.md) version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, installed and running.
 :::
 
 ## What to expect

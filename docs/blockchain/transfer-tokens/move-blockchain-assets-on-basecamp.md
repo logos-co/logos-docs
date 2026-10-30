@@ -23,7 +23,7 @@ This procedure covers how to send funds from one of your wallet accounts to a re
 
 :::info[Prerequisites]
 
-- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp, with the node in **Online** mode.
+- The [Logos Blockchain app](../get-started/run-blockchain-node-from-basecamp.md) running on Basecamp version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, with the node in **Online** mode.
 - At least one wallet account with a positive balance, for example one funded by [mining](../get-started/run-blockchain-node-from-basecamp.md#step-4-fund-your-node-and-propose-blocks).
 - The recipient's 64-hex-character public key.
 :::

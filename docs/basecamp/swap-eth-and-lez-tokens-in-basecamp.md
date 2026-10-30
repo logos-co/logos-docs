@@ -51,7 +51,7 @@ The time locks make the failure case safe. Each lock carries a deadline, and you
 
 :::info[Prerequisites]
 
-- [Basecamp installed and running](./install-logos-basecamp.md).
+- [Basecamp installed and running](./install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
 - Internet access.
 - A small amount of **Sepolia ETH**, sent to the throwaway Ethereum address the app generates for you in [Step 2](#step-2-set-up-your-accounts). The trade itself costs `0.00001` ETH, so roughly `0.01` Sepolia ETH covers it and the gas comfortably. The app can activate your LEZ account for you but cannot fund your Ethereum side, so this part is genuinely required: without it you cannot complete a swap.
     - **Setup** offers `https://sepolia-faucet.pk910.de/` for this, and any other [public Sepolia faucet](https://ethereum.org/en/developers/docs/networks/) works too. Most faucets just ask for the destination address, so you don't need a separate wallet app.

@@ -25,7 +25,7 @@ This procedure covers running the Logos Blockchain app via Basecamp, setting up 
 
 :::info[Prerequisites]
 
-- [Basecamp installed and running](../../basecamp/install-logos-basecamp.md).
+- [Basecamp installed and running](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
 - A graphical desktop session on one of:
    - **Linux** (tested on Ubuntu 24.04)
    - **Windows 11 with WSL2** (plus WSLg for the GUI)

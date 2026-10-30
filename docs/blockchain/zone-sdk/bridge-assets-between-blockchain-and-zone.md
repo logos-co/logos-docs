@@ -333,3 +333,9 @@ A reorg can orphan the parent inscription of a withdrawal, which invalidates the
 :::note
 For multi-signature bundles the orphan event carries the same `ChannelUpdateTx::AtomicWithdraw` data, whether the bundle was mined and reorged out, or never mined and shed once its parent [slot](../../get-started/glossary.md#slot) was taken by a competing entry. The SDK cannot re-sign the transaction, so recovery means running the `prepare_atomic_withdraw` → collect signatures → `submit_atomic_bundle` flow again against the new parent, with channel notes that are still unspent.
 :::
+
+## Next steps
+
+For more examples of what can be built with the Zone SDK, see the following link:
+
+- [Operate a decentralised Zone with round-robin sequencer rotation](./operate-decentralised-zone-with-round-robin-sequencer-rotation.md)

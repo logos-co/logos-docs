@@ -316,7 +316,7 @@ Keep your existing `user_config.yaml` and `keystore.yaml`. On its first start, t
          port: 3000
    ```
 
-   - Settings you may want to change:
+   - Settings you may want to change are listed below. For every setting and its default, see [Appendix: Full blockchain node configuration](#appendix-full-blockchain-node-configuration).
 
    | Field | Purpose | Default and guidance |
    |-------|---------|----------|
@@ -691,3 +691,242 @@ MaxFileSec=1day
 ```
 
 Use the `INFO` log level for unattended operation; use `DEBUG` only for short troubleshooting windows.
+
+## Appendix: Full blockchain node configuration
+
+This is the complete configuration that a `user_config.yaml` from `generate_user_config` produces in `blockchain_module` `0.3.4`. It shows every default and the values the node reads from `keystore.yaml`. Use it to look up the full path and default value of a setting. Do not copy it into `user_config.yaml`; add only the settings you change.
+
+- `<secret>` marks values the node reads from `keystore.yaml` and that are hidden here.
+- `<LeaderFunding>`, `<PoWClaim>`, and the other names in angle brackets stand for the key IDs listed under `public_keys` in your `keystore.yaml`.
+- `logosctl` cannot print this yet. It was rendered with the standalone node binary from the [`0.3.4` release](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4), which loads a configuration the same way the module does:
+
+  ```sh
+  logos-blockchain-node /var/lib/logos-node/user_config.yaml --show-config
+  ```
+
+```yaml
+network:
+  backend:
+    swarm:
+      host: 0.0.0.0
+      port: 3000
+      node_key: <secret>
+      gossipsub:
+        history_length: 5
+        history_gossip: 3
+        mesh_n: 6
+        mesh_n_low: 5
+        mesh_n_high: 12
+        retain_scores: 4
+        gossip_lazy: 6
+        gossip_factor: 0.25
+        heartbeat_initial_delay: 5s
+        heartbeat_interval: 1s
+        fanout_ttl: 1m
+        check_explicit_peers_ticks: 300
+        duplicate_cache_time: 1day
+        validate_messages: false
+        allow_self_origin: false
+        do_px: false
+        prune_peers: 0
+        prune_backoff: 1m
+        unsubscribe_backoff: 10s
+        backoff_slack: 1
+        flood_publish: true
+        graft_flood_threshold: 10s
+        mesh_outbound_min: 2
+        opportunistic_graft_ticks: 60
+        opportunistic_graft_peers: 2
+        gossip_retransimission: 3
+        max_messages_per_rpc: null
+        max_ihave_length: 5000
+        max_ihave_messages: 10
+        iwant_followup_time: 3s
+        published_message_ids_cache_time: 10s
+      kademlia:
+        query_timeout: null
+        replication_factor: null
+        parallelism: null
+        disjoint_query_paths: null
+        max_packet_size: null
+        kbucket_inserts: null
+        cache_size: 1
+        periodic_bootstrap_interval: null
+      identify:
+        agent_version: null
+        interval: null
+        push_listen_addr_updates: null
+        cache_size: null
+        hide_listen_addrs: true
+      chain_sync:
+        peer_response_timeout: 5s
+        max_inbound_requests: 10
+        inbound_download_stream_timeout: 2m
+      nat:
+        type: traversal
+        autonat:
+          max_candidates: null
+          probe_interval: null
+          retest_successful_external_addresses_interval: 1m
+        mapping:
+          timeout: 1s
+          lease_duration: 2h
+          max_retries: 3
+          renewal_delay_fraction: 0.8
+          retry_interval: 30s
+        gateway_monitor:
+          check_interval: 5m
+    initial_peers:
+    - /ip4/65.109.51.37/udp/3000/quic-v1/p2p/12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
+    - /ip4/65.109.51.37/udp/3001/quic-v1/p2p/12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz
+    - /ip4/65.109.51.37/udp/3002/quic-v1/p2p/12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb
+    - /ip4/65.109.51.37/udp/50001/quic-v1/p2p/12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
+blend:
+  non_ephemeral_signing_key_id: <BlendSigning>
+  core:
+    backend:
+      listening_address: /ip4/0.0.0.0/udp/3400/quic-v1
+      max_dial_attempts_per_peer: 3
+      peering_degree_check_interval: 1m
+    zk:
+      secret_key_kms_id: <BlendZk>
+  edge:
+    backend:
+      max_dial_attempts_per_peer_per_message: 1
+      replication_factor: 1
+  abstain_on_failure: false
+cryptarchia:
+  service:
+    bootstrap:
+      prolonged_bootstrap_period: 1h
+      force_bootstrap: false
+      offline_grace_period:
+        grace_period: 20m
+        state_recording_interval: 1m
+    sync:
+      block_provider:
+        batch_size: 1000
+  network:
+    bootstrap:
+      ibd:
+        peers:
+        - 12D3KooWFrouXfmrR4nsLMtE7wu15DoMJ6VtoUtHinREZCvbWHar
+        - 12D3KooWQXJavMDTRscjauFSgVAB1VLB6Rzpy2uY5SU9Tk7927tb
+        - 12D3KooWJRGau8M1rjT7R5e4YYsgdFhsMX35nRDtMwCDjxQkXAHz
+        - 12D3KooWSQc7CcGtvWDPF1yCbBthFnQjprfCVHmfmNDUrSmqQsU1
+        delay_before_new_download: 10s
+        tips_fetch_max_attempts: 3
+        tips_fetch_min_delay: 250ms
+        tips_fetch_max_delay: 1s
+        round_delay: 1s
+    sync:
+      orphan:
+        max_orphan_cache_size: 1000
+        max_rejected_cache_size: 1000
+      tip_poll:
+        enabled: true
+        lag_threshold_blocks: 3
+        max_peers_to_sample: 5
+    network:
+      max_connected_peers_to_try_download: 16
+      max_discovered_peers_to_try_download: 16
+    seen_items_subscription_channel_size: 64
+  leader:
+    wallet:
+      max_tx_fee: 18446744073709551615
+      funding_pk: <LeaderFunding>
+time:
+  backend:
+    server: pool.ntp.org:123
+    client:
+      timeout: 5s
+      listening_interface: 0.0.0.0
+    update_interval: 15s
+sdp:
+  declaration: null
+  wallet:
+    max_tx_fee: 18446744073709551615
+    funding_pk: <SdpFunding>
+  active_message_tracker:
+    status_check_interval_in_tip_changes: 3
+api:
+  backend:
+    listen_address: 127.0.0.1:8080
+    cors_origins: []
+    timeout: 30s
+    max_body_size: 10485760
+    max_concurrent_requests: 500
+storage:
+  backend:
+    folder_name: ./db
+    read_only: false
+    column_family: blocks
+kms:
+  keystore: keystore.yaml
+  backend:
+    keys: <secret>
+mempool:
+  tx_ttl: 9h
+  seen_items_subscription_channel_size: 64
+  pow_claim_grace_slots: 0
+wallet:
+  known_keys:
+    <LeaderFunding>: <LeaderFunding>
+    <BlendZk>: <BlendZk>
+    <Stake>: <Stake>
+    <VaucherMaster>: <VaucherMaster>
+    <PoWClaim>: <PoWClaim>
+    <SdpFunding>: <SdpFunding>
+  voucher_master_key_id: <VaucherMaster>
+  pending_note_expiry_blocks: 10
+pow:
+  mining:
+    max_threads: 1
+    max_tickets_per_block: 1
+  auto_claim:
+    targets:
+    - public_key: <PoWClaim>
+      threshold: 2000000000
+    tick:
+      unit: seconds
+      value: 10
+tracing:
+  logger:
+    file:
+      directory: .
+      prefix: null
+      appender_type: !Rolling
+        rotation: Hourly
+        retention: !MaxFiles
+          max_files: 10
+        compression: None
+    loki: null
+    gelf: null
+    otlp: null
+    format: !Text Ansi
+    stdout: true
+    stderr: false
+  tracing: None
+  filter: !Env
+    filters:
+      opentelemetry: WARN
+      rustls: WARN
+      hyper_util: WARN
+      libp2p_gossipsub: ERROR
+      tonic: WARN
+      hyper: WARN
+      opentelemetry_sdk: WARN
+      reqwest: WARN
+      logos_blockchain: INFO
+      h2: WARN
+      '*': WARN
+      tower: WARN
+  metrics:
+    otlp: null
+    open_metrics:
+      enabled: true
+  console: None
+  level: INFO
+state:
+  base_folder: ./state
+```

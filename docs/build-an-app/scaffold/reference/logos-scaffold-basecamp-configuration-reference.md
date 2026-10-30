@@ -18,7 +18,7 @@ sidebar_position: 1
 This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
-This page lists what [Logos Scaffold](../about-logos-scaffold.md) reads and sets when it builds, installs, and launches Logos modules in Basecamp. For the workflow itself, see [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md). The full module-project contract is also available offline with `lgs basecamp docs`.
+This page lists what [Logos Scaffold](../about-logos-scaffold.md) reads and sets when it builds, installs, and launches Logos [modules](../../../get-started/glossary.md#module) in [Basecamp](../../../get-started/glossary.md#basecamp). For the workflow itself, see [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md). The full module-project contract is also available offline with `lgs basecamp docs`.
 
 ## `scaffold.toml` keys
 
@@ -49,7 +49,7 @@ One entry per module that `install` and `launch` act on. `lgs basecamp modules` 
 
 | Key | Meaning |
 |:---|:---|
-| `flake` | Flake reference of the module's `.lgx` output, for example `path:.#lgx`, `path:./ui#lgx`, or `github:<owner>/<repo>/<rev>#lgx`. A prebuilt package can be captured by path with `lgs basecamp modules --path <file.lgx>`. |
+| `flake` | Flake reference of the module's `.lgx` output, for example `path:.#lgx`, `path:./ui#lgx`, or `github:<owner>/<repo>/<rev>#lgx`. A prebuilt [package](../../../get-started/glossary.md#package) can be captured by path with `lgs basecamp modules --path <file.lgx>`. |
 | `role` | `"project"` for a module you build and ship, `"dependency"` for a runtime companion. `build` and `build-portable` skip dependencies. |
 | `standalone_app` | Optional flake app that `lgs basecamp run <name>` starts instead of the flake's default app. |
 

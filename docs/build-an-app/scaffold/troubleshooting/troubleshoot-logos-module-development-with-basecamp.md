@@ -18,7 +18,7 @@ sidebar_position: 1
 This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
-Most problems in the module development loop share a shape: the build succeeds, no error is printed, and the running application does not do what the source says it should. This page maps those symptoms to their causes.
+Most problems in the [module](../../../get-started/glossary.md#module) development loop share a shape: the build succeeds, no error is printed, and the running application does not do what the source says it should. This page maps those symptoms to their causes.
 
 The commands here assume [Logos Scaffold](../about-logos-scaffold.md) and a module project set up as described in [Develop a Logos module with Logos Scaffold](../get-started/develop-a-logos-module-with-logos-scaffold.md).
 
@@ -54,7 +54,7 @@ Sections follow the development loop: setup, capturing modules, building and ins
 
 **Symptom.** `lgs basecamp setup` fails after several minutes with `error: building basecamp (.#app) failed with signal: 9 (SIGKILL)`. The setup log under `.scaffold/logs/` ends mid-way, often right after an `evaluation warning:` or `copying path` line, with no build error.
 
-**Cause.** The machine ran out of memory and the kernel killed Nix. Evaluating the Basecamp 0.3.0 flake, before anything is built, peaks above 4.8 GB of resident memory, because its lock file pins thousands of inputs. Scaffold reports only the signal.
+**Cause.** The machine ran out of memory and the kernel killed Nix. Evaluating the [Basecamp](../../../get-started/glossary.md#basecamp) 0.3.0 flake, before anything is built, peaks above 4.8 GB of resident memory, because its lock file pins thousands of inputs. Scaffold reports only the signal.
 
 **Fix.** Free memory and run `lgs basecamp setup` again: close other large applications, stop Basecamp instances, and do not run another large build at the same time. Tuning the parallelism or garbage collector of Nix does not reduce the peak noticeably.
 
@@ -84,7 +84,7 @@ lgs basecamp setup
 
 **Symptom.** `lgs basecamp modules` fails with `module dependencies on packages basecamp no longer ships`, naming `main_ui`.
 
-**Cause.** Since 0.3.0 the Basecamp shell UI is part of the app, not a package, so no module can depend on it. The same applies to the 0.1.x packages `counter`, `counter_qml`, and `webview_app`. Listed under `optional_dependencies` instead, such an entry is skipped with a note.
+**Cause.** Since 0.3.0 the Basecamp shell UI is part of the app, not a [package](../../../get-started/glossary.md#package), so no module can depend on it. The same applies to the 0.1.x packages `counter`, `counter_qml`, and `webview_app`. Listed under `optional_dependencies` instead, such an entry is skipped with a note.
 
 **Fix.** Remove the entry from `dependencies` in that module's `metadata.json` and rebuild the module with `logos-module-builder` 0.3.0.
 
@@ -199,7 +199,7 @@ Then run `nix flake update` in that sub-flake and confirm the lock holds a singl
 
 **Cause.** The package has no variant for the platform and stack Basecamp runs on. Development builds of Basecamp need the `-dev` key, for example `linux-amd64-dev` or `darwin-arm64-dev`. Portable builds need the bare key, for example `linux-amd64`. A `.lgx` built from the `lgx` output carries `-dev` keys, and one built from `lgx-portable` carries bare keys.
 
-**Fix.** Build the variant that matches the Basecamp you run. Scaffold profiles use the `lgx` output unless `[repos.basecamp].attr` selects a portable stack. For a released AppImage or DMG, use `lgs basecamp build-portable`. For core modules, `lgs basecamp doctor` repeats the variant check for every seeded profile.
+**Fix.** Build the variant that matches the Basecamp you run. Scaffold profiles use the `lgx` output unless `[repos.basecamp].attr` selects a portable stack. For a released AppImage or DMG, use `lgs basecamp build-portable`. For [core modules](../../../get-started/glossary.md#core-module), `lgs basecamp doctor` repeats the variant check for every seeded profile.
 
 ## Launch finds no modules
 

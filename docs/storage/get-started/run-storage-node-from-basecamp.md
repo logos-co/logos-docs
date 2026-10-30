@@ -32,7 +32,7 @@ The [Logos Storage](../../get-started/glossary.md#logos-storage) app is a file-s
 
 ## What to expect
 
-- You can build and run a standalone Logos Storage app application using a single `nix build` command.
+- You can run the Logos Storage app on Basecamp.
 - You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
 - You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
 - You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.

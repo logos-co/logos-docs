@@ -20,7 +20,7 @@ sidebar_position: 0
 This document is accurate for **Testnet v0.3**.
 :::
 
-Logos SQL is a Rust library that gives an application a local SQLite database and synchronises its writes with other participants through the Logos Blockchain. Applications can create tables, submit SQL transactions and query their own database, with the Logos SQL library handling replication.
+Logos SQL is a Rust library that gives an application a local SQLite database and synchronises its writes with other participants through the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain). Applications can create tables, submit SQL transactions and query their own database, with the Logos SQL library handling replication.
 
 Logos SQL is useful for participants who need shared data without relying on one organisation to host the database for everyone. Each participant maintains its own copy. Different applications can use the same data by following the same channel.
 
@@ -48,7 +48,7 @@ Both library instances follow the channel. Instances configured as writers can a
 
 ## Channels define databases
 
-A [channel](../../get-started/glossary.md#channel) is an ordered history of inscriptions on the Logos Blockchain. Logos SQL uses these inscriptions to share SQL transactions between participants.
+A [channel](../../get-started/glossary.md#channel) is an ordered history of [inscriptions](../../get-started/glossary.md#inscription) on the Logos Blockchain. Logos SQL uses these inscriptions to share SQL transactions between participants.
 
 Instances using the same channel follow the same database history, while different channels have separate histories. The channel carries both schema changes, such as creating tables, as well as writes to the data in those tables.
 

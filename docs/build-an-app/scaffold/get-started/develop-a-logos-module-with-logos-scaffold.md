@@ -19,7 +19,7 @@ sidebar_position: 1
 This document is accurate for `logos-scaffold` **0.4.0** built from `master` at commit `d4b15ff`, and Basecamp **0.3.0**.
 :::
 
-[Logos Scaffold](../about-logos-scaffold.md) drives the loop a module author repeats often: build the [`.lgx`](../../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide describes that loop, including running two instances side by side to exercise peer-to-peer features.
+[Logos Scaffold](../about-logos-scaffold.md) drives the loop a [module](../../../get-started/glossary.md#module) author repeats often: build the [`.lgx`](../../../get-started/glossary.md#lgx) package, install it into a [Basecamp](../../../get-started/glossary.md#basecamp) instance, restart Basecamp, and check the result. This guide describes that loop, including running two instances side by side to exercise peer-to-peer features.
 
 :::info[Prerequisites]
 
@@ -39,7 +39,7 @@ This document is accurate for `logos-scaffold` **0.4.0** built from `master` at 
         ```
 
     - The `ui-qml` template produces a QML-only module that shows up in the Basecamp sidebar, with the 256×256 icon builder 0.3.x requires in `src/icons/icon.png`. Set `name` and `display_name` in `metadata.json`, and move `Main.qml` into a sub-directory such as `qml/` (updating `view`) if the module will have more than one QML file.
-    - The same release has `default` (a minimal core module), `with-external-lib`, `ui-qml-backend`, `rust`, and `rust-with-external-lib` templates.
+    - The same release has `default` (a minimal [core module](../../../get-started/glossary.md#core-module)), `with-external-lib`, `ui-qml-backend`, `rust`, and `rust-with-external-lib` templates.
 - About 5 GB of free memory for the first `lgs basecamp setup`, which evaluates the Basecamp 0.3.0 flake before building anything. On a smaller machine, fetch the prebuilt Basecamp first as described in [Basecamp setup is killed](../troubleshooting/troubleshoot-logos-module-development-with-basecamp.md#basecamp-setup-is-killed).
 - A graphical environment. Basecamp is a desktop application.
 :::
@@ -166,7 +166,7 @@ Run these commands from the root of your module project.
    - Before starting Basecamp, it prints a variant check of the installed core modules, such as `launch: profile alice has 3 module(s); all linux-amd64-dev variants present ✓`. The count covers core modules only, so a project of QML-only modules reports `0 module(s)`.
    - Add `--log-file` to also write the output to `.scaffold/basecamp/profiles/<profile>/basecamp.log`, or `--log-file=PATH` to pick the file.
 
-1. Confirm your module appears in the Basecamp window. A UI module gets an entry in the sidebar, showing its icon, or its initials when it ships none; click it to open the module.
+1. Confirm your module appears in the Basecamp window. A [UI module](../../../get-started/glossary.md#ui-module) gets an entry in the sidebar, showing its icon, or its initials when it ships none; click it to open the module.
 
 :::warning
 Every launch starts from a clean profile, so identity keys, conversations, other in-app state, per-module state in `module_data/`, and Basecamp's own `logs/` are discarded. That is what makes runs reproducible. If you need state that survives a restart, run Basecamp yourself with `--user-dir`, as in [Step 6](#step-6-run-two-instances-side-by-side).

@@ -40,9 +40,9 @@ Prioritising liveness means that block production will continue during a failure
 
 ### Proposer privacy
 
-Cryptarchia provides PPoS consensus that hides the identity of a block proposer both before and after a proposal. Hiding a proposer’s identity before the proposal is accomplished by using a secret leadership election. This mechanism selects consensus leaders without revealing the leader schedule ahead of time.
+Cryptarchia provides PPoS consensus that makes it infeasible to discover the identity of a block proposer both before and after a proposal. A proposer’s identity is kept private before the proposal by using a secret leadership election. This mechanism selects consensus leaders without revealing the leader schedule ahead of time.
 
-For full proposer privacy, a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](./about-the-blend-network.md), which makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
+For full [proposer privacy](../../get-started/glossary.md#proposer-privacy), a secret leadership election is not enough: once a leader proposes a block, it is [trivial to link them](https://eprint.iacr.org/2021/409.pdf) to their proposed block without additional privacy measures in place. Cryptarchia is designed to work together with the [Blend Network](./about-the-blend-network.md), which makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a proposer and their block. This property creates a much more powerful layer of privacy, resilience and neutrality.
 
 ### Low barrier to entry
 

@@ -14,7 +14,7 @@ sidebar_position: 5
 
 #### Understand how light nodes request peers from other nodes without relying on Discv5.
 
-The primary objective of this protocol is to facilitate peer connectivity for resource-limited devices without relying on `Discv5`. The [peer exchange](../../../get-started/glossary.md#peer-exchange) protocol enables [light nodes](../../../get-started/glossary.md#light-node) to request peers from other nodes within the network.
+The primary objective of this protocol is to provide peer connectivity for resource-limited devices without relying on `Discv5`. The [peer exchange](../../../get-started/glossary.md#peer-exchange) protocol enables [light nodes](../../../get-started/glossary.md#light-node) to request peers from other nodes within the network.
 
 :::info
 `Peer Exchange` enables requesting random peers from other network nodes without revealing information about their connectivity or neighbourhood.

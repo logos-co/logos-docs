@@ -18,7 +18,7 @@ sidebar_position: 2
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
  
-`Content Topics` are metadata strings set by developers on outgoing messages to facilitate protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-delivery-protocols.md#relay) or [Filter](../concepts/understand-logos-delivery-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-delivery-protocols.md#store)) that meet specific filtering criteria.
+`Content Topics` are metadata strings set by developers on outgoing messages to support protocol-level features like selectively processing incoming messages ([Relay](../concepts/understand-logos-delivery-protocols.md#relay) or [Filter](../concepts/understand-logos-delivery-protocols.md#filter)) and retrieving historical messages ([Store](../concepts/understand-logos-delivery-protocols.md#store)) that meet specific filtering criteria.
 
 :::info
 Check out the [WAKU2-TOPICS](https://lip.logos.co/messaging/informational/draft/23/topics.html#content-topics) specification to learn more.

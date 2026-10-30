@@ -31,13 +31,13 @@ Instead, follow the CLI instructions below, but navigate to your Basecamp Logos 
 
 - [A running blockchain node](../get-started/run-blockchain-node-from-cli.md).
 - A publicly reachable IP and port (or DNS) combination for the node.
-- Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and timing obfuscation.
+- Stable connection (10 Mbps+ recommended) to handle multiple concurrent connections. A stable, low-latency connection is beneficial for effective message blending and random delays.
 :::
 
 ## What to expect
 
 - Your blockchain node is registered as a Blend core node.
-- Your node contributes to proposer privacy and becomes eligible for rewards.
+- Your node contributes to [proposer privacy](../../get-started/glossary.md#proposer-privacy) and becomes eligible for rewards.
 - Your declaration is confirmed on-chain and becomes active after two [epochs](../../get-started/glossary.md#epoch).
 
 ## Register your node as a Blend core node
@@ -205,14 +205,14 @@ Find the entry whose `zk_id` is your BlendZk key, with `"service_type": "BN"`. I
 
 ### Is my node participating in the Blend Network right now?
 
-Check the node log for the Blend service lifecycle:
+Check the node log for the Blend [Service](../../get-started/glossary.md#service) lifecycle:
 
 ```bash
 grep -aE "blend::service" <node-log> | tail
 ```
 
 - `Waiting for chain to become Online mode`—not yet; the node is still [bootstrapping](../../get-started/glossary.md#bootstrapping).
-- `Chain is now Online`, followed by the Blend service starting and `Blend edge swarm started with local peer id …`—proposals will be routed through Blend, whether your node is a core node or not.
+- `Chain is now Online`, followed by the Blend Service starting and `Blend edge swarm started with local peer id …`—proposals will be routed through Blend, whether your node is a core node or not.
 - `current membership is ready members=N`—the node sees `N` active core nodes this epoch. If `N` is below the minimum needed, the node falls back to [broadcast mode](../concepts/about-the-blend-network.md#node-roles-core-edge-and-broadcast) for that epoch (no Blend privacy).
 
 There is also an API endpoint, `curl http://localhost:8080/blend/info`, which returns the Blend Network info once the node is Online. Note that it can hang or time out while the node is still bootstrapping (Blend is not up yet), so it is better to use the log check during sync.

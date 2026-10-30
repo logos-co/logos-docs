@@ -19,7 +19,7 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3.0**.
 :::
 
-This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), used to protect against denial-of-service attacks. Messages published on the LEZ must include a proof of membership. It is intended for node operators who want to join the DoS-protected network, and touches Logos Core, Logos Delivery, and LEZ in a single flow.
+This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership on the [Logos Execution Zone](../../get-started/glossary.md#logos-execution-zone), used to protect against denial-of-service attacks. Messages published on the LEZ must include a proof of membership. It is intended for node operators who want to join the DoS-protected network, and touches Logos Core, [Logos Delivery](../../get-started/glossary.md#logos-delivery), and LEZ in a single flow.
 
 :::info[Prerequisites]
 
@@ -30,9 +30,9 @@ This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
 - `curl` and `python3`
 - Network access to `github.com` for the catalogue downloads, and to the testnet sequencer at `https://testnet.lez.logos.co/`
-- About 1 GB of free disk space. The modules take about 300 MB.
-- `250000000` units of native LEZ tokens for the node's payer account, from one of these sources:
-   - A Logos Blockchain wallet you can [bridge assets](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md) from. Testnet has no faucet.
+- About 1 GB of free disk space. The [modules](../../get-started/glossary.md#module) take about 300 MB.
+- `250000000` units of native LEZ tokens for the node's payer [account](../../get-started/glossary.md#account), from one of these sources:
+   - A [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) wallet you can [bridge assets](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md) from. Testnet has no faucet.
    - A LEZ account you already hold on the testnet zone, with about `270000000` units so it can cover the transfer's fee reserve.
 
 :::
@@ -95,7 +95,7 @@ The node keeps its wallet, including its private key, in a wallet home directory
    logosctl package install delivery_module liblogos_rln_module -y
    ```
 
-1. List the installed packages:
+1. List the installed [packages](../../get-started/glossary.md#package):
 
    ```bash
    logosctl package ls

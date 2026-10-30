@@ -18,20 +18,20 @@ sidebar_position: 4
 This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
 :::
 
-The [Blend Network](../../get-started/glossary.md#blend-network) adds a layer of anonymity for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) consensus protocol. Cryptarchia uses a private leadership election as a first line of defence against deanonymisation, but ensuring that proposer information cannot be easily inferred through network monitoring requires stronger obfuscation. The [Blend Protocol](../../get-started/glossary.md#blend-protocol) provides this: an anonymous broadcasting protocol that makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a message to its sender through network analysis. The Blend Network is the service made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
+The [Blend Network](../../get-started/glossary.md#blend-network) improves privacy protections for block proposers on top of [Cryptarchia](./about-cryptarchia.md), the Logos [Private Proof of Stake](../../get-started/glossary.md#private-proof-of-stake) consensus protocol. Cryptarchia uses a private leadership election as a first line of defence against deanonymisation, but ensuring that proposer information cannot be easily inferred through network monitoring requires stronger privacy protections. The [Blend Protocol](../../get-started/glossary.md#blend-protocol) provides these: a privacy-preserving broadcasting protocol that makes it [computationally infeasible](https://lip.logos.co/blockchain/raw/blend-protocol.html#impact-of-the-blend-protocol-on-the-time-to-link-and-time-to-infer-the-stake) to link a message to its sender through network analysis. The Blend Network is the [Service](../../get-started/glossary.md#service) made up of nodes that opt in to run the Blend Protocol, and those nodes are rewarded for participating.
 
 ## The basics
 
-- The Blend Network adds anonymity for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
+- The Blend Network improves privacy protections for block proposers on top of Cryptarchia's Private Proof of Stake consensus.
 - Messages are wrapped in multiple layers of encryption and routed through random paths of nodes, each adding a random delay before forwarding.
-- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake to enjoy full privacy benefits.
+- Nodes must explicitly opt in through the Service Declaration Protocol and prove ownership of a [note](../../get-started/glossary.md#note) with a minimum stake to benefit from the strongest [proposer privacy](../../get-started/glossary.md#proposer-privacy).
 - Mantle transactions can also be sent through the Blend Network via a Proof of Work mechanism.
 
 ## Objectives
 
-The main objective of the Logos Blend Network is to reduce the probability of linking a block proposal with its proposer, which also translates to increasing the difficulty of learning the proposer’s relative stake. At the same time, the Blend Protocol was designed to minimise bandwidth usage on the network compared to general-use mixnets, and to maximise decentralisation by involving all nodes in the obfuscation process. By doing so, the Blend Network increases the cost of attacking the network to deanonymise a block proposal without straining the network with high bandwidth usage.
+The main objective of the Logos Blend Network is to reduce the probability of linking a block proposal with its proposer, which also translates to increasing the difficulty of learning the proposer’s relative stake. At the same time, the Blend Protocol was designed to minimise bandwidth usage on the network compared to general-use mixnets, and to maximise decentralisation by involving all nodes in the blending process. By doing so, the Blend Network increases the cost of attacking the network to deanonymise a block proposal without straining the network with high bandwidth usage.
 
-The Blend Network supports the privacy of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) as a whole, by providing additional anonymity to block proposers, protecting against [adversaries](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The anonymity provided by the Blend Network also substantially improves the privacy properties of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
+The Blend Network supports the privacy of the [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) as a whole, by improving privacy protections for block proposers, protecting against [adversaries](https://gwern.net/doc/cs/security/2009-syverson.pdf) with both a complete (global) and partial (local) view of the Logos Blockchain. The privacy protections provided by the Blend Network also substantially improves the privacy properties of Cryptarchia by making it even harder to learn a proposer’s relative stake - which would allow an attacker to estimate the likelihood of that node winning the leadership election.
 
 ## How the Blend Protocol works
 
@@ -80,7 +80,7 @@ Only the **core** role requires operator action—an SDP declaration, a locked s
 
 ### Sending Mantle transactions via Proof of Work
 
-In addition to block proposals, nodes can also send Mantle transactions directly through the Blend Network. Using a Proof of Work mechanism known as *[EmPoWering](../../get-started/glossary.md#empowering)*, even a user without any notes benefits from some of the privacy provided by the Blend Network. However, as an edge node, their transaction will not have the full privacy that core nodes enjoy.
+In addition to block proposals, nodes can also send Mantle transactions directly through the Blend Network. Using a Proof of Work mechanism known as *[EmPoWering](../../get-started/glossary.md#empowering)*, even a user without any notes benefits from some of the privacy provided by the Blend Network. However, as an edge node, their transaction will not have the same level of privacy protection as core nodes.
 
 To send a Mantle transaction through the Blend Network, a user chooses a value and hashes it together with the consensus randomness value for the current or previous epoch. This hash is compared to a threshold value derived from the transactions in the epoch before last - if the hash is below the threshold, the user is eligible to send a Mantle transaction via the Blend Network. This transaction gets added to the mempool of the last node on its Blend path, eventually being included in a block in a way that makes it infeasible to link the transaction with the user that sent it.
 
@@ -90,22 +90,22 @@ While Logos note transfers and most channel [inscriptions](../../get-started/glo
 
 Logos nodes that choose to participate in the Blend Network explicitly declare their intent by using the Service Declaration Protocol (SDP). The goal of the SDP is to create a single repository of identifiers to determine which nodes have opted into the Blend Network at a given time.
 
-The SDP provides a standardised mechanism for Logos nodes to declare their participation, demonstrate activity, and withdraw when desired. It operates around a schedule measured by consensus epochs. This protocol creates a single repository of identifiers used to establish secure communication between nodes and manage service participation.
+The SDP provides a standardised mechanism for Logos nodes to declare their participation, demonstrate activity, and withdraw when desired. It operates around a schedule measured by consensus epochs. This protocol creates a single repository of identifiers used to establish secure communication between nodes and manage Service participation.
 
 The SDP consists of three basic steps, each of which represents a type of message sent by a participating node to [Mantle](./about-mantle.md):
 
-- Declare: A node elects to participate in a given service.
+- Declare: A node elects to participate in a given Service.
 - Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
-- Withdraw: A node withdraws its declaration and stops providing a service.
+- Withdraw: A node withdraws its declaration and stops providing a Service.
 
-To submit a service declaration, a node must prove that it owns a note with a service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in services are assigned addresses (known as [locators](../../get-started/glossary.md#locator)) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a service.
+To submit a Service declaration, a node must prove that it owns a note with a Service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes Service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in Services are assigned addresses (known as [locators](../../get-started/glossary.md#locator)) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a Service.
 
 ### Service Reward Distribution Protocol
 
 The Service Reward Distribution Protocol (SRDP) enables deterministic, efficient, and verifiable reward distribution to nodes based on their participation in Bedrock Services. Like the SDP, it also operates around epochs. The SRDP process unfolds over three key phases, distributing rewards based on node activity from previous epochs. These phases are:
 
-- Activity tracking: Nodes participating in services submit active messages to attest to their participation in the previous [epoch](../../get-started/glossary.md#epoch).
+- Activity tracking: Nodes participating in Services submit active messages to attest to their participation in the previous [epoch](../../get-started/glossary.md#epoch).
 - Reward calculation: At the end of the epoch, the system calculates rewards for nodes that participated in the previous epoch.
-- Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
+- Reward distribution: Starting immediately after the epoch when activity messages are submitted, rewards are gradually distributed to active Service nodes. Each block includes one Mantle transaction that can distribute rewards to up to four nodes.
 
 The selection of nodes receiving rewards in each block follows a deterministic, pseudo-random process based on the Cryptarchia epoch randomness from the start of the epoch. This approach ensures fairness and prevents manipulation of the distribution order.

@@ -98,7 +98,7 @@ The SDP consists of three basic steps, each of which represents a type of messag
 - Active: To continue participating, the node must regularly send an "active" message. Nodes that have not sent an active message for a prolonged period of time have their declarations withdrawn.
 - Withdraw: A node withdraws its declaration and stops providing a Service.
 
-To submit a Service declaration, a node must prove that it owns a note with a Service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes Service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in sSrvices are assigned addresses (known as [locators](../../get-started/glossary.md#locator)) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a Service.
+To submit a Service declaration, a node must prove that it owns a note with a Service-dependent minimum stake value. This note is locked for the duration of the declaration, but remains eligible for consensus leadership. The stake requirement makes Service declarations sufficiently expensive to avoid spamming or Sybil attacks. Nodes participating in Services are assigned addresses (known as [locators](../../get-started/glossary.md#locator)) based on the [Multiaddr scheme](https://docs.libp2p.io/concepts/fundamentals/addressing/), allowing them to communicate securely while engaging in a Service.
 
 ### Service Reward Distribution Protocol
 

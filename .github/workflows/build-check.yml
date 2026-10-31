@@ -18,3 +18,8 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+      # Agent-facing output: llms.txt, .md pages, docs.json, AGENTS.md (plugins/agent-ready).
+      - run: node scripts/check-agent-artifacts.mjs
+      # Docs MCP server, tested against the build above.
+      - run: npm ci --prefix mcp-server
+      - run: npm test --prefix mcp-server

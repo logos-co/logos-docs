@@ -1,0 +1,23 @@
+{
+  "name": "logos-docs-mcp",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for the Logos documentation: list sections, search, fetch pages, and validate a module metadata.json.",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "logos-docs-mcp": "./src/server.js"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "start:http": "node src/server.js --http 3333",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  }
+}

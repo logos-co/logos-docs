@@ -101,6 +101,7 @@ function toAgentMarkdown({source, sourcePath, siteUrl, title, resolveDoc, rawBas
 
   const rewriteLink = (target) => {
     if (/^(https?:|mailto:|#)/.test(target)) return target;
+    if (target.startsWith('pathname://')) return `${siteUrl}${target.slice('pathname://'.length)}`;
     const [file, hash] = target.split('#');
     const abs = path.resolve(dir, decodeURIComponent(file));
     if (/\.mdx?$/.test(file)) {

@@ -12,6 +12,26 @@ type CardItem = {
   icon?: string;
 };
 
+// Three ways in, after Solana's docs homepage: do something now, have your
+// coding agent do it, or understand the stack first.
+const startHere: CardItem[] = [
+  {
+    title: 'Quickstart',
+    description: 'Install Logos Basecamp and run your first Logos app in minutes',
+    to: '/basecamp/install-logos-basecamp',
+  },
+  {
+    title: 'Coding with agents',
+    description: 'Connect Claude Code, Cursor, Codex or VS Code to these docs: MCP server, llms.txt and AGENTS.md',
+    to: '/get-started/coding-with-agents',
+  },
+  {
+    title: 'Concepts',
+    description: 'How the Logos stack fits together, from the runtime to the apps',
+    to: '/get-started/what-is-logos',
+  },
+];
+
 const choosePath: CardItem[] = [
   {
     title: 'Run an app',
@@ -92,9 +112,9 @@ function Card({title, description, to, icon}: CardItem) {
   );
 }
 
-function CardGrid({items}: {items: CardItem[]}) {
+function CardGrid({items, className}: {items: CardItem[]; className?: string}) {
   return (
-    <div className={styles.cardGrid}>
+    <div className={className ? `${styles.cardGrid} ${className}` : styles.cardGrid}>
       {items.map((item) => (
         <Card key={item.to} {...item} />
       ))}
@@ -119,6 +139,17 @@ export default function Home(): ReactNode {
               Get started →
             </Link>
           </div>
+        </div>
+
+        <div className={styles.section}>
+          <Heading as="h3" className={styles.sectionTitle}>
+            Start here
+          </Heading>
+          <CardGrid items={startHere} className={styles.cardGridThree} />
+          <p className={styles.agentNote}>
+            Building with an AI agent? Point it at <a href="/llms.txt">docs.logos.co/llms.txt</a>,
+            or add <code>.md</code> to any page URL for plain Markdown.
+          </p>
         </div>
 
         <div className={styles.section}>

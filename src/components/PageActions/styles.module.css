@@ -1,0 +1,71 @@
+.bar {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+  z-index: 2;
+}
+
+.group {
+  display: inline-flex;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+}
+
+.button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.toggle {
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  padding: 0.3rem 0.5rem;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 17rem;
+  padding: 0.3rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--ifm-background-surface-color);
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  color: var(--ifm-font-color-base);
+}
+
+.item:hover {
+  background: var(--ifm-color-emphasis-100);
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+}
+
+.itemLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.itemHint {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+}

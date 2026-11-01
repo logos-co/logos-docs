@@ -23,6 +23,10 @@ The `docs/build-an-app/scaffold/` pages and the LEZ scaffold guide describe `log
 
 A page's public URL is its frontmatter `slug`, not its filename, so the two can differ (`docs/basecamp/swap-eth-and-lez-tokens-in-logos-basecamp.md` serves `/basecamp/atomic-swaps-poc`). Some published URLs live outside this repo — spoken in demo videos, embedded in in-app feedback links — and cannot be fixed after the fact. So never change or remove a `slug` or a `redirects` entry in `docusaurus.config.ts` without leaving the old path redirecting; the plugin's redirect page carries the query string and hash across, so deep links to a step survive. Sidebar entries are raw `href` strings in `sidebars.ts` that the build checks against real routes, and redirect stubs are not routes — point them at the slug.
 
+## Agent-facing output
+
+`plugins/agent-ready` writes `.md` copies of every page, `llms.txt`, per-section indexes, `agents/docs.json` and the `agents/AGENTS.md` block in `postBuild`, so none of it exists under `npm start`; use `npm run build && npm run serve`. Section titles and `use_cases` live in `plugins/agent-ready/sections.js`; a new top-level docs folder needs an entry there. `npm run check:agents` (also in CI) fails on any broken link in that output. The docs MCP server in `mcp-server/` reads `docs.json`, and its `metadata.json` validator rules each cite a doc page, so update the rule when that page changes.
+
 ## Conventions
 
 `CONTRIBUTING.md` is the authority on document types, templates, and the review workflow; read it before adding or restructuring a page. Note the repo-wide `:::tip[Version]` banner that states which Testnet release a page is accurate for — it tracks the Testnet, not the app the page describes.

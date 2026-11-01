@@ -57,6 +57,8 @@ npm start
 
 `npm start` serves the site locally with hot reload at `http://localhost:3000`.
 
+The agent-facing output (`.md` pages, `llms.txt`, `agents/`) is generated only by a production build. To preview it, run `npm run build && npm run serve`. See [`plugins/agent-ready`](plugins/agent-ready/index.js), the docs MCP server in [`mcp-server/`](mcp-server/README.md), and the optional edge worker in [`edge/`](edge/README.md).
+
 To create a production build:
 
 ```bash

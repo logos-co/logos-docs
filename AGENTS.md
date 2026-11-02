@@ -25,7 +25,7 @@ A page's public URL is its frontmatter `slug`, not its filename, so the two can 
 
 ## Agent-facing output
 
-`plugins/agent-ready` writes `.md` copies of every page, `llms.txt`, per-section indexes, `agents/docs.json` and the `agents/AGENTS.md` block in `postBuild`, so none of it exists under `npm start`; use `npm run build && npm run serve`. Section titles and `use_cases` live in `plugins/agent-ready/sections.js`; a new top-level docs folder needs an entry there. `npm run check:agents` (also in CI) fails on any broken link in that output.
+`plugins/agent-ready` writes `.md` copies of every page, `llms.txt`, per-section indexes, `agents/docs.json` and the `agents/AGENTS.md` block in `postBuild`, so none of it exists under `npm start`; use `npm run build && npm run serve`. Section titles and `use_cases` live in `plugins/agent-ready/sections.js`; a new top-level docs folder needs an entry there. `npm run check:agents` (also in CI) fails on any broken link in that output. The docs MCP server in `mcp-server/` reads `docs.json`, and its `metadata.json` validator rules each cite a doc page, so update the rule when that page changes.
 
 ## Conventions
 

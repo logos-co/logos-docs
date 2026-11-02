@@ -117,7 +117,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 - [Build and run a Logos core module](../core/build-modules/build-and-run-a-logos-core-module.md)
 - [Wrap a C library as a Logos module](../core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)
 - [Build a Logos C++ UI module](../core/build-modules/build-a-logos-cpp-ui-module.md)
-- [Install and load a module in Logos Basecamp](../basecamp/install-and-load-a-module-in-logos-basecamp.md)
+- [Install and load a module in Logos Basecamp](../basecamp/install-and-load-module-in-basecamp.md)
 - [Run a Logos node](../run-a-node/get-started/run-logos-node-blockchain-storage-delivery.md) with `logosctl`
 
 A module is a compiled native library that exposes its methods through a C-compatible interface (FFI). It is usually a shared library, and can be linked statically where dynamic loading is not available. In principle any language that can build such a library can be used to write one. A Logos SDK for the language makes this much easier: it provides the module plumbing and generates typed clients for the modules yours depends on. For the languages with an SDK, see [Languages](#languages).

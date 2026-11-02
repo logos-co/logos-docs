@@ -57,6 +57,8 @@ npm start
 
 `npm start` serves the site locally with hot reload at `http://localhost:3000`.
 
+An optional Cloudflare Worker for agent traffic (Markdown content negotiation, discovery headers, real 404 status codes, agent-traffic logging) lives in [`edge/`](edge/README.md). It is not deployed.
+
 To create a production build:
 
 ```bash

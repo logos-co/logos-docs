@@ -55,6 +55,7 @@ Broadwell
 bundler
 bytecode
 camelCase
+cgroups
 ciphertext
 CMake
 Codex
@@ -115,10 +116,12 @@ impl
 indexer
 initializer
 instruction's
+[Ii]ntegrator(s|'s)?
 IPs
 ISPs
 journald
 Kademlia
+Keycard
 keyholder
 keypair
 keypairs
@@ -158,6 +161,7 @@ multiaddrs
 multisig
 mutex
 namespace
+namespaces
 natively
 Nescience
 Nim

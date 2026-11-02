@@ -82,6 +82,9 @@ const config: Config = {
   ],
 
   plugins: [
+    // Markdown pages, llms.txt indexes and the AGENTS.md block for coding
+    // agents. See plugins/agent-ready/index.js.
+    './plugins/agent-ready',
     [
       '@docusaurus/plugin-client-redirects',
       {

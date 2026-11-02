@@ -53,6 +53,7 @@ Broadwell
 bundler
 bytecode
 camelCase
+cgroups
 ciphertext
 CMake
 Codex
@@ -153,6 +154,7 @@ multiaddrs
 multisig
 mutex
 namespace
+namespaces
 natively
 Nescience
 Nim

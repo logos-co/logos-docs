@@ -24,7 +24,7 @@ Each capability on this page carries one of two statuses:
 | Status | Meaning |
 |:---|:---|
 | **Available** | Part of a release, with documentation you can follow today. |
-| **Planned** | Not released yet. Some of it already works on development branches, and its interfaces can change. Integrator feedback is welcome: [tell us what you need](#tell-us-what-you-need). |
+| **Planned** | Not released yet. Some of it already works on development branches. The Logos Core specifications are still raw drafts, so this material describes where the project is heading, not a frozen interface: names and details can change. Integrator feedback is welcome: [tell us what you need](#tell-us-what-you-need). |
 
 ## The basics
 
@@ -98,7 +98,7 @@ Storage and Delivery follow the same pattern without a wallet: an application ca
 ### What you get
 
 - **The whole stack by composition.** Blockchain, LEZ, Storage, and Delivery are modules your modules depend on. An application composed from them inherits their metadata protection and private state support, whether or not its developer built anonymity measures directly.
-- **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A separate process contains faults; it is not a security sandbox by itself. Sandbox and container isolation, and finer permission management, are in development.
+- **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A plain process only contains crashes. If you need containment as well, you will be able to select a stronger placement per module (Planned): the sandbox placement adds limits enforced by the operating system on the file system, network, process creation, and resources, using namespaces and cgroups on Linux, and the runtime refuses to start the module if the platform cannot provide them. The specifications also define a container placement. Finer permission management is in development.
 - **A fault and audit boundary.** Each module is developed, audited, and upgraded independently.
 - **Distribution without a central service.** Once Basecamp is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue), and downloading them over Logos Storage instead of HTTP is being rolled out. Signature checks are planned: Logos's own keys are trusted by default, users can add the publishers they trust, and each package is checked when it is downloaded and again before it runs.
 - **An ecosystem around your modules.** Other developers' modules can depend on yours and call it, the same way yours call the Logos modules. A native Basecamp integration makes your product part of the stack rather than a client of it.
@@ -141,7 +141,7 @@ This is not a library wrapper per Logos component. Your application gets the mod
 
 ### Where modules run
 
-The runtime can run each module in a process of its own, run every module in a single runtime process, or run inside your application's process with no child processes at all. The last option is what platforms that forbid spawning processes, such as iOS, require. The placement does not change your application's code. Only the process-per-module placement keeps a fault in one module from reaching the other modules and your application.
+The runtime can run each module in a process of its own, run every module in a single runtime process, or run inside your application's process with no child processes at all. The last option is what platforms that forbid spawning processes, such as iOS, require. The placement does not change your application's code. Only a module in a process of its own is kept from taking down the other modules and your application with a fault, and only the [sandbox and container placements](#what-you-get) add containment beyond that.
 
 ### What you give up compared with a Basecamp app
 
@@ -237,7 +237,7 @@ If your integration depends on this, [tell us](#tell-us-what-you-need) how many 
 - **Authority does not pass through.** Calling a module does not lend it your permissions.
 - **Live revocation.** Narrowing a policy or removing a peer closes the connections it no longer allows, while the runtimes keep running.
 - **Resilience.** An imported module reports its connection state, and becomes ready again when the remote runtime returns.
-- **Explicit compatibility.** Both sides check that they hold the same contract before any call, so a mismatch is refused up front instead of failing in use.
+- **Explicit compatibility.** When a connection is set up, each side sends the hash of the contract it holds, and the connection is refused before any call if the two differ. A mismatch fails up front instead of in use.
 
 ## What a remote node costs you
 

@@ -37,9 +37,9 @@ Each capability on this page carries one of two statuses:
 
 ### What your application is built from
 
-**Building your application from Logos modules is the recommended way to integrate, and the one that gets the most out of Logos.** Your application runs in the Logos runtime that Basecamp and `logosctl` already provide, so it needs no development kit: it calls the modules it depends on through the runtime, and other modules can call it in turn. It also inherits what the runtime adds on top of the protocols: module isolation, distribution without a central service, and a place in an ecosystem where other developers build on your modules. See [What you get](#what-you-get).
+**Building your application from Logos modules is the recommended way to integrate, and the one that gets the most out of Logos.** Your application runs in the Logos runtime that Basecamp and `logosctl` already provide: it calls the modules it depends on through the runtime, and other modules can call it in turn. It also inherits what the runtime adds on top of the protocols: module isolation, distribution without a central service, and a place in an ecosystem where other developers build on your modules. See [What you get](#what-you-get).
 
-An application not built from modules, such as an existing mobile wallet or a server backend, hosts Logos Core itself instead. It links the Logos Core host library, bundles the runtime and the modules it uses, and calls those modules from its own code. It keeps its own code and distribution, and gives up some of what the runtime offers. See [What you give up compared with a Basecamp app](#what-you-give-up-compared-with-a-basecamp-app).
+An application not built from modules, such as an existing mobile wallet or a server backend, needs to host Logos Core itself instead. It links the Logos Core host library, bundles the runtime and the modules it uses, and calls those modules from its own code. It keeps its own code and distribution, and gives up some of what the runtime offers. See [What you give up compared with a Basecamp app](#what-you-give-up-compared-with-a-basecamp-app).
 
 ### Where the node runs
 
@@ -87,30 +87,30 @@ flowchart LR
 - **Wallet modules** handle keys, derivation, signing, and proving. Both chains need proofs generated on the client: LEZ executes and proves transactions on [private accounts](../get-started/glossary.md#private-account) locally, and Logos Blockchain value transfers carry a zero-knowledge proof in place of a signature. Wallet modules therefore run where the keys are, which is normally in the user's application. Support for hardware signers, starting with Keycard, is planned.
 - **Node modules** follow their network over peer-to-peer connections, serve chain state, and relay the transactions the wallets produce.
 - **A LEZ node depends on a Logos Blockchain node** to obtain the finalised LEZ state.
-- **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet. The node API is an interface that more than one module can implement, so a wallet depends on the interface and not on a particular node module.
+- **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet.
 
 Storage and Delivery follow the same pattern without a wallet: an application calls the [Storage module](../get-started/glossary.md#storage-module) or the [Delivery module](../get-started/glossary.md#delivery-module) directly. Logos Delivery protects its network against spam with [Rate Limiting Nullifiers](../messaging/concepts/understand-logos-delivery-protocols.md#rln-relay) (RLN), and publishers hold an RLN membership [registered on LEZ](../lez/rln/register-rln-membership-from-basecamp.md).
 
 ## Build a Basecamp app or `logosctl` service
 
-**Recommended.** Your application is a set of Logos modules: one or more [core modules](../get-started/glossary.md#core-module) for its logic and, for a graphical application, a [UI module](../get-started/glossary.md#ui-module). Users run it in [Logos Basecamp](../basecamp/install-logos-basecamp.md) on the desktop, and operators run the core modules headlessly with `logosctl` on a server, as a [Logos node](../get-started/glossary.md#logos-node).
+**Recommended.** Your application is a set of Logos modules: one or more [core modules](../get-started/glossary.md#core-module) for its logic and, for a graphical application, a [UI module](../get-started/glossary.md#ui-module). Users run it in [Logos Basecamp](../basecamp/install-logos-basecamp.md), and operators run the core modules headlessly with `logosctl` on a server, as a [Logos node](../get-started/glossary.md#logos-node).
 
 ### What you get
 
 - **The whole stack by composition.** Blockchain, LEZ, Storage, and Delivery are modules your modules depend on. An application composed from them inherits their metadata protection and private state support, whether or not its developer built anonymity measures directly.
-- **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A plain process only contains crashes. If you need containment as well, you will be able to select a stronger placement per module (Planned): the sandbox placement adds limits enforced by the operating system on the file system, network, process creation, and resources, using namespaces and cgroups on Linux, and the runtime refuses to start the module if the platform cannot provide them. The specifications also define a container placement. Finer permission management is in development.
+- **Isolation.** Each module runs in its own operating system process, so a crash in one module does not take down the others. A plain process only contains crashes. If you need containment as well, you will be able to select a stronger placement per module (Planned): the `sandbox` placement adds limits enforced by the operating system on the file system, network, process creation, and resources, using namespaces and cgroups on Linux, and the runtime refuses to start the module if the platform cannot provide them. A `container` placement is also planned. Finer permission management is in development.
 - **A fault and audit boundary.** Each module is developed, audited, and upgraded independently.
-- **Distribution without a central service.** Once Basecamp is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue), and downloading them over Logos Storage instead of HTTP is being rolled out. Signature checks are planned: Logos's own keys are trusted by default, users can add the publishers they trust, and each package is checked when it is downloaded and again before it runs.
+- **Distribution without a central service.** Once Basecamp or `logosctl` is installed, modules are discovered in its [catalogue](../get-started/glossary.md#catalogue), and downloading them over Logos Storage instead of HTTP is being rolled out. Signature checks are planned: Logos's own keys are trusted by default, users can add the publishers they trust, and each package is checked when it is downloaded and again before it runs.
 - **An ecosystem around your modules.** Other developers' modules can depend on yours and call it, the same way yours call the Logos modules. A native Basecamp integration makes your product part of the stack rather than a client of it.
 
 ### Platforms
 
-| Platform | Status |
-|:---|:---|
-| Linux and macOS desktop, in Basecamp | Available |
-| Linux server, with `logosctl` | Available |
-| Windows | Planned |
-| Android and iOS, in Basecamp | Planned |
+| Platform                             | Status      |
+| :----------------------------------- | :---------- |
+| Linux and macOS desktop, in Basecamp | Available   |
+| Linux server, with `logosctl`        | Available   |
+| Windows                              | In progress |
+| Android and iOS, in Basecamp         | In progress |
 
 ### Start building
 
@@ -145,7 +145,7 @@ The runtime can run each module in a process of its own, run every module in a s
 
 ### What you give up compared with a Basecamp app
 
-- **Basecamp distribution.** You ship and update your application through your own channels, such as app stores, so decentralised discovery and distribution do not apply to it. Module packages are still signed, and you decide which publishers your application trusts.
+- **Basecamp distribution.** You ship and update your application through your own channels, such as app stores, so decentralised discovery and distribution do not apply to it.
 - **The ecosystem effect.** Code that is not a module cannot be reused by other developers' modules or run by Basecamp users.
 - **Some isolation.** When modules run inside your application's process, a fault in a module can reach your application.
 - **Packaging work.** You build and ship the runtime and modules for each platform you support.
@@ -156,16 +156,16 @@ If you host Logos Core yourself, consider publishing your core logic as modules 
 
 The table shows where a Logos SDK exists or is planned. Any language that can produce a native library with a C-compatible interface can still be used to write a module without one. **Not planned yet** means no work is scheduled. If you need that language, [tell us](#tell-us-what-you-need).
 
-| Language | Write a module | Host Logos Core in your application |
-|:---|:---|:---|
-| C++ | Available | Planned |
-| Rust | Available | Planned |
-| Kotlin | Not planned yet | Planned |
-| Swift | Not planned yet | Planned |
-| Go | Not planned yet | Not planned yet |
-| JavaScript and React Native | Planned | Not planned yet |
-| Dart and Flutter | Not planned yet | Not planned yet |
-| Python | Not planned yet | Not planned yet: `logos-logoscore-py` runs `logosctl` as a separate process |
+| Language                    | Write a module  | Host Logos Core in your application                                         |
+| :-------------------------- | :-------------- | :-------------------------------------------------------------------------- |
+| C++                         | Available       | Planned                                                                     |
+| Rust                        | Available       | Planned                                                                     |
+| Kotlin                      | Not planned yet | Planned                                                                     |
+| Swift                       | Not planned yet | Planned                                                                     |
+| Go                          | Not planned yet | Not planned yet                                                             |
+| JavaScript and React Native | Planned         | Not planned yet                                                             |
+| Dart and Flutter            | Not planned yet | Not planned yet                                                             |
+| Python                      | Not planned yet | Not planned yet: `logos-logoscore-py` runs `logosctl` as a separate process |
 
 ## Mobile
 
@@ -227,16 +227,13 @@ If your integration depends on this, [tell us](#tell-us-what-you-need) how many 
 - **One interface, local or remote.** The same contract and the same generated client serve a module wherever it runs. Moving a node from the application to another device is a deployment change, not a code change.
 - **Typed contracts and generated clients.** Every module publishes its contract as a CDDL schema, and clients are generated from it for each supported language. There is no request format to hand-write or keep in sync, and a module can describe its own contract at run time.
 - **Events built in.** Subscriptions work across the network, so an application receives new blocks or incoming messages as they happen, without polling and without a separate notification service.
-- **No API server to build.** A module's contract is its remote interface. Exposing a module is a deployment setting, not a separate service to write, version, and operate.
-- **Any module, not only nodes.** Storage, Delivery, and your own modules are exposed and reached the same way as the chain nodes.
-- **Composition across machines.** With peering, a module in one runtime can depend on a module in another, so a distributed application is built from the same parts as a local one.
+- **No RPC server to build.** A module's contract is its remote interface. Exposing a module is a deployment setting, not a separate service to write, version, and operate.
+- **Any module.** Storage, Delivery, and your own modules are exposed and reached the same way as the chain nodes.
+- **Composition across machines.** With peering, a module in one runtime can depend on a module in another, so a distributed application is built from the same parts as a local one. This enables hybrid deployments: for example, users can run a one-command node for storage or staking on a NAS or Raspberry Pi, and access it from a phone or laptop.
 - **Access control on both sides.** The importing runtime chooses which of its modules may use an import, and the exporting runtime's policy chooses what each remote module may reach. Anything the policy does not list is refused.
-- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over mutual TLS 1.3 with pinned keys. Each connection is opened with a single-use ticket that expires within seconds and is bound to that connection, so there is no long-lived credential to steal or replay.
+- **Mutual authentication.** Peering pairs runtimes with a code or a single-use invite, issues certificates to each, and connects them over a secure channel with pinned keys. Each connection is opened with a single-use ticket that expires within seconds and is bound to that connection, so there is no long-lived credential to steal or replay.
 - **No downgrade.** A connection that cannot be mutually authenticated is refused. It never falls back to a weaker one.
 - **Nothing to probe.** A caller that is refused cannot tell whether the module exists.
-- **Authority does not pass through.** Calling a module does not lend it your permissions.
-- **Live revocation.** Narrowing a policy or removing a peer closes the connections it no longer allows, while the runtimes keep running.
-- **Resilience.** An imported module reports its connection state, and becomes ready again when the remote runtime returns.
 - **Explicit compatibility.** When a connection is set up, each side sends the hash of the contract it holds, and the connection is refused before any call if the two differ. A mismatch fails up front instead of in use.
 
 ## What a remote node costs you
@@ -245,8 +242,8 @@ Running the node somewhere other than in the application changes what the node o
 
 What that exposes depends on the component:
 
-- **LEZ.** Private transactions remain mostly private. The node receives commitments and nullifiers, but private account state is encrypted to the recipient's [viewing key](../get-started/glossary.md#viewing-keys) and stays with the account owner. Any [public account](../get-started/glossary.md#public-account) involved in a transaction is visible, as it is to every node.
-- **Logos Blockchain.** Transaction contents are public on the ledger. Privacy comes from the [Blend Network](../get-started/glossary.md#blend-network), which hides where a transaction originates. Submitting through someone else's node bypasses Blend for that transaction, so the operator can link its contents to you. To benefit from Blend, submit through your own node.
+- **LEZ.** Private transactions remain mostly private. The node receives commitments and nullifiers, but private account state is encrypted to the recipient's [viewing key](../get-started/glossary.md#viewing-keys) and stays with the account owner. Any [public account](../get-started/glossary.md#public-account) involved in a transaction is visible, as it is to every node, so the operator may be able to correlate public accounts with a user's PII.
+- **Logos Blockchain.** Transaction contents are public on the ledger. Privacy comes from the [Blend Network](../get-started/glossary.md#blend-network), which hides where a transaction originates. Submitting through someone else's node bypasses Blend for that transaction, so the operator can link its contents to you. To benefit from Blend, submit through your own node. Encrypted UTXOs are planned and may improve privacy in this specific scenario.
 - **Storage and Delivery.** Privacy comes from taking part in the [mix](../get-started/glossary.md#mix), gossip, and [peer discovery](../get-started/glossary.md#peer-discovery) networks directly. Routing reads and writes through someone else's node weakens it.
 
 ## Tell us what you need

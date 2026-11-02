@@ -1,6 +1,7 @@
 # Logos docs MCP server
 
 A read-only [MCP](https://modelcontextprotocol.io) server for the Logos documentation.
+Reader-facing set-up instructions: https://docs.logos.co/get-started/coding-with-agents
 
 | Tool | What it does |
 | --- | --- |

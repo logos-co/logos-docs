@@ -9,12 +9,13 @@ module.exports = [
   {
     id: 'get-started',
     title: 'Get started',
-    description: 'What Logos is, the glossary, testnet endpoints, and the map of repositories.',
+    description: 'What Logos is, the glossary, testnet endpoints, the map of repositories, and how to use these docs with a coding agent.',
     use_cases: [
       'understand what Logos is and how the stack fits together',
       'look up a Logos term (module, LGX, LEZ, zone, mixnet)',
       'find testnet RPC endpoints, faucets and explorers',
       'find which GitHub repository holds a component',
+      'connect a coding agent to these docs',
     ],
   },
   {

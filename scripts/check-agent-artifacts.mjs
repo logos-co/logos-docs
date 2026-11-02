@@ -24,7 +24,7 @@ const resolves = (url) => {
   return [path, `${path}/index.html`, `${path}.html`].some((p) => existsSync(join(BUILD, p)) && statSync(join(BUILD, p)).isFile());
 };
 
-for (const required of ['llms.txt', 'llms-full.txt', '.well-known/llms.txt', 'agents/docs.json', 'agents/AGENTS.md']) {
+for (const required of ['llms.txt', 'llms-full.txt', '.well-known/llms.txt', 'agents/docs.json', 'agents/AGENTS.md', 'agents/skills/logos-docs/SKILL.md']) {
   if (!existsSync(join(BUILD, required))) errors.push(`missing build/${required}`);
 }
 

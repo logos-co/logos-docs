@@ -8,6 +8,8 @@
 //   /.well-known/llms.txt      copy of /llms.txt
 //   /agents/docs.json          sections, pages and content for the docs MCP server (mcp-server/)
 //   /agents/AGENTS.md          copy-paste block for a project's AGENTS.md
+//
+// See docs/get-started/coding-with-agents.md for the reader-facing side.
 
 const fs = require('fs');
 const path = require('path');
@@ -139,6 +141,7 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         `- Each section has its own index (\`/<section>/llms.txt\`) and full text (\`/<section>/llms-full.txt\`). The whole set is at ${siteUrl}/llms-full.txt.`,
         `- Structured index with section use cases: ${siteUrl}/agents/docs.json`,
         mcpLine,
+        `- Coding with agents (MCP set-up, AGENTS.md block, skill): ${mdUrl('/get-started/coding-with-agents')}`,
         '',
       ].join('\n');
 

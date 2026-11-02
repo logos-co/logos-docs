@@ -107,6 +107,13 @@ export default function PageActions(): ReactNode {
               {item('view-markdown', 'View as Markdown', 'The plain-text version agents read', mdPath)}
               {item('open-claude', 'Open in Claude', 'Ask questions about this page', openInClaude(prompt))}
               {item('open-chatgpt', 'Open in ChatGPT', 'Ask questions about this page', openInChatGPT(prompt))}
+              {item(
+                'connect-agent',
+                'Connect your coding agent',
+                'MCP server, llms.txt and AGENTS.md',
+                '/get-started/coding-with-agents',
+                false,
+              )}
             </div>
           )}
         </div>

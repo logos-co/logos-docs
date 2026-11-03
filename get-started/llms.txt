@@ -1,6 +1,6 @@
 # Logos documentation: Get started
 
-> What Logos is, the glossary, testnet endpoints, and the map of repositories.
+> What Logos is, the glossary, testnet endpoints, the map of repositories, and how to use these docs with a coding agent.
 
 Use this section to:
 
@@ -8,6 +8,7 @@ Use this section to:
 - look up a Logos term (module, LGX, LEZ, zone, mixnet)
 - find testnet RPC endpoints, faucets and explorers
 - find which GitHub repository holds a component
+- connect a coding agent to these docs
 
 Full text of this section: https://docs.logos.co/get-started/llms-full.txt
 Index of all sections: https://docs.logos.co/llms.txt
@@ -15,6 +16,7 @@ Index of all sections: https://docs.logos.co/llms.txt
 ## Pages
 
 - [What is Logos?](https://docs.logos.co/get-started/what-is-logos.md): Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
+- [Use the Logos docs with coding agents](https://docs.logos.co/get-started/coding-with-agents.md): Give Claude Code, Cursor, Codex, or another coding agent the Logos documentation so it works from current docs instead of memory.
 - [Logos ecosystem repositories](https://docs.logos.co/get-started/logos-ecosystem-repositories.md): Review the key repositories across the logos organisations.
 - [Glossary](https://docs.logos.co/get-started/glossary.md): A list of some common terms and phrases specific to the Logos ecosystem.
 - [Testnet endpoints](https://docs.logos.co/get-started/testnet-endpoints.md): Look up the RPC, explorer, release, and channel for each Logos Testnet.

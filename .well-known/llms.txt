@@ -7,14 +7,16 @@
 - Every page is available as Markdown: add `.md` to its URL (for example https://docs.logos.co/get-started/what-is-logos.md).
 - Each section has its own index (`/<section>/llms.txt`) and full text (`/<section>/llms-full.txt`). The whole set is at https://docs.logos.co/llms-full.txt.
 - Structured index with section use cases: https://docs.logos.co/agents/docs.json
+- Coding with agents (AGENTS.md block, skill): https://docs.logos.co/get-started/coding-with-agents.md
 
 ## Get started
 
-What Logos is, the glossary, testnet endpoints, and the map of repositories.
-Use this section to: understand what Logos is and how the stack fits together; look up a Logos term (module, LGX, LEZ, zone, mixnet); find testnet RPC endpoints, faucets and explorers; find which GitHub repository holds a component.
+What Logos is, the glossary, testnet endpoints, the map of repositories, and how to use these docs with a coding agent.
+Use this section to: understand what Logos is and how the stack fits together; look up a Logos term (module, LGX, LEZ, zone, mixnet); find testnet RPC endpoints, faucets and explorers; find which GitHub repository holds a component; connect a coding agent to these docs.
 Section index: https://docs.logos.co/get-started/llms.txt
 
 - [What is Logos?](https://docs.logos.co/get-started/what-is-logos.md): Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
+- [Use the Logos docs with coding agents](https://docs.logos.co/get-started/coding-with-agents.md): Give Claude Code, Cursor, Codex, or another coding agent the Logos documentation so it works from current docs instead of memory.
 - [Logos ecosystem repositories](https://docs.logos.co/get-started/logos-ecosystem-repositories.md): Review the key repositories across the logos organisations.
 - [Glossary](https://docs.logos.co/get-started/glossary.md): A list of some common terms and phrases specific to the Logos ecosystem.
 - [Testnet endpoints](https://docs.logos.co/get-started/testnet-endpoints.md): Look up the RPC, explorer, release, and channel for each Logos Testnet.

@@ -11,6 +11,7 @@ Docs index (base URL https://docs.logos.co, append `.md`):
 
 Get started:
 - /get-started/what-is-logos — Learn how the Logos technology stack is organised as a modular operating system for decen…
+- /get-started/coding-with-agents — Give Claude Code, Cursor, Codex, or another coding agent the Logos documentation so it wo…
 - /get-started/logos-ecosystem-repositories — Review the key repositories across the logos organisations.
 - /get-started/glossary — A list of some common terms and phrases specific to the Logos ecosystem.
 - /get-started/testnet-endpoints — Look up the RPC, explorer, release, and channel for each Logos Testnet.

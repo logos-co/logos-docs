@@ -183,7 +183,18 @@ The engine calls `apply` once per effect, with the shard that effect targets and
 1. Split a change that touches several accounts into one effect per shard. Open `hello_world_with_move_function.rs`, which moves bytes from one account's shard to another's:
 
    ```rust
-   
+   const WRITE_FUNCTION_ID: u8 = 0;
+   const MOVE_DATA_FUNCTION_ID: u8 = 1;
+
+   type Instruction = (u8, Vec<u8>);
+
+   #[derive(borsh::BorshSerialize, borsh::BorshDeserialize)]
+   enum Effect {
+       Append(Vec<u8>),
+       MoveOut(Vec<u8>),
+   }
+
+   fn plan(input: &PlanInput, instruction: Instruction) -> Plan {
        let mut plan = Plan::new(input);
        let (function_id, data) = instruction;
 

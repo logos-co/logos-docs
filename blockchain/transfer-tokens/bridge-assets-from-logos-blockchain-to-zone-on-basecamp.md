@@ -1,0 +1,140 @@
+> Source: https://docs.logos.co/blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Bridge assets from Logos Blockchain to a Zone on Basecamp
+
+#### Get started locking wallet notes into a Logos Zone, including the LEZ, using Basecamp.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure covers how to lock one or more of your Logos Blockchain wallet [notes](https://docs.logos.co/get-started/glossary.md#note) (UTXOs) into a Logos [Zone](https://docs.logos.co/get-started/glossary.md#zone) (such as the [LEZ](https://docs.logos.co/get-started/glossary.md#lez)) using the Logos Blockchain app on Basecamp, and receive the resulting transaction hash. It is intended for wallet users on Testnet v0.3 who need to fund a [channel](https://docs.logos.co/get-started/glossary.md#channel) without hand-assembling note IDs, keys, and fees on a CLI.
+
+> **Info: Prerequisites**
+>
+>
+> - The [Logos Blockchain app](https://docs.logos.co/blockchain/get-started/run-blockchain-node-from-basecamp.md) running on Basecamp version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, with the node in **Online** mode.
+> - At least one wallet account with a positive balance, for example one funded by [mining](https://docs.logos.co/blockchain/get-started/run-blockchain-node-from-basecamp.md#step-4-fund-your-node-and-propose-blocks).
+> - The channel ID of the target Zone. For the public LEZ testnet address, see [Testnet endpoints](https://docs.logos.co/get-started/testnet-endpoints.md).
+> - For an LEZ deposit, a public account in the [LEZ wallet app](https://docs.logos.co/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) to receive the funds.
+>
+
+## What to expect
+
+- You can select one or more wallet notes and lock their full value into a channel through a four-step wizard.
+- You can review the exact deposit payload, including channel ID, notes, keys, fee, and metadata, before submitting.
+- You can confirm the deposit succeeded by finding the returned transaction hash in the **Explorer** tab, where the transaction carries a **Channel Deposit** operation.
+- You can see a LEZ deposit arrive in your LEZ wallet about an hour after it is included in a block.
+
+## Submit a deposit
+
+The wizard collects the deposit payload across two input steps and a review step, then submits it on confirmation. A **Step N of 4** counter in the top-right corner shows where you are.
+
+1. Click the **Wallet** tab, then click **Channel Deposit** in the left menu.
+
+   - The deposit wizard opens at **Step 1 of 4**.
+   - While the node cannot answer, a notice at the top of the wizard says why, for example `Start the node from the Node tab.`
+
+1. On **Step 1 of 4**, choose the account to deposit from in **Deposit from**.
+
+   - The account's notes load automatically. Choosing a different account reloads them.
+
+1. Select one or more notes. The counter below the list shows how many notes are selected and their total. **Next** is enabled once at least one note is selected; the full value of each selected note is consumed. Click **Next**.
+
+   ![Step 1 of 4 with one note selected](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/blockchain/assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step1.png)
+
+1. On **Step 2 of 4**, enter the deposit parameters:
+
+   - **Channel ID hex**: the target channel. For the public LEZ testnet, paste the relevant address from [Testnet endpoints](https://docs.logos.co/get-started/testnet-endpoints.md). For any other Zone, paste the 64-hex-character channel ID.
+
+      > **Warning**
+      >
+      > The **LEZ testnet** checkbox in [app](https://docs.logos.co/get-started/glossary.md#app) versions 0.3.1 and 0.3.2 fills in `0303030303030303030303030303030303030303030303030303030303030303`, a channel the LEZ testnet no longer reads. A deposit sent to it locks your notes but never arrives on the LEZ, so leave the checkbox clear and paste the ID instead. To confirm the current ID, run the `getChannelId` call in [The LEZ testnet checkbox is missing](#the-lez-testnet-checkbox-is-missing).
+
+   - **Change goes to**: the account that receives any leftover value. It defaults to the account you deposit from.
+   - **Accounts funding the gas fee**: the accounts the node draws the transaction fee from. The account you deposit from is added for you. To add another, choose it in the **Account…** dropdown and click **Add**.
+   - **Max tx fee**: the maximum fee you allow, in TestToken.
+   - **Metadata (base58, optional)**: data for the Zone, usually specific to it. For the LEZ, paste the ID of the public account that receives the deposit: in the [LEZ wallet app](https://docs.logos.co/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md#create-a-new-public-account), click the copy button next to one of your public accounts. For other Zones, leave it empty if the Zone does not need any.
+
+     > **Warning**
+     >
+     > A LEZ deposit without a public account ID in **Metadata** is locked on the Logos Blockchain but never credited on the LEZ.
+   - **Optional tip hex (leave empty for current tip)**: the chain tip the deposit is built against. Leave it empty to use the node's current tip, or click **Use query tip** to use the tip that the notes were loaded at.
+
+   - **Next** is enabled once the channel ID, change account, at least one funding account, and max fee are present, and any metadata entered is valid base58. Click **Next**.
+
+   ![Step 2 of 4 with the LEZ testnet channel ID and a LEZ account ID in Metadata](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/blockchain/assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step2.png)
+
+1. On **Step 3 of 4**, review the exact payload: channel ID, notes to consume and total amount, change and funding public keys, max transaction fee, metadata, and tip. Then click **Confirm & deposit**.
+
+   ![Step 3 of 4, the deposit review](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/blockchain/assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step3-review.png)
+
+   > **Warning**
+   >
+   > Review the information carefully. Deposits are irreversible once included in a block.
+
+## Read the deposit result
+
+1. On **Step 4 of 4**, wait while the wizard shows **Submitting deposit…**, then read the result:
+
+   - On success, the wizard shows **Deposit submitted** with the transaction hash. Click the copy button to copy it.
+   - On failure, the wizard shows **Deposit failed** with the error message.
+
+   ![Step 4 of 4 showing Deposit submitted](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/blockchain/assets/bridge-assets-from-logos-blockchain-to-zone-using-app/deposit-step4-result.png)
+
+1. Click **New deposit** to reset the wizard for another deposit.
+
+1. Confirm the transaction on chain. Open the **Explorer** tab, paste the transaction hash in **Search a block id or transaction hash**, and press **Enter**.
+
+   - The result shows the transaction and the slot of the block it was included in. Its operation is labelled **Channel Deposit** (`op 18`).
+   - If the result reads `Nothing found for “<hash>”.`, the transaction is not in a block yet. Wait for a few blocks and search again.
+
+1. For a LEZ deposit, wait for the funds to arrive in the LEZ wallet. The LEZ credits a deposit only once the block that includes it is [final](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md#fork-choice-rule) on the Logos Blockchain, which takes 120 blocks, or about an hour on the testnet. The deposit is then credited in the next LEZ block.
+
+   - To check, open the [LEZ wallet app](https://docs.logos.co/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) and click **Refresh** in the **Accounts** panel. The public account whose ID you pasted in **Metadata** shows the deposited amount added to its balance.
+
+## Troubleshooting channel deposits
+
+### Confirm & deposit is disabled
+
+The node is not running. Start it with **Start Node** in the header and wait for the **Node** tab to read **Online** before submitting.
+
+### The note list reads `This account holds no notes to deposit.`
+
+Either the account has no spendable notes, or the node was not running when you chose the account, so its notes were never loaded.
+
+- If the node was not running, start it and wait for it to reach **Online** mode. Then choose a different account in **Deposit from**, and choose yours again to reload its notes.
+- If the node was running, the account has nothing to deposit. Fund it first, or choose another account.
+
+### The LEZ testnet checkbox is missing
+
+The app has no LEZ channel ID: either it could not read the one built into its `metadata.json`, or it was built from `master`, which has none. Get the channel ID from the LEZ testnet and paste it in **Channel ID hex**:
+
+```bash
+curl https://testnet.lez.logos.co/ \
+ -H "Content-Type: application/json" \
+ -d "{ \
+     \"jsonrpc\": \"2.0\", \
+     \"method\": \"getChannelId\", \
+     \"params\": {}, \
+     \"id\": 1 \
+ }"
+```
+
+### Next stays disabled on Step 2 of 4
+
+A required field is missing or invalid:
+
+- The channel ID is not 64 hex characters. The field shows `A channel ID is 64 hex characters (32 bytes).`
+- No change account or funding account is selected, or **Max tx fee** is empty.
+- The metadata is not valid base58. The field shows `Invalid base58 input`.
+
+### The wizard shows Deposit failed
+
+The module rejected the transaction. Common causes are insufficient funds to cover the selected notes plus the maximum transaction fee, an invalid channel ID or key, or a rejected or expired tip. The exact error is shown in the result step.
+
+### The deposit does not show up in the LEZ wallet
+
+- Less than an hour has passed since the deposit was included in a block. The LEZ credits it only once that block is final on the Logos Blockchain. Wait, then click **Refresh** in the **Accounts** panel of the LEZ wallet again.
+- **Metadata** did not hold the ID of a public LEZ account. The LEZ cannot credit such a deposit.

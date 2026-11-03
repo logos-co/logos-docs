@@ -1,0 +1,18 @@
+# Logos documentation: Basecamp
+
+> Logos Basecamp, the local-first desktop launcher that installs and runs Logos modules and apps.
+
+Use this section to:
+
+- install Logos Basecamp
+- install and load an .lgx module into Basecamp
+- swap ETH and LEZ tokens in Basecamp
+
+Full text of this section: https://docs.logos.co/basecamp/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Install Logos Basecamp](https://docs.logos.co/basecamp/install-logos-basecamp.md): Get Logos Basecamp running on your desktop.
+- [Install and load a module in Basecamp](https://docs.logos.co/basecamp/install-and-load-module-in-basecamp.md): Access features and functionalities through modules in Logos Basecamp.
+- [Swap ETH and LEZ tokens in Basecamp](https://docs.logos.co/basecamp/atomic-swaps-poc.md): Install the atomic swap app from a catalogue URL and trade Sepolia ETH for LEZ testnet tokens with a counterparty you never have to trust.

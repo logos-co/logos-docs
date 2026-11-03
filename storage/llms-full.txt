@@ -1,0 +1,1643 @@
+> Source: https://docs.logos.co/storage
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Logos Storage
+
+#### Learn how Logos can be used to build resilient, censorship-resistant file sharing applications.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Logos storage](https://docs.logos.co/get-started/glossary.md#logos-storage) is a filesharing protocol that allows users building on the Logos stack to publish and share files in a decentralised manner. It provides the persistence guarantees of an [organically replicated network](#organic-replication) while adding [stronger privacy guarantees](#privacy). Logos storage [is provided as a Logos module](https://docs.logos.co/storage/get-started/run-storage-node-from-cli.md), and requires the Logos runtime and tooling to work.
+
+## The basics
+
+- Logos Storage allows users to share files over a decentralised, private network of nodes.
+- Files are stored locally by each node, with each file assigned a unique identifier known as a [CID](https://docs.logos.co/get-started/glossary.md#cid).
+- Anybody with a CID can download the associated file from the network. Nodes that download a file replicate it on their machine and make it available for others, with more downloads resulting in more peers to download from.
+- Neither providers nor downloaders can be linked to the content they interact with.
+
+## How Logos Storage works
+
+The key functionality of Logos Storage is _file sharing_: you can make files available on the network which other people can then download. The basic process is illustrated in Figure 1:
+
+![Logos storage workflow.](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/logos-intro.png)
+
+1. A user [uploads a file to their Logos Storage node `p`](https://docs.logos.co/storage/get-started/run-storage-node-from-cli.md#publish-a-file).
+1. Node `p` stores the file internally.
+1. Node `p` produces a *Content Identifier* (CID for short) that uniquely identifies the file. The CID functions very much like a "file share link."
+1. The user shares the CID with other users via a third-party communication mechanism (such as [Logos Messaging](https://docs.logos.co/messaging.md)).
+1. Another user that received the CID uses their own Logos Storage node `q` to download the file.
+1. Node `q` that downloaded the file stores it internally.
+1. Once the file is made available on node `q` (including partial availability, such as for streaming), the user can retrieve it and consume its contents.
+
+### Organic replication
+
+Note that a user that wants to share a file must first upload it to their local node. Another user that wants to obtain that same file must then download it to their own local node first. The reason is that, underneath, both users are engaging in a replication protocol - when the first user initially shares their file, that file is added to the network with 1 replica (the uploading node). Once the second user downloads it, the file has 2 replicas. If a third user were to download that same file as well, it would have 3 replicas, etc.
+
+Since the number of replicas is determined by the number of nodes interested in a given file - interest being an organic property - this process is referred to as _organic replication_. This is in stark contrast to decentralised storage networks such as [Swarm](https://www.ethswarm.org/The-Book-of-Swarm.pdf) or [SIA](https://sia.tech/), where providers guarantee the availability of uploaded content in exchange for a fee. The way Logos Storage works places a fundamental limitation on persistence: if no one is interested in your files, chances are that losing your node means your data is lost as well.
+
+This is not an insurmountable limitation: one could set up multiple nodes and create replication groups for files using Logos Messaging, but this is not currently provided out-of-the-box. For files of public interest, however, replication should happen naturally: parties interested in keeping some content online can operate their own nodes and curate the list of files they wish to replicate. This allows the operator to control the type of content they host, as well as how much content they host.
+
+### Privacy
+
+A key problem with filesharing networks such as [BitTorrent](https://www.bittorrent.org/beps/bep_0003.html) - and Logos Storage itself - is that organic replication on its own exposes both the party that provides content (the *provider*) and the party that downloads it (the *downloader*) to censorship. Even with encrypted communications, active attackers can join the network and uncover which nodes are doing what.
+
+Privacy in Logos Storage has been focused on protecting the privacy of both providers and downloaders by the use of [Mix networks](https://doi.org/10.1145/358549.358563). This is strongly inspired by how [Tribler](https://tribler.org/) works, but adapted to Logos' infrastructure and constraints. When fully mature, Logos Storage will leverage mix network technology to provide _privacy-preserving filesharing_; that is, a system hat aims to protect providers’ and downloaders’ privacy by making it difficult to link them to the content they provide or download.
+
+## How to use Logos Storage
+
+The [Storage App](https://docs.logos.co/storage/get-started/run-storage-node-from-basecamp.md) is probably the fastest and simplest way to try out Logos Storage. To run a node on a more permanent basis or build on Logos Storage, check out [how to run a storage node](https://docs.logos.co/storage/get-started/run-storage-node-from-cli.md) and the [Storage module API reference](https://logos-co.github.io/logos-storage-module/latest/api_reference.html).
+
+---
+
+> Source: https://docs.logos.co/storage/get-started/run-storage-node-from-basecamp
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Run a Storage Node from Basecamp
+
+#### Get started sharing and downloading files on the Logos Storage network
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+The [Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) app is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application through Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp), configuring your node through the onboarding wizard, and using the app to share, download, and delete files. It is intended for node operators running the application on Linux, macOS, or Windows through Basecamp.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux
+>     - Mac OS (should work, but not tested)
+>     - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
+> - [Logos Basecamp](https://docs.logos.co/basecamp/install-logos-basecamp.md) version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, installed and running.
+
+## What to expect
+
+- You can run the Logos Storage app on Basecamp.
+- You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
+- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](https://docs.logos.co/get-started/glossary.md#cid)).
+- You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.
+
+## Step 1: Run the application
+
+1. In the left bar of Basecamp, select **Package Manager**.
+1. Select `Storage` in `Categories`, then click **INSTALL** in the **Storage** row.
+1. In the **Install Package?** dialogue, which lists the `storage_module` [module](https://docs.logos.co/get-started/glossary.md#module) as a dependency to install alongside the UI, click **Install**.
+1. Wait until the **Action** column of the **Storage** row reads **INSTALLED**. A new **Storage** icon appears in the left bar.
+1. In the left bar, select the **Storage** icon to launch the Logos Storage app.
+
+## Step 2: Configure your node through onboarding
+
+On first launch, the [app](https://docs.logos.co/get-started/glossary.md#app) opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
+
+The Guided option will use the default configuration and start the node automatically.
+The Advanced option allows you to edit the configuration before starting the node.
+
+This guide follows the `Guided` setup.
+
+1. Select **Guided** and click **Continue**.
+
+   ![Onboarding](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-onboarding.png)
+
+1. On the **Select Drives** step, choose the folder where downloaded files will be saved, then click **Continue**.
+
+   ![Select Drives step with the downloads folder field](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-select-drives.png)
+
+1. Wait for the dashboard to open and the node status icon to be green.
+
+   ![Storage app dashboard with the node running](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
+
+   A red status dot means the node is not running.
+
+   When you start the node, you will see a status `Unknown` with a grey dot blinking. This is the NAT status check, updated every minute.
+   A grey dot means the reachability check has not been performed yet.
+   A green dot means the node is reachable from the network and can upload and download content.
+   An orange dot means the node is not reachable from the network but falls back to the relay network. The node can still upload and download content using a relay with other peers. The speed might be reduced unless both peers were able to create a direct connection (hole punching).
+
+   See [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+
+1. Clicking on the help icon on the right of the NAT status will give you more information about the node's reachability.
+
+   ![NAT status](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-nat.png)
+
+### Configuration
+
+After onboarding, the settings are saved to a file whose location depends on the OS:
+
+| OS    | Path                                                |
+|:------|:-----------------------------------------------------|
+| Linux | `~/.config/Logos/LogosBasecamp.conf`                  |
+| macOS | `~/Library/Preferences/com.logos.LogosBasecamp.plist` |
+
+## Step 3: Share a file
+
+1. In the **Upload** panel, click **browse**. A file selector opens.
+
+1. Select the file you want to share and click **Open**. The file is uploaded to your node and sharing begins automatically.
+
+1. When the upload completes, the file appears in the **Manifests** list at the bottom of the UI, with its CID, filename, mimetype, and size.
+
+   ![Dashboard after an upload, with the file listed in the Manifests panel](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-uploaded.png)
+
+1. Click the copy icon next to the CID. Share this string with others so they can download the file.
+
+## Step 4: Download a file
+
+The manifest is the representation of a file on the network: it carries the metadata (filename, size, mimetype). To download a file, you first fetch its manifest by CID, then download the content itself.
+
+1. Paste the file's CID into the **Fetch Manifest** panel and click **Fetch**. The manifest downloads from the network and an entry appears in the **Manifests** list.
+
+1. In the manifest entry's **Actions** column, click the download icon.
+
+1. Watch the download widget at the top: it shows progress in real time and reports **Complete** when the file has been written to the downloads folder you chose during onboarding.
+
+   ![Dashboard after a download, with the download widget reporting Complete](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-downloaded.png)
+
+> **Info**
+>
+> No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ`, the [Farewell to Westphalia book](https://logos.co/farewell-to-westphalia). It is available on the network the default configuration connects to.
+
+When the file is downloaded, the download icon turns orange. This means the file is in your downloads folder.
+
+## Step 5: Fetch and download privately with Mix
+
+A private fetch or download goes over the Logos mix network. This makes it much harder to trace back to you. See [Mix](https://docs.logos.co/storage/concepts/mix.md) for how it works.
+
+1. To fetch a manifest privately, turn on the `Private` switch in the `Fetch Manifest` panel, then click `Fetch`.
+
+1. To download a file privately, click the lock icon in the manifest entry's `Actions` column. The icon turns orange. A private download is not advertised to the network.
+
+   ![Private switch and lock icon turned on](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-private.png)
+
+- By default, fetches and downloads are not private.
+- After a private fetch, the lock icon is already on. Click it to download directly.
+- Private transfers are slower.
+
+> **Warning**
+>
+>
+> When using `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries. See [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) for details.
+>
+
+## Step 6: Settings
+
+In the top right section, the settings icon on the right of **Manage node** opens the settings popup.
+
+![Settings 1](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-settings-1.png)
+
+![Settings 2](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-settings-2.png)
+
+The default configuration should be suitable for most users.
+
+Some settings cannot be updated, such as the `Data directory`.
+Most of the editable settings will require a node restart to take effect. You should see a message indicating that on the bottom right:
+
+> `Unsaved changes — the node must restart to apply them.`
+
+After you click `Save`, the message changes to:
+
+> `Saved. Restart the node to apply and save to disk.`
+
+The new configuration is saved to disk only when the node restarts. Close the settings and click `Stop` then `Start` to restart the node.
+
+> **Info**
+>
+> The active configuration is saved to `${HOME}/.logos_storage/config.json`. This file should not be edited manually. The settings UI should be used to change the configuration instead. If your configuration is messed up, you can delete this file and restart the node to reset it to the default configuration.
+
+## Step 7: Debug
+
+A debug popup is available on the top right section, next to the settings icon. You can also display it using the `Ctrl+D` keyboard shortcut.
+
+![Debug](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-debug.png)
+
+While it seems to be oriented toward advanced users, it can be useful to check the node's reachability status and if the relay is running.
+
+## Step 8: Manage the node lifecycle
+
+1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns red, the node reports **Stopped**, and peer connections drop.
+
+1. Click **Start** to start the node again. The status goes back to the reachability check (**Unknown**, then **Reachable** or **Not reachable**) and peers reconnect.
+
+   - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
+
+1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
+
+   - `.lgx` files have no trash icon: they are module [packages](https://docs.logos.co/get-started/glossary.md#package) downloaded from the Logos Package Manager in Basecamp.
+
+## Troubleshooting Logos Storage
+
+Connectivity problems (no peers, unreachable node, downloads timing out) are covered in the [Troubleshooting](https://docs.logos.co/storage/get-started/faq.md) and [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) pages.
+
+---
+
+> Source: https://docs.logos.co/storage/get-started/run-storage-node-from-cli
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Run a Storage node from the CLI
+
+#### Get started running a Logos Storage node and uploading your first file to the Logos network.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure covers how to build and run the [Logos Storage Module](https://github.com/logos-co/logos-storage-module/), connect it to the testnet bootstrap nodes, publish a file, and verify that the file can be downloaded. It is intended for node operators on testnet v0.3 who want to contribute storage capacity to the Logos network.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux
+>     - Mac OS (should work, but not tested)
+>     - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
+> - `jq` on your `PATH`.
+>     - To verify, run: `jq --version`
+>     - On Windows, install it with `winget install jqlang.jq`.
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+>    - On Windows, run `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 | iex` in PowerShell instead, then open a new terminal.
+
+## What to expect
+
+In this tutorial, you will:
+
+- Connect a [Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) node to the testnet.
+- Publish a file to the network.
+- Download an existing file - the Logos book, [Farewell to Westphalia](https://logos.co/book) - from the Logos storage network.
+
+## Load the Logos Storage module
+
+`logosctl` ships the Logos Storage [module](https://docs.logos.co/get-started/glossary.md#module) and loads it when the daemon starts, because the package downloader uses it as an optional dependency to fetch [packages](https://docs.logos.co/get-started/glossary.md#package). The package downloader may also have started the Storage node already, with the default configuration or the one saved by your last `init`. Stop it first so that you can start it with your own configuration.
+
+1.  Start `logosctl`:
+
+    ```sh
+    logosctl daemon start
+    ```
+
+1.  In a new terminal window with the same user, confirm that `storage_module` is loaded:
+
+    ```sh
+    logosctl module ls
+    ```
+
+    - If it isn't listed, install it from the [catalogue](https://docs.logos.co/get-started/glossary.md#catalogue), pinned to version 3.0.0, and load it:
+
+    ```sh
+    logosctl catalog refresh
+    logosctl package install storage_module --version 3.0.0 --yes
+    logosctl module load storage_module
+    ```
+
+    - A `module load` sent before the daemon is ready fails with an RPC or missing client config error. If that happens, check `logosctl status` again and retry.
+
+    > **Note**
+    >
+    > Individual module package versions (for example, Storage module version 3.0.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
+
+1.  Check whether the Storage node is already running:
+
+    ```sh
+    logosctl call storage_module isRunning
+    ```
+
+1.  If the result is `true`, stop the node, wait until `isRunning` returns `false`, then destroy it:
+
+    ```sh
+    logosctl call storage_module stop
+    # Wait a few seconds, then check that isRunning returns false
+    logosctl call storage_module isRunning
+    logosctl call storage_module destroy
+    ```
+
+    - Don't unload and reload the module instead: the package downloader starts the node again as soon as the module is back.
+
+## Configure and start the node
+
+Initialise and start the Storage module with `logosctl`.
+
+Several module calls in this procedure are **asynchronous**: the call returns `"result":true` as soon as the command is accepted, and the real outcome is delivered later as an event (`storageStart`, `storageUploadDone`, `storageDownloadDone`, `storageRemoveDone`, `storageDownloadManifestDone`). These events are emitted to event subscribers (such as the Storage UI); the `logosctl call` client does not subscribe to them, so they do **not** appear in the daemon log (`~/.logosctl/logs/daemon.log`). Each step below instead waits briefly and confirms the outcome with a follow-up query (for example `manifests` or `exists`).
+
+> **Tip**
+>
+> To see every method the module exposes (the same methods you can `call`), run `logosctl module-info storage_module`.
+
+1.  Use the Storage module to produce a suitable default configuration:
+
+    ```sh
+    logosctl call storage_module loadConfigOrDefault | jq ".result.value | fromjson" > config.json
+    ```
+
+    Now edit the configuration and modify:
+
+      * `data-dir`: should point to an absolute path on your disk, to which you have write access. On Windows, use a Windows path such as `C:/Users/<you>/logos-storage-data`: Git Bash converts paths in command arguments, but not inside the JSON file;
+      * `listen-port`: should contain a valid TCP port which is currently free on your local machine.
+
+    > **Tip**
+    >
+    > - The default settings for Logos Storage should be enough to get your node properly connected onto the Logos testnet. In case you want more control over port allocation, or want to learn more about how Logos storage operates, see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+    > - If you plan on running a node for longer, consider helping the network by setting up port mapping on your router (see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) for details).
+
+1.  Initialise the Storage module. `init` is synchronous and returns `true` on success (the `@config.json` syntax loads the file's contents as the argument):
+
+    ```sh
+    logosctl call storage_module init @config.json
+    ```
+
+1.  Start the node. `start` is asynchronous: the return value only confirms the command was accepted; completion is signalled later by the `storageStart` event (delivered to event subscribers, not written to the daemon log):
+
+    ```sh
+    logosctl call storage_module start
+    # Wait few seconds to start
+    ```
+
+1.  Inspect the running node with `debug`. It returns a lot of information about the node, including its `id` ([peer ID](https://docs.logos.co/get-started/glossary.md#peer-id)) and its `spr`, the signed record other nodes use to connect to you (see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md)):
+
+    ```sh
+    logosctl call storage_module debug | jq .result.value.id
+    # "16Uiu2HAmMA4NuQoCHz9p7jUskVjDd8WncwG3p6qBNnhnftUE5Q9C" # Your peer ID
+    logosctl call storage_module debug | jq .result.value.spr
+    # "spr:CiUIAhIhA35P5KZosVyfWTfIHBVtC_PtI ... H9gX-vA" # Your SPR
+    ```
+
+## Publish a file
+
+We will now publish a file to the Logos Storage network. We create a simple file just for this tutorial, but you could publish any file you'd like.
+
+1.  Create a file to publish:
+
+    ```sh
+    echo "Hello world from Logos Storage" > "$(pwd)/hello.txt"
+    ```
+
+1.  Upload the file to the network with `uploadUrl`. It takes an **absolute** path, a chunk size in bytes, and an `advertise` flag—`true` announces the file and serves it to other nodes. It returns immediately; the upload runs in the background and completes with a `storageUploadDone` event:
+
+    ```sh
+    logosctl call storage_module uploadUrl "$(pwd)/hello.txt" 65536 true
+    ```
+
+    > **Info**
+    >
+    > The default chunk size is 65536.
+
+1.  Extract the content ID ([CID](https://docs.logos.co/get-started/glossary.md#cid)) from the first `manifests` entry:
+
+    ```sh
+    # Wait a second for the upload to complete first
+    logosctl call storage_module manifests \
+       | jq -er '.result.value[0].cid' > cid.txt
+    ```
+
+## Download Farewell to Westphalia
+
+We will now download the Logos book, [Farewell to Westphalia](https://logos.co/book), from the Logos Storage network.
+
+1. We will use `downloadToUrl` to download the file from the network and place it into your local disk. It takes:
+    * the CID;
+    * an **absolute** destination path;
+    * a `local` flag;
+    * a chunk size in bytes;
+    * an `isPrivate` flag, and;
+    * an `advertise` flag.
+
+   We set `local` to `false` as this file is not currently available in your node; `isPrivate` to false so we download directly
+   from a storage provider instead of using the [Logos mix network](https://docs.logos.co/storage/concepts/mix.md), and `advertise` to false so we do not
+   advertise ourselves as providers to the file.
+
+   Like `uploadUrl` it runs in the background and completes with a `storageDownloadDone` event:
+
+    ```sh
+    CID="zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ"
+    logosctl call storage_module downloadToUrl "$CID" "$(pwd)/farewell-to-westphalia.pdf" false 65536 false false
+    ```
+
+    > **Note**
+    >
+    > - Setting `advertise` to `true` when you run an ephemeral node (a node that runs briefly and is then shut down) can be detrimental to network performance as your node announces itself and then leaves an advertisement pointing to a departed node.
+    > - When you download over mix (not shown here), you typically also do not want to set `advertise` to `true`, as that would reveal to other nodes that you've downloaded the file, defeating the purpose of the using mix in the first place.
+    > - The `local` flag reads only from locally cached data when set to `true`; `false` fetches from the network.
+
+1.  Wait for a while for the file to download. After a few seconds, check if the downloaded file is present at the destination path. You should try to open the pdf, and it should contain the whole book.
+
+    ```sh
+    shasum "$(pwd)/farewell-to-westphalia.pdf"
+    # 2c6b4dc8e8e4dae336b87b9922c38f3c94217872  farewell-to-westphalia.pdf
+    ```
+
+## Remove content and shut everything down
+
+To clear your local storage, destroy the Storage node, and stop the daemon, follow the steps below.
+
+1.  Remove content from local storage by its CID. `remove` returns immediately; the outcome arrives as a `storageRemoveDone` event:
+
+    ```sh
+    # Deletes the first file we uploaded.
+    logosctl call storage_module remove "$(cat cid.txt)"
+    # Deletes the Farewell to Westphalia book.
+    logosctl call storage_module remove "zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ"
+    ```
+
+1.  Confirm the content is gone:
+
+    ```sh
+    # Wait a second for the removal to complete first
+    logosctl call storage_module exists "$(cat cid.txt)" | jq '.result.value'
+    logosctl call storage_module exists "zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ" | jq '.result.value'
+    # false
+    ```
+
+1.  Stop the Storage node. `stop` is asynchronous like `start`; completion is signalled by a `storageStop` event (delivered to event subscribers, not written to the daemon log). The node can be started and stopped multiple times:
+
+    ```sh
+    logosctl call storage_module stop
+    # Wait a few seconds for the node to stop before destroying it
+    ```
+
+1.  Destroy the storage context. `destroy` is synchronous and must be called after the node is stopped:
+
+    ```sh
+    logosctl call storage_module destroy
+    ```
+
+1.  Stop the daemon:
+
+    ```sh
+    logosctl daemon stop
+    ```
+
+## Troubleshooting Logos Storage
+
+Connectivity problems (downloads timing out from another machine, no peers, unreachable node) are covered in the [Troubleshooting](https://docs.logos.co/storage/get-started/faq.md) and [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) pages.
+
+---
+
+> Source: https://docs.logos.co/storage/get-started/run-mix-network-of-storage-nodes
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Run a Mix network of Storage nodes
+
+#### Stand up a local Mix network and download a file through it, with the content lookup routed through Mix for privacy.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure stands up a small local [Mix](https://docs.logos.co/storage/concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux
+>     - Mac OS (should work, but not tested)
+> - `jq` on your `PATH`.
+>     - To verify, run: `jq --version`
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+
+## What to expect
+
+- You can run several `logosctl` daemons side by side, each in its own session (`--config-dir`).
+- You can set up a private Mix network and configure storage nodes to route their lookups through it for privacy.
+- You can exchange a file between two storage nodes and verify the content lookup was tunnelled over Mix.
+
+## Download and install the storage module
+
+All six nodes below share one already-unpacked copy of `storage_module`, installed once into a throwaway session. Each node's session is then configured to also scan that directory (the `modules_dirs` key of its daemon configuration), so there's no need to repeat the install per node.
+
+1.  Start a throwaway session and install the storage module [package](https://docs.logos.co/get-started/glossary.md#package) into it. Package installs are handled by a module bundled inside the daemon, so the daemon has to be running first:
+
+    ```sh
+    logosctl daemon start --detach --config-dir ./install-session
+    logosctl --config-dir ./install-session catalog refresh
+    logosctl --config-dir ./install-session package install storage_module --version 3.0.0 --yes
+    ```
+
+1.  Confirm the module landed, then stop this session—its only job was the install:
+
+    ```sh
+    logosctl --config-dir ./install-session package ls
+    logosctl --config-dir ./install-session daemon stop
+    ```
+
+    The package is now unpacked under `./install-session/modules/storage_module/`.
+
+## Launch the bootstrap Mix node (node 1)
+
+The first node is the bootstrap node: the other nodes use it to join the Mix network.
+
+1.  Write node 1's configuration. It uses `"mix-enabled": true` and `"no-bootstrap-node": true` because it is the bootstrap node. Paths are absolute (`$(pwd)`) because each module runs in its own process:
+
+    ```sh
+    mkdir -p "$(pwd)/storage-data/node-1"
+    cat > config-1.json <<EOF
+    {
+      "log-level": "DEBUG",
+      "data-dir": "$(pwd)/storage-data/node-1",
+      "log-file": "$(pwd)/storage-data/node-1/storage.log",
+      "nat": "extip:127.0.0.1",
+      "listen-port": 8081,
+      "mix-enabled": true,
+      "no-bootstrap-node": true
+    }
+    EOF
+    ```
+
+1.  Point node 1's session at the shared module directory, then start a `logosctl` daemon for it, detached. `logosctl` has no `--modules-dir` flag: extra module directories are set with `modules_dirs` in the session's daemon configuration, which `daemon config set -` reads from standard input. The daemon's logs go to `./logosctl-1/logs/daemon.log`, so there's no need to redirect output by hand:
+
+    ```sh
+    printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+      | logosctl --config-dir ./logosctl-1 daemon config set -
+    logosctl daemon start --detach --config-dir ./logosctl-1
+    ```
+
+1.  Load the module, initialise it, and start the node:
+
+    ```sh
+    logosctl --config-dir ./logosctl-1 module load storage_module
+    logosctl --config-dir ./logosctl-1 call storage_module init @config-1.json
+    logosctl --config-dir ./logosctl-1 call storage_module start
+    # Wait a few seconds for the node to start
+    ```
+
+1.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md)):
+
+    ```sh
+    logosctl --config-dir ./logosctl-1 call storage_module debug \
+      | jq -er '.result.value.spr' > bootstrap-spr.txt
+    ```
+
+## Launch the remaining Mix relays (nodes 2–4)
+
+Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's SPR as their `bootstrap-node`.
+
+1.  Write the configs for nodes 2–4, with per-node ports and data dirs:
+
+    ```sh
+    BOOTSTRAP=$(cat bootstrap-spr.txt)
+    for id in 2 3 4; do
+      mkdir -p "$(pwd)/storage-data/node-$id"
+      cat > "config-$id.json" <<EOF
+    {
+      "log-level": "DEBUG",
+      "data-dir": "$(pwd)/storage-data/node-$id",
+      "log-file": "$(pwd)/storage-data/node-$id/storage.log",
+      "nat": "extip:127.0.0.1",
+      "listen-port": $((8080 + id)),
+      "mix-enabled": true,
+      "bootstrap-node": ["$BOOTSTRAP"]
+    }
+    EOF
+    done
+    ```
+
+1.  Point each node's session at the shared module directory and start one daemon per node, each detached:
+
+    ```sh
+    for id in 2 3 4; do
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
+    done
+    ```
+
+1.  Load the module, initialise from each config, and start each node:
+
+    ```sh
+    for id in 2 3 4; do
+      logosctl --config-dir ./logosctl-$id module load storage_module
+      logosctl --config-dir ./logosctl-$id call storage_module init @config-$id.json
+      logosctl --config-dir ./logosctl-$id call storage_module start
+    done
+    # Wait a few seconds for the nodes to start
+    ```
+
+1.  Verify the network is up: every node must report a non-empty identity (`id` and `spr`) through `debug`:
+
+    ```sh
+    for id in 1 2 3 4; do
+      started_up=$(logosctl --config-dir ./logosctl-$id call storage_module debug \
+        | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""')
+      if [ "$started_up" = "true" ]; then
+        echo "Node $id is up"
+      else
+        echo "Node $id is down"
+      fi
+    done
+    # You should see "Node X is up" for all nodes from 1 to 4
+    ```
+
+## Build the Mix relay pool
+
+The storage nodes need two files to use the Mix relays:
+
+- `mix-pool.json`: the relays' [peer IDs](https://docs.logos.co/get-started/glossary.md#peer-id), multiaddrs, mix and libp2p public keys.
+- `mix-proxies.json`: the relays' TCP SPRs.
+
+Since this is a local network, every relay is reachable at `127.0.0.1` on its fixed `listen-port` (`808<id>`), so the pool `multiAddr` is built from that rather than from the announced addresses.
+
+1.  Save the debug output of each relay to `debug-<id>.json` to make the data extraction easier:
+
+    ```sh
+    for id in 1 2 3 4; do
+      logosctl --config-dir ./logosctl-$id call storage_module debug > debug-$id.json
+    done
+    ```
+
+1.  Assemble `mix-pool.json`. `debug` already returns `peerId`, `mixPubKey` and `libp2pPubKey` in exactly the form the pool wants:
+
+    ```sh
+    for id in 1 2 3 4; do
+      ADDR="/ip4/127.0.0.1/tcp/$((8080 + id))"
+      jq --arg ma "$ADDR" '{
+          peerId: .result.value.id,
+          multiAddr: $ma,
+          mixPubKey: .result.value.mixPubKey,
+          libp2pPubKey: .result.value.libp2pPubKey
+        }' debug-$id.json
+    done | jq -s '{version: 1, relays: .}' > mix-pool.json
+    ```
+
+1.  Collect the relays' proxy SPRs (`spr`) into a JSON array:
+
+    ```sh
+    jq -s -c '[.[].result.value.spr]' debug-*.json > mix-proxies.json
+    ```
+
+## Start the storage nodes (5 and 6)
+
+The four nodes so far are the Mix relays. Now add the storage nodes that actually use them: their config is the same, plus the `dht-mix-proxy` list and the `mix-pool` path built in the previous section.
+
+1.  Write the storage node configs:
+
+    ```sh
+    BOOTSTRAP=$(cat bootstrap-spr.txt)
+    PROXIES=$(cat mix-proxies.json)
+    for id in 5 6; do
+      mkdir -p "$(pwd)/storage-data/node-$id"
+      cat > "config-$id.json" <<EOF
+    {
+      "log-level": "DEBUG",
+      "data-dir": "$(pwd)/storage-data/node-$id",
+      "log-file": "$(pwd)/storage-data/node-$id/storage.log",
+      "listen-port": $((8080 + id)),
+      "nat": "extip:127.0.0.1",
+      "mix-enabled": true,
+      "bootstrap-node": ["$BOOTSTRAP"],
+      "dht-mix-proxy": $PROXIES,
+      "mix-pool": "$(pwd)/mix-pool.json"
+    }
+    EOF
+    done
+    ```
+
+1.  Point each storage node's session at the shared module directory and start one daemon per node, each detached:
+
+    ```sh
+    for id in 5 6; do
+      printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
+        | logosctl --config-dir ./logosctl-$id daemon config set -
+      logosctl daemon start --detach --config-dir ./logosctl-$id
+    done
+    ```
+
+1.  Load the module, initialise from each config, and start each node:
+
+    ```sh
+    for id in 5 6; do
+      logosctl --config-dir ./logosctl-$id module load storage_module
+      logosctl --config-dir ./logosctl-$id call storage_module init @config-$id.json
+      logosctl --config-dir ./logosctl-$id call storage_module start
+    done
+    # Wait a few seconds for the nodes to start
+    ```
+
+1.  Verify the storage nodes are up:
+
+    ```sh
+    for id in 5 6; do
+      logosctl --config-dir ./logosctl-$id call storage_module debug \
+        | jq -e '(.result.value.id // "") != "" and (.result.value.spr // "") != ""'
+    done
+    ```
+
+## Upload from one node, download through Mix
+
+Node 5 seeds a file, and node 6 downloads it with `local=false` to force a network lookup—the lookup that Mix hides.
+
+1.  Create a small file and upload it through node 5:
+
+    ```sh
+    echo "Hello through Mix from the storage doc-test." > hello.txt
+    logosctl --config-dir ./logosctl-5 call storage_module uploadUrl "$(pwd)/hello.txt" 65536 true
+    ```
+
+1.  The upload runs in the background; give it a moment, then read the [CID](https://docs.logos.co/get-started/glossary.md#cid) of the stored manifest from node 5:
+
+    ```sh
+    logosctl --config-dir ./logosctl-5 call storage_module manifests \
+      | jq -er '.result.value[0].cid' > cid.txt
+    ```
+
+1.  Download the CID through node 6:
+
+    ```sh
+    logosctl --config-dir ./logosctl-6 call storage_module downloadToUrl "$(cat cid.txt)" "$(pwd)/downloaded.txt" false 65536 true false
+    # Wait a few seconds for the download to complete
+    ```
+
+1.  Confirm the lookup was tunnelled through Mix: node 6's log records the relay selection (SURB):
+
+    ```sh
+    grep "Selected mix node for surbs" storage-data/node-6/storage.log logosctl-6/logs/daemon.log
+    ```
+
+1.  Verify the round-trip: the downloaded file matches what node 5 uploaded:
+
+    ```sh
+    cat downloaded.txt
+    # Hello through Mix from the storage doc-test.
+    ```
+
+## Shut the network down
+
+1.  For each node: stop the libp2p node, destroy the storage context, and stop the daemon. The `|| true` lets the loop continue past a node that is already gone:
+
+    ```sh
+    for id in 1 2 3 4 5 6; do
+      logosctl --config-dir ./logosctl-$id call storage_module stop || true
+      logosctl --config-dir ./logosctl-$id call storage_module destroy || true
+      logosctl --config-dir ./logosctl-$id daemon stop || true
+    done
+    ```
+
+1.  Confirm the daemons have stopped:
+
+    ```sh
+    ps aux | grep logosctl | grep -v 'grep' | wc -l
+    # Should print "0"
+    ```
+
+---
+
+> Source: https://docs.logos.co/storage/get-started/faq
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Troubleshooting
+
+#### Fix the most common problems of a storage node.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+## `logosctl` fails with a FUSE error
+
+**Symptom**: running a tool installed from the releases fails with `No suitable fusermount binary found on the $PATH` and `Cannot mount AppImage, please check your FUSE setup`.
+
+**Cause**: on Linux, the release binaries are AppImages, which need FUSE to run. Containers (toolbox, Docker) and some minimal distributions do not ship it.
+
+**Fix**: install FUSE (`sudo dnf install fuse` on Fedora, `sudo apt install libfuse2` on Ubuntu). Without root, extract the AppImage instead and run the extracted binary:
+
+```sh
+./logosctl --appimage-extract
+./squashfs-root/AppRun --help
+```
+
+## Another application is using the listen port
+
+**Symptom**: the node fails to start, or peers cannot connect, because the TCP listen port is already taken.
+
+**Cause**: another process is occupying the port.
+
+**Fix**: stop the other process or change the listen port in the configuration. If you use manual port forwarding, update the router rule to match the new port.
+
+## I can download files, but nobody can download from me
+
+**Symptom**: downloading from the network works, but files you publish cannot be downloaded by other nodes.
+
+**Cause**: your peer is not taking inbound connections. This can happen if your node is behind a NAT and cannot locate a relay, or if the relays it can locate are fully booked. Outgoing connections (your downloads) go through your router normally; incoming connections (peers fetching from you) are blocked by it.
+
+**Fix**: your best bet is to try make your node reachable with UPnP or manual port forwarding: see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+
+## UPnP is not working
+
+**Symptom**: UPnP is enabled on your router and `nat` is `auto` (the default), but the node remains unreachable.
+
+**Cause**: UPnP relies on your router supporting and enabling the UPnP protocol. Many routers have it disabled by default for security reasons.
+
+**Fix**: make sure UPnP is enabled on your router, or switch to manual port forwarding.
+
+## Manual port forwarding is not working
+
+**Symptom**: you configured port forwarding but the node remains unreachable.
+
+**Cause**: the TCP listen port is not actually open on your router.
+
+**Fix**: make sure port forwarding is enabled and matches what is in your `listen-port`. Check that rule exists and points to your machine's current local address: see [Forwarding ports manually](https://docs.logos.co/storage/concepts/connectivity.md#forwarding-ports-manually).
+
+## The ports are forwarded, but the node is still unreachable
+
+**Symptom**: UPnP or port forwarding is correctly set up on the router, but peers still cannot connect to you.
+
+**Cause**: the machine's own firewall blocks incoming connections. Some Linux distributions (such as Fedora) enable a firewall by default.
+
+**Fix**: allow inbound connections on your `<listen-port>` in your firewall. With firewalld (Fedora), for instance, you would do:
+
+```sh
+sudo firewall-cmd --permanent --add-port=<listen-port>/tcp
+sudo firewall-cmd --reload
+```
+
+With ufw (Ubuntu):
+
+```sh
+sudo ufw allow <listen-port>/tcp
+```
+
+## The node was reachable, but is not anymore
+
+**Symptom**: the node worked for days or weeks, then peers suddenly cannot download files from you anymore.
+
+**Cause**: most home ISPs change your public IP from time to time. If `nat` is set to `extip:<IP>`, the node keeps announcing the old address.
+
+**Fix**: check your current public IP (see [Finding your public IP](https://docs.logos.co/storage/concepts/connectivity.md#finding-your-public-ip)), update the `extip` value and restart the node. To avoid this, set `nat` back to `auto` (the default) instead: the node then works out its public address by itself.
+
+## Downloads time out when downloading from a different machine
+
+**Symptom**: downloading a [CID](https://docs.logos.co/get-started/glossary.md#cid) works on the node that published it, but times out from another machine.
+
+**Cause**: NAT is blocking the peer connection: the publishing node is not reachable from the internet.
+
+**Fix**: make the publishing node reachable: see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+
+---
+
+> Source: https://docs.logos.co/storage/concepts/connectivity
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Connectivity
+
+#### Understand how a storage node joins a network and becomes reachable from the internet.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+A node is useful only when it can reach - and be reached from - other nodes. This page explains how a node joins a network and how to make it reachable from
+the outside.
+
+## Joining a network
+
+To share files, you need to be part of a _Storage network_ with other peers. To
+join a Storage network, you need to know at least one other node that is already
+part of that Storage network; that is, you need a _bootstrap peer_ for that
+storage network. Once connected to a suitable bootstrap peer, your node should
+be able to look up any other peers that are also part of the same storage
+network. With Logos Storage, currently, you have two main choices:
+
+**Join an existing public Storage network.** We provide two sets of public
+bootstrap peers which define two logically separate, public storage networks.
+Bootstrap addresses for those Storage networks are shipped with the Logos Storage
+module by default, and you can access them by setting the `network` option to a
+preset name. Since presets already contain the Storage network's bootstrap
+nodes, you need nothing else. If nothing is specified, Storage will always join
+`logos.test` by default.
+
+| Preset       | Description                       |
+| ------------ | --------------------------------- |
+| `logos.test` | Logos testnet (default)           |
+| `logos.dev`  | Logos devnet                      |
+
+**Create your own Storage network.** If you start your node with
+`no-bootstrap-node` set to `true`, it will bootstrap from no-one, effectively
+becoming the bootstrap peer and only member of a new Storage network. You can
+read your node's address with the `spr` method, then use that address in the
+`bootstrap-node` option of other nodes to get them to join your Storage network.
+
+> **Note**
+>
+> Any node that joins a Storage network can be a bootstrap peer for that
+> network. Public bootstrap peers are convenient because their addresses are
+> well-known and they are highly available, but they are a convenience more than a
+> necessity.
+
+## Being reachable: NAT
+
+On a home network, your node usually sits behind a router which shares your
+external IP with other devices using Network Address Translation (NAT), so it is
+not reachable from the internet by default.
+
+With NAT traversal, the node will try different ways to become reachable. After
+checking the reachability of its listen port, the node will try the following
+actions, in this order, if it is unreachable:
+
+1. Try to open the ports: if the router has UPnP, NAT-PMP or PCP enabled,
+   the node asks it to open the listen port for incoming connections.
+   If that works, the node becomes reachable.
+1. Go through a relay: if the previous step fails, the node will use another
+   peer as a relay. When another peer tries to connect to this node, it will be
+   redirected to the relay, which will forward the connection to the node.
+1. Bypass the relay: ideally, when a peer arrives through the relay, the node
+   tries to open a direct connection with it anyway (hole punching). If it
+   works, the relay is dropped and the two nodes talk directly.
+
+The reachability check is done regularly, every 2 minutes by default
+(depending on the configuration).
+
+Being unreachable is not a dead end. Unreachable nodes sit behind the relay
+and can still share content, but the performance will be worse than for a
+reachable node.
+
+> **Info**
+>
+> * Port mapping only works if UPnP, NAT-PMP or PCP is enabled on the router. If
+> it fails, the node log will show `TCP port mapping failed` and the node will use a relay
+> instead. 
+> * Relay resources are limited. You should always do your best to configure your
+> network in a way that does not require utilising a relay.
+
+> **Warning**
+>
+> If you are using [Mix](https://docs.logos.co/get-started/glossary.md#mix) with `nat:auto`, the
+> node first needs to get a reachability status, `Reachable` or `Unreachable`,
+> before it can do private downloads.
+
+The `nat` option controls how the node handles NAT traversal:
+
+| Value        | When to use it                                                                                                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auto`       | Default. Everything described above.                                                                                                                                                                   |
+| `extip:<IP>` | Set your public IP yourself, for example `extip:203.0.113.7`. The node announces that address as-is and skips the checks above. Use this when you know the public IP under which your node is reachable from; for example, when you have opened your listen port on the router yourself, or in a machine with a public IP (a cloud server or VPS). |
+
+> **Warning**
+>
+>
+> Some Linux distributions (such as Fedora) enable a firewall by default that can block incoming connections even when your port mapping is correct. You may need to allow the port through the firewall.
+>
+
+### Finding your public IP
+
+To use `extip:<IP>` you need your public IP. Two easy ways:
+
+- From a terminal:
+
+    ```sh
+    curl -4 https://ifconfig.me
+    ```
+
+    The `-4` forces IPv4; without it, the service may return your IPv6 address.
+- From a browser: open [https://ifconfig.me](https://ifconfig.me), or check your router's admin page (usually listed as the WAN or external address).
+
+### Enabling UPnP on your router
+
+With `nat` set to `auto` (the default), the node asks the router to open its ports by itself—but only if UPnP is enabled on the router. Router interfaces differ, but the steps are always the same:
+
+1. Open your router's admin page in a browser. Its address is your default gateway, often `192.168.1.1`. On Linux, find it with `ip route | grep default`.
+1. Find the *UPnP* setting, usually under the NAT, network, or advanced settings, and enable it.
+1. Restart the node.
+
+### Forwarding ports manually
+
+If your router does not support UPnP, or you prefer not to enable it, map the ports yourself and announce your public IP with `extip`:
+
+1. Set a fixed value for `listen-port` (see [Ports](#ports)): you cannot forward a random port.
+1. Find your machine's address on the local network, for example with `ip -4 addr`.
+1. In your router's admin page, find the *Port forwarding* section (sometimes
+   called *NAT rules* or *Virtual server*) and add a rule pointing to your
+   machine's local address and port.
+1. Set the `nat` option to `extip:<your-public-IP>`.
+
+> **Info**
+>
+> Give your machine a fixed address on the local network (a *DHCP
+> reservation* or *static lease* in the router settings). Otherwise, forwarding
+> rules may break if the router assigns a different address to your machine.
+
+## Ports
+
+Storage requires a single TCP port, configurable through the `listen-port`
+option, to be open for it to work. This is set to `0` by default, which means
+picking a random free port. Set it to a fixed value if you want to open it on
+your router or firewall; for example, when manually setting up forwarding rules.
+
+---
+
+> Source: https://docs.logos.co/storage/concepts/mix
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Mix
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Mix](https://docs.logos.co/get-started/glossary.md#mix) (short for [mix
+network](https://en.wikipedia.org/wiki/Mix_network)) is a privacy layer. When
+enabled, it makes it harder for observers to figure out who is
+downloading a file, which improves the privacy of downloaders.
+
+Normally, when a node searches and downloads content on the network, it reveals
+Personally Identifiable Information (PII) such as the node's IP address or
+public keys to other peers. Mix provides a way to conceal this information, making it difficult
+for other peers to link a node requesting a file to its PII.
+
+> **Info**
+>
+> Note that, as of storage v3.0.0, only nodes _downloading_ benefit from the privacy protections of Mix.
+> Nodes providing content must remain public and identifiable.
+
+## Configuration
+
+Set `mix-enabled` to `true`. Mix needs a few extra options to know which relays it can use:
+
+| Option          | Description                                                       |
+| --------------- | ----------------------------------------------------------------- |
+| `mix-enabled`   | Turn Mix on (default `false`).                                     |
+| `dht-mix-proxy` | Peer records (SPRs) used as proxy destinations for lookups.        |
+| `mix-pool`      | Path to a JSON file listing the Mix relays.                        |
+| `mix-pool-json` | The relay list as inline JSON. Takes precedence over `mix-pool`.   |
+
+Example:
+
+```json
+{
+  "mix-enabled": true,
+  "mix-pool": "/path/to/mix-pool.json"
+}
+```
+
+## Enabling private downloads
+
+When Mix is configured (`mix-enabled` true and at least one `dht-mix-proxy`
+set), you can set the `isPrivate` flag in download operations like
+`downloadToUrl` and `downloadChunks` (see [API
+reference](https://logos-co.github.io/logos-storage-module/v3.0.0-rc1/api_reference.html))
+so that downloads happen over mix. This in practice makes your download
+privacy-preserving; that is, it is difficult for third parties to tell that you
+are downloading a file, even if they are serving the file to you themselves.
+
+**Advertisements.** Logos storage's download operations expose a second option,
+`advertise`, which controls whether or not a node advertises on the network that
+it has a given file so that other peers can download from it. To benefit from the privacy protections provided by the mix network, you should set `advertise=false` every time you set `isPrivate=true`.
+
+> **Warning**
+>
+> When using `nat:auto`, the node first needs to get a reachability status,
+> `Reachable` or `Unreachable`, before it can do private downloads. See
+> [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) for details.
+
+---
+
+> Source: https://docs.logos.co/storage/build-app/build-cli-app-that-uses-storage-api
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Build a CLI app that uses the Storage API
+
+#### Wrap the Storage module API in a simple synchronous CLI interface.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3.0**.
+
+This tutorial uses **Storage module v3.0.2**, **Logos module builder 0.3.2**, and `logosctl 0.3.2`.
+
+The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](https://docs.logos.co/get-started/glossary.md#module)—a separate module that depends on [Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
+
+> **Info: Prerequisites**
+>
+> - A supported OS
+>     - Linux
+>     - Mac OS (should work, but not tested)
+> - **Nix** with flakes enabled. Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>   ```bash
+>   mkdir -p ~/.config/nix
+>   echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>   ```
+>
+> - **Git**
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+
+## What to expect
+
+- You can scaffold a Logos module that wraps the Storage module's asynchronous API in a synchronous interface.
+- You can publish a local file to the Logos Storage network with a single `storage_cli publish` command.
+- You can download a file from the network with a single `storage_cli download` command.
+
+## Step 1: Scaffold the module project
+
+Use the Logos module builder template to scaffold a new module project:
+
+```bash
+mkdir ./storage_cli
+cd ./storage_cli
+git init
+nix flake init -t github:logos-co/logos-module-builder/0.3.2
+```
+
+## Step 2: Configure the module metadata, flake, and CMake files
+
+1.  Replace the contents of `metadata.json` with the following. It declares a dependency on `storage_module` and sets `concurrency` so the module's calls run off the main event loop:
+
+    ```json showLineNumbers
+    {
+      "name": "storage_cli",
+      "display_name": "Simple Storage CLI",
+      "version": "1.0.0",
+      "type": "core",
+      "interface": "universal",
+      "category": "example",
+      "description": "A simple CLI frontend module to Logos Storage",
+      "main": "storage_cli_plugin",
+      "dependencies": ["storage_module"],
+      "concurrency": "multi",
+      "nix": {
+        "packages": {
+          "build": [],
+          "runtime": []
+        },
+        "external_libraries": [],
+        "cmake": {
+          "find_packages": [],
+          "extra_sources": [],
+          "extra_include_dirs": [],
+          "extra_link_libraries": []
+        }
+      }
+    }
+    ```
+
+    - `"dependencies": ["storage_module"]` declares that this module depends on the Storage module.
+    - `"concurrency": "multi"` runs the request handler on a thread separate from the single-threaded event loop, which makes it easier to turn the asynchronous Storage API calls into synchronous ones later.
+
+1.  Delete the generated placeholder implementation, since you'll provide your own:
+
+    ```bash
+    rm src/minimal_impl.{h,cpp}
+    ```
+
+1.  In the generated `flake.nix`, replace the `inputs` block with the following pinned inputs. Keep the generated `outputs` as they are:
+
+    ```nix
+    {
+      inputs = {
+        logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
+        storage_module.url = "github:logos-co/logos-storage-module/v3.0.2";
+      };
+
+      # ...
+    }
+    ```
+
+1.  Edit `CMakeLists.txt` to reference the new source file names. Replace `logos_module` with:
+
+    ```cmake
+    # Define the module. The generated glue is compiled automatically.
+    logos_module(
+        NAME ${MODULE_NAME}
+        SOURCES
+            src/storage_cli_impl.h
+            src/storage_cli_impl.cpp
+    )
+    ```
+
+## Step 3: Define the module interface
+
+Create `src/storage_cli_impl.h` with the following interface. It declares two operations—`publish` and `download`—both of which return a [`StdLogosResult`](https://github.com/logos-co/logos-cpp-sdk/tree/95d7b3a9c5ef845bdc31f12f1d8222a12eda916d#logosresult) ([result type](https://en.wikipedia.org/wiki/Result_type)), and overrides `onContextReady`, a [Logos C++ SDK](https://github.com/logos-co/logos-cpp-sdk) hook called when the module is loaded:
+
+```cpp showLineNumbers
+#pragma once
+
+#include <logos_module_context.h>
+#include <logos_result.h>
+#include <string>
+
+/**
+ * A synchronous, CLI-shaped facade over the asynchronous `storage_module`.
+ */
+class StorageCliImpl : public LogosModuleContext {
+public:
+  /**
+   * Uploads a file to the local node and returns the completion result.
+   */
+  StdLogosResult publish(const std::string &input);
+  /**
+   * Downloads a file from the network onto the specified local path.
+   * Returns the completion result.
+   */
+  StdLogosResult download(const std::string &cid, const std::string &output);
+
+protected:
+  /// Starts (and configures) the storage node when the module is loaded.
+  void onContextReady() override;
+};
+```
+
+## Step 4: Set up shared state and helper functions
+
+The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file's includes, then the shared state and small helper functions the rest of the module will use.
+
+1.  Start `src/storage_cli_impl.cpp` with its header and includes. `nlohmann/json` ships with the Logos SDK, so you don't need to install it separately:
+
+    ```cpp showLineNumbers
+    #include "storage_cli_impl.h"
+    #include "logos_sdk.h"
+
+    #include <algorithm>
+    #include <cstdint>
+    #include <filesystem>
+    #include <functional>
+    #include <future>
+    #include <iostream>
+    #include <mutex>
+    #include <system_error>
+    #include <nlohmann/json.hpp>
+
+    using nlohmann::json;
+    ```
+
+1.  Open an anonymous namespace and define the node configuration and transfer chunk size:
+
+    ```cpp showLineNumbers=16
+    namespace {
+
+    constexpr const char *kNodeConfig = R"({
+        "log-level": "INFO",
+        "nat": "auto",
+        "data-dir": "/tmp/logos-storage",
+        "network": "logos.test"
+    })";
+
+    constexpr int64_t kChunkSize = 65536;
+    ```
+
+1.  Add standard C++ [promises](https://en.cppreference.com/cpp/thread/promise) to make the `publish`/`download` operations synchronous and a [mutex](https://en.cppreference.com/cpp/thread/mutex) to serialise these operations:
+
+    ```cpp showLineNumbers=27
+    // We'll use two promises: one for synchronising node startup, and another for
+    // upload/download operation results.
+    std::promise<bool> gStarted;
+    // The start future is potentially called by several different threads, so we
+    // need a shared future.
+    std::shared_future<bool> gStartedFut = gStarted.get_future().share();
+    // A rejected start can also emit a completion event. Resolve startup only once.
+    std::once_flag gStartedOnce;
+    // gResult is initialised during an asynchronous operation dispatch, set in
+    // the callback once, and consumed by the dispatcher exactly once, so we can
+    // use a regular future.
+    std::promise<std::string> gResult;
+    // Serialises upload/download operations.
+    std::mutex gOpLock;
+
+    int64_t gTransferBytes = 0;
+    int64_t gTransferTotal = 0;
+    ```
+
+    - `gTransferTotal` and `gTransferBytes` track the progress of the single `publish`/`download` operation this module allows to run at a time.
+
+1.  Add helper functions for printing transfer progress and for parsing JSON payloads returned by the Storage module:
+
+    ```cpp showLineNumbers=45
+    void echo(const std::string &line, bool endline = true) {
+      std::cout << line;
+      if (endline) {
+        std::cout << '\n';
+      }
+      std::cout.flush();
+    }
+
+    void printProgress() {
+      if (gTransferTotal == 0) {
+        echo(" " + std::to_string(gTransferBytes) + " bytes");
+        return;
+      }
+      int64_t completed = std::min(gTransferBytes, gTransferTotal);
+      echo("  " + std::to_string(completed * 100 / gTransferTotal) + "% (" +
+           std::to_string(completed) + " of " + std::to_string(gTransferTotal) +
+           " bytes)");
+    }
+
+    json parsePayload(const std::string &payload) {
+      json j = json::parse(payload, nullptr, false);
+      if (!j.is_object()) {
+        echo("Failed to parse payload: " + payload);
+        return json::object();
+      }
+      return j;
+    }
+    ```
+
+## Step 5: Implement the synchronous transfer helper
+
+1.  Add the `onProgress` and `onDone` callbacks. Both [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) and [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) report progress and completion through these callbacks. Progress events contain a byte increment and the total size. `onStarted` resolves the startup promise once, regardless of the result:
+
+    ```cpp showLineNumbers=73
+    void onProgress(const std::string &payload) {
+      const json j = parsePayload(payload);
+      gTransferBytes += j.value("bytes", int64_t{0});
+      gTransferTotal = j.value("total", gTransferTotal);
+      printProgress();
+    }
+
+    void onDone(const std::string &payload) { gResult.set_value(payload); }
+
+    void onStarted(bool success) {
+      std::call_once(gStartedOnce, [success] { gStarted.set_value(success); });
+    }
+    ```
+
+1.  Add `syncTransferOp`, the helper that turns an asynchronous Storage operation into a synchronous one - this is the core of the module:
+
+    ```cpp showLineNumbers=86
+    StdLogosResult syncTransferOp(const std::string &what, int64_t total,
+                                  const std::function<StdLogosResult()> &op) {
+      echo("Waiting for node to start.");
+      if (!gStartedFut.get()) {
+        return StdLogosResult{
+            .success = false, .value = {}, .error = "Node start failed"};
+      }
+      echo("Node is started, attempting to run " + what + " operation.");
+
+      // This will block attempts to run multiple operations at once.
+      // This is not a limitation in storage but of our state tracking.
+      std::scoped_lock lock(gOpLock);
+
+      gResult = std::promise<std::string>();
+      gTransferBytes = 0;
+      gTransferTotal = total;
+
+      // Actually sends the operation to Storage.
+      StdLogosResult started = op();
+      if (!started.success) {
+        return started;
+      }
+
+      const std::string result = gResult.get_future().get();
+      const json payload = parsePayload(result);
+      const bool success = payload.value("success", false);
+      return StdLogosResult{.success = success,
+                            .value = payload,
+                            .error = success ? "" : payload.value("error", "Transfer failed")};
+    }
+
+    } // namespace
+    ```
+
+    - `gStartedFut` waits until node startup succeeds or fails.
+    - `gOpLock` serialises transfers because this example shares one result promise and progress counters.
+    - The helper resets that state, dispatches `op()`, and waits for `onDone` to fulfil the result promise.
+    - The returned result includes the completion payload and any transfer error.
+
+## Step 6: Implement the context hook and the public operations
+
+1.  Implement `onContextReady`, which registers the Storage module's callbacks and starts the Storage node:
+
+    ```cpp showLineNumbers=119
+    void StorageCliImpl::onContextReady() {
+      StorageModule &storage = modules().storage_module;
+
+      storage.onStorageStart([](const std::string &payload) {
+        const json j = parsePayload(payload);
+        echo("Node started with result: " + j.dump());
+        onStarted(j.value("success", false));
+      });
+
+      storage.onStorageUploadProgress(&onProgress);
+      storage.onStorageDownloadProgress(&onProgress);
+      storage.onStorageUploadDone(&onDone);
+      storage.onStorageDownloadDone(&onDone);
+
+      echo("starting storage node (data-dir /tmp/logos-storage, network "
+           "logos.test)...");
+
+      if (storage.isRunning()) {
+        onStarted(true);
+        return;
+      }
+      if (!storage.init(kNodeConfig)) {
+        echo("failed to initialise storage module");
+        onStarted(false);
+        return;
+      }
+      if (!storage.start()) {
+        echo("node start was rejected");
+        onStarted(false);
+      }
+    }
+    ```
+
+    > **Note**
+    >
+    > * To make the code in this tutorial simpler, failed initialisation or a rejected start make all subsequent transfers return `Node start failed`. You will need to reload the module to try again.
+    > * The Storage module stores its configuration in `~/.logos_storage/config.json`.
+
+1.  Implement `publish`, which uploads a local file. The final `true` argument to `uploadUrl` enables advertising and serving the file to peers:
+
+    ```cpp showLineNumbers=151
+    StdLogosResult StorageCliImpl::publish(const std::string &input) {
+      // Paths are resolved relative to the daemon process. Callers
+      // should use absolute paths.
+      std::error_code ec;
+      const std::filesystem::path path = std::filesystem::absolute(input, ec);
+      if (ec) {
+        return {.success = false, .value = {}, .error = ec.message()};
+      }
+      const auto size = static_cast<int64_t>(std::filesystem::file_size(path, ec));
+      if (ec) {
+        echo("upload failed: cannot read " + input + " (" + ec.message() + ")");
+        return {.success = false, .value = {}, .error = ec.message()};
+      }
+
+      echo("uploading " + path.string() + " (" + std::to_string(size) + " bytes)");
+
+      return syncTransferOp("upload", size, [&] {
+        return modules().storage_module.uploadUrl(path.string(), kChunkSize, true);
+      });
+    }
+    ```
+
+1.  Implement `download`, which downloads a file by its [CID](https://docs.logos.co/get-started/glossary.md#cid) onto local disk. The last two arguments to `downloadToUrl` select a direct download; i.e, not using the [Logos mix network](https://docs.logos.co/storage/concepts/mix.md) (`isPrivate=false`), and enable advertising and serving the downloaded data (`advertise=true`); i.e, your node will actively replicate and serve it:
+
+    ```cpp showLineNumbers=171
+    StdLogosResult StorageCliImpl::download(const std::string &cid,
+                                            const std::string &output) {
+      std::error_code ec;
+      const std::filesystem::path path = std::filesystem::absolute(output, ec);
+      if (ec) {
+        echo("download failed: bad output path " + output + " (" + ec.message() +
+             ")");
+        return {.success = false, .value = {}, .error = ec.message()};
+      }
+
+      echo("Downloading " + cid + " to " + path.string());
+
+      return syncTransferOp("download", 0, [&] {
+        return modules().storage_module.downloadToUrl(cid, path.string(), false,
+                                                      kChunkSize, false, true);
+      });
+    }
+    ```
+
+## Step 7: Build your module
+
+Build the module:
+
+```bash
+git add flake.nix metadata.json CMakeLists.txt src
+nix build '.#lgx-portable'
+git add flake.lock
+```
+
+- **Expected result:** an `.lgx` [package](https://docs.logos.co/get-started/glossary.md#package) appears under the `result` folder:
+
+  ```bash
+  $ ls result
+  logos-storage_cli-module-lib.lgx
+  ```
+
+## Step 8: Start the Logos daemon
+
+Package installs are handled by a module bundled inside the daemon, so the daemon has to be running before you install anything.
+
+From the `storage_cli` project directory you have been working in since Step 1, start `logosctl`, using a project-local session so installed modules and daemon logs stay under `./config-dir`. The example stores file data separately in `/tmp/logos-storage`:
+
+```bash
+logosctl daemon start --detach --config-dir ./config-dir
+```
+
+## Step 9: Install the Storage module and your module
+
+The Storage module is a dependency of your module, so install it first.
+
+1.  Refresh the [catalogue](https://docs.logos.co/get-started/glossary.md#catalogue) and install the Storage module package by name:
+
+    ```bash
+    logosctl --config-dir ./config-dir catalog refresh
+    logosctl --config-dir ./config-dir package install storage_module --version 3.0.2 --yes
+    ```
+
+1.  Install your own module package from the local `.lgx` file:
+
+    ```bash
+    logosctl --config-dir ./config-dir package install --file ./result/logos-storage_cli-module-lib.lgx --yes
+    ```
+
+    - Without `--yes`, `package install` asks for confirmation (`Proceed? [y/N]`), and fails with `Refusing to proceed without confirmation` when it cannot prompt (for example, in a script).
+
+    - `package install` re-scans and unpacks into the session's own `modules/` directory (`./config-dir/modules/` here), so the daemon picks up both modules immediately—no restart needed.
+
+## Step 10: Load the CLI module
+
+1.  Confirm both modules are installed:
+
+    ```bash
+    logosctl --config-dir ./config-dir daemon status
+    ```
+
+    - **Expected result:**
+
+      ```text
+      Logosctl Daemon
+        Status:       running
+        PID:          405049
+        Uptime:       0s
+        Version:      v1.0.0
+
+      Modules: 5 loaded, 0 crashed, 1 not loaded
+        storage_cli         v1.0.0  not_loaded  -
+        package_manager     v1.0.0  loaded      13s
+        storage_module      v3.0.2  loaded      1s
+        package_downloader  v1.0.0  loaded      13s
+        modules_state       v0.1.0  loaded      13s
+        capability_module   v1.0.0  loaded      13s
+      ```
+
+1.  Load the CLI module:
+
+    ```bash
+    logosctl --config-dir ./config-dir module load storage_cli
+    ```
+
+    - **Expected result:**
+
+      ```text
+      Loaded module: storage_cli (v1.0.0)
+      ```
+
+## Step 11: Publish a file
+
+Create a sample file and publish it with the CLI module. Pass absolute paths because the daemon will otherwise resolves file paths relative to its own working directory:
+
+```bash
+echo "Hello, World!" > hello.txt
+logosctl --config-dir ./config-dir call storage_cli publish "$PWD/hello.txt"
+```
+
+- **Expected result:**
+
+  ```json
+  {
+    "error": null,
+    "success": true,
+    "value": {
+      "cid": "zDvZRwzkx14BXkvr6MBpY7e29GgP3QBYM671u1P1kiLGYxt2iyHA",
+      "sessionId": "0",
+      "success": true
+    }
+  }
+  ```
+
+- Because the `onProgress` callback runs inside the daemon process, progress logs appear in the daemon's own log file (`./config-dir/logs/daemon.log`), not here. For a small file like this, progress is a single line:
+
+  ```text
+  [2026-08-19 18:58:13.540] [out] [storage_cli]   100% (14 of 14 bytes)
+  ```
+
+- You can share the CID that appears after your call to `publish` with other people, and they should be able to download it like we describe in the next step.
+
+## Step 12: Download a file
+
+Download [Farewell to Westphalia](https://logos.co/book/farewell-to-westphalia-foss-edition.pdf) from the Storage network by its CID:
+
+```bash
+logosctl --config-dir ./config-dir call storage_cli download zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ "$PWD/farewell-to-westphalia.pdf"
+```
+
+This may take a little while. On a node that has just started, the first attempts can fail after about 20 seconds, with `call to 'storage_cli.download' timed out after 20000ms`, `"error":"expected a result object, got null"`, or `RPC_FAILED`, because the node is still looking up the file's manifest on the network. A CLI timeout does not cancel the transfer. Check `./config-dir/logs/daemon.log` and wait for the pending operation to finish before retrying. If it remains stuck, stop and restart the daemon, then load `storage_cli` again.
+
+- **Expected result:**
+
+  ```json
+  {
+    "error": null,
+    "success": true,
+    "value": {
+      "sessionId": "zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ",
+      "success": true
+    }
+  }
+  ```
+
+- The daemon logs show download progress, including the total size:
+
+  ```text
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Downloading zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ to /path/to/storage_cli/farewell-to-westphalia.pdf
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Waiting for node to start.
+  [2026-10-08 15:41:51.980] [out] [storage_cli] Node is started, attempting to run download operation.
+  [2026-10-08 15:41:51.993] [out] [storage_cli]   2% (65536 of 2276462 bytes)
+  ...
+  [2026-10-08 15:41:52.005] [out] [storage_cli]   100% (2276462 of 2276462 bytes)
+  ```
+
+The public download should produce a 2,276,462-byte PDF.
+
+> **Tip**
+>
+> Try uploading different files and sharing their `CIDs` with other network participants if you know anyone. They should be able to download them.
+
+You may now stop the daemon (`logosctl --config-dir ./config-dir daemon stop`), or leave it running and use it for other operations.

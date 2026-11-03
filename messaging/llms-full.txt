@@ -1,0 +1,1841 @@
+> Source: https://docs.logos.co/messaging
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Introduction to Logos Messaging
+
+#### Learn how Logos can be used to build private, censorship-resistant communication applications.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Logos Messaging](https://docs.logos.co/get-started/glossary.md#logos-messaging) is the messaging layer of the Logos technology stack. It lets applications send messages, relay data, and coordinate with one another without relying on centralised servers or exposing metadata. It uses a peer-to-peer relay network where messages propagate across nodes with no central broker, supporting private one-to-one messaging, group messaging, and public broadcast channels.
+
+## The basics
+
+- Logos Messaging comprises two [modules](https://docs.logos.co/get-started/glossary.md#module): [Delivery](https://github.com/logos-messaging/logos-delivery), a peer-to-peer [transport](https://docs.logos.co/get-started/glossary.md#transport) layer with spam protection, and [Chat](https://github.com/logos-messaging/logos-chat), a library for private, end-to-end encrypted conversations built on top of Delivery.
+- Messages propagate across a peer-to-peer relay network with no central broker. Anyone can run a node and there is no gas fee for sending or receiving messages.
+- Delivery is modular. Applications combine a set of protocols—[Relay](https://docs.logos.co/messaging/concepts/protocols.md#relay), [RLN Relay](https://docs.logos.co/messaging/concepts/protocols.md#rln-relay), [Filter](https://docs.logos.co/messaging/concepts/protocols.md#filter), [Store](https://docs.logos.co/messaging/concepts/protocols.md#store), and [Light Push](https://docs.logos.co/messaging/concepts/protocols.md#light-push)—to balance anonymity, scalability, and latency for their own use case.
+- Logos Messaging is built on top of [libp2p](https://docs.logos.co/messaging/concepts/logos-delivery-and-libp2p.md), but adds a service network that anyone can use without deploying their own infrastructure, along with economic spam protection that libp2p does not provide.
+
+## Architecture
+
+Logos Messaging is implemented as two modules that sit on top of the Logos networking layer: [Delivery](https://github.com/logos-messaging/logos-delivery), which handles peer-to-peer transport, and [Chat](https://github.com/logos-messaging/logos-chat), which builds private conversations on top of it.
+
+### Delivery
+
+Delivery is the peer-to-peer messaging network at the base of the messaging stack, and the reference implementation of the Logos Messaging protocol. It provides publish-subscribe messaging over an open, censorship-resistant network with no central broker, and it protects the network from spam using [RLN](https://docs.logos.co/messaging/get-started/faq.md#what-are-rate-limiting-nullifiers-rln), which verifies a zero-knowledge proof rather than a publisher's identity.
+
+Delivery's functionality is split across a set of [protocols](https://docs.logos.co/messaging/concepts/protocols.md):
+
+- **Relay** extends [libp2p GossipSub](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md) to provide the base publish/subscribe messaging that peers use to send and receive messages.
+- **RLN Relay** extends Relay with rate limiting nullifiers for economic, privacy-preserving spam prevention.
+- **Filter** lets [light nodes](https://docs.logos.co/get-started/glossary.md#light-node) selectively subscribe to messages by content topic, trading some privacy for lower bandwidth use.
+- **Store** temporarily retains messages so offline peers can retrieve what they missed, though it does not guarantee availability—applications that need durable storage should pair Delivery with [Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) instead.
+- **Light Push** lets bandwidth-constrained nodes publish a message and receive an acknowledgement that at least one peer received it, without guaranteeing network-wide propagation.
+
+These protocols interact across three [network domains](https://docs.logos.co/messaging/concepts/network-domains.md): the discovery domain, where nodes locate other peers; the gossip domain, where Relay and RLN Relay distribute messages; and the request/response domain, where Store, Filter, and Light Push serve resource-limited nodes directly.
+
+Messages are routed using [content topics](https://docs.logos.co/messaging/concepts/content-topics.md), developer-set metadata strings that let protocols filter, route, and retrieve messages.. How narrowly or broadly an application scopes its content topics is a direct privacy trade-off: Filter, Store, and Light Push all disclose content topics to peers, so grouping many users under shared topics increases k-anonymity, while splitting traffic into topic "buckets" helps distribute load for high-traffic applications.
+
+Delivery is [transport-agnostic](https://docs.logos.co/messaging/concepts/transports.md), so developers choose the protocol that fits their environment: TCP by default for service nodes, and secure WebSocket for browsers, with WebRTC, WebTransport, and QUIC under research for future support.
+
+To join the network, a node [bootstraps](https://docs.logos.co/get-started/glossary.md#bootstrapping) using one of several [peer discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-discovery.md) mechanisms—including static peers, [DNS discovery](https://docs.logos.co/get-started/glossary.md#dns-discovery), Discv5, and [Peer Exchange](https://docs.logos.co/get-started/glossary.md#peer-exchange)—and then keeps looking for peers to maintain a healthy Relay mesh, reserve backup connections, and find peers with specific capabilities such as Store or Filter.
+
+### Chat
+
+Chat is a protocol and library that provides one-to-one and group conversations with end-to-end encryption, using de-MLS for group messaging. It uses Delivery as its transport, so applications get everything they need to add private chat without designing and securing their own messaging protocol from scratch.
+
+### Security features
+
+Logos Messaging's [security guarantees](https://docs.logos.co/messaging/concepts/security-features.md) vary by protocol and are documented openly in the underlying RFCs. Relay provides pseudonymity and unlinkability between publishers, subscribers, and their activity, backed by [GossipSub](https://docs.logos.co/get-started/glossary.md#gossipsub)'s peer-scoring mechanism and ongoing RLN research for spam protection. Data confidentiality, integrity, and authenticity are available through the [Waku](https://docs.logos.co/get-started/glossary.md#waku) Message format and Noise protocols. Protocols that require a direct connection, such as Store and Filter, trade away some of that unlinkability, since a node can associate a peer's `PeerID` with the topics or filters it queries.
+
+### Logos Messaging and libp2p
+
+Logos Messaging is [built on top of libp2p](https://docs.logos.co/messaging/concepts/logos-delivery-and-libp2p.md) and shares much of its terminology, but it goes further in two ways. Developers can use it without deploying their own infrastructure, though anyone can choose to run a node to help decentralise the network. It is also a turnkey solution for privacy-preserving, censorship-resistant, platform-agnostic messaging, including out-of-the-box support for offline and resource-limited devices through Store, Filter, and Light Push, plus economic spam protection through RLN Relay, which libp2p does not provide on its own.
+
+---
+
+> Source: https://docs.logos.co/messaging/get-started/send-1-1-messages-logos-chat
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Send 1:1 messages with the Logos Chat app
+
+#### Try out end-to-end encrypted private messaging over the Logos network.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.2.1**.
+
+This procedure shows how to use the [Logos Chat](https://docs.logos.co/get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The [app](https://docs.logos.co/get-started/glossary.md#app) is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](https://docs.logos.co/get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+
+Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+
+> **Info: Prerequisites**
+>
+>
+> - [Basecamp installed](https://docs.logos.co/basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
+> - Network access.
+
+## What to expect
+
+- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp).
+- You can exchange encrypted messages between two instances in real time once one instance has opened a conversation with the other's address.
+- You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
+
+## Step 1: Run the Logos Chat app
+
+You need two running instances to complete this procedure. Each instance can be started with the instructions below.
+
+1.  In the left bar of Logos Basecamp, select **Package Manager**.
+
+    ![Logos Basecamp screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
+1.  Find **Chat** (type `ui_qml`) in the [package](https://docs.logos.co/get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+
+    ![Logos Basecamp package installation screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
+1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
+1. In the left bar, select the new chat icon to launch the Logos Chat app.
+
+## Step 2: Start a conversation
+
+The app auto-initialises on launch. The bottom-left panel shows your identity, an **Online** indicator, and your hexadecimal **address** with a copy button next to it. To open a conversation, one instance needs the other's address. The steps below refer to the two instances as **A** and **B**.
+
+![Logos Chat App UI screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
+
+**On instance B:**
+
+1. Wait until the bottom-left panel shows **Online**.
+1. Click the copy button next to your address.
+1. Send the address to instance A through any [out-of-band](https://docs.logos.co/get-started/glossary.md#out-of-band) [channel](https://docs.logos.co/get-started/glossary.md#channel).
+
+**On instance A:**
+
+1. Click **New chat**, then select **Direct message** ("One person, by address").
+1. In the **New DM** dialogue, paste B's address under **Paste the other user's address**.
+1. Click **Create**. A new conversation appears in A's conversation list.
+
+Instance B does not need to accept anything. The conversation appears in B's list when A's first message arrives, which you send in the next step.
+
+## Step 3: Send and receive messages
+
+1. On instance A, select the conversation you created in [Step 2](#step-2-start-a-conversation).
+1.  Type a message in the message input field, then press `Enter` or click the send button.
+
+    Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
+1.  Observe instance B.
+
+    **Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select the conversation on B and reply; the reply appears as an incoming bubble in A.
+
+## Troubleshooting Logos Chat
+
+### Messages never arrive and the left panel shows "Waiting for connection…"
+
+Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for [peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery).
+
+### A previously open conversation has disappeared
+
+Conversations are ephemeral and are not persisted between sessions. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.
+
+---
+
+> Source: https://docs.logos.co/messaging/get-started/send-group-messages-logos-chat
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Send group messages with the Logos Chat app
+
+#### Create a three-member end-to-end encrypted group conversation in the Logos Chat app, invite members by address, and send a message that reaches all of them.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3.0**.
+
+This procedure shows how to use the [Logos Chat](https://docs.logos.co/get-started/glossary.md#logos-chat) app to form an end-to-end encrypted group conversation between three running instances, here called **Alice**, **Bob**, and **Carol**. Group conversations use de-MLS encryption from the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), and [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) carries the encrypted messages between instances. Use this procedure to try group creation, invite-by-address, asynchronous membership changes, and messages that reach every member with their sender named.
+
+Each launch of the app starts a new identity with a new address. Conversations from an earlier launch stay readable under **Previous sessions** but can't be sent to, and a group comes back only once a member invites your new address. A group's name and description are fixed when it is created, and in this release membership only grows: members can't be removed and can't leave.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux
+>    - macOS
+> - Network access, so that the three instances can reach the `logos.test` network and the key-package registry
+> - [Basecamp installed](https://docs.logos.co/basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
+> - [RLN membership registered](https://docs.logos.co/lez/rln/register-rln-membership-from-basecamp.md).
+>
+
+## What to expect
+
+- You can send a message to a group conversation and see it arrive in every member's window with the sender's name and avatar.
+- You can create a named group and invite members by pasting their addresses.
+- You can watch an invited member move from **Waiting to join** to a full member as the group commits the change.
+
+## Step 1: Run three instances of the Logos Chat app
+
+One Basecamp instance is one chat identity, so use this option when the three participants are on separate machines.
+
+1. In the left bar, select **Package Manager**.
+1. Find **Chat** in the [package](https://docs.logos.co/get-started/glossary.md#package) list and click **INSTALL** in its row. Click **Install** in the **Install Package?** dialogue to confirm, along with the `chat_module` and `delivery_module` packages it depends on.
+1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
+1. In the left bar, select the chat icon to launch the Logos Chat app.
+
+## Step 2: Collect Bob's and Carol's addresses
+
+**In Bob's and Carol's windows:**
+
+1. Wait until the account card shows **Online**.
+1. Click the copy button next to the address on the account card (**Copy my address**).
+1. Send the address to Alice through any [out-of-band](https://docs.logos.co/get-started/glossary.md#out-of-band) communication channel.
+
+## Step 3: Create the group
+
+**In Alice's window:**
+
+1. Click **New chat** at the top of the conversations card, then select **Group** ("Named, with members").
+1. Fill in **Group name**, for example `Book Club`, and optionally **Description (optional)**, for example `Weekly sci-fi picks`. Neither can be changed after creation.
+1. Click **Create**.
+
+   **Expected result:** the group opens as the current conversation, with Alice as its only member. A right-hand column appears with the **Members** roster and **Add member** at its foot.
+
+   ![Logos Chat showing the new Book Club group with Alice as its only member and Add member at the foot of the Members roster](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-group-messages-logos-chat/group-created.png)
+
+## Step 4: Invite Bob
+
+Membership changes are asynchronous. The group's steward batches an add into an MLS commit after a commit-inactivity window of about 60 seconds, and the welcome goes out only after the commit lands, so a new member joins minutes after the invite. Wait for Bob to join before inviting Carol, so that the second add starts from a settled group.
+
+**In Alice's window:**
+
+1. In the **Members** card, click **Add member**.
+1. Paste Bob's address, then click **Add**.
+1. An explainer appears: "Adding a member isn't instant. Membership updates apply on a timer, so a new member can take up to a minute to appear." Click **Add member** to confirm.
+
+   ![The Adding a member explainer with the Don't show this again option and the Add member button](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-group-messages-logos-chat/add-member-explainer.png)
+
+   - Select **Don't show this again** to skip the explainer next time.
+
+   **Expected result:** Bob appears on Alice's roster as a dimmed row reading **Waiting to join**. Some minutes later, the group appears in Bob's conversation list with the name Alice gave it, and his row on the roster stops being dimmed.
+
+## Step 5: Invite Carol
+
+1. In Alice's window, repeat [Step 4](#step-4-invite-bob) with Carol's address.
+
+   - Any member can add another; the invite routes from whoever proposed it.
+
+   ![Alice's Members roster with Bob joined and Carol as a dimmed row reading Waiting to join](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-group-messages-logos-chat/member-waiting-to-join.png)
+
+1. Wait until the group appears in Carol's conversation list.
+
+   **Expected result:** all three rosters converge on three members, none of them dimmed or reading **Waiting to join**. The conversation's **Details** panel, opened with the toggle in the thread header, shows **3 joined**.
+
+   ![The Details panel of the Book Club group showing 3 joined above a roster of three members](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-group-messages-logos-chat/group-details-three-joined.png)
+
+## Step 6: Send a message to the group
+
+1. In Alice's window, select the group, type a message in the composer, and press `Enter` or click the send arrow.
+
+   **Expected result:** the message appears right-aligned in Alice's thread. Within a few seconds to about two minutes, it appears in Bob's and Carol's threads as an incoming, left-aligned message with Alice's avatar and name above it. Sender attribution is what distinguishes a group thread from a direct message.
+1. In Bob's window, reply to the group.
+
+   **Expected result:** Bob's reply reaches both Alice and Carol.
+
+   ![Carol's Book Club thread showing Alice's message and Bob's reply as incoming messages, each with the sender's name and avatar](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-group-messages-logos-chat/group-messages-received.png)
+
+## Troubleshooting Logos Chat groups
+
+### An invited member stays on the roster as "Waiting to join" for minutes
+
+This is by design, not a hang. The add is a consensus proposal that the group's steward batches into an MLS commit after a commit-inactivity window of about 60 seconds, and the welcome only goes out after the commit lands. Wait, and invite one member at a time, letting each join land before the next invite.
+
+### A send fails right after a membership change
+
+de-MLS rejects sends during the brief window while the group finalises the epoch change. The failure shows on the status bar at the foot of the window. Retry after a few seconds.
+
+### The account card never reaches Online, or the conversations pane shows "Waiting for connection…"
+
+The instance has no route to the `logos.test` fleet or to the key-package registry, for example because it is offline, sandboxed, or has its peer-to-peer ports blocked. Run it with real network access. The session logs, under **Logs** or **Full logs** in the app, say which module failed and where its log file is.
+
+### Two instances on one host interfere with each other
+
+They were given the same session directory. Give each instance its own `--user-dir`.
+
+---
+
+> Source: https://docs.logos.co/messaging/get-started/faq
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# FAQ: Logos Messaging
+
+#### Review common questions about how Logos Messaging works and how to build on it.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+## What are Logos Messaging and Logos Delivery?
+
+[Logos Messaging](https://docs.logos.co/get-started/glossary.md#logos-messaging) is the messaging component of the Logos technology stack, composed of [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) and [Logos Chat](https://docs.logos.co/get-started/glossary.md#logos-chat). Logos Delivery is a peer-to-peer messaging network with DoS protection via RLN (Rate Limiting Nullifiers). Any application can use it to send and receive messages over an open, censorship-resistant network.
+
+Logos Chat is a protocol and library that provides 1:1 and group conversations with end-to-end encryption using de-MLS - everything an application needs to add private chat without rolling its own protocol.
+
+## Does messaging require a gas fee?
+
+No, sending and receiving messages using Logos Messaging involves no gas fee.
+
+## What encryption does Logos Delivery use?
+
+Logos Delivery uses libp2p noise encryption for node-to-node connections. However, no default encryption method is applied to the data sent over the network. This design choice enhances Logos Delivery's encryption flexibility, encouraging developers to use custom protocols or Logos Delivery message payload encryption methods freely.
+
+## Where does Logos Delivery store the messages?
+
+Logos Delivery's [Store protocol](https://docs.logos.co/messaging/concepts/protocols.md#store) is designed to temporarily store messages within the network. However, Logos Delivery does not guarantee the message's availability and recommends using [Logos Storage](https://logos.co/technology-stack/storage) for long-term storage.
+
+## Can Logos Delivery only be used for wallet-to-wallet messaging?
+
+No, Logos Delivery is flexible and imposes no specific rules on identifiers.
+
+## How does Logos Delivery differ from IPFS?
+
+Logos Delivery focuses on short, ephemeral, real-time messages, while IPFS focuses on large, long-term data storage. Although there's an overlap between the two technologies, Logos Delivery does not currently support large data for privacy reasons.
+
+## What are Rate Limiting Nullifiers (RLN)?
+
+[Rate Limiting Nullifier](https://docs.logos.co/messaging/concepts/protocols.md#rln-relay) is a zero-knowledge (ZK) protocol enabling spam protection in a decentralised network while preserving privacy. Each message must be accompanied by a ZK proof, which [Relay](https://docs.logos.co/messaging/concepts/protocols.md#relay) nodes verify to ensure the publishers do not send more messages than they are allowed. The ZK proof does not leak any private information about message publishers - it only proves they are members of a set of users allowed to publish a certain number of messages per given time frame.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/protocols
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Understand Logos Delivery protocols
+
+#### Understand the modular protocols that let applications balance anonymity, scalability, and latency.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) takes a modular approach, providing a range of protocols that enable applications to control the trade-offs involved in the [Anonymity Trilemma](https://eprint.iacr.org/2017/954.pdf). This flexibility empowers applications to make informed choices regarding the desired balance between anonymity, scalability, and latency.
+
+## The basics
+ 
+- Logos Delivery is modular, so applications combine protocols to balance anonymity, scalability, and latency.
+- [Relay](#relay) provides the base publish/subscribe messaging, and [RLN relay](#rln-relay) extends it with economic spam prevention.
+- [Filter](#filter), [Store](#store), and [Light push](#light-push) adapt access for nodes with limited bandwidth or intermittent connections.
+
+## Relay
+ 
+[`Relay` protocol](https://lip.logos.co/messaging/core/stable/11/relay.html) employs a Pub/Sub architecture to facilitate the sending and receiving of messages among peers. It extends the [libp2p GossipSub protocol](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/README.md) to create a privacy-focused peer-to-peer messaging protocol that enables secure communication channels, encryption, and protection against censorship.
+
+## RLN Relay
+ 
+[`RLN Relay` protocol](https://lip.logos.co/messaging/core/draft/17/rln-relay.html) extends the `Relay` protocol by using [Rate Limit Nullifiers (RLN)](https://lip.logos.co/anoncomms/draft/32/rln-v1.html) to provide efficient and economic spam-prevention. It enforces a rate limit on messages over time for all peers in the network, economically preventing spam, and imposes financial penalties and network removal for spammers. You can find more details in the [RLN Relay blog post](https://research.logos.co/rlog/rln-relay).
+ 
+## Filter
+ 
+[`Filter` protocol](https://lip.logos.co/messaging/core/draft/12/filter.html) allows [light nodes](https://docs.logos.co/get-started/glossary.md#light-node) to selectively subscribe to specific messages relayed by other peers using [content topics](https://docs.logos.co/messaging/concepts/content-topics.md). It is designed to be a lightweight alternative for accessing the `Relay` network, particularly tailored for devices with limited bandwidth.
+
+> **Info**
+>
+> `Filter` protocol helps optimise bandwidth usage, but it has fewer privacy guarantees as it must disclose the content topic to its peers to retrieve messages.
+ 
+## Store
+ 
+[`Store` protocol](https://lip.logos.co/messaging/core/draft/13/store.html) is responsible for storing messages relayed in the network, making it possible to query and retrieve them later. This functionality benefits offline peers by enabling them to retrieve missed messages upon reconnection.
+
+> **Info**
+>
+> Using `Relay` and `Filter` protocols is recommended when a node is online, as `Store` does not guarantee data availability. The `Store` protocol is suitable for retrieving messages when connecting to the network, like when an app starts.
+ 
+## Light Push
+ 
+[`Light Push`](https://lip.logos.co/messaging/core/draft/19/lightpush.html) is a [Request/Response](https://docs.waku.org/learn/concepts/network-domains#requestresponse-domain) protocol for nodes with limited bandwidth and short connection windows. It allows a client to receive an acknowledgement when sending messages, indicating that at least one peer has received them. Subsequently, the remote peer forwards these messages to the `Relay` network.
+
+> **Info**
+>
+> While the `Light Push` protocol acknowledges the receipt by the remote peer, it does not guarantee network-wide propagation.
+ 
+## Waku message
+ 
+[`Waku message`](https://lip.logos.co/messaging/core/stable/14/message.html) specifies the structure and format of messages. It includes the following attributes:
+ 
+- `content_topic` attribute for [content-based filtering](https://docs.logos.co/messaging/concepts/content-topics.md).
+- `payload` attribute containing the message data payload to be sent.
+- `meta` attribute for conveying additional details to various protocols for application-specific processing.
+- `timestamp` attribute signifying the time at which the message was generated by its sender.
+- `ephemeral` attribute specifying whether the network should not store the message.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/content-topics
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About content topics
+ 
+#### Understand how content topics filter and route messages, and how naming choices affect privacy.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+ 
+`Content Topics` are metadata strings set by developers on outgoing messages to support protocol-level features like selectively processing incoming messages ([Relay](https://docs.logos.co/messaging/concepts/protocols.md#relay) or [Filter](https://docs.logos.co/messaging/concepts/protocols.md#filter)) and retrieving historical messages ([Store](https://docs.logos.co/messaging/concepts/protocols.md#store)) that meet specific filtering criteria.
+
+> **Info**
+>
+> Check out the [WAKU2-TOPICS](https://lip.logos.co/messaging/informational/draft/23/topics.html#content-topics) specification to learn more.
+ 
+## The basics
+ 
+- [Content topics](https://docs.logos.co/get-started/glossary.md#content-topic) are developer-set metadata strings that let protocols filter, route, and retrieve messages.
+- The recommended [naming format](#naming-format) combines an application name, version, content topic name, and encoding.
+- [Naming considerations](#naming-considerations) matter for privacy, because some protocols disclose content topics to peers.
+
+## Naming format
+
+Here is the recommended format for content topics:
+
+`/{application-name}/{version}/{content-topic-name}/{encoding}`
+
+- `application-name`: This is the unique name of your decentralised application to prevent conflicts with other apps.
+- `version`: Typically starting at `1`, this field helps track breaking changes in your messages.
+- `content-topic-name`: The specific name of the content topic used for filtering.
+- `encoding`: The message encoding or serialisation format, with [Protocol Buffers](https://protobuf.dev/) (`proto`) being the recommended choice.
+
+For example, if your app is called `SuperCrypto` and it allows users to receive notifications and send private messages, you can consider using the following content topics:
+
+- `/supercrypto/1/notification/proto`
+- `/supercrypto/1/private-message/proto`
+
+> **Tip**
+>
+> While you can choose any encoding format for your `Content Topic`, we highly recommend using Protocol Buffers (`proto`) because of its efficiency. Choosing a lightweight format ensures optimal performance of your app.
+
+## Naming considerations
+
+When choosing a content topic, it is essential to consider the privacy implications. Here are several factors to keep in mind:
+
+### Protocols disclose content topics to peers
+
+The `Filter`, `Store`, and `Light Push` protocols share content topics with peers, allowing them to link IP and content topic interests. The `Relay` protocol, using `GossipSub`, provides recipient anonymity, which can be compromised if the content topic exposes user information.
+
+For example, instead of using Personally Identifiable Information (PII) in the content topic (for example, a public key), you can create buckets (for example, based on the first 4 bytes of the public key hash).
+
+> **Info**
+>
+> [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) is developing privacy-preserving features like [Anonymous Filter Subscription](https://lip.logos.co/messaging/core/draft/12/previous-versions/00/filter.html#future-work) for the `Filter` protocol and [Anonymous Query](https://lip.logos.co/messaging/core/draft/13/store.html#future-work) for the `Store` protocol to hide content topics from potential adversaries.
+
+### Increasing k-anonymity preserves user anonymity
+
+You can increase [k-anonymity](https://www.privitar.com/blog/k-anonymity-an-introduction/) within the network by using a unified content topic across the entire application or targeting specific features like notifications or private messages, allowing multiple users to share it.
+
+We recommend switching functionality using the Protocol Buffer (`proto`) message format. By doing so, applications can retain a high granularity and functionality while using a single content topic, preserving user privacy. For example:
+
+```js
+message NotificationPayload {
+...
+}
+
+message FeatureAbcPayload {
+...
+}
+
+// By default, all fields in protobuf are optional so only field may be encoded at a time
+message Payload {
+	NotificationPayload notification = 1;
+	FeatureAbcPayload feature_abc = 2;
+}
+```
+
+### Creating buckets help in distributing traffic
+
+When an application uses a single content topic, all users using [request/response protocols](https://docs.logos.co/messaging/concepts/network-domains.md#requestresponse-domain) (`Filter`, `Store`) receive all its messages. For heavy traffic, developers can create buckets by hashing a unique identifier (for example, recipient's ID, public key, or app domain topic) and adding its first byte to the content topic, like `/my-app/0/a/proto`.
+
+This approach divides traffic into multiple topics, reducing the messages users have to download. Developers can add more first bytes to the content topic over time to improve efficiency and privacy based on messages and user needs.
+
+> **Info**
+>
+> The **k** value of **k-anonymity** equals the number of IDs for which the first character of the hash is `"a"`. For example, using a single content topic in an application with 10,000 users results in **k = 10,000**. However, using the hash ID's first character, **k** reduces to **10,000 / 16 = 625**.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/network-domains
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About network domains
+ 
+#### Understand the discovery, gossip, and request/response domains that structure how peers interact.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) is a unified and cohesive entity that offers a rich ecosystem with three distinct network interaction domains. These domains serve specialised purposes and contribute to the robust functionality of Logos Delivery, forming its foundation.
+
+## The basics
+ 
+- The [discovery domain](#discovery-domain) helps nodes locate other peers in the network.
+- The [gossip domain](#gossip-domain) distributes messages across the network through Relay.
+- The [request/response domain](#requestresponse-domain) serves resource-limited nodes with Store, Filter, and Light Push.
+
+## Discovery domain
+ 
+[Peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery) in Logos Delivery lets nodes locate other nodes within the network. As a modular protocol, Logos Delivery incorporates various discovery mechanisms, such as [Discv5](https://docs.logos.co/messaging/concepts/understand-peer-discovery/discv5.md) and [Peer Exchange](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-exchange.md). These mechanisms allow developers to choose the most suitable options for their specific use cases and user environments, including mobile phones, desktop browsers, servers, and more.
+ 
+## Gossip domain
+ 
+[GossipSub](https://docs.logos.co/get-started/glossary.md#gossipsub) derives its name from the practice within Pub/Sub networks where peers gossip about the messages they have encountered, thus establishing a message delivery network.
+ 
+Logos Delivery employs gossiping through [Relay](https://docs.waku.org/learn/concepts/protocols#relay) to distribute messages across the network. Additionally, Logos Delivery introduces [RLN Relay](https://docs.waku.org/learn/concepts/protocols#rln-relay), an experimental mechanism that combines privacy preservation and economic spam protection.
+ 
+## Request/response domain
+ 
+Logos Delivery provides a set of protocols to optimise its performance in resource-limited environments like low bandwidth or [mostly offline](https://docs.logos.co/get-started/glossary.md#mostly-offline) scenarios for multiple purposes.
+ 
+- [Store](https://docs.waku.org/learn/concepts/protocols#store) enables the retrieval of historical messages.
+- [Filter](https://docs.waku.org/learn/concepts/protocols#filter) efficiently retrieves a subset of messages to conserve bandwidth.
+- [Light Push](https://docs.waku.org/learn/concepts/protocols#light-push) supports message publication for nodes with limited bandwidth and short connection windows.
+ 
+## Overview of protocol interaction
+ 
+Here is a diagram illustrating the interaction between different protocols.
+
+```mermaid
+sequenceDiagram
+	participant A as A relay
+	participant B as B relay(pubtopic1)
+	participant C as C relay(pubtopic1)
+	participant D as D relay(pubtopic1), store(pubtopic1), filter
+	participant E as E relay, store
+	participant F as F filter
+
+	A ->> A: msg1=WakuMessage(contentTopic1, data) (1)
+	F ->> D: FilterRequest(pubtopic1, contentTopic1) (2)
+	D ->> D: Subscribe F to filter (2)
+	A ->> B: Publish msg1 on pubtopic1 (3)
+	B ->> D: relay msg1 on pubtopic1 (3)
+	D ->> D: store: saves msg1 (4)
+	D ->> C: relay msg1 on pubtopic1 (4)
+	D ->> F: MessagePush(msg1) (5)
+	E ->> E: E comes online (6)
+	E ->> D: HistoryQuery(pubtopic1, contentTopic1) (6)
+	D ->> E: HistoryResponse(msg1, ...) (6)
+```
+
+The Pub/Sub topic `pubtopic1` serves as a means of routing messages (the network employs a default Pub/Sub topic) and indicates that it is subscribed to messages on that topic for a relay. Node D serves as a `Store` and is responsible for storing messages.
+ 
+1. Node A creates a WakuMessage `msg1` with [Content Topic](https://docs.waku.org/learn/concepts/content-topics) `contentTopic1`.
+1. Node F requests to get messages filtered by Pub/Sub topic `pubtopic1` and Content Topic `contentTopic1`. Node D subscribes F to this filter and will forward messages that match that filter in the future.
+1. Node A publishes `msg1` on `pubtopic1`. The message is sent from Node A to Node B and then forwarded to Node D.
+1. Node D, upon receiving `msg1`, stores the message for future retrieval by other nodes and forwards it to Node C.
+1. Node D also pushes `msg1` to Node F, informing it about the arrival of a new message.
+1. At a later time, Node E comes online and requests messages matching `pubtopic1` and `contentTopic1` from Node D. Node D responds with `msg1` and potentially other messages that match the query.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/transports
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About transports
+
+#### Understand how nodes move data between peers and which transports suit each environment.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Transports](https://docs.logos.co/get-started/glossary.md#transport) help move data packets across a network by establishing connections between peers. They define the rules and protocols to ensure efficient network transmission, routing, and data delivery. [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) is a transport-agnostic framework that allows developers to choose and support multiple protocols according to their requirements.
+
+## The basics
+
+- Transports move data packets between peers and define how the network transmits, routes, and delivers data.
+- Logos Delivery is transport-agnostic, so developers choose the protocols that suit their requirements.
+- The [recommended transports](#recommended-transports) vary by environment, from TCP for service nodes to secure WebSocket for browsers.
+
+## Recommended transports
+
+For Logos Delivery nodes, the following transports are recommended:
+
+- **TCP**: By default, Logos Delivery nodes use TCP for communication. Service nodes should employ TCP for listening to and connecting with other nodes.
+- **Secure WebSocket**: In browser environments, secure WebSocket is used. Service nodes are encouraged to set up SSL certificates to enable incoming connections from browsers and serve them securely.
+- Other protocols like [WebRTC](https://github.com/logos-messaging/logos-delivery-js/issues/20), [WebTransport](https://github.com/logos-messaging/logos-delivery-js/issues/697), and QUIC have been researched and studied for potential integration.
+
+> **Info**
+>
+> Logos Delivery ensures compatibility and improved communication capabilities by following these recommended transports.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/understand-peer-discovery/static-peers
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About static peers
+
+#### Understand how hard-coded bootstrap peers work and the trade-offs they carry.
+
+[Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) applications have the flexibility to embed bootstrap node addresses directly into their codebase. Developers can either use static peers operated by [Status](https://status.im/) or [run a node](https://docs.logos.co/messaging/delivery/run-delivery-node-from-cli.md).
+
+## How static peers work
+
+```mermaid
+sequenceDiagram
+Alice->>Bob: Connect to Bob (static peer details)
+Alice->>Carol: Connect to Carol (static peer details)
+```
+
+Alice establishes connections with Bob and Carol using their node details, which are predefined (hard-coded) into Alice's node.
+
+## Pros and cons
+
+Pros:
+
+- Low latency.
+- Low resource requirements.
+
+Cons:
+
+- Vulnerable to censorship: Node IPs can be blocked or restricted.
+- Limited scalability: The number of nodes is fixed and cannot easily be expanded.
+- Maintenance challenges: Updating the node list requires modifying the code, which can be cumbersome and involves releasing and deploying.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/understand-peer-discovery/dns-discovery
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About DNS discovery
+
+#### Understand how a node retrieves peer connection details from an ENR tree published in DNS.
+
+Built upon the foundation of [EIP-1459: Node Discovery via DNS](https://eips.ethereum.org/EIPS/eip-1459), [DNS Discovery](https://docs.logos.co/get-started/glossary.md#dns-discovery) allows the retrieval of an `ENR` tree from the `TXT` field of a domain name. This approach enables the storage of essential node connection details, including IP, port, and multiaddr. This [bootstrapping](https://docs.logos.co/get-started/glossary.md#bootstrapping) method allows anyone to register and publish a domain name for the network, promoting increased decentralisation.
+
+## How DNS discovery works
+
+```mermaid
+sequenceDiagram
+    Node->>DNS Server: (1) Lookup TXT example.com
+    DNS Server-->>Node: (2) enrtree-root:v1 e=U3...3Y ...
+    Node->>DNS Server: (3) Lookup TXT U3...3Y.example.com
+    DNS Server-->>Node: (4) enrtree-branch:DU...VQ,J3..HU,IC...WE
+    Node->> DNS Server: (5) Lookup TXT DU...VQ.example.com
+    DNS Server-->>Node: (6) enr:-M-4QLdAB-Kyz...Wt1Mg8
+    Node ->> Node: (7) Decode ENR: Peer's connection details
+```
+
+1. DNS lookup query to retrieve TXT data stored on `example.com` domain.
+1. `enrtree-root` is returned, and the value of `e` is the `enr-root`, the root hash of the node subtree.
+1. DNS lookup query to retrieve TXT data stored on `<enr-root>.example.com` domain.
+1. `enrtree-branch` is returned; this tree contains hashes of node subtrees.
+1. DNS lookup query to retrieve TXT data stored on `DU...VQ.example.com` domain, the first leaf of `enrtree-branch`.
+1. `enr` record is returned.
+1. Returned value is decoded, and peer connection details such as IP address and port are learned.
+
+## Pros and cons
+
+Pros:
+
+- Low latency, low resource requirements.
+- Easy bootstrap list updates by modifying the domain name, eliminating the need for code changes.
+- Ability to reference a larger list of nodes by including other domain names in the code or [ENR](https://docs.logos.co/get-started/glossary.md#enr) tree.
+
+Cons:
+
+- Vulnerable to censorship: Domain names can be blocked or restricted.
+- Limited scalability: The listed nodes are at risk of being overwhelmed by receiving all queries. Also, operators must provide their `ENR` to the domain owner for listing.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/understand-peer-discovery/discv5
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About Discv5
+
+#### Understand how Discv5 uses a distributed hash table to find peers across the network.
+
+`Discv5` is a decentralised and efficient [peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery) mechanism for the [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) Network. It uses a [Distributed Hash Table (DHT)](https://en.wikipedia.org/wiki/Distributed_hash_table) for storing `ENR` records, providing resistance to censorship. `Discv5` offers a global view of participating nodes, enabling random sampling for load distribution. It uses bootstrap nodes as an entry point to the network, providing randomised sets of nodes for mesh expansion. Have a look at the [Discv5](https://lip.logos.co/messaging/core/draft/33/discv5.html) specification to learn more.
+
+## How Discv5 works
+
+```mermaid
+sequenceDiagram
+    Alice->>DNS Server: (1) Execute DNS Discovery
+    DNS Server-->>Alice: (2) Bob's connection details (UDP + TCP)
+    activate Alice
+    Alice->>Bob: (3) Execute Discv5 over UDP
+    Bob-->>Alice: (4) ENRs (UDP + TCP): Carol, David, Erin
+    Alice->>Alice: (5) Decode ENRs
+    Alice->>Carol: (6) Execute Discv5 over UDP
+    Carol-->>Alice: (7) ENRs (UDP + TCP): Frank, Gwen, Harry
+    Alice->>Alice: (8) Decode ENRs
+    deactivate Alice
+    Alice->>Alice: (9) Select peers to dial
+    Alice->>David: (10) Libp2p dial (TCP)
+    Alice->>Frank: (10) Libp2p dial (TCP)
+    Alice->>Gwen: (10) Libp2p dial (TCP)
+```
+
+1. [DNS Discovery](https://docs.logos.co/get-started/glossary.md#dns-discovery) protocol is executed.
+1. Alice retrieves Bob's [ENR](https://docs.logos.co/get-started/glossary.md#enr) (Ethereum Node Record) from DNS Server.
+1. Alice executes the Discv5 protocol with Bob using UDP connection details from ENR.
+1. Bob returns Carol's, David's and Erin's ENRs to Alice.
+1. Alice decodes ENRs and extracts the details of Carol, David, and Erin's TCP and UDP connections.
+1. Alice executes the Discv5 protocol with Carol using UDP connection details from ENR.
+1. Carol returns Frank's, Gwen's and Harry's ENRs to Alice.
+1. Alice decodes ENRs and extracts Frank's, Gwen's and Harry's TCP and UDP connection details.
+1. Alice selects to dial David, Frank and Gwen.
+1. Alice dials David, Frank and Gwen over libp2p using TCP connection details from ENRs.
+
+## Pros and cons
+
+Pros:
+
+- Decentralised with random sampling from a global view.
+- Continuously researched and improved.
+
+Cons:
+
+- Requires lots of connections and involves frequent churn.
+- Relies on User Datagram Protocol (UDP), which is not supported in web browsers.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-exchange
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About peer exchange
+
+#### Understand how light nodes request peers from other nodes without relying on Discv5.
+
+The primary objective of this protocol is to provide peer connectivity for resource-limited devices without relying on `Discv5`. The [peer exchange](https://docs.logos.co/get-started/glossary.md#peer-exchange) protocol enables [light nodes](https://docs.logos.co/get-started/glossary.md#light-node) to request peers from other nodes within the network.
+
+> **Info**
+>
+> `Peer Exchange` enables requesting random peers from other network nodes without revealing information about their connectivity or neighbourhood.
+
+## How peer exchange works
+
+```mermaid
+sequenceDiagram
+    Alice->>DNS Server: (1) Execute DNS Discovery
+    DNS Server-->>Alice: (2) Bob's multiaddr (websocket)
+    Alice-->>Bob: (3) Dial
+    Alice->>Bob: (4) Peer Exchange Query
+    Bob-->>Alice: (5) Carol's ENR, David's ENR
+    Alice->>Alice: (6) Decode ENRs
+    Alice->>Carol: (7) Dial
+    Alice->>David: (7) Dial
+    Alice-->>Bob: (8) Disconnect
+```
+
+1. [DNS Discovery](https://docs.logos.co/get-started/glossary.md#dns-discovery) protocol is executed.
+1. Alice retrieves Bob's websocket multiaddr from DNS Server.
+1. Alice dials Bob using libp2p protocols.
+1. Alice executes a Peer Exchange query to Bob.
+1. Bob returns Carol's and David's [ENR](https://docs.logos.co/get-started/glossary.md#enr) to Alice.
+1. Alice decodes ENRs and extracts Carol's and David's websocket multiaddrs.
+1. Alice dials Carol and David.
+1. Alice can now drop the connection with Bob (bootstrap node); Alice has 2 connections to the [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) Network.
+
+## Pros and cons
+
+Pros:
+
+- Low resource requirements.
+- Decentralised with random sampling of nodes from a global view using `Discv5`.
+
+Cons:
+
+- Decreased anonymity.
+- Imposes additional load on responder nodes.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/security-features
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Understand Logos Delivery security features
+
+#### See the services that keep Logos Delivery communication private and abuse-resistant.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery)'s protocol layers offer different services and security considerations, shaping the overall security of Logos Delivery. We document the security models in the [RFCs of the protocols](https://rfc.vac.dev/), aiming to provide transparent and open-source references. This empowers Logos Delivery users to understand each protocol's security guarantees and limitations.
+
+## Pseudonymity
+
+Logos Delivery ensures [pseudonymity](https://lip.logos.co/messaging/core/draft/10/waku2.html#pseudonymity) across its protocol layers, using libp2p `PeerID` as identifiers instead of disclosing true identities. However, it is important to note that pseudonymity does not provide complete anonymity. Actions performed under the same pseudonym (`PeerID`) can be linked, leading to the potential re-identification of the actual actor.
+
+## Anonymity/unlinkability
+
+[Anonymity](https://lip.logos.co/messaging/core/draft/10/waku2.html#anonymity--unlinkability) means it is computationally infeasible for an adversary to connect an actor to their actions or data. To achieve anonymity, avoiding linking activities with actors or their Personally Identifiable Information (PII) is crucial. In Logos Delivery, the following anonymity features are provided:
+
+- [Publisher-message unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Makes it computationally infeasible for the publisher of messages in the `Relay` protocol to be linked to their published messages.
+- [Subscriber-topic unlinkability](https://lip.logos.co/messaging/core/stable/11/relay.html#security-analysis): Makes it computationally infeasible for the subscriber of topics in the `Relay` protocol to be linked to the topics they have subscribed to.
+
+## Spam protection
+
+The [spam protection](https://lip.logos.co/messaging/core/draft/10/waku2.html#spam-protection) feature in `Relay` ensures that no adversary can flood the system with many messages, intentionally or not, regardless of the content's validity or usefulness. This protection is achieved through the [scoring mechanism](https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#spam-protection-measures) of `GossipSub v1.1`. Peers assign scores to their connections based on their behaviour and remove peers with low scores.
+
+Ongoing research is being conducted, including developing [Rate Limit Nullifiers (RLN)](https://docs.logos.co/messaging/concepts/protocols.md#rln-relay), which can be explored further at: [https://github.com/vacp2p/research/issues/148](https://github.com/vacp2p/research/issues/148).
+
+## Data confidentiality, integrity, and authenticity
+
+[Confidentiality](https://lip.logos.co/messaging/core/draft/10/waku2.html#data-confidentiality-integrity-and-authenticity) in Logos Delivery is ensured through data encryption, while integrity and authenticity are achieved through digital signatures. These security measures are available in [Waku Message (version 1)](https://lip.logos.co/messaging/core/stable/14/message.html#payload-encryption) and Noise protocols, which offer payload encryption and encrypted signatures.
+
+## Security considerations
+
+In protocols like `Store` and `Filter`, where direct connections are required for the designated service, anonymity or unlinkability is not guaranteed. This is because nodes use their `PeerID` to identify each other during direct connections, making the service obtained in these protocols linkable to the beneficiary's `PeerID`, considered Personally Identifiable Information (PII). In `Store`, the queried node can link the querying node's `PeerID` to the topics being queried. Similarly, in `Filter`, a node can link the `PeerID` of a [light node](https://docs.logos.co/get-started/glossary.md#light-node) to its content filter. Check out the [Security considerations](https://lip.logos.co/messaging/core/draft/10/waku2.html#security-considerations) section in the Waku2 RFC for more details.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/logos-delivery-and-libp2p
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Learn the differences between Logos Delivery and libp2p
+
+#### Understand what Logos Delivery adds on top of libp2p and where the two differ.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+Since [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) is built on top of libp2p, they share a lot of concepts and terminologies between them. However, there are key differences between them that are worth noting.
+
+## The basics
+
+- Logos Delivery is built on top of libp2p, so the two share many concepts and terms.
+- Unlike libp2p, Logos Delivery is an [open network](#logos-delivery-as-an-open-network) and a [turnkey solution](#logos-delivery-as-a-turnkey-solution).
+- Logos Delivery adds [economic spam protection](#economic-spam-protection), which libp2p does not provide.
+
+## Logos Delivery as an open network
+
+Logos Delivery intends to incentivise mechanisms to run nodes, but it is not part of libp2p's scope. Additionally, users and developers can use Logos Delivery without deploying their own infrastructure, though anyone can choose to [run a node](https://docs.logos.co/messaging/delivery/run-delivery-node-from-cli.md) to help decentralise the network.
+
+## Logos Delivery as a turnkey solution
+
+Logos Delivery includes various protocols covering the following domains: privacy preservation, censorship resistance, and platform agnosticism, allowing it to run on any platform or environment.
+
+Logos Delivery provides out-of-the-box protocols to enable [mostly offline](https://docs.logos.co/get-started/glossary.md#mostly-offline)/resource-limited devices, [Store](https://docs.logos.co/messaging/concepts/protocols.md#store)/[Light Push](https://docs.logos.co/messaging/concepts/protocols.md#light-push)/[Filter](https://docs.logos.co/messaging/concepts/protocols.md#filter) caters to those use cases.
+
+## Economic spam protection
+
+libp2p does not have strong spam protection guarantees, [RLN Relay](https://docs.logos.co/messaging/concepts/protocols.md#rln-relay) is a protocol being developed by the Logos Delivery team towards this goal.
+
+---
+
+> Source: https://docs.logos.co/messaging/delivery/use-delivery-module-api-in-app
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Use the Delivery module API in an app
+
+#### Get started integrating Logos messaging into a C++ module.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.2.1**.
+
+This procedure covers building a Logos [module](https://docs.logos.co/get-started/glossary.md#module) that calls the [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) (tag `v0.2.1`).
+
+The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.1`](https://github.com/logos-co/logos-delivery-module/tree/b8b9ac2f4667bc63644b2116f64a07aa30cfd3ef)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux: aarch64 or x86_64
+>     - macOS: aarch64 or x86_64
+> - ~1 GB of RAM
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>     ```bash
+>     mkdir -p ~/.config/nix
+>     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>     ```
+
+## What to expect
+
+- You can subscribe to a [content topic](https://docs.logos.co/get-started/glossary.md#content-topic) and receive messages.
+- You can send a message and confirm delivery by tracking `messageSent` and `messagePropagated` events.
+- You can open a reliable channel and exchange messages on it with automatic retransmission and acknowledgements.
+- You can integrate the full Logos Delivery lifecycle—create, start, subscribe, send, stop—into your C++ module.
+
+## Step 1: Create a Logos module
+
+Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Build a Logos C++ UI module](https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module.md) tutorial.
+
+1. Create and enter the project directory:
+
+   ```bash
+   mkdir your-module-name && cd your-module-name
+   ```
+
+1. Initialise from the template:
+
+   ```bash
+   nix flake init -t github:logos-co/logos-module-builder/0.2.5#ui-qml-backend
+   ```
+
+1. Initialise a Git repository and stage all generated files:
+
+   ```bash
+   git init && git add -A
+   ```
+
+   The scaffold builds as it stands. It gives you:
+   - `src/ui_example.rep` - the view contract;
+   - `src/ui_example_backend.{h,cpp}` - the class you write;
+   - `src/qml/Main.qml` - your module's UI entry point.
+
+   > **Info**
+   >
+   > You are free to rename the files and classes later. In this doc we'll refer to them as generated by default.
+
+## Step 2: Declare `delivery_module` as a dependency
+
+Add `delivery_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module API evolves.
+
+> **Info**
+>
+> The flake input name (`delivery_module`) must exactly match the dependency name in `metadata.json`. `logos-module-builder` uses this name to generate the typed wrapper at build time.
+
+1. In `metadata.json`, add `delivery_module` to the dependencies array:
+
+   ```json
+   {
+     "dependencies": ["delivery_module"],
+     ...
+   }
+   ```
+
+1. In `flake.nix`, add a matching pinned input:
+
+   ```nix
+   inputs = {
+     logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.5";
+     delivery_module = {
+       url = "github:logos-co/logos-delivery-module/v0.2.1";
+       # Your module and delivery_module must be built by the same
+       # logos-module-builder: the event emitter and the consumer have to agree
+       # on the binary event wire format.
+       inputs.logos-module-builder.follows = "logos-module-builder";
+     };
+   };
+   ```
+
+   > **Warning**
+   >
+   > Use `logos-module-builder` 0.2.5 or newer. On older builders, binary event payloads (`messageReceived`, `channelMessageReceived`) arrive empty.
+
+## Step 3: Subscribe to events in your backend
+
+Add `onContextReady()` to the backend the template scaffolded, and arm the delivery subscriptions there. 
+
+1. Override `onContextReady()` in `ui_example_backend.h`:
+
+   ```cpp
+   #pragma once
+
+   #include "rep_ui_example_source.h"
+   #include "logos_ui_plugin_context.h"
+
+   class UiExampleBackend : public UiExampleSimpleSource,
+                            public LogosUiPluginContext
+   {
+   public:
+       int add(int a, int b) override;
+
+       void onContextReady() override;
+   };
+   ```
+
+1. Arm the node and Messaging API subscriptions in `ui_example_backend.cpp`:
+
+   ```cpp
+   #include "ui_example_backend.h"
+   #include "logos_sdk.h"   // generated umbrella — exposes modules() with your module's dependency: `.delivery_module`
+
+   void UiExampleBackend::onContextReady()
+   {
+       auto& delivery = modules().delivery_module;
+
+       delivery.onConnectionStateChanged([](QString status, qint64 timestamp) {});
+
+       delivery.onMessageReceived(
+           [this](QString messageHash, QString contentTopic, QByteArray payload, qint64 timestamp) {
+               // payload is raw bytes, not text.
+           });
+
+       delivery.onMessageSent([](QString requestId, QString messageHash, qint64 timestamp) {});
+       delivery.onMessagePropagated([](QString requestId, QString messageHash, qint64 timestamp) {});
+       delivery.onMessageError(
+           [](QString requestId, QString messageHash, QString error, qint64 timestamp) {});
+   ```
+
+1. Arm the Reliable Channels subscriptions too, if your module uses channels (Step 6):
+
+   ```cpp
+       delivery.onChannelMessageReceived(
+           [this](QString channelId, QString senderId, QByteArray payload, qint64 timestamp) {
+           });
+
+       delivery.onChannelMessageSent([](QString channelId, QString requestId, qint64 timestamp) {});
+       delivery.onChannelMessageError(
+           [](QString channelId, QString requestId, QString error, qint64 timestamp) {});
+   }
+   ```
+
+## Step 4: Create and start the node
+
+`createNode` builds the node from a JSON configuration and `start()` connects it to the network. Both are synchronous and return a `LogosResult`—always check `success` before continuing and surface `getError()` on failure.
+
+> **Info**
+>
+> The node is a singleton per Logos Core instance: call `createNode` exactly once per context, and expect the node to already exist when another module created it first.
+
+1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](https://logos-co.github.io/logos-delivery-module/v0.2.1/pages/api_reference.html#_CPPv4N18DeliveryModuleImpl10createNodeERKNSt6stringE) in the Delivery module API reference.
+
+   ```cpp
+   auto& delivery = modules().delivery_module;
+
+   // "mode": "Core" (relay node) or "Edge" (light node).
+   // "preset": the network to join — "logos.test" or "logos.dev"
+   LogosResult r = delivery.createNode(R"({"mode":"Core","preset":"logos.test"})");
+   if (!r.success) {
+       qWarning() << "createNode failed:" << r.getError();
+       return;
+   }
+   ```
+
+   > **Warning**
+   >
+   > Keep the config to `mode`, `preset`, `messagingOverrides`, and `channelsOverrides`. Any other top-level key (`logLevel`, for example) selects the legacy flat configuration shape.
+
+1. Connect to the network with `start()`. The `connectionStateChanged` event fires once the node connects to peers:
+
+   ```cpp
+   r = delivery.start();
+   if (!r.success) {
+       qWarning() << "start failed:" << r.getError();
+       return;
+   }
+   ```
+
+   The node is not connected the moment `start()` returns. Wait for `connectionStateChanged` before sending on either API.
+
+## Step 5: Use the Messaging API
+
+The Messaging API is publish/subscribe on a [content topic](https://docs.logos.co/get-started/glossary.md#content-topic): you subscribe to the topics you care about and send raw payloads to them.
+
+1. Subscribe to a content topic using a [LIP-23](https://lip.logos.co/messaging/informational/draft/23/topics.html) content-topic string. Call `subscribe()` before any messages are sent on that topic:
+
+   ```cpp
+   LogosResult r = delivery.subscribe(contentTopic);
+   if (!r.success) {
+       qWarning() << "subscribe failed:" << r.getError();
+   }
+   ```
+
+1. Send a message. On success, `getString()` returns the request ID; track it through `messagePropagated` → `messageSent` events (or `messageError`):
+
+   ```cpp
+   // payload is a QByteArray of raw bytes, the same type messageReceived delivers.
+   LogosResult r = delivery.send(contentTopic, payload);
+   if (!r.success) {
+       qWarning() << "send failed:" << r.getError();
+       return;
+   }
+   const QString requestId = r.getString();
+   ```
+
+1. Receive messages through the `onMessageReceived` subscription you armed in Step 3. It fires for every message on a subscribed topic, including messages sent by you.
+
+1. Stop receiving on a topic with `delivery.unsubscribe(contentTopic)`. Subscriptions are node-wide, so unsubscribing a topic another module subscribed to stops its traffic too.
+
+## Step 6: Use the Reliable Channels API
+
+Reliable Channels add end-to-end reliability on top of the Messaging API: it tracks acknowledgements with [SDS](https://lip.logos.co/anoncomms/raw/sds.html) and retransmits what peers did not acknowledge.
+
+> **Warning**
+>
+> The Reliable Channels API is a **Developer Preview**. It is not feature-complete and is still under testing—expect gaps in behaviour, and expect the API surface to change before general availability.
+
+A channel is addressed by an application-chosen `channelId`, so you never hold a channel object—every call takes the id. All four calls are synchronous and return a `LogosResult`; delivery outcomes arrive through the channel subscriptions from Step 3.
+
+> **Info**
+>
+> Reliable channels need the full stack, which is what `createNode` mounts by default (`"entryLayer": "channels"`). On a kernel-only node, every `channel*` call fails with `no reliable channel manager`.
+
+1. Create a channel with `channelCreate()`. Every participant creates the channel with the same `channelId` and `contentTopic`, and its own `senderId`:
+
+   ```cpp
+   // senderId: this participant's SDS identifier — any string unique per participant
+   LogosResult r = delivery.channelCreate(channelId, contentTopic, senderId);
+   if (!r.success) {
+       qWarning() << "channelCreate failed:" << r.getError();
+       return;
+   }
+   ```
+
+   Creating a channel subscribes its content topic for you—you don't call `subscribe()` for a channel topic.
+
+1. Check whether a channel is currently open.
+
+   ```cpp
+   LogosResult r = delivery.channelExists(channelId);
+   const bool open = r.success && r.getString() == QLatin1String("true");
+   ```
+
+1. Send on the channel. `channelSend()` returns a request ID—track it through `channelMessageSent` or `channelMessageError`.
+
+   ```cpp
+   // payload is a QByteArray of raw bytes, same as channelMessageReceived delivers.
+   LogosResult r = delivery.channelSend(channelId, payload);
+   if (!r.success) {
+       qWarning() << "channelSend failed:" << r.getError();
+       return;
+   }
+   const QString requestId = r.getString();
+   ```
+
+1. Receive channel messages through the `onChannelMessageReceived` subscription. Unlike `onMessageReceived`, it fires only for the other participants' messages—your own channel sends come back as `channelMessageSent`, not as a received message.
+
+1. Close the channel when you are done with it. This stops the channel's SDS loops and unsubscribes its content topic, unless another open channel still uses that topic:
+
+   ```cpp
+   LogosResult r = delivery.channelClose(channelId);
+   if (!r.success) {
+       qWarning() << "channelClose failed:" << r.getError();
+   }
+   ```
+
+To tune reliability, pass a `channelsOverrides` object in the `createNode` config of Step 4. Unset keys keep the defaults shown here:
+
+```json
+{
+  "mode": "Core",
+  "preset": "logos.test",
+  "channelsOverrides": {
+    "sdsAcknowledgementTimeoutMs": 5000,
+    "sdsMaxRetransmissions": 5,
+    "sdsCausalHistorySize": 2
+  }
+}
+```
+
+> **Warning**
+>
+> Reliable channels give you delivery reliability, not confidentiality: channel payloads travel unencrypted unless your application encrypts them. For end-to-end encrypted conversations, use the [Logos Chat module](https://docs.logos.co/messaging/chat-module/build-logos-module-that-uses-chat-module-api.md).
+
+## Step 7: Shut down
+
+Shut down cleanly with `stop()`. This tears down the underlying node and drops every active subscription, channel, and event listener:
+
+```cpp
+LogosResult r = delivery.stop();
+if (!r.success) {
+    qWarning() << "stop failed:" << r.getError();
+}
+```
+
+Because the node is shared by every module on the host, `stop()` also ends the traffic of any other module using it.
+
+## Step 8: Build and run
+
+1. Build the module:
+
+   ```sh
+   nix build
+   ```
+
+1. Preview the module using `logos-standalone-app` (for `ui_qml` modules):
+
+   ```sh
+   nix run
+   ```
+
+1. Package as `.lgx` for installation into `logos-basecamp`:
+
+   ```sh
+   nix build .#lgx
+   ```
+
+## Step 9: Verify a two-instance message exchange
+
+Messaging is only proven end to end when a payload travels between two running nodes. Start two copies of your module, each with its own session directory:
+
+```sh
+# terminal A
+nix run . -- --user-dir ~/.local/share/ui_example_a
+# terminal B
+nix run . -- --user-dir ~/.local/share/ui_example_b
+```
+
+1. In both instances, run `createNode` with the same preset, then `start()`, and wait until each reports a connected state through `connectionStateChanged`.
+1. In both instances, call `subscribe(contentTopic)` on the same content topic.
+1. In instance A, call `send(contentTopic, payload)`. A's `messagePropagated` and `messageSent` events fire, carrying the request id the call returned.
+1. Instance B fires `messageReceived` with the same payload bytes on that content topic.
+1. Send in the other direction and confirm instance A receives it.
+
+A `messageReceived` event on the instance that did not send confirms the whole path: node creation, network connection, subscription, and publish.
+
+## Step 10: Verify a two-instance reliable channel exchange
+
+Reliability shows only between two participants of the same channel. Use the same two instances as in Step 9, both connected.
+
+1. In both instances, call `channelCreate(channelId, contentTopic, senderId)` with the same `channelId` and `contentTopic`, and a `senderId` unique to each instance.
+1. In instance A, call `channelSend(channelId, payload)`. A's `channelMessageSent` event fires once the send is confirmed, carrying the request id the call returned.
+1. Instance B fires `channelMessageReceived` with A's `senderId` and the payload bytes.
+1. Send from instance B and confirm instance A receives it, attributed to B's `senderId`.
+
+Messages arriving on both sides, each attributed to the sending participant, confirms the channel journey: channel creation on a shared content topic and acknowledgement through SDS.
+
+> **Tip**
+>
+> [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
+
+## Troubleshooting the Logos Delivery module
+
+### `createNode` returns an unsuccessful `LogosResult`?
+
+The JSON may be malformed, or an internal initialisation error occurred. Validate that the JSON is well-formed and that key names are camelCase. Set `"messagingOverrides": {"logLevel": "DEBUG"}` for verbose output and inspect `result.getError()` for details.
+
+### `send()` returns an unsuccessful `LogosResult`?
+
+The node was not started, or `contentTopic` is empty or invalid. Call `start()` first and verify it returned success. Confirm the content topic follows the [LIP](https://docs.logos.co/get-started/glossary.md#lip)-23 format.
+
+### `messageSent` never fires after a successful `send()`?
+
+The node may not be connected to peers yet, or the network layer rejected the message (for example, an RLN proof failure). Wait for `connectionStateChanged` before sending. If `messageError` fires, its `error` argument carries the reason.
+
+### `messageReceived` never fires?
+
+`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic.
+
+### The node process dies when I re-open a channel I closed?
+
+Known issue in this release: ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone—every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
+
+### `channelCreate` returns `channel already exists`?
+
+The channel id is already open on this node—channel ids are node-wide, so another module may hold it. Call `channelExists(channelId)` first, and reuse the open channel or pick an application-specific id.
+
+### `channelMessageReceived` never fires on the other participant?
+
+The participants disagree on the channel: both sides must call `channelCreate()` with the same `channelId` and the same `contentTopic`, each with its own `senderId`. Reusing one `senderId` for two participants breaks SDS bookkeeping.
+
+### `channelMessageReceived` fires but the payload is empty?
+
+Your module was built with a `logos-module-builder` older than 0.2.5, where binary event payloads arrive empty. Pin `logos-module-builder` to 0.2.5 or newer and make `delivery_module` follow the same input, as in Step 2.
+
+### `channelSend` returns `no reliable channel manager`?
+
+The node was created as kernel-only (`"entryLayer": "kernel"`). Reliable channels need the default full stack—omit `entryLayer`, or set it to `"channels"`.
+
+### Two instances of the same app on one host fail to start?
+
+Both instances bound the same port. With the layered config (`mode`, `preset`, and the `*Overrides` objects only), ports default to `0` and the OS assigns a free one per instance. Adding any other top-level key switches the config to the legacy flat shape, whose kernel defaults pin port `60000`. Keep the config layered, or assign distinct explicit port values per instance.
+
+### `createNode` succeeds but a second call without `stop()` causes undefined behaviour?
+
+`createNode` must be called exactly once per context. Call `stop()` and destroy the context before calling `createNode` again.
+
+---
+
+> Source: https://docs.logos.co/messaging/delivery/run-delivery-node-from-cli
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Run a Delivery node from the CLI
+
+#### Use the Delivery module to run a Logos Delivery node on the CLI
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure covers how to install and start a `logos-delivery-module` node connected to the Logos testnet (v0.3). It is intended for node operators who want to run their own Delivery node and join the network.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux
+>    - macOS
+> - Network access so both node instances can reach each other.
+> - Inbound ports open:
+>    - TCP `30303`: P2P (`tcpPort`).
+>    - UDP `30303`: P2P over QUIC, on by default at the `tcpPort` number.
+>    - UDP `9000`: discv5 discovery (`discv5UdpPort`).
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+> - `curl` and a shell
+
+## What to expect
+
+- You can start a `delivery_module` node connected to the Logos Network.
+- You can confirm the node is running and has a live network identity by querying its discv5 [ENR](https://docs.logos.co/get-started/glossary.md#enr).
+- You can configure the node for a different network preset by swapping the config file passed to `createNode`.
+
+## Step 1: Install and start the daemon
+
+1. Start `logosctl`:
+
+   ```sh
+   logosctl daemon start
+   ```
+
+1. In a new terminal window with the same user, refresh the official module catalogue:
+
+   ```sh
+   logosctl catalog refresh
+   ```
+
+1. Download and install the [delivery module](https://docs.logos.co/get-started/glossary.md#delivery-module):
+
+   ```bash
+   logosctl package install delivery_module \
+   --version 0.3.0 \
+   --yes
+   ```
+
+   > **Note**
+   >
+   > Individual module [package](https://docs.logos.co/get-started/glossary.md#package) versions (for example, delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
+
+1. Write the testnet config:
+
+   ```bash
+   cat > logos-test.json <<EOF
+   {
+      "entryLayer": "kernel",
+      "kernelConf": {
+         "preset": "logos.test",
+         "relay": true,
+         "logLevel": "INFO",
+         "tcpPort": 30303,
+         "discv5UdpPort": 9000,
+         "discv5Discovery": true,
+         "nat": "extip:<public-ip>"
+      }
+   }
+   EOF
+   ```
+
+   - `logos-test.json` includes the following fields:
+
+   | Field | Purpose |
+   |-------|---------|
+   | `entryLayer` | Delivery stack layer; use `kernel` for a node-operator service |
+   | `kernelConf` | Kernel node configuration |
+   | `kernelConf.preset` | Network preset |
+   | `kernelConf.relay` | Enable the [Relay](https://docs.logos.co/get-started/glossary.md#relay) protocol |
+   | `kernelConf.logLevel` | Log verbosity |
+   | `kernelConf.tcpPort` | Public TCP P2P port |
+   | `kernelConf.discv5UdpPort` | Public UDP discovery port |
+   | `kernelConf.discv5Discovery` | Enable discv5 discovery |
+   | `kernelConf.nat` | Public IP advertisement mode |
+
+## Step 2: Load the module and boot the node
+
+Run these commands for your path.
+
+1. Load the delivery module:
+
+   ```bash
+   logosctl module load delivery_module
+   ```
+
+1. Create the node with the testnet config:
+
+   ```bash
+   logosctl call delivery_module createNode @logos-test.json
+   ```
+
+1. Start the node:
+
+   ```bash
+   logosctl call delivery_module start
+   ```
+
+## Step 3: Verify the node is running
+
+Query the node's discv5 ENR to confirm it booted with a network identity and joined the Logos Testnet.
+
+1. Verify the status of the node:
+
+   ```bash
+   logosctl daemon status
+   ```
+
+1. Run the [health query](https://github.com/logos-co/logos-delivery-module/blob/master/docs/pages/query-node.md):
+
+   ```bash
+   logosctl call delivery_module getNodeInfo MyENR --json | jq
+   ```
+
+   Expected output:
+
+   ```json
+   {
+     "method": "getNodeInfo",
+     "module": "delivery_module",
+     "result": {
+       "error": null,
+       "success": true,
+       "value": "enr:-LW4QItc5tHj3rWoFaaQIUWvaBYijDf2TJKW83SNdyylJVAYVoUlBl1h5..."
+     },
+     "status": "ok"
+   }
+   ```
+
+   - The `"value"` field is your node's live ENR and will differ from the example above.
+   - `"success": true` and `"status": "ok"` confirm the delivery node is running.
+
+1. Stop the node when finished:
+
+   ```bash
+   logosctl daemon stop
+   ```
+
+## Troubleshooting delivery node setup
+
+### Why does `logosctl call` return an error after `module load`?
+
+The daemon may not have finished starting. Wait a few seconds after `logosctl daemon start` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logosctl …`.
+
+---
+
+> Source: https://docs.logos.co/messaging/chat-module/build-logos-module-that-uses-chat-module-api
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Build a Logos module that uses the Chat module API
+
+#### Get started with private 1:1 and group end-to-end encrypted messaging in your own Logos module.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure covers how to build a Logos [module](https://docs.logos.co/get-started/glossary.md#module) that calls the [logos-chat-module](https://github.com/logos-co/logos-chat-module) API (tag `v0.3.0`) to exchange addresses, open private 1:1 (or *direct*) and group conversations, and send and receive end-to-end encrypted messages on the Logos network. It is intended for application developers who want to integrate private messaging without taking direct dependencies on `logos-chat` or `logos-delivery`.
+
+Each launch is a new chat **installation** with a new address. Conversations and their messages are saved in the instance directory and come back after a restart, but only as read-only history: you can read them, but not send into them.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux
+>     - macOS
+> - Network access.
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>     ```bash
+>     mkdir -p ~/.config/nix
+>     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>     ```
+> - An understanding of [Logos modules](https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module.md)
+
+## What to expect
+
+- You can initialise a chat client, connect to the Logos network, and exchange end-to-end encrypted messages with another instance.
+- You can open a private 1:1 conversation by exchanging addresses [out of band](https://docs.logos.co/get-started/glossary.md#out-of-band) and calling `create_conversation` from the initiating side.
+- You can create a group conversation with `create_group_conversation`, grow it with `add_group_member`, and exchange messages with all group members.
+- You can read back conversations and messages from earlier sessions as history.
+- You can integrate the full chat lifecycle—init, subscribe to events, share your address, open conversations, send, shut down—into any Logos C++ module.
+
+## Step 1: Scaffold a new Logos module
+
+Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co/logos-module-builder). For a full walkthrough, see the [Build a Logos C++ UI module](https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module.md) tutorial.
+
+1. Create and enter the project directory:
+
+   ```bash
+   mkdir your-module-name && cd your-module-name
+   ```
+
+1. Initialise from the template:
+
+   ```bash
+   nix flake init -t github:logos-co/logos-module-builder/0.3.1#ui-qml-backend
+   ```
+
+1. Initialise a Git repository and stage all generated files:
+
+   ```bash
+   git init && git add -A
+   ```
+
+1. Keep the generated files—you build on them, you don't delete them. The template is a working `ui_example` module. Its main files are:
+
+   | File | What it is | Can you edit it? |
+   |---|---|---|
+   | `src/ui_example_backend.{h,cpp}` | The C++ backend | Yes—your chat code goes here (Steps 3–7) |
+   | `src/ui_example.rep` | The interface between the backend and the view | Later—add the slots and properties your view needs |
+   | `src/qml/Main.qml` | The example view | Later—replace with your own UI |
+   | `metadata.json`, `flake.nix` | Build config | Step 2 only |
+
+   You add your chat code in `UiExampleBackend::onContextReady()`. Leave the example `add` / `status` UI as is for now.
+
+> **Info**
+>
+> Keep the module named `ui_example`. The name is referenced in `metadata.json`, `CMakeLists.txt`, the `src/ui_example*` files, and `Main.qml` (`logos.module("ui_example")`)—they must all match, or `nix build` fails. To use a different name, change it in every one of these.
+
+## Step 2: Declare `chat_module` as a dependency
+
+Add `chat_module` to both `metadata.json` and `flake.nix`, pinning to the released tag so your app stays stable as the module's API evolves.
+
+> **Info**
+>
+> The flake input name (`chat_module`) must match the dependency name in `metadata.json`. `logos-module-builder` automatically generates the typed `chat_module` wrapper at build time.
+
+1. In `metadata.json`, replace the empty dependencies array with `chat_module` and `delivery_module`:
+
+   ```json
+   {
+     "name": "ui_example",
+     "dependencies": [
+       { "name": "chat_module", "version": ">=0.3.0" },
+       { "name": "delivery_module", "version": ">=0.3.0" }
+     ],
+     ...
+   }
+   ```
+
+1. In `flake.nix`, pin `chat_module`, take its [transport](https://docs.logos.co/get-started/glossary.md#transport) dependency `delivery_module` from it, then map the delivery input to the `delivery_module` dependency so the builder can resolve its runtime:
+
+   ```nix
+   inputs = {
+     # Follow chat_module's own builder so the codegen chain matches the one the
+     # module was released against.
+     logos-module-builder.follows = "chat_module/logos-module-builder";
+     # Pin chat_module to the released tag so its API can't shift under `nix flake update`.
+     chat_module.url = "github:logos-co/logos-chat-module/v0.3.0";
+     # Build against the exact delivery_module that chat_module v0.3.0 is built against.
+     logos-delivery-module.follows = "chat_module/logos-delivery-module";
+   };
+
+   outputs = inputs@{ logos-module-builder, logos-delivery-module, ... }:
+     logos-module-builder.lib.mkLogosQmlModule {
+       src = ./.;
+       configFile = ./metadata.json;
+       # Map the delivery input to the `delivery_module` dependency name.
+       flakeInputs = { delivery_module = logos-delivery-module; } // inputs;
+     };
+   ```
+
+> **Info**
+>
+> `chat_module` reaches `delivery_module` over IPC, but the builder still resolves each `metadata.json` dependency's runtime from a matching flake input. `delivery_module` therefore needs the `logos-delivery-module` input, mapped in through `flakeInputs`. Without it, `nix build` cannot resolve `delivery_module`. This mirrors how [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.3.0/flake.nix) wires the two modules together.
+
+## Step 3: Subscribe to `chat_module` events
+
+The template's backend derives `LogosUiPluginContext`, which provides `modules()`: typed calls and event subscriptions for each module in `dependencies`. `modules()` is ready only once the framework calls `onContextReady()`, so subscribe there, and subscribe before calling `init()` so you do not miss early events or the first incoming messages.
+
+1. Override `onContextReady()` in the header `src/ui_example_backend.h`:
+
+   ```cpp
+   class UiExampleBackend : public UiExampleSimpleSource,
+                            public LogosUiPluginContext
+   {
+   public:
+       int add(int a, int b) override;
+       void onContextReady() override;
+   };
+   ```
+
+1. In `src/ui_example_backend.cpp`, include the generated umbrella header and subscribe to the module's push events. Each `on<Event>` method takes a callback with the event's arguments in the order declared in `chat_module.lidl`:
+
+   ```cpp
+   #include "logos_sdk.h"   // generated umbrella—exposes modules().chat_module
+
+   void UiExampleBackend::onContextReady()
+   {
+       auto& chat = modules().chat_module;
+
+       // A new message arrived in a conversation. sender is the sender's account address.
+       chat.onMessage_received([](const QString& convoId, const QString& content,
+                                  qlonglong timestampMs, const QString& sender) { });
+       // One of your own messages was handed to delivery and recorded.
+       chat.onMessage_sent([](const QString& convoId, const QString& content,
+                              qlonglong timestampMs) { });
+       // A conversation was created—incoming from a peer, or your own outgoing one.
+       // kind is "direct" (1:1) or "group"; name and desc are empty for a direct one.
+       chat.onConversation_created([](const QString& convoId, bool isOutgoing,
+                                      const QString& peerLabel, const QString& kind,
+                                      const QString& name, const QString& desc) { });
+       chat.onConversation_updated([](const QString& convoId) { });
+       chat.onMembers_changed([](const QString& convoId) { });
+       chat.onConversation_deleted([](const QString& convoId) { });
+       // Delivery/connection state changed—drives your "connected" indicator.
+       // state is "initialising" | "online" | "stopped" | "error".
+       chat.onDelivery_state_changed([](const QString& state, const QString& detail,
+                                        bool deliveryAdopted) { });
+
+       // Step 4 continues here: init().
+   }
+   ```
+
+   See the [Chat module API reference](https://logos-co.github.io/logos-chat-module/v0.3.0/pages/api_reference.html) for the exact argument list of every method and event. It is generated from [`rust-lib/chat_module.lidl`](https://github.com/logos-co/logos-chat-module/blob/v0.3.0/rust-lib/chat_module.lidl), the contract this tutorial's client is built from.
+
+## Step 4: Initialise the chat client
+
+Status-bearing methods return their result **synchronously** as a `LogosResult`.
+- `res.success` tells you whether the call succeeded;
+- `res.getError<QString>()` carries the failure reason;
+- `res.getValue<QString>()` carries the returned value (for example, the new conversation's id).
+
+Ongoing activity—incoming messages, new conversations, delivery-state changes—arrives **asynchronously** through the push events you subscribed to in Step 3.
+
+> **Info**
+>
+> `init()` starts delivery asynchronously, so the client is not connected the moment `init()` returns. Watch `delivery_state_changed` for the `online` state before creating conversations or sending messages.
+
+`init()` takes a single `ChatConfig` record, generated as the `ChatModule::ChatConfig` struct. Both fields are optional:
+
+| Field | Type | Notes |
+|---|---|---|
+| `delivery_preset` | string | The delivery network to join. Absent or empty means `logos.test`, the Logos test network. Must match across all participants. |
+| `log_level` | string | The chat core's own log verbosity: `error`, `warn`, `info`, `debug`, or `trace` (default `info`) |
+
+1. Initialise the chat client, at the end of `onContextReady()`:
+
+   ```cpp
+   ChatModule::ChatConfig config;
+   config.delivery_preset = QStringLiteral("logos.test");
+   config.log_level = QStringLiteral("info");
+   const LogosResult res = chat.init(config);
+   if (!res.success) {
+       qWarning() << "init failed:" << res.getError<QString>();
+       return;
+   }
+   // init succeeded; delivery connects asynchronously.
+   // Wait for delivery_state_changed with state == "online" before creating conversations.
+   ```
+
+   - `delivery_module` runs one node per process, shared by every module that uses it. If another module already created that node, `chat_module` uses it as it is, with that module's preset, and reports `deliveryAdopted == true`.
+
+1. Read (or set) your installation's display name. It is saved in the instance directory and not shown to peers:
+
+   ```cpp
+   const QString myName = chat.get_installation_name();
+   // Optionally choose a name: chat.set_installation_name("alice");
+   ```
+
+1. Share your address:
+
+   ```cpp
+   const QString myAddress = chat.get_address();
+   // share `myAddress` out of band (the peer pastes it—see Steps 9 and 10)
+   ```
+
+   - The address is your account's address. Each `init()` creates a new account, so the address changes on every launch.
+
+## Step 5: Direct conversations
+
+A direct conversation is 1:1 - the initiator opens it with the peer's address, and messages flow both ways end-to-end encrypted.
+
+> **Info**
+>
+> To create a group conversation, skip this step and proceed to [Step 6](#step-6-group-conversations).
+
+1. Open the conversation as the initiator, or receive it as the recipient:
+
+   ```cpp
+   const LogosResult res = modules().chat_module.create_conversation(peerAddress);
+   const QString convoId = res.getValue<QString>();
+   // On success a conversation_created event (isOutgoing == true) fires with the same convoId.
+   ```
+
+   - The initiator calls `create_conversation` with the peer's address (their `get_address()`).
+   - The recipient does not call anything; a `conversation_created` push event (`isOutgoing == false`) arrives automatically once the invite lands.
+
+1. Send a message:
+
+   ```cpp
+   modules().chat_module.send_message(convoId, "How are you?");
+   // On success a message_sent event fires locally; the peer receives a message_received event.
+   ```
+
+   - Message content is plain text in both directions—the module handles encoding and end-to-end encryption on the wire.
+   - Success means the message was handed to `delivery_module`, not that a peer received it.
+
+1. Receive messages through the `message_received` event.
+
+## Step 6: Group conversations
+
+A group conversation starts with its creator as the only member and grows one peer at a time. Unlike a [direct conversation](#step-5-direct-conversations), membership changes are asynchronous by design: an add is committed by the group some time after it is proposed.
+
+1. Create the group:
+
+   ```cpp
+   const LogosResult res = modules().chat_module.create_group_conversation("Book Club", "Weekly sci-fi picks");
+   const QString groupId = res.getValue<QString>();  // the conversation id every member will share
+   ```
+
+   - The group starts with you as its only member. The name and description are shared metadata, carried to every joiner. Note that this metadata is only set once at the moment of group creation and cannot be edited later.
+
+1. Grow the group one member at a time:
+
+   ```cpp
+   modules().chat_module.add_group_member(groupId, peerAddress);
+   // Returns once the add is *proposed*; the group commits it asynchronously.
+   ```
+
+   - `add_group_member` returns as soon as the add is proposed. The process takes a few minutes, then the peer will see the group chat on their side.
+   - The invited peer does not call anything; a `conversation_created` event (`kind == "group"`, carrying the group's shared name and description) arrives once the welcome lands.
+   - Membership is symmetric: **any** member can propose an add, not just the creator.
+   - A `members_changed` event fires on every membership change.
+   - Members can not be removed.
+
+1. Send a message to the group:
+
+   ```cpp
+   modules().chat_module.send_message(groupId, "hello group");
+   // One send reaches every member; each receiver gets a message_received event.
+   ```
+
+1. Receive group messages through the same `message_received` event.
+
+## Step 7: Read state and shut down
+
+1. Read history and conversation state at any time (synchronous reads):
+
+   ```cpp
+   auto& chat = modules().chat_module;
+   const QList<ChatModule::Conversation> convos = chat.list_conversations();
+   const QList<ChatModule::Message> msgs = chat.get_messages(convoId);
+   const ChatModule::Status st = chat.status();  // convo_count, delivery_state, detail, delivery_adopted
+   ```
+
+   - Optional record fields are `std::optional`—for example, `convo.name.value_or(QString())` or `msg.sender.value_or(QString())`.
+   - A conversation from an earlier session has `history_only == true`. You can read it, set its nickname, and delete it, but sending into it or inviting to it fails. A member inviting this installation back into such a group makes it live again.
+   - After a restart, `get_messages` returns a conversation's newest 500 messages.
+
+   > **Warning**
+   >
+   > Do not make a synchronous module read (`list_conversations`, `get_messages`, `status`) from *inside* an event handler—it re-enters the IPC replica while its read notifier is disabled and stalls until the call times out. Defer the read to the next event-loop turn instead (see `deferToEventLoop` in [`logos-chat-ui`](https://github.com/logos-co/logos-chat-ui/blob/v0.3.0/src/ChatBackend.cpp)).
+
+1. Read a group conversation roster at any time:
+
+   ```cpp
+   const QList<ChatModule::GroupMember> members = modules().chat_module.list_group_members(groupId);
+   // Each element: { address, pending }—committed members first, then invites
+   // this instance sent that the group has not committed yet (pending == true).
+   ```
+
+   - The `pending` flag clears when the group commits that add. An unknown conversation id reports an empty roster.
+
+1. Shut down cleanly:
+
+   ```cpp
+   modules().chat_module.shutdown();   // disconnects and tears the client down
+   ```
+
+   - `shutdown()` ends the installation. The next `init()` comes up with a new address, and this session's conversations read back as `history_only`.
+
+## Step 8: Build and run
+
+1. Build the module:
+
+   ```sh
+   nix build
+   ```
+
+1. Preview the module using `logos-standalone-app` (for `ui_qml` modules):
+
+   ```sh
+   nix run                # preview via logos-standalone-app (for ui_qml modules)
+   nix build .#lgx        # package as .lgx for installation into logos-basecamp
+   ```
+
+## Step 9: Verify a two-instance direct exchange
+
+A chat is only proven end to end when a message travels between two running instances. Start two copies of your module—each with its own instance directory—and confirm a message lands as a `message_received` event. Per-instance isolation comes from the host's instance directory (for example `nix run . -- --user-dir ~/.local/share/chat_a`).
+
+1. Start both instances and wait until each reports `delivery_state == "online"` via `delivery_state_changed`.
+1. **In instance A**: call `get_address()` and share the returned address out of band (copy it into instance B).
+1. **In instance B**: call `create_conversation(addressFromA)`.
+   - Instance B sees a `conversation_created` event (`isOutgoing == true`); instance A should receive one with `isOutgoing == false` once the invite lands.
+1. **In instance B**: send the first message: `send_message(convoId, "Hello from B")`.
+   - Instance A should receive a `message_received` event carrying `"Hello from B"`.
+1. **In instance A**: reply with `send_message(convoId, "Hi B")`.
+   - Instance B should receive the matching `message_received` event.
+
+Seeing the `message_received` events on both sides confirms the full round trip: identity, address exchange, key discovery, conversation setup, and end-to-end encrypted delivery.
+
+## Step 10: Verify a three-instance group conversation
+
+Group semantics only show with three or more members. Start three instances (A, B, and C) by following the instructions in [Step 9](#step-9-verify-a-two-instance-direct-exchange) and wait for all three to report `online`. Group joins land asynchronously (see [Step 6](#step-6-group-conversations))—budget minutes per membership change.
+
+1. Collect each instance's address via `get_address()`.
+1. **In instance A**: call `create_group_conversation("Book Club", "Weekly sci-fi picks")` and keep the returned conversation id.
+1. **In instance A**: call `add_group_member(groupId, addressOfB)`.
+   - The call returns immediately; B joins once the group commits the add—B receives a `conversation_created` event (`kind == "group"`, `name == "Book Club"`) under the same conversation id A holds.
+1. **In instance B**: Once B has joined, call `add_group_member(groupId, addressOfC)`.
+   - C can join the same way.
+1. In each instance, call `list_group_members(groupId)` and wait until all three addresses appear with `pending == false` on every member. Each membership change also fires `members_changed`.
+1. **In instance A**: call `send_message(groupId, "hello group")`.
+   - B and C each receive one `message_received` event whose `sender` is A's address.
+1. **In instance C**: post a reply.
+   - A and B should receive it, attributed to C's address—the newest member reaches the founding members and vice versa.
+
+## Troubleshooting the Logos Chat module
+
+### Why does a method fail?
+
+The method returns a `LogosResult` with `success == false` and a reason in `getError<QString>()`. The most common cause is calling a conversation or message method before `init()` succeeded, or before delivery reached the `online` state. Call `init()` first, check `res.success`, and wait for a `delivery_state_changed` event with `delivery_state == "online"` before creating conversations or sending messages. Sending into or inviting to a `history_only` conversation also fails—see [Why can't I send into a conversation after a restart?](#why-cant-i-send-into-a-conversation-after-a-restart)
+
+### Why do peers not connect or messages not propagate?
+
+The `delivery_preset` differs across instances, or delivery has not reached `online`. All participants must use the same preset (for example `logos.test`) to share a network, and each instance must report `online` via `delivery_state_changed` (or `status()`) before it can exchange messages. If `deliveryAdopted` is `true`, the node was created by another module and runs on that module's preset, not the one you passed to `init()`. All participants also need `chat_module` 0.3.0 or later: an instance on 0.2.x cannot reach one on 0.3.x. Each instance must also be able to reach the key-package registry at `https://devnet.chat-kc.logos.co` over HTTPS, which `init()` publishes to and `create_conversation` looks up. The registry is an API endpoint: opening its root URL in a browser returns `404 Not Found` even when it is working. For delivery-level detail, check the log file named by `get_log_path()`.
+
+### Why does `send_message` succeed but peers never receive the message?
+
+`chat_module` sends through `delivery_module`, which rate-limits with RLN (Rate-Limiting Nullifier) wherever the network preset enables it. `delivery_module` v0.3.0 and later enable RLN on `logos.test`, so sending there needs an active RLN membership; see [Register an RLN membership from Basecamp](https://docs.logos.co/lez/rln/register-rln-membership-from-basecamp.md). Without one, the node starts and receives, but delivery retries each send and then gives up.
+
+### Why hasn't an invited member joined the group yet?
+
+This is the designed behaviour, not a hang. An `add_group_member` call only *proposes* the add: the group agrees on it, the group's steward batches it into an MLS commit after a commit-inactivity window (60 seconds by default), and the welcome only travels after that commit—so a join lands minutes after the call over the live network. Until the commit, the invite shows in the proposer's `list_group_members` with `pending == true`. Poll `list_conversations` on the invited instance (or wait for its `conversation_created` event) rather than assuming failure. An invite the group never commits stays pending for the life of the conversation.
+
+In a group of two, once either member has restarted, a new add never completes: the commit needs both members, and the restarted member's old address never votes.
+
+### Why is `send_message` rejected right after a membership change?
+
+Briefly after a membership change commits, the group is finalising its new epoch and rejects sends. Retry after a few seconds.
+
+### Why does a read stall the UI?
+
+You issued a synchronous module read (`list_conversations`, `get_messages`, `status`) from inside an event handler. That re-enters the IPC replica while its read notifier is disabled and blocks until the call times out. Defer such reads to the next event-loop turn.
+
+### Why can't I send into a conversation after a restart?
+
+Each launch is a new installation with a new address. Conversations from earlier sessions come back from the instance directory with `history_only == true`: you can read their messages, but not send into them or invite to them. To talk again, share your new address and open a new direct conversation, or have a group member invite your new address back into the group. Peers who still write to your old address are not told it changed. Restoring live conversations across restarts is planned for a later release.
+
+---
+
+> Source: https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-discovery
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Understand peer discovery
+
+#### Learn how a node bootstraps and finds the peers it needs to operate.
+
+When initialising a [Logos Delivery](https://docs.logos.co/get-started/glossary.md#logos-delivery) node, it must connect with other peers to enable message sending, receiving, and retrieval. To achieve this, a discovery mechanism is employed to locate other peers in the network. This process is known as [bootstrapping](https://docs.logos.co/get-started/glossary.md#bootstrapping).
+
+## Why a node seeks more peers
+
+Once a connection is established, the node must actively seek out additional peers to have:
+
+- Sufficient peers in the [Relay](https://docs.logos.co/messaging/concepts/protocols.md#relay) mesh: The goal is to have at least 6 peers in the mesh. This ensures a robust network where messages can be efficiently relayed.
+- Reserve peers for backup: It is essential to have a surplus of peers available as reserves. These reserves are backups when the current peers become overloaded or experience unexpected disconnections.
+- Peers with specific capabilities: The node seeks out peers with specific capabilities, such as [Store](https://docs.logos.co/messaging/concepts/protocols.md#store), [Light Push](https://docs.logos.co/messaging/concepts/protocols.md#light-push), or [Filter](https://docs.logos.co/messaging/concepts/protocols.md#filter). This allows for targeted interactions and enhanced functionality based on the desired capabilities.
+
+## Discovery mechanisms
+
+Logos Delivery supports multiple [peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery) mechanisms, such as:
+
+- [Configuring Static Peers](https://docs.logos.co/messaging/concepts/understand-peer-discovery/static-peers.md)
+- [Peer Discovery via DNS](https://docs.logos.co/messaging/concepts/understand-peer-discovery/dns-discovery.md)
+- [Discv5 Ambient Peer Discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/discv5.md)
+- [Peer Exchange](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-exchange.md)

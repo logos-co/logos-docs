@@ -1,0 +1,79 @@
+> Source: https://docs.logos.co/messaging/get-started/send-1-1-messages-logos-chat
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Send 1:1 messages with the Logos Chat app
+
+#### Try out end-to-end encrypted private messaging over the Logos network.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.2.1**.
+
+This procedure shows how to use the [Logos Chat](https://docs.logos.co/get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The [app](https://docs.logos.co/get-started/glossary.md#app) is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](https://docs.logos.co/get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
+
+Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+
+> **Info: Prerequisites**
+>
+>
+> - [Basecamp installed](https://docs.logos.co/basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
+> - Network access.
+
+## What to expect
+
+- You can run the Logos Chat app without building from source by installing it through Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp).
+- You can exchange encrypted messages between two instances in real time once one instance has opened a conversation with the other's address.
+- You can verify delivery by confirming each message appears on the receiving instance within a few seconds.
+
+## Step 1: Run the Logos Chat app
+
+You need two running instances to complete this procedure. Each instance can be started with the instructions below.
+
+1.  In the left bar of Logos Basecamp, select **Package Manager**.
+
+    ![Logos Basecamp screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
+1.  Find **Chat** (type `ui_qml`) in the [package](https://docs.logos.co/get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+
+    ![Logos Basecamp package installation screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
+1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
+1. In the left bar, select the new chat icon to launch the Logos Chat app.
+
+## Step 2: Start a conversation
+
+The app auto-initialises on launch. The bottom-left panel shows your identity, an **Online** indicator, and your hexadecimal **address** with a copy button next to it. To open a conversation, one instance needs the other's address. The steps below refer to the two instances as **A** and **B**.
+
+![Logos Chat App UI screenshot](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/messaging/assets/send-1-1-messages-logos-chat/chat-app-screenshot.png)
+
+**On instance B:**
+
+1. Wait until the bottom-left panel shows **Online**.
+1. Click the copy button next to your address.
+1. Send the address to instance A through any [out-of-band](https://docs.logos.co/get-started/glossary.md#out-of-band) [channel](https://docs.logos.co/get-started/glossary.md#channel).
+
+**On instance A:**
+
+1. Click **New chat**, then select **Direct message** ("One person, by address").
+1. In the **New DM** dialogue, paste B's address under **Paste the other user's address**.
+1. Click **Create**. A new conversation appears in A's conversation list.
+
+Instance B does not need to accept anything. The conversation appears in B's list when A's first message arrives, which you send in the next step.
+
+## Step 3: Send and receive messages
+
+1. On instance A, select the conversation you created in [Step 2](#step-2-start-a-conversation).
+1.  Type a message in the message input field, then press `Enter` or click the send button.
+
+    Your messages appear right-aligned in the chat panel; the counterparty's messages appear left-aligned, each with a timestamp.
+1.  Observe instance B.
+
+    **Expected result:** the conversation appears in B's list with an unread badge, and the exact message text appears as an incoming (left-aligned) bubble in B's chat panel within a few seconds. Select the conversation on B and reply; the reply appears as an incoming bubble in A.
+
+## Troubleshooting Logos Chat
+
+### Messages never arrive and the left panel shows "Waiting for connection…"
+
+Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for [peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery).
+
+### A previously open conversation has disappeared
+
+Conversations are ephemeral and are not persisted between sessions. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.

@@ -1,0 +1,32 @@
+# Logos documentation: LEZ (Logos Execution Zone)
+
+> The Logos Execution Zone: wallet, accounts, public and private transfers, custom tokens, programs, RLN membership, explorer and chain following.
+
+Use this section to:
+
+- run the LEZ wallet and transfer native tokens
+- create and transfer custom tokens on LEZ
+- write and deploy a LEZ program
+- register an RLN membership
+- run a LEZ explorer or follow the chain
+
+Full text of this section: https://docs.logos.co/lez/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md): Understand how the Logos Execution Zone runs general-purpose applications with selective privacy.
+- [Run the LEZ wallet app and initiate native token transfers](https://docs.logos.co/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md): Use the wallet app to set up accounts and try every type of native token transfer on the LEZ testnet.
+- [Run an LEZ wallet via the CLI](https://docs.logos.co/lez/get-started/run-lez-wallet-via-cli.md): Try the wallet CLI against the live LEZ testnet.
+- [Transfer native tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/transfer-native-tokens-on-lez.md): Use the wallet CLI to send native tokens to public and private accounts.
+- [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md): Use the wallet and SPEL CLIs to create custom tokens, transfer them, mint or burn supply, and rotate the mint authority.
+- [Transfer LEZ tokens between public and private states](https://docs.logos.co/lez/transfer-tokens/transfer-lez-tokens-between-public-private-states.md): Get started with private transfers to accounts you don't control, using a recipient-published keypair.
+- [Run an LEZ Indexer](https://docs.logos.co/lez/follow-chain/run-lez-indexer.md): Get started with the LEZ Indexer and query finalised LEZ state over HTTP RPC.
+- [Start and use an instance of the LEZ Explorer](https://docs.logos.co/lez/follow-chain/start-and-use-instance-of-lez-explorer.md): Get a clear view of on-chain activity including blocks, transactions, and accounts.
+- [Set up a shared private account](https://docs.logos.co/lez/accounts/set-up-shared-private-lez-account.md): Get started with group-owned private accounts where every member independently derives the same keys.
+- [Write and deploy an LEZ program with `logos-scaffold`](https://docs.logos.co/lez/programs/write-and-deploy-lez-program-with-scaffold.md): Use `logos-scaffold` to create, build, and deploy a guest program on a local Logos Execution Zone sequencer.
+- [Register an RLN membership from Basecamp](https://docs.logos.co/lez/rln/register-rln-membership-from-basecamp.md): Get an RLN membership on the LEZ testnet for a delivery node running in Logos Basecamp.
+- [Register an RLN membership on LEZ with a Delivery node](https://docs.logos.co/lez/rln/register-rln-membership-on-lez-with-delivery-node.md): Start a Logos Delivery node on the DoS-protected logos.test network, register its RLN membership on the Logos Execution Zone, and send a rate-limited message.
+- [Gate program instructions with admin-authority](https://docs.logos.co/lez/extensions/admin-authority.md): This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
+- [Freeze program execution with freeze-authority](https://docs.logos.co/lez/extensions/freeze-authority.md): This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.
+- [Build a SPEL extension library](https://docs.logos.co/lez/extensions/build-a-spel-extension-library.md): This page is an early draft and may be incomplete or incorrect. Expect changes, missing prerequisites, and commands that might not work in your setup. This content is still being completed and verified.

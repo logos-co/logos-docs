@@ -1,0 +1,35 @@
+# Logos documentation: Messaging
+
+> Logos Messaging: the Delivery node and module API, the Chat module API, Logos Chat 1:1 and group messaging, and peer-discovery concepts.
+
+Use this section to:
+
+- run a Delivery node
+- use the Delivery module API from an app
+- build a module that uses the Chat module API
+- send 1:1 or group messages with Logos Chat
+- understand how messaging peers discover each other
+
+Full text of this section: https://docs.logos.co/messaging/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Introduction to Logos Messaging](https://docs.logos.co/messaging.md): Learn how Logos can be used to build private, censorship-resistant communication applications.
+- [Send 1:1 messages with the Logos Chat app](https://docs.logos.co/messaging/get-started/send-1-1-messages-logos-chat.md): Try out end-to-end encrypted private messaging over the Logos network.
+- [Send group messages with the Logos Chat app](https://docs.logos.co/messaging/get-started/send-group-messages-logos-chat.md): Create a three-member end-to-end encrypted group conversation in the Logos Chat app, invite members by address, and send a message that reaches all of them.
+- [FAQ: Logos Messaging](https://docs.logos.co/messaging/get-started/faq.md): Review common questions about how Logos Messaging works and how to build on it.
+- [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/protocols.md): Understand the modular protocols that let applications balance anonymity, scalability, and latency.
+- [About content topics](https://docs.logos.co/messaging/concepts/content-topics.md): Understand how content topics filter and route messages, and how naming choices affect privacy.
+- [About network domains](https://docs.logos.co/messaging/concepts/network-domains.md): Understand the discovery, gossip, and request/response domains that structure how peers interact.
+- [About transports](https://docs.logos.co/messaging/concepts/transports.md): Understand how nodes move data between peers and which transports suit each environment.
+- [About static peers](https://docs.logos.co/messaging/concepts/understand-peer-discovery/static-peers.md): Understand how hard-coded bootstrap peers work and the trade-offs they carry.
+- [About DNS discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/dns-discovery.md): Understand how a node retrieves peer connection details from an ENR tree published in DNS.
+- [About Discv5](https://docs.logos.co/messaging/concepts/understand-peer-discovery/discv5.md): Understand how Discv5 uses a distributed hash table to find peers across the network.
+- [About peer exchange](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-exchange.md): Understand how light nodes request peers from other nodes without relying on Discv5.
+- [Understand Logos Delivery security features](https://docs.logos.co/messaging/concepts/security-features.md): See the services that keep Logos Delivery communication private and abuse-resistant.
+- [Learn the differences between Logos Delivery and libp2p](https://docs.logos.co/messaging/concepts/logos-delivery-and-libp2p.md): Understand what Logos Delivery adds on top of libp2p and where the two differ.
+- [Use the Delivery module API in an app](https://docs.logos.co/messaging/delivery/use-delivery-module-api-in-app.md): Get started integrating Logos messaging into a C++ module.
+- [Run a Delivery node from the CLI](https://docs.logos.co/messaging/delivery/run-delivery-node-from-cli.md): Use the Delivery module to run a Logos Delivery node on the CLI
+- [Build a Logos module that uses the Chat module API](https://docs.logos.co/messaging/chat-module/build-logos-module-that-uses-chat-module-api.md): Get started with private 1:1 and group end-to-end encrypted messaging in your own Logos module.
+- [Understand peer discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-discovery.md): Learn how a node bootstraps and finds the peers it needs to operate.

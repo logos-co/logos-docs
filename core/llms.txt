@@ -1,0 +1,24 @@
+# Logos documentation: Core
+
+> Logos Core: building core and UI modules with logos-module-builder, metadata.json, the LGX package format, and the logosctl CLI.
+
+Use this section to:
+
+- build and run a Logos core module (C++/Qt plugin)
+- wrap an existing C library as a Logos module
+- build a C++ UI module for Basecamp
+- write or check a module metadata.json
+- package a module as .lgx (portable vs -dev variants)
+- run modules headlessly with logosctl
+
+Full text of this section: https://docs.logos.co/core/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Start a Logos module from the CLI](https://docs.logos.co/core/build-modules/start-a-logos-module-from-the-cli.md): Explore how to load and call a Logos module from the command line using `logosctl`.
+- [Build and run a Logos core module](https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module.md): Scaffold, build, package, and test a core module on Logos.
+- [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md): Expose functions from a C shared library through a Logos core module.
+- [Build a Logos C++ UI module](https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module.md): Get started building a ui\_qml module with a C++ backend that runs in a separate process.
+- [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md): An LGX file (.lgx) is the package format for distributing a Logos module: a deterministic, gzip-compressed tar archive that bundles one or more platform-specific builds of the module with a signed manifest describing its metadata and dependencies. lgx is the CLI that creates, inspects, and signs these archives. logosctl installs them into a session, from a catalogue or from a local file; the standalone lgpm installs local files, and lgpd downloads packages from a catalogue without installing them.
+- [Logos CLI Reference](https://docs.logos.co/core/reference/logos-cli-reference.md): logosctl is the command-line tool for running Logos modules without the Basecamp app. It runs the Logos Core runtime as a daemon, which you drive with client commands to install packages, load modules, call their methods and watch their events. It bundles the package manager and package downloader modules, so searching a catalogue, installing with dependencies resolved, loading and calling all go through one binary.

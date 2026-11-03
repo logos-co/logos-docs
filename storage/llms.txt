@@ -1,0 +1,23 @@
+# Logos documentation: Storage
+
+> Logos Storage: decentralised, content-addressed file storage. Running a storage node and building apps on the Storage API.
+
+Use this section to:
+
+- run a Logos Storage node from the CLI or Basecamp
+- upload and download files
+- build a CLI app that uses the Storage API
+
+Full text of this section: https://docs.logos.co/storage/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Introduction to Logos Storage](https://docs.logos.co/storage.md): Learn how Logos can be used to build resilient, censorship-resistant file sharing applications.
+- [Run a Storage Node from Basecamp](https://docs.logos.co/storage/get-started/run-storage-node-from-basecamp.md): Get started sharing and downloading files on the Logos Storage network
+- [Run a Storage node from the CLI](https://docs.logos.co/storage/get-started/run-storage-node-from-cli.md): Get started running a Logos Storage node and uploading your first file to the Logos network.
+- [Run a Mix network of Storage nodes](https://docs.logos.co/storage/get-started/run-mix-network-of-storage-nodes.md): Stand up a local Mix network and download a file through it, with the content lookup routed through Mix for privacy.
+- [Troubleshooting](https://docs.logos.co/storage/get-started/faq.md): Fix the most common problems of a storage node.
+- [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md): Understand how a storage node joins a network and becomes reachable from the internet.
+- [Mix](https://docs.logos.co/storage/concepts/mix.md): This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+- [Build a CLI app that uses the Storage API](https://docs.logos.co/storage/build-app/build-cli-app-that-uses-storage-api.md): Wrap the Storage module API in a simple synchronous CLI interface.

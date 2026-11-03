@@ -1,0 +1,14 @@
+# Logos documentation: Peer discovery
+
+> Peer discovery and connection management without central registries.
+
+Use this section to:
+
+- build a Logos core module that uses the service discovery API
+
+Full text of this section: https://docs.logos.co/peer-discovery/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Build a Logos Core module that uses the Service Discovery API](https://docs.logos.co/peer-discovery/get-started/build-logos-core-module-that-uses-service-discovery-api.md): Get started with typed, service-keyed peer lookups in a live Logos network.

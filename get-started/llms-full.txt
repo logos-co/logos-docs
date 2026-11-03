@@ -1,0 +1,745 @@
+> Source: https://docs.logos.co/get-started/what-is-logos
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# What is Logos?
+
+#### Learn how the Logos technology stack is organised as a modular operating system for decentralised applications.
+
+**Logos is a toolbox for building decentralised applications.** As a modular, microkernel-based technology stack, its structure can be compared to the Linux operating system, which consists of a kernel, a networking stack, a set of system services, and the applications that run on top of them. Different distributions share the same kernel but assemble different services and applications on top of it.
+
+Logos follows the same structure. At its foundation sits the **Logos runtime**, a microkernel-style core that provides the primitives a decentralised application requires. Above the runtime sits a **networking layer**, which provides [peer discovery](https://docs.logos.co/get-started/glossary.md#peer-discovery), connection management, and privacy-preserving communication through a [mixnet](https://docs.logos.co/get-started/glossary.md#mixnet). Above that sit the **[modules](https://docs.logos.co/get-started/glossary.md#module)** - pluggable components that provide a specific capability, such as storage, messaging, or blockchain consensus. At the top of the stack sit the **[apps](https://docs.logos.co/get-started/glossary.md#app)** that compose these modules into usable products.
+
+Logos ships with a default configuration consisting of the runtime plus storage, messaging, and blockchain modules. This configuration is not fixed: developers can assemble other distributions from a different selection of modules.
+
+## The basics
+
+- Logos is organised into four layers: a runtime at the base, a privacy-preserving networking layer above it, a set of pluggable modules that provide specific capabilities, and applications on top that are composed of those modules.
+- [Logos Basecamp](https://docs.logos.co/basecamp/install-logos-basecamp.md) is a local-first launcher for peer-to-peer apps built on Logos, and the default entry point to the stack. It runs the Logos runtime locally, loads a configured module profile, and provides a unified interface. The **Logos Node** runs the same runtime without a user interface, for validators, operators, or backend services.
+- An application built on Logos inherits metadata protection and support for private state from the infrastructure layer regardless of whether its developer has implemented privacy-preserving measures directly.
+
+## Architecture
+
+Logos is organised into distinct layers, each with a defined responsibility: the runtime, the networking layer, modules, and apps.
+
+![The Logos architecture.](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/get-started/assets/introduction-to-logos/logos-tech-diagram.png)
+
+### The runtime
+
+The **Logos runtime** follows a microkernel design: it performs a minimal set of functions and delegates all other responsibilities to modules that run on top of it. This differs from a monolithic kernel such as Linux, where the networking stack and many other services run inside the kernel itself. The runtime's responsibilities are limited to loading and unloading modules, managing each module's lifecycle, and providing a mechanism for modules to locate and call one another.
+
+The runtime is implemented in a C++ library called [liblogos](https://github.com/logos-co/logos-liblogos). Three supporting modules operate alongside it. The **Process Manager Module** runs each loaded module in its own operating system process. If a module fails, the Process Manager Module records the failure and restarts the module using an exponential backoff, so that a fault in one module does not affect the rest of the system. The **Developer Module** provides visibility into loaded modules, their registered objects, and their interactions, together with tracing, hot reload, and live debugging through a JSON-RPC interface. The **Package Manager Module** retrieves modules, currently from GitHub and in future from peer-to-peer storage, verifies them against cryptographic hashes, resolves dependencies, and applies incremental updates rather than re-downloading a module in full each time it changes.
+
+This separation allows individual modules to be developed, tested, and updated independently of the runtime and of one another.
+
+### The networking layer
+
+The networking layer sits above the runtime and is represented in the stack as discovery, peering, and mixnet. It determines how Logos nodes locate one another, establish connections, and exchange messages. Unlike a conventional networking stack, this layer is designed to protect the privacy of communications between participants, as a property of the network rather than of any individual application.
+
+This layer comprises several components. **Service Discovery** allows a node to locate other nodes that offer a required capability without consulting a central directory. It adapts the DISC-NG protocol for use with libp2p's Kademlia-DHT: each node publishes a signed record describing its address and capabilities, and other nodes query for records that match the capabilities they require without participating in the full distributed hash table.
+
+**The libp2p mixnet** is the privacy-preserving transport layer, based on the design principles used in anonymity networks such as Tor and Nym. Messages are routed through a sequence of intermediary relay nodes that shuffle and delay traffic before forwarding it, preventing an observer from correlating senders with receivers using timing or volume analysis. The protocol supports both one-way messages and request-response interactions, and includes cover traffic to maintain a sufficient set of plausible senders.
+
+**RLN and Zerokit** add spam protection to the network. A Rate Limiting Nullifier allows each network participant to send messages up to a defined rate while remaining anonymous. If a participant exceeds that rate, the protocol reveals their identity, allowing them to be slashed or removed. This cryptography is implemented in [Zerokit](https://github.com/vacp2p/zerokit) and is used both for denial-of-service protection on the mixnet and for rate limiting within Logos Delivery.
+
+**De-MLS** extends private messaging from one-to-one conversations to group conversations. It is a decentralised implementation of Messaging Layer Security in which a group is managed by multiple stewards rather than a single administrator.
+
+The networking layer is itself packaged as a module and loaded by the runtime in the same way as storage or messaging. Once loaded, it provides the private transport used by every other module to communicate across the network, independent of whether that traffic consists of file storage requests, chat messages, or transactions.
+
+### Modules
+
+Modules are self-contained components that sit above the networking layer, each providing a defined capability. Logos includes three foundational modules, and the architecture supports the addition of further modules.
+
+The [**Blockchain**](https://docs.logos.co/blockchain.md) module provides decentralised compute and consensus. It is built on **[Cryptarchia](https://docs.logos.co/get-started/glossary.md#cryptarchia)**, a private proof-of-stake consensus mechanism that makes it computationally infeasible for block proposers to be linked to their proposals, with stronger privacy provided by the **[Blend Network](https://docs.logos.co/get-started/glossary.md#blend-network)**. The **Logos Execution Zone (LEZ)**, a Layer 2 execution environment, supports [program](https://docs.logos.co/get-started/glossary.md#program) deployment with both public and private [account](https://docs.logos.co/get-started/glossary.md#account) states.
+
+The [**Messaging**](https://docs.logos.co/messaging.md) module provides private, censorship-resistant communication between parties and consists of two components. [Logos Delivery](https://github.com/logos-messaging/logos-delivery) provides the [transport](https://docs.logos.co/get-started/glossary.md#transport) layer, implementing publish-subscribe messaging for reliable delivery. [Logos Chat](https://github.com/logos-messaging/logos-chat) uses Delivery as its transport and provides encrypted one-to-one conversations, implemented with double-ratchet encryption, with support for group conversations under development using de-MLS.
+
+The [**Storage**](https://docs.logos.co/storage.md) module provides decentralised file storage and retrieval using content-addressed data. It exposes an API for storing a file and receiving a content identifier ([CID](https://docs.logos.co/get-started/glossary.md#cid)) in return, and for retrieving a file given its CID.
+
+**User modules** extend the architecture beyond the foundational set. Any developer can build a module that integrates with the same infrastructure. The runtime loads user modules, manages their lifecycle, and enables them to communicate with other modules, whether those modules are provided by Logos or by third parties.
+
+### Apps
+
+Apps are the decentralised applications that compose the modules described above. A chat application could use the messaging and storage modules; a decentralised finance application could use the blockchain module and the LEZ; a file-sharing application could use the storage module.
+
+[Logos Basecamp](https://docs.logos.co/basecamp/install-logos-basecamp.md) is a local-first launcher for peer-to-peer apps built on Logos, and the default entry point to the stack. It starts the runtime, loads the configured module profile, and provides a unified interface. By default, it includes a set of applications for each foundational module: a wallet for managing tokens, a chat interface for encrypted messaging, a file-sharing tool, and an explorer for inspecting blockchain and LEZ activity. The [Logos Node](https://docs.logos.co/run-a-node.md) provides an alternative entry point, starting the same runtime without a user interface. Because a distribution is defined by its selected modules rather than by its launcher, developers can assemble distributions for purposes other than the default configuration.
+
+---
+
+> Source: https://docs.logos.co/get-started/logos-ecosystem-repositories
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Logos ecosystem repositories
+
+#### Review the key repositories across the logos organisations.
+ 
+The Logos project is organised into several GitHub organisations, each focused on one part of the system. This page highlights the most important repositories for understanding the project and getting started with development. The selection is curated rather than exhaustive.
+ 
+## Orientation and contribution resources
+ 
+These repositories explain what Logos is building and how to take part, with no code to run.
+ 
+| Repository | Description |
+|:---|:---|
+| [logos-docs](https://github.com/logos-co/logos-docs) | Documentation, standards, and templates for Logos projects. |
+| [logos-web](https://github.com/logos-co/logos-web) | Monorepo for logos.co: the website, Field Guide, Research, Payload CMS, and browser demos. |
+| [logos-workspace](https://github.com/logos-co/logos-workspace) | Workspace CLI for developing across interdependent Logos repositories. |
+| [roadmap](https://github.com/logos-co/roadmap) | A Markdown-based view of the Logos roadmap. |
+| [rfp](https://github.com/logos-co/rfp) | Grants for building in the Logos ecosystem. |
+ 
+## Logos Basecamp
+
+Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos.
+
+| Repository | Description |
+|:---|:---|
+| [logos-basecamp](https://github.com/logos-co/logos-basecamp) | The Logos Basecamp repository. |
+
+## Logos Core
+ 
+Logos Core is the modular runtime that ties applications together.
+
+| Repository | Description |
+|:---|:---|
+| [scaffold](https://github.com/logos-co/scaffold) | CLI that bootstraps a runnable Logos application environment: LEZ program projects and the Basecamp module loop. Ships the `logos-scaffold` and `lgs` binaries. See [About Logos Scaffold](https://docs.logos.co/build-an-app/scaffold/about-logos-scaffold.md). |
+| [logos-liblogos](https://github.com/logos-co/logos-liblogos) | The core runtime library for the Logos modular application platform. |
+| [logos-logoscore-cli](https://github.com/logos-co/logos-logoscore-cli) | The headless CLI runtime for the Logos modular application platform. |
+| [logos-logoscore-py](https://github.com/logos-co/logos-logoscore-py) | Python wrapper for the [logoscore](https://docs.logos.co/get-started/glossary.md#logoscore) CLI. |
+| [logos-package-manager](https://github.com/logos-co/logos-package-manager) | C++ library and CLI for local Logos [package](https://docs.logos.co/get-started/glossary.md#package) management. |
+| [logos-package-downloader](https://github.com/logos-co/logos-package-downloader) | [Module](https://docs.logos.co/get-started/glossary.md#module) download tooling. No official description; purpose inferred. |
+| [logos-module-builder](https://github.com/logos-co/logos-module-builder) | Nix and CMake scaffolding library for building Logos [modules](https://docs.logos.co/get-started/glossary.md#module): project templates, the `logos_module()` CMake helper, and the `mkLogosModule` Nix builder. |
+| [logos-app-builder](https://github.com/logos-co/logos-app-builder) | Shared Nix library for building Logos UI applications. |
+| [Overwatch](https://github.com/logos-co/Overwatch) | Self-contained services application framework. |
+ 
+## Core modules and applications
+ 
+Modules plug into Logos Core to provide specific capabilities, and user-interface repositories are the front-end applications built on those modules. Modules and applications live in both organisations.
+ 
+| Repository | Description |
+|:---|:---|
+| [logos-chat-module](https://github.com/logos-co/logos-chat-module) | A Logos [Core module](https://docs.logos.co/get-started/glossary.md#core-module) that exposes [Logos Chat](https://docs.logos.co/get-started/glossary.md#logos-chat). |
+| [logos-chat-ui](https://github.com/logos-co/logos-chat-ui) | UI application for the Logos Chat SDK proof of concept. |
+| [logos-wallet-module](https://github.com/logos-co/logos-wallet-module) | Early stage wallet module built on go-wallet-sdk. |
+| [logos-blockchain-module](https://github.com/logos-blockchain/logos-blockchain-module) | Core module wrapping logos-blockchain-c. |
+| [logos-blockchain-ui](https://github.com/logos-blockchain/logos-blockchain-ui) | Blockchain UI application for Logos Core. |
+| [logos-execution-zone-module](https://github.com/logos-blockchain/logos-execution-zone-module) | [Logos Execution Zone](https://docs.logos.co/get-started/glossary.md#logos-execution-zone) module for Logos Core. No official description; purpose inferred. |
+| [logos-execution-zone-wallet-ui](https://github.com/logos-blockchain/logos-execution-zone-wallet-ui) | Logos Execution Zone wallet UI. No official description; purpose inferred. |
+| [logos-libp2p-module](https://github.com/logos-co/logos-libp2p-module) | A Logos module that integrates libp2p networking capabilities. |
+ 
+## Logos Blockchain
+ 
+The [Logos Blockchain](https://docs.logos.co/get-started/glossary.md#logos-blockchain) is the foundational infrastructure of the Logos technology stack.
+ 
+| Repository | Description |
+|:---|:---|
+| [logos-blockchain](https://github.com/logos-blockchain/logos-blockchain) | The Logos blockchain repository. |
+| [logos-blockchain-block-explorer-template](https://github.com/logos-blockchain/logos-blockchain-block-explorer-template) | Python block explorer and indexer template. |
+| [nimbos](https://github.com/logos-co/nimbos) | Nim client for the Logos chain. |
+ 
+## Logos Execution Zone
+ 
+The Logos Execution Zone ([LEZ](https://docs.logos.co/get-started/glossary.md#lez)) is the primary execution layer for applications built on the Logos stack.
+ 
+| Repository | Description |
+|:---|:---|
+| [logos-execution-zone](https://github.com/logos-blockchain/logos-execution-zone) | The LEZ  repository. |
+| [lez-programs](https://github.com/logos-blockchain/lez-programs) | Essential Logos Execution Zone [programs](https://docs.logos.co/get-started/glossary.md#program) built by Logos. |
+| [lez-multisig](https://github.com/logos-co/lez-multisig) | Multisig built with the lez-framework program macro. |
+| [logos-lez-rln](https://github.com/logos-co/logos-lez-rln) | Logos Execution Zone program for RLN registration. |
+| [logos-sql-zone](https://github.com/logos-blockchain/logos-sql-zone) | Password-manager demo built with the [Zone SDK](https://docs.logos.co/get-started/glossary.md#zone-sdk). |
+| [lez-fuzzing](https://github.com/logos-blockchain/lez-fuzzing) | Adversarial testing and fuzzing infrastructure for LEZ. |
+ 
+## Logos messaging
+
+[Logos Messaging](https://docs.logos.co/get-started/glossary.md#logos-messaging) is the project's decentralised communication system.
+
+| Repository | Description |
+|:---|:---|
+| [logos-delivery](https://github.com/logos-messaging/logos-delivery) | Logos messaging protocols implemented in Nim, formerly nwaku. |
+| [logos-delivery-js](https://github.com/logos-messaging/logos-delivery-js) | Logos messaging protocols implemented in JavaScript and TypeScript, formerly [Waku](https://docs.logos.co/get-started/glossary.md#waku) v2. |
+| [logos-delivery-python-bindings](https://github.com/logos-messaging/logos-delivery-python-bindings) | Python wrapper around the node. |
+| [sds-go-bindings](https://github.com/logos-messaging/sds-go-bindings) | Go bindings for the SDS reliability protocol. No official description; purpose inferred. |
+| [nim-sds](https://github.com/logos-messaging/nim-sds) | Nim implementation of the end-to-end reliability protocol. |
+| [nim-segmentation](https://github.com/logos-messaging/nim-segmentation) | Message segmentation. No official description; purpose inferred. |
+| [logos-delivery-rlnv2-contract](https://github.com/logos-messaging/logos-delivery-rlnv2-contract) | RLN-v2 smart contracts, written in Solidity. |
+| [logos-lips](https://github.com/logos-co/logos-lips) | Protocol specifications. |
+| [logos-delivery-simulator](https://github.com/logos-messaging/logos-delivery-simulator) | Simulates a network with multiple nodes, traffic, and users. |
+| [logos-delivery-interop-tests](https://github.com/logos-messaging/logos-delivery-interop-tests) | Interoperability tests. No official description; purpose inferred. |
+| [logos-chat](https://github.com/logos-messaging/logos-chat) | Supporting library for Logos Chat, written in Rust. |
+| [awesome-logos-delivery](https://github.com/logos-messaging/awesome-logos-delivery) | Community-curated list of resources. |
+
+## Logos Storage
+
+[Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) is the project's privacy-preserving, decentralised storage system.
+
+| Repository | Description |
+|:---|:---|
+| [logos-storage-nim](https://github.com/logos-storage/logos-storage-nim) | The storage node and durability engine, formerly nim-[codex](https://docs.logos.co/get-started/glossary.md#codex). |
+| [logos-storage-nim-dht](https://github.com/logos-storage/logos-storage-nim-dht) | A DHT based on Discv5 with libp2p provider-record support. |
+| [circom-compat-ffi](https://github.com/logos-storage/circom-compat-ffi) | FFI for circom-compat (ark-circom), used for zero-knowledge proving. |
+| [logos-storage-research](https://github.com/logos-storage/logos-storage-research) | Durability-engine research. |
+| [logos-storage-nim-cs-dist-tests](https://github.com/logos-storage/logos-storage-nim-cs-dist-tests) | Distributed system tests for the node. |
+| [logos-storage-local-harness](https://github.com/logos-storage/logos-storage-local-harness) | A bash harness for running the node without containers. |
+| [transport-over-mix](https://github.com/logos-storage/transport-over-mix) | Transport-layer abstraction over [Mix](https://docs.logos.co/get-started/glossary.md#mix), with spec and reference implementation. |
+| [libp2p-mix-transport](https://github.com/logos-storage/libp2p-mix-transport) | Experiments with a storage transport over the libp2p Mix protocol. |
+| [mix-hidden-services](https://github.com/logos-storage/mix-hidden-services) | Hidden services over Mix. |
+| [lioness_blockcipher](https://github.com/logos-storage/lioness_blockcipher) | Rust implementation of the LIONESS wide-block cipher. |
+| [logos-storage-docs-obsidian](https://github.com/logos-storage/logos-storage-docs-obsidian) | Indexed, searchable documentation as an Obsidian vault. |
+
+## AnonComms
+
+AnonComms focuses on building the core elements that allow privacy-preserving communication and coordination across the Logos stack. The work is at early stages, see the latest update in the [roadmap](https://roadmap.logos.co/anoncomms/).
+
+## Standards, governance, and verification
+ 
+These repositories define how Logos documents, proposes, and verifies changes.
+ 
+| Repository | Description |
+|:---|:---|
+| [logos-lips](https://github.com/logos-co/logos-lips) | Logos Improvement Proposals Index.|
+| [logos-doctest](https://github.com/logos-co/logos-doctest) | Executable documentation that can be verified and rendered. |
+| [logos-tutorial](https://github.com/logos-co/logos-tutorial) | Tutorial materials |
+
+---
+
+> Source: https://docs.logos.co/get-started/glossary
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Glossary
+
+A list of some common terms and phrases specific to the Logos ecosystem.
+
+---
+
+## A
+
+### Account
+
+The basic organisational unit of the LEZ state, with all persistent data stored in accounts. Accounts can be either public or private, and can also represent LEZ programs. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### App
+
+In the context of Logos modules, a user-facing bundle of a UI package combined with its core dependencies. See [Package](#package).
+
+---
+
+## B
+
+### Basecamp
+
+A local-first launcher for peer-to-peer apps built on Logos, where users install and run Logos modules and apps.
+
+### Bedrock
+
+The foundational layer of the Logos Blockchain, operating as a decentralised peer-to-peer network. See [About Bedrock](https://docs.logos.co/blockchain/concepts/about-bedrock.md).
+
+### Blend Network
+
+A Service that improves privacy protections for block proposers on the Logos Blockchain. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md).
+
+### Blend node
+
+A Logos Blockchain node that participates in the Blend Network. Also known as a **core node**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md).
+
+### Blend Protocol
+
+The protocol underlying the Blend Network, which improves privacy protections for Logos Blockchain block proposers. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md).
+
+### Bootstrapping
+
+The process a Logos Blockchain or Delivery node undergoes when first connected to the network. For a Logos Blockchain node, this involves "catching up" on the history of the blockchain.
+
+---
+
+## C
+
+### Catalogue
+
+A repository that lists the [packages](#package) available to install in Basecamp, identified by a `logos-repo.json` file. Basecamp ships with the official Logos catalogue configured and merges in any others you add.
+
+### Channel
+
+A lightweight virtual chain of ordered message logs that represent the state of a Zone on Bedrock. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md#logos-channels).
+
+### Channel note
+
+A note locked by a channel, representing the value bridged into that channel's Zone. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md#token-bridging).
+
+### CID
+
+**Content Identifier**, used to identify files for the storage module.
+
+### Codex
+
+A preceding protocol that informed the development of Logos Storage.
+
+### Content topic
+
+A string attached to messages sent via Logos Delivery to enable protocol-level features like selective message processing and retrieval based on specific criteria. See [About content topics](https://docs.logos.co/messaging/concepts/content-topics.md).
+
+### Core module
+
+A module that does not include a user interface view and provides backend functionality.
+
+### Core node
+
+A Logos Blockchain node that chooses to participate in the Blend Network. Also known as a **Blend node**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md).
+
+### Cover traffic
+
+Dummy messages sent by Blend nodes that, together with the other components of the Blend Protocol, improves proposer privacy guarantees. See [Cover traffic](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#cover-traffic).
+
+### Cryptarchia
+
+The Private Proof of Stake consensus protocol used by the Logos Blockchain. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md).
+
+---
+
+## D
+
+### Delivery module
+
+A module that uses the Logos Delivery network to send messages and subscribe to content topics.
+
+### DNS discovery
+
+A peer discovery mechanism used in Logos Delivery that allows the retrieval of an Ethereum Node Record (ENR) tree from the TXT field of a domain name, enabling the storage of node connection details and promoting decentralisation. See [About DNS discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/dns-discovery.md).
+
+---
+
+## E
+
+### EmPoWering
+
+A term used to describe how Proof of Work (PoW) is used on the Logos Blockchain, both to mine notes and to send Mantle transactions through the Blend Network. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md#mining-notes) and [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#sending-mantle-transactions-via-proof-of-work).
+
+### ENR
+
+**Ethereum Node Record** - a specification used in Logos Delivery to represent and identify nodes, facilitating discovery and communication within the network. Besides connection details, ENR also includes node configuration information like enabled protocol and shards.
+
+### Epoch
+
+A time unit used by the Logos Blockchain, about 7.5 days long. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md#time-units).
+
+### Ethereum Node Record
+
+A specification used in Logos Delivery to represent and identify nodes, facilitating discovery and communication within the network. Also known as **ENR**. Besides connection details, ENR also includes node configuration information like enabled protocol and shards.
+
+---
+
+## F
+
+### Filter
+
+A protocol that enables Logos Delivery light nodes to selectively subscribe to specific messages transmitted by peers using content topics. It is designed to be a lightweight alternative for accessing the Relay network. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/protocols.md#filter).
+
+---
+
+## G
+
+### GMS
+
+A **Group Master Secret** - a 32-byte secret used on the LEZ that, when sealed with another party's public sealing key, allows them to create a local instance of a shared LEZ account. See [Set up a shared private LEZ account](https://docs.logos.co/lez/accounts/set-up-shared-private-lez-account.md).
+
+### GossipSub
+
+A protocol for efficient and scalable information dissemination in decentralised networks commonly used in blockchain systems. See [About network domains](https://docs.logos.co/messaging/concepts/network-domains.md#gossip-domain).
+
+### Group Master Secret
+
+A 32-byte secret used on the LEZ that, when sealed with another party's public sealing key, allows them to create a local instance of a shared LEZ account. Also known as a **GMS**. See [Set up a shared private LEZ account](https://docs.logos.co/lez/accounts/set-up-shared-private-lez-account.md).
+
+---
+
+## I
+
+### Inscription
+
+A type of Mantle operation that writes data to the Logos Blockchain. Inscriptions are often used to represent Zone state updates. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md).
+
+---
+
+## L
+
+### LEE
+
+The **Logos Execution Environment** - the virtual machine that runs on the Logos Execution Zone. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### LEZ
+
+The **Logos Execution Zone** - the primary execution layer for general-purpose applications on Logos, with built-in support for private execution. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### `lgpm`
+
+The official package manager used for Logos modules. See [Package](#package).
+
+### `lgpd`
+
+The official package downloader for Logos modules. See [Package](#package).
+
+### `.lgx`
+
+The file extension for a Logos [package](#package): a gzip-compressed archive bundling a module's platform-specific binaries with a manifest, loadable by Basecamp.
+
+### Light node
+
+A resource-limited device or client that leverages service nodes to access the Logos Delivery Relay network.
+
+### Light push
+
+A protocol enabling Logos Delivery light nodes to send messages to the Relay network and receive acknowledgements confirming that a peer has received them. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/protocols.md#light-push).
+
+### LIP
+
+**Logos Improvement Proposal** - a proposed community update to the Logos design, which may or may not be incorporated into the project.
+
+### `lm`
+
+A helper tool for Logos modules.
+
+### Locator
+
+An address assigned to a Logos Blockchain node participating in the Blend Network. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-declaration-protocol).
+
+### Logos Blockchain
+
+The foundational infrastructure layer of the Logos technology stack. See [Introduction to the Logos Blockchain](https://docs.logos.co/blockchain.md).
+
+### Logos Chat
+
+A library for private, encrypted peer-to-peer chat using Logos Delivery. A component of Logos Delivery.
+
+### Logos Delivery
+
+A peer-to-peer messaging network with DoS protection via Rate Limiting Nullifiers. A component of Logos Delivery.
+
+### Logos Execution Environment
+
+The virtual machine that runs on the Logos Execution Zone. Also known as the **LEE**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### Logos Execution Zone
+
+The primary execution layer for general-purpose applications on Logos, with built-in support for private execution. Also known as the **LEZ**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### Logos Messaging
+
+The private messaging layer of the Logos technology stack.
+
+### Logos node
+
+A node running one or several Logos modules that connect to a network of other such nodes. See [Run a Logos node with blockchain, storage, and delivery](https://docs.logos.co/run-a-node.md).
+
+### `logos-module-builder`
+
+A build tool for Logos modules.
+
+### `logos-module-viewer`
+
+A graphical tool for inspecting Logos modules.
+
+### `logos-standalone-app`
+
+An app that displays UI views for Logos modules.
+
+### Logos Storage
+
+The privacy-preserving filesharing component of the Logos technology stack.
+
+### `logoscore`
+
+A daemon that runs Logos modules from the command line.
+
+### LSSA
+
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+---
+
+## M
+
+### Mantle
+
+The execution layer of Bedrock, provides operations that allow nodes to participate in the Blend Network, as well as an execution environment that allows for interactions with Zones. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md).
+
+### Message
+
+A virtual "block" of data that forms part of a Logos channel. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md).
+
+### Mining
+
+The process of obtaining notes via Proof of Work. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md#mining-notes).
+
+### Mix
+
+Traffic routing used to improve privacy properties.
+
+### Mixnet
+
+A privacy-preserving network layer, which uses traffic routing to improve privacy properties. See [Mixnet](https://docs.logos.co/mixnet/get-started/send-anonymised-messages-over-the-mix-network.md).
+
+### Module
+
+A self-contained, reusable software component that provides a specific capability. Multiple modules can be loaded and made to interact to form a complete application. A module is typically distributed as a [package](#package).
+
+### Mostly offline
+
+Logos Delivery clients who spend most of their time offline or disconnected from the internet and only occasionally to the network. Examples include browsers and mobile phones.
+
+---
+
+## N
+
+### Nescience
+
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### Nomos
+
+An old name for the Logos Blockchain. See [Introduction to the Logos Blockchain](https://docs.logos.co/blockchain.md).
+
+### Node key
+
+A Secp256k1 (64-char hex string) private key for generating the PeerID, listening addresses, and discovery addresses of a Logos Delivery node.
+
+### Note
+
+A fungible UTXO token used on Mantle. See [About Mantle](https://docs.logos.co/blockchain/concepts/about-mantle.md#mantle-ledger).
+
+### NPK
+
+A **Nullifier Public Key** - a public key used to verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### NSSA
+
+An old name for the Logos Execution Environment. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### NSK
+
+A **Nullifier Secret Key** - a secret key used to sign LEZ transactions. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Nullifier keys
+
+A key pair used to sign transactions and verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Nullifier Public Key
+
+A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Nullifier Secret Key
+
+A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+---
+
+## O
+
+### Out-of-band
+
+Exchanging information through a separate, secure channel distinct from the main communication method to enhance security.
+
+---
+
+## P
+
+### Package
+
+The distributable unit for a Logos [module](#module): a `.lgx` archive bundling the module's platform-specific binaries with a manifest describing its metadata, dependencies, and optional signature. A [catalogue](#catalogue) lists packages, and `logosctl`/`lgpm`/`lgpd` install them. See [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md).
+
+### PDA
+
+**Program Derived Address** - the address assigned to an LEE program. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### Peer discovery
+
+When a Logos Delivery node locates and gets information about other peers in the network. See [Understand peer discovery](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-discovery.md).
+
+### Peer exchange
+
+A peer discovery mechanism used in Logos Delivery that enables light nodes to request and receive peers from other nodes in the network, allowing them to bootstrap and expand their connections without depending on Discv5. See [About peer exchange](https://docs.logos.co/messaging/concepts/understand-peer-discovery/peer-exchange.md).
+
+### Peer ID
+
+The unique identifier of a node in the Logos Delivery network generated from the cryptographic hash of the node's public key.
+
+### PoL
+
+**Proof of Leadership** - the ZK proof that a note's owner is eligible to propose a block. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md).
+
+### PPoS
+
+**Private Proof of Stake** - a Proof of Stake consensus mechanism that protects the identity of block proposers. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md).
+
+### Private account
+
+A type of LEZ account that keeps its transactions private. Account updates are proven via ZK proofs. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Private Proof of Stake
+
+A Proof of Stake consensus mechanism that protects the identity of block proposers, also known as **PPoS**. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md).
+
+### Program
+
+An executable smart contract on the LEZ, associated with an LEZ account. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Program Derived Address
+
+The address assigned to an LEZ program, also known as a **PDE**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md).
+
+### Proof of Leadership
+
+The ZK proof that a note's owner is eligible to propose a block. Also known as **PoL**. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md).
+
+### Proposer privacy
+
+The difficulty of linking a block proposer on the Logos Blockchain to the block they proposed. See [Blockchain FAQ](https://docs.logos.co/blockchain/faq.md#how-is-the-logos-blockchain-private-if-mantle-notes-are-public-utxos).
+
+### Public account
+
+A type of LEZ account whose state is publicly available. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+---
+
+## R
+
+### Relay
+
+A protocol that extends the GossipSub protocol to enable secure and censorship resistant message sending and receiving among peers while preserving privacy. It also scales the Logos Delivery network to accommodate many nodes efficiently. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/protocols.md#relay).
+
+---
+
+## S
+
+### SDP
+
+The **Service Declaration Protocol** - used to keep track of Logos Blockchain nodes that opted in to participate in the Blend Network. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-declaration-protocol).
+
+### Sealing keys
+
+A key pair used by users of a shared LEZ account, together with the Group Master Secret, to derive a local instance of a shared account. See [Set up a shared private LEZ account](https://docs.logos.co/lez/accounts/set-up-shared-private-lez-account.md).
+
+### Service
+
+An opt-in protocol of the Logos Blockchain that requires a known and agreed-upon list of participants to function. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-declaration-protocol).
+
+### Service Declaration Protocol
+
+Used to keep track of Logos Blockchain nodes that opted in to participate in the Blend Network. Also known as the **SDP**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-declaration-protocol).
+
+### Service Reward Distribution Protocol
+
+Enables reward distribution to Logos Blockchain nodes participating in the Blend Network. Also known as the **SRDP**. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-reward-distribution-protocol).
+
+### Slot
+
+The basic time unit used by the Logos Blockchain, equivalent to 1 second. See [About Cryptarchia](https://docs.logos.co/blockchain/concepts/about-cryptarchia.md#time-units).
+
+### SRDP
+
+The **Service Reward Distribution Protocol** - enables reward distribution to Logos Blockchain nodes participating in the Blend Network. See [About the Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-reward-distribution-protocol).
+
+### Storage module
+
+The Logos module that provides filesharing capabilities via Logos Storage.
+
+### Store
+
+A protocol that enables the storage of relayed messages in the Logos Delivery network, allowing offline peers to retrieve missed messages upon reconnecting to the network. See [Understand Logos Delivery protocols](https://docs.logos.co/messaging/concepts/protocols.md#store).
+
+---
+
+## T
+
+### Token definition account
+
+An LEZ account that defines the properties and behaviour of a custom token. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
+
+### Token holding account
+
+An LEZ account that is able to hold a custom token. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
+
+### Token program
+
+An LEZ program that provides the functionality for the creation of custom LEZ tokens. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
+
+### Transport
+
+A network mechanism that establishes connections between Logos Delivery peers and enables efficient transmission, routing, and delivery of data packets.
+
+---
+
+## U
+
+### UI Module
+
+A Logos module that includes a user interface view.
+
+---
+
+## V
+
+### Viewing keys
+
+A key pair used to generate and verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Viewing Public Key
+
+A public key used to verify ZK proofs on the LEZ, also known as a **VPK**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### Viewing Secret Key
+
+A secret key used to generate ZK proofs on the LEZ, also known as a **VSK**. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### VPK
+
+A **Viewing Public Key** - a public key used to verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+### VSK
+
+A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](https://docs.logos.co/lez.md#accounts-model).
+
+---
+
+## W
+
+### Waku
+
+An old name for the Logos Delivery component of the Logos technology stack.
+
+---
+
+## Z
+
+### Zone SDK
+
+An SDK provided by Logos to facilitate the creation of custom Logos Zones. See [About Zones](https://docs.logos.co/blockchain/concepts/about-zones.md).
+
+### Zone
+
+An L2 blockchain that defines its own state and execution environment but uses the Logos Blockchain for consensus and data availability. See [About Zones](https://docs.logos.co/blockchain/concepts/about-zones.md).
+
+---
+
+> Source: https://docs.logos.co/get-started/testnet-endpoints
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Testnet endpoints
+
+#### Look up the RPC, explorer, release, and channel for each Logos Testnet.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3.0**.
+
+This page lists the public endpoints for each Testnet version, so you can find the right one when a procedure refers to the testnet sequencer or explorer. Use the row that matches the version your procedure targets.
+
+## Endpoints by version
+
+| Version | LEZ RPC | LEZ explorer | Blockchain explorer | LEZ release | Blockchain channel |
+|:---|:---|:---|:---|:---|:---|
+| 0.4 (actor model) | TBD | TBD | TBD | TBD | TBD |
+| 0.3 (current) | `https://testnet.lez.logos.co` | `https://explorer.testnet.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.3.1`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.1) | [`0101010101010101010101010101010101010101010101010101010101010101`](https://testnet.blockchain.logos.co/web/explorer/channel/0101010101010101010101010101010101010101010101010101010101010101) |
+| 0.2.4 (legacy) | `https://testnet-legacy.lez.logos.co/` | `https://explorer.testnet-legacy.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.2.4-lez-legacy`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.2.4-lez-legacy) | [`0240240240240240240240240240240240240240240240240240240240240240`](https://testnet.blockchain.logos.co/web/explorer/channel/0240240240240240240240240240240240240240240240240240240240240240) |
+
+## Related information
+
+- [Run the LEZ wallet app and initiate native token transfers](https://docs.logos.co/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md)
+- [Run a Blockchain node from the CLI](https://docs.logos.co/blockchain/get-started/run-blockchain-node-from-cli.md)

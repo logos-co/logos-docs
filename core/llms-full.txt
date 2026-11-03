@@ -1,0 +1,2765 @@
+> Source: https://docs.logos.co/core/build-modules/start-a-logos-module-from-the-cli
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Start a Logos module from the CLI
+
+#### Explore how to load and call a Logos module from the command line using `logosctl`.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This guide covers how to build and install a Logos [module](https://docs.logos.co/get-started/glossary.md#module), start the `logosctl` daemon, and call module methods from the command line. It is intended for users who want to run a module locally, or developers who want to test a module they are building. You create the module from the `logos-module-builder` template, so there is no code to write. By the end you will have a running `logosctl` instance that loads the template's `minimal` module and returns results from its `greet` and `getStatus` methods.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux x86_64 or aarch64
+>    - macOS arm64 (Apple Silicon)
+> - Git
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>    ```bash
+>    mkdir -p ~/.config/nix
+>    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>    ```
+> - Basic familiarity with the command line and Nix concepts
+
+## What to expect
+
+- You can build a module from the `logos-module-builder` template, load it into a running `logosctl` daemon and call its methods.
+- You can list the methods and events a module exposes, with the descriptions its author wrote.
+- You have a `logosctl` session with a `modules` directory that future modules install into.
+
+## Install the module
+
+`logosctl` expects each module in its own subdirectory containing a `manifest.json`. `logosctl package install` handles this layout automatically when given an [LGX](https://docs.logos.co/get-started/glossary.md#lgx) package, and unpacks it into the current [session's](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) own `modules/` directory.
+
+1. Create a module from the `logos-module-builder` template and build its LGX [package](https://docs.logos.co/get-started/glossary.md#package):
+
+   ```bash
+   mkdir hello-module
+   cd hello-module
+   nix flake init -t github:logos-co/logos-module-builder
+   git init && git add -A
+
+   nix build '.#lgx-portable'
+
+   cd ..
+   ```
+
+   - The template is a complete module named `minimal`: `src/minimal_impl.h` declares its methods, and the build generates the rest.
+   - Nix only sees files that Git tracks, so `git add` comes before the build.
+   - Build `lgx-portable`, not `lgx`: the `lgx` output is a development build (variant `darwin-arm64-dev` on Apple Silicon, for example) that `logosctl package install` rejects. See [Troubleshooting](#troubleshooting-logosctl-module-startup).
+
+1. Start the daemon, detached so this terminal stays free:
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+   - The detached command returns after the Logos node is ready to accept commands.
+
+1. Check the status of `logosctl`:
+
+   ```bash
+   logosctl daemon status
+   ```
+
+1. Install the LGX package into the current session:
+
+   ```bash
+   logosctl package install --file ./hello-module/result/*.lgx
+   ```
+
+   `logosctl` lists the change and asks you to confirm. Pass `-y` to skip the prompt. Without a terminal, for example in a script, `-y` is required.
+
+   This unpacks into the `logosctl` session's `modules/` directory:
+
+   ```
+   modules/minimal/
+   ├── minimal_plugin.dylib     # (or .so on Linux)
+   ├── assets/lidl/minimal.lidl # The module's interface, in LIDL
+   ├── manifest.json            # Package manifest
+   ├── variant                  # Platform variant identifier
+   └── ...                      # Runtime libraries bundled by the portable build
+   ```
+
+1. Confirm the module was installed correctly:
+
+   ```bash
+   logosctl package ls
+   ```
+
+   `minimal` is listed with the source `user`, next to the packages embedded in `logosctl`.
+
+## Call module methods
+
+With the module installed, load the module with `logosctl` and call its methods.
+
+1. Load the module and confirm that it was loaded:
+
+   ```bash
+   logosctl module load minimal
+
+   logosctl module ls --loaded
+   ```
+
+1. Call `greet` with a name:
+
+   ```bash
+   logosctl call minimal greet World
+   ```
+
+   ```
+   Hello, World! Greetings from the minimal module.
+   ```
+
+1. Call `getStatus`, which takes no arguments:
+
+   ```bash
+   logosctl call minimal getStatus
+   ```
+
+   ```
+   Minimal module is running.
+   ```
+
+1. Inspect the methods and events that `minimal` exposes:
+
+   ```bash
+   logosctl module show minimal
+   ```
+
+   ```
+   Methods:
+     greet(name: tstr) -> tstr
+         Returns a greeting and announces it as a typed `greeted` event.
+     getStatus() -> tstr
+         Returns a short status string.
+     ...
+
+   Events:
+     greeted(greeting: tstr)
+         Emitted by greet() with the greeting it produced. Other modules
+         subscribe with `modules().minimal.onGreeted(...)`.
+   ```
+
+   - The descriptions are the `///` comments in `src/minimal_impl.h`.
+   - Every module also has `name()`, `version()` and `lidl()`, which the output lists after `getStatus`.
+
+1. Stop the daemon:
+
+   ```bash
+   logosctl daemon stop
+   ```
+
+## Troubleshooting `logosctl` module startup
+
+### The platform key in `manifest.json` does not match
+
+`logosctl package install` fails with an error such as:
+
+```
+Error: install failed at step 'install': Package does not contain variant for platform: darwin-arm64 (package provides: darwin-arm64-dev)
+```
+
+An LGX package holds one variant per platform, and the released `logosctl` installs only the portable variant for the platform it runs on. A `-dev` variant comes from the `lgx` output, so build `lgx-portable` instead. A variant for another platform means the package was built there; rebuild it on the target platform and reinstall.
+
+### The install is refused without confirmation
+
+`logosctl package install` reports `Refusing to proceed without confirmation. Pass -y to continue.` when no terminal is available to confirm in. Pass `-y`.
+
+### The module is not loaded after a restart
+
+Restarting the daemon does not reload modules, so `logosctl call` reports `Module 'minimal' is not loaded`. Load it again with `logosctl module load minimal`.
+
+---
+
+> Source: https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Build and run a Logos core module
+
+#### Scaffold, build, package, and test a core module on Logos.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+Logos is a modular application framework built on Qt 6. Applications are composed of dynamically loaded modules that provide features and functionality. Logos [core modules](https://docs.logos.co/get-started/glossary.md#core-module) are non-UI modules that provide backend functionality, loaded by a Logos runtime such as `logosctl` or Logos Basecamp.
+
+You write a core module as one plain C++ class: its public methods are the module's API, and `logos-module-builder` generates the Qt plugin around it. This procedure scaffolds a module from the builder's template, builds and inspects it, packages it, and runs it with `logosctl` and with Logos Basecamp.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux x86_64 or aarch64
+>    - macOS arm64 (Apple Silicon)
+>    - Windows 10 or 11 x86_64, building inside WSL2. Nix does not run on Windows itself, so Windows [packages](https://docs.logos.co/get-started/glossary.md#package) are cross-compiled from Linux. See [Build a Windows package](#build-a-windows-package).
+> - At least 10 GB of disk space
+> - Git
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>    ```bash
+>    mkdir -p ~/.config/nix
+>    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>    ```
+> - Basic familiarity with C++ (C++17), CMake, and Nix concepts
+
+## What to expect
+
+- You can scaffold and build a Logos core module from the `logos-module-builder` template.
+- You can inspect the compiled module's metadata, methods and events with the `lm` CLI tool.
+- You can package the module, install it with `logosctl` and call its methods, or call them from Logos Basecamp.
+
+## Step 1: Scaffold the module project
+
+The `logos-module-builder` provides a template for each kind of module. The default template produces a minimal core module: one C++ class and no UI.
+
+1. Create a new directory using your module's name and initialise it from the module builder template. Replace `<module-name>` with your module's name, for example, `my_module`.
+
+   ```bash
+   mkdir <module-name> && cd <module-name>
+   nix flake init -t github:logos-co/logos-module-builder/0.3.2
+   ```
+
+   - The other templates are `#with-external-lib` (see [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)), `#ui-qml-backend` (see [Build a Logos C++ UI module](https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module.md)), `#ui-qml`, `#rust` and `#rust-with-external-lib`.
+
+1. Review the project directory. The generated project structure looks like this:
+
+   ```text
+   <module-name>/
+   ├── flake.nix
+   ├── metadata.json
+   ├── CMakeLists.txt
+   └── src/
+       ├── minimal_impl.h
+       └── minimal_impl.cpp
+   ```
+
+   The template is a complete module named `minimal`. `src/minimal_impl.h` declares its API, two methods (`greet` and `getStatus`) and an event (`greeted`), and the build generates the Qt plugin from it. You replace the `minimal` placeholders with your module's name in Step 2.
+
+   > **Info**
+   >
+   > The `metadata.json` file is the single source of truth for your module. Read [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md) for more details.
+
+## Step 2: Adapt the template for your module
+
+Rename the `minimal` placeholders in the generated files to your module's name, then replace the example methods with your own. In this step, `<ModuleName>` is your module's name in PascalCase, for example, `MyModule` for `my_module`.
+
+1. Edit `metadata.json` and set `name`, `display_name`, `description`, and `main` to match your module.
+   - `name` must be a valid C identifier; it is used in file names, method calls, and module loading.
+   - `main` is `<module-name>_plugin`, the plugin file name without its extension (`.so` or `.dylib`).
+   - Leave the other fields in place, including `"interface": "universal"` and the `nix` block, which the build and the bundler rely on.
+
+1. Rename the source files in `src/` to match your module name.
+
+   ```bash
+   mv src/minimal_impl.h   src/<module-name>_impl.h
+   mv src/minimal_impl.cpp src/<module-name>_impl.cpp
+   ```
+
+   - The build looks for `src/<module-name>_impl.h` and a class named `<ModuleName>Impl`. To use other names, set `codegen.impl_header` and `codegen.impl_class` in `metadata.json`.
+
+1. Edit both source files: rename the class `MinimalImpl` to `<ModuleName>Impl`, and make `src/<module-name>_impl.cpp` include `<module-name>_impl.h`.
+
+1. Edit `CMakeLists.txt` and update the `project()` name and the two `SOURCES` entries to the renamed files.
+   - `logos_module()` reads `NAME` from `metadata.json`, so the two cannot drift apart.
+
+1. Edit `flake.nix` and update the `description` field.
+   - The generated `flake.nix` uses an unpinned `logos-module-builder` URL. For reproducible builds, pin it: `logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";`.
+
+1. Replace the example methods and event in `src/<module-name>_impl.h` and `src/<module-name>_impl.cpp` with your own, or keep them for now to follow the examples in this procedure.
+   - Every `public` method is part of the module's API. Use the parameter and return types in the table in [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md#step-3-configure-the-logos-module), for example `int64_t` and `std::string`, not `int` or `QString`.
+   - A `///` comment directly above a method or event becomes its description, which `lm`, `logosctl module show` and Logos Basecamp display.
+
+> **Tip**
+>
+> Run `grep -ri "minimal" .` after editing to catch any remaining placeholder references (`minimal`, `Minimal`, `MinimalImpl`) before building.
+
+## Step 3: Build the module
+
+1. Initialise a Git repository.
+
+   ```bash
+   git init && git add -A
+   ```
+
+   - Nix only sees files that Git tracks. Run `git add` again after you add new files.
+
+1. Build the full module output (library and generated SDK headers).
+
+   ```bash
+   nix build
+   ```
+
+   - Use `nix build '.#lib'` to build only the plugin shared library.
+   - Use `nix build '.#include'` to build only the generated SDK headers.
+   - The first build downloads Qt, the Logos SDK, and the code generators, and can take several minutes.
+
+1. Verify the build output contains the plugin binary and generated headers:
+
+   ```text
+   result/
+   ├── lib/
+   │   └── <module-name>_plugin.so   # (or .dylib on macOS)
+   └── include/
+       ├── <module-name>_api.h       # Generated type-safe wrapper header
+       └── <module-name>_api.cpp     # Generated wrapper implementation
+   ```
+
+## Step 4: Inspect your module
+
+The [`lm`](https://docs.logos.co/get-started/glossary.md#lm) tool (from `logos-module`) inspects compiled module binaries without loading them into a runtime.
+
+1. Build the `lm` tool from the `logos-module` repository.
+
+   ```bash
+   nix build 'github:logos-co/logos-module/0.3.0#lm' --out-link ./lm
+   ```
+
+1. View the module metadata and confirm the information is correct.
+
+   ```bash
+   # Linux
+   ./lm/bin/lm metadata result/lib/<module-name>_plugin.so
+
+   # macOS
+   ./lm/bin/lm metadata result/lib/<module-name>_plugin.dylib
+   ```
+
+   - Append `--json` for JSON output.
+
+   For example, for `my_module` with the display name `My Module`:
+
+   ```text
+   Plugin Metadata:
+   ================
+   Name:         my_module
+   Display name: My Module
+   Version:      1.0.0
+   Description:  My first Logos module
+   Author:
+   Type:         core
+   Protocol:     0.9.0
+   Dependencies: (none)
+   ```
+
+1. View the module methods.
+
+   ```bash
+   # Linux
+   ./lm/bin/lm methods result/lib/<module-name>_plugin.so
+
+   # macOS
+   ./lm/bin/lm methods result/lib/<module-name>_plugin.dylib
+   ```
+
+   - Append `--json` for JSON output.
+   - `lm events` lists the module's events the same way.
+
+   With the template's example methods, the output looks like this:
+
+   ```text
+   Plugin Methods:
+   ===============
+
+   tstr greet(tstr name)
+     Signature: greet(tstr)
+     Invokable: yes
+     Description: Returns a greeting and announces it as a typed `greeted` event.
+
+   tstr getStatus()
+     Signature: getStatus()
+     Invokable: yes
+     Description: Returns a short status string.
+
+   tstr name()
+     Signature: name()
+     Invokable: yes
+     Description: The module's name, as declared in its metadata.
+
+   tstr version()
+     Signature: version()
+     Invokable: yes
+     Description: The module's version, as declared in its metadata.
+
+   tstr lidl()
+     Signature: lidl()
+     Invokable: yes
+     Description: The module's canonical LIDL interface document.
+   ```
+
+   - Types are shown as the module's interface contract publishes them: `tstr` is a string, and `int` is a 64-bit integer.
+   - `name()`, `version()` and `lidl()` are generated for every module. `lidl()` returns the module's interface contract.
+
+1. To browse the methods in a window instead, build the graphical `logos-module-viewer` and open the module with it:
+
+   ```bash
+   nix build 'github:logos-co/logos-module-viewer/f8914691f3ac8be78b894d01b5d5ec6ce25d44f3#app' --out-link ./logos-viewer
+
+   # Linux
+   ./logos-viewer/bin/logos-module-viewer -m ./result/lib/<module-name>_plugin.so
+
+   # macOS
+   ./logos-viewer/bin/logos-module-viewer -m ./result/lib/<module-name>_plugin.dylib
+   ```
+
+   - The viewer has no release yet, so the command pins the commit this procedure was tested with.
+   - The viewer only loads modules that don't call other modules.
+
+## Step 5: Package the module
+
+Before you can run your module with `logosctl` or install it into Logos Basecamp, you need to package the build output into an [LGX](https://docs.logos.co/get-started/glossary.md#lgx) package. Check out the [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md) for more details on the format and bundling options.
+
+> **Info**
+>
+> The `manifest.json` is auto-generated from your module's `metadata.json` by the bundler. It maps each variant to its main entry point.
+
+1. Build the portable package, which bundles every dependency and has no `/nix/store` references:
+
+   ```bash
+   nix build '.#lgx-portable' --out-link result-lgx-portable
+   ```
+
+   - Released builds of `logosctl` and Logos Basecamp install only portable variants (for example, `linux-amd64` or `darwin-arm64`).
+
+1. Build the development package, for development builds of Logos Basecamp:
+
+   ```bash
+   nix build '.#lgx' --out-link result-lgx
+   ```
+
+   - The development variant (for example, `darwin-arm64-dev`) references `/nix/store` paths, so it works only on a machine with that Nix store. Development builds of `logosctl` and Logos Basecamp install only `-dev` variants.
+
+1. Check that each output holds the package, `logos-<module-name>-module-lib.lgx`:
+
+   ```bash
+   ls result-lgx-portable/ result-lgx/
+   ```
+
+### Build a Windows package
+
+Windows packages are cross-compiled: Nix runs on Linux and targets `x86_64-windows`. On a Windows machine, that Linux is WSL2. The result installs with the Windows build of `logosctl`.
+
+1. Set up WSL2 with Ubuntu. In PowerShell, run:
+
+   ```powershell
+   wsl --install -d Ubuntu-24.04
+   ```
+
+   - Restart Windows if prompted, then open **Ubuntu 24.04** from the Start menu and create your Linux user.
+   - WSL2 needs hardware virtualisation. If Windows itself runs in a virtual machine, enable nested virtualisation for that VM.
+
+1. In the Ubuntu terminal, install Nix and open a new terminal afterwards:
+
+   ```bash
+   sh <(curl -L https://nixos.org/nix/install) --daemon
+   ```
+
+1. Enable flakes and the Logos binary cache, which serves the prebuilt Windows toolchain (Qt, the MinGW libraries, and the Logos SDK) so that you don't compile it yourself. The Nix daemon reads these settings from `/etc/nix/nix.conf`:
+
+   ```bash
+   sudo tee -a /etc/nix/nix.conf <<'EOF'
+   experimental-features = nix-command flakes
+   extra-substituters = https://cache.nix.logos.co/public
+   extra-trusted-public-keys = public:l4HrXgL4nw246+LBh2SOJyhz64BoGegOYLheT/iIAPU=
+   EOF
+   sudo systemctl restart nix-daemon
+   ```
+
+1. Scaffold or clone your module in the Linux file system, for example under `~/`, rather than under `/mnt/c`. Nix and Git are much slower on the Windows drive.
+
+1. Build the portable Windows package:
+
+   ```bash
+   nix build .#packages.x86_64-windows.lgx-portable
+   ```
+
+   - `result/logos-<module-name>-module-lib.lgx` holds a `windows-x86_64` variant whose plugin is a `.dll`.
+   - Build the portable variant: a `-dev` variant references `/nix/store` paths that don't exist on Windows.
+   - Every dependency of your module needs a Windows build too.
+
+1. Copy the package to your Windows user folder:
+
+   ```bash
+   cp -L result/logos-<module-name>-module-lib.lgx /mnt/c/Users/<windows-user>/Downloads/
+   ```
+
+1. In PowerShell, with `logosctl` installed by `install-logosctl.ps1`, install, load, and call the module. Confirm the install prompt, or pass `-y`:
+
+   ```powershell
+   logosctl daemon start --detach
+   logosctl package install --file $HOME\Downloads\logos-<module-name>-module-lib.lgx
+   logosctl module load <module-name>
+   logosctl call <module-name> <method> <args>
+   ```
+
+   The first build in a fresh WSL2 Ubuntu downloads about 500 MB from the binary cache and takes a few minutes; later builds reuse it.
+
+## Step 6: Install the module
+
+Before you can run your module with `logosctl`, install the LGX package. `logosctl package install` unpacks it into the current [session's](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) `modules/` directory (`~/.logosctl/modules/` unless `--config-dir` or `LOGOSCTL_CONFIG_DIR` says otherwise), the same session that `logosctl daemon start` reads from.
+
+There are two ways to install a module:
+
+- Install a locally built `.lgx` package
+- Install a package by name from the catalogue
+
+### Install a locally built `.lgx` package
+
+1. Start the `logosctl` daemon in detached mode.
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+   - The command returns once the daemon accepts commands.
+
+1. Install the portable `.lgx` package:
+
+   ```bash
+   logosctl package install --file ./result-lgx-portable/*.lgx -y
+   ```
+
+   - `-y` applies the install without asking for confirmation.
+   - Use `--dir` instead of `--file` to install all LGX packages in a directory at once: `logosctl package install --dir ./packages/ -y`
+
+1. Verify the installed module:
+
+   ```bash
+   logosctl package ls
+   ```
+
+   Your module is listed with the source `user`, next to the packages embedded in `logosctl`. The session's `modules/` directory now contains a subdirectory with `manifest.json`, the plugin binary (`.so` or `.dylib`), and a `variant` file.
+
+### Install a package by name from the catalogue
+
+The Logos module [catalogue](https://docs.logos.co/get-started/glossary.md#catalogue) is hosted on GitHub Releases in the [logos-modules-release](https://github.com/logos-co/logos-modules-release) repository. `logosctl package install` fetches a named package straight from the catalogue and installs it in one step.
+
+> **Warning**
+>
+> Catalogue packages ship portable variants only (for example, `linux-amd64`, `darwin-arm64`). They install into `logosctl` and into released builds of Logos Basecamp, but not into a development build of Logos Basecamp, which expects `-dev` variants.
+
+1. Start the `logosctl` daemon in detached mode, if it is not running yet.
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+1. Refresh the catalogue, then search it for the module you want to install. Replace `<query>` with what you're looking for (for example, `chat`).
+
+   ```bash
+   logosctl catalog refresh
+   logosctl package search <query>
+   ```
+
+   > **Tip**
+   >
+   > Run `logosctl package search` with no query to browse all available packages.
+
+1. Install it by the name from the search results (for example, `chat_module`). `logosctl` resolves the name against the catalogue, downloads the package and its dependencies, and unpacks them into the session's `modules/` (or `plugins/`, for a UI module) in one step.
+
+   ```bash
+   logosctl package install <module-name> --yes
+   ```
+
+   - Add `--version` to pin a specific release instead of the newest one, and `--root-hash` to pin the exact published package identity.
+
+## Step 7: Run the module
+
+There are two Logos runtimes that can load and run your module: `logosctl` and Logos Basecamp.
+
+### Run with `logosctl`
+
+The `logosctl` CLI (from [`logos-logoscore-cli`](https://github.com/logos-co/logos-logoscore-cli)) is a headless runtime that can load modules and invoke their methods from the command line. It runs as a daemon that stays alive to host modules.
+
+1. Load the module and call a method. Replace `<method>` and `<args>` with the method name and arguments you want to call.
+
+   ```bash
+   logosctl module load <module-name>
+   logosctl call <module-name> <method> <args>
+   ```
+
+   - With the template's example methods, `logosctl call my_module greet World` prints `Hello, World! Greetings from the minimal module.`
+   - `logosctl module show <module-name>` lists the module's methods and events with their descriptions.
+
+1. Stop the daemon when finished.
+
+   ```bash
+   logosctl daemon stop
+   ```
+
+> **Tip**
+>
+> Check out [Logos CLI Reference](https://docs.logos.co/core/reference/logos-cli-reference.md) for more details on available commands and options.
+
+### Run with Logos Basecamp
+
+Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp) is a local-first launcher for peer-to-peer apps built on Logos, with a graphical interface for managing and running modules. Its **Module Inspector** lists every loaded core module and lets you call its methods, so you can try your module without writing a UI module for it.
+
+These steps use a development build of Logos Basecamp, which installs the development package from Step 5, with a data directory of its own. To use the released Logos Basecamp instead, install the portable package as described in [Install and load a module in Basecamp](https://docs.logos.co/basecamp/install-and-load-module-in-basecamp.md).
+
+1. Build the development version of Logos Basecamp and the `lgpm` package manager, which installs packages into a directory of your choice:
+
+   ```bash
+   nix build 'github:logos-co/logos-basecamp/0.3.2' --out-link ./logos-basecamp
+   nix build 'github:logos-co/logos-package-manager/0.3.0#cli' --out-link ./pm
+   ```
+
+1. Create a data directory for Logos Basecamp, and install the development package into its `modules/` directory:
+
+   ```bash
+   mkdir -p basecamp-data/modules basecamp-data/plugins
+   ./pm/bin/lgpm --modules-dir basecamp-data/modules install --file ./result-lgx/*.lgx
+   ```
+
+   - `lgpm` warns that the package is unsigned, which is expected for a package you built yourself.
+
+1. Launch Logos Basecamp with that data directory:
+
+   ```bash
+   ./logos-basecamp/bin/LogosBasecamp --user-dir "$PWD/basecamp-data"
+   ```
+
+   - `--user-dir` keeps this data apart from any other Logos Basecamp you run. Logos Basecamp reads core modules from its `modules/` subdirectory and UI modules from `plugins/`.
+
+1. Open **Settings**, select **Module Inspector**, and click **Load** in your module's row.
+
+   **Expected result:** the button changes to **Unload** once the module is loaded.
+
+1. Click **Interface** in your module's row.
+
+   **Expected result:** each method is listed with its signature, its description and a **Call** button.
+
+1. Click **Call** next to a method that takes no arguments, such as the template's `getStatus`.
+
+   **Expected result:** the **Result** area shows what the method returned, as JSON. For `getStatus`, that is `{"result":"Minimal module is running."}`.
+
+   - **Call** passes no arguments, so a method that takes parameters reports `invalid_args`. Call those methods with `logosctl call` instead.
+
+> **Tip**
+>
+> Try running the [Blockchain module](https://docs.logos.co/blockchain/get-started/run-blockchain-node-from-cli.md), [Storage module](https://docs.logos.co/storage/get-started/run-storage-node-from-cli.md) or [Chat module](https://docs.logos.co/messaging/get-started/send-1-1-messages-logos-chat.md) or browse the [Logos module catalogue](https://github.com/logos-co/logos-modules-release#module-set). `logosctl package search` lists it from the command line.
+
+## Troubleshooting
+
+### Known constraints
+
+A single `logosctl` daemon instance supports only one instance of a module, so all dependent apps share that state. To run multiple independent instances from the CLI, start separate daemons under separate sessions (`logosctl daemon start --config-dir <dir>` for each), so each gets its own installed modules and state. From Logos Basecamp, start separate instances with their own user directories (`--user-dir`); each one runs its own embedded runtime and module instances in isolation.
+
+### Nix reports an "experimental features" error
+
+If you see errors about experimental features, either pass the flag:
+
+```bash
+nix --extra-experimental-features "nix-command flakes" build
+```
+
+Or add the following to `~/.config/nix/nix.conf`:
+
+```conf
+experimental-features = nix-command flakes
+```
+
+### The build fails with `Failed to open header file` or `unknown type name`
+
+The build derives the implementation from the module's `name` in `metadata.json`: it parses `src/<module-name>_impl.h` and expects a class named `<ModuleName>Impl` in it.
+
+- A header with another name stops the build with `Error parsing impl header: Failed to open header file: src/<module-name>_impl.h`.
+- A class with another name fails in the generated code with `error: unknown type name '<ModuleName>Impl'`.
+
+Rename the file or the class to match `name`, or set `codegen.impl_header` and `codegen.impl_class` in `metadata.json` to the names you use.
+
+### The build reports that the module declares no `interface`
+
+A core module must keep `"interface": "universal"` in `metadata.json`. Without it, the build stops with `logos-module-builder: module '<module-name>' is a core module shipping a plugin (main: <module-name>_plugin) but declares no interface`. Add the field back.
+
+### Module not discovered by Logos Basecamp
+
+Confirm that you launched Logos Basecamp with the `--user-dir` you installed into, and that the module is in a subdirectory of its `modules/` directory (for example, `basecamp-data/modules/my_module/`) containing the module binary and `manifest.json`. A development build of Logos Basecamp needs the `-dev` variant from `.#lgx`; a released build needs the portable variant from `.#lgx-portable`.
+
+Also confirm you installed the module into the base directory the running instance actually reads, and restarted it afterwards. A rebuilt package never reaches a running Basecamp on its own. See [Troubleshoot Logos module development with Basecamp](https://docs.logos.co/build-an-app/scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md).
+
+### Module not discovered by `logosctl`
+
+Confirm the module is in a subdirectory of the session's `modules/` directory (for example, `modules/my_module/`) and that the subdirectory contains a `manifest.json` with a `main` object matching your OS and architecture. Run `logosctl package ls` to see what the current session actually has installed.
+
+### `logosctl package install` fails
+
+Verify the session's `modules/` directory (under `--config-dir`, default `~/.logosctl`) exists and is writable. If installing from a local `.lgx` file, confirm the file path is correct (the bundler writes `logos-<module-name>-module-lib.lgx`, not `<module-name>.lgx`). If installing from the catalogue, check your internet connection and that you've run `logosctl catalog refresh` recently. To pin a specific version instead of the newest one, pass `--version` (and optionally `--root-hash`) to `logosctl package install`.
+
+If installing into Logos Basecamp's data directory with the standalone `lgpm`, verify that the target directory exists and is writable instead.
+
+### LGX variant mismatch
+
+If `logosctl package install` fails with an error such as `Package does not contain variant for platform: darwin-arm64 (package provides: darwin-arm64-dev)`, the package has no variant of the kind that `logosctl` installs.
+
+- `nix build '.#lgx'` produces a single `-dev` variant (for example, `linux-amd64-dev`) for development builds of `logosctl` and Logos Basecamp. Released builds reject it.
+- `nix build '.#lgx-portable'` produces a single portable variant (for example, `linux-amd64`) for released builds of `logosctl` and Logos Basecamp.
+
+Catalogue packages ship portable variants only. To put both variants, or variants for several platforms, in one package, see the [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md).
+
+### `nix build .#lib` does nothing or fails silently
+
+Some shells (notably zsh) treat `#` as a comment character outside quotes. Quote the flake reference so the `#` reaches Nix intact.
+
+```bash
+nix build '.#lib'
+```
+
+### First build is slow
+
+The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and the rest of the build dependencies. This is a one-time cost; subsequent builds reuse the cache.
+
+---
+
+> Source: https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Wrap a C library as a Logos module
+
+#### Expose functions from a C shared library through a Logos core module.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This procedure walks you through wrapping a C shared library (`.so` on Linux, `.dylib` on macOS) as a Logos [module](https://docs.logos.co/get-started/glossary.md#module). You write one plain C++ class, with no Qt code and no plugin boilerplate, and `logos-module-builder` generates the Qt plugin around it. By the end, you have a `calc_module` that builds, loads into `logosctl` and answers method calls, and unit tests that run it against a mock of the C library.
+
+For a production example, see [logos-libp2p-module](https://github.com/logos-co/logos-libp2p-module), which wraps the `nim-libp2p` library compiled to a C shared library.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux x86_64 or aarch64
+>    - macOS arm64 (Apple Silicon)
+> - Git
+> - A C compiler (`gcc` or `clang`) to build the C library.
+> - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
+>    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>    ```bash
+>    mkdir -p ~/.config/nix
+>    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>    ```
+> - Basic familiarity with C and C++.
+
+## What to expect
+
+- You can wrap a C library in a Logos module by writing one plain C++ class, and let the build generate the Qt plugin around it.
+- You can inspect the built module with `lm` and call its methods from the command line with `logosctl`.
+- You can unit-test the module against a link-time mock of the C library, without starting a daemon.
+
+## Step 1: Scaffold the module project
+
+The `with-external-lib` template of `logos-module-builder` provides the `flake.nix`, `metadata.json`, `CMakeLists.txt` and directory layout that a module wrapping a library needs.
+
+1. Create the project directory and initialise it from the template:
+
+   ```bash
+   mkdir logos-calc-module && cd logos-calc-module
+   nix flake init -t github:logos-co/logos-module-builder/0.3.2#with-external-lib
+   ```
+
+   - The template already follows the pure C++ pattern that this procedure uses: one plain class in `src/external_lib_impl.h` and `src/external_lib_impl.cpp`, and `"interface": "universal"` in `metadata.json`.
+   - For a module that wraps no external library, use the default template instead: `nix flake init -t github:logos-co/logos-module-builder/0.3.2`.
+
+1. Remove the template's example class. The following steps replace it with the sources of `calc_module`:
+
+   ```bash
+   rm -f src/external_lib_impl.h src/external_lib_impl.cpp
+   ```
+
+## Step 2: Write the C library
+
+Create the C library that the module wraps, in the `lib/` directory. To wrap an existing library instead, place its pre-built `.so` or `.dylib` and its header file in `lib/` and continue at [Step 3](#step-3-configure-the-logos-module).
+
+1. Create the `lib` directory:
+
+   ```bash
+   mkdir -p lib
+   ```
+
+1. Create `lib/libcalc.h`:
+
+   ```c
+   #ifndef LIBCALC_H
+   #define LIBCALC_H
+
+   #ifdef __cplusplus
+   extern "C" {
+   #endif
+
+   /** Add two integers. */
+   int calc_add(int a, int b);
+
+   /** Multiply two integers. */
+   int calc_multiply(int a, int b);
+
+   /** Compute factorial of n (n must be >= 0). Returns -1 on error. */
+   int calc_factorial(int n);
+
+   /** Compute the nth Fibonacci number (n must be >= 0). Returns -1 on error. */
+   int calc_fibonacci(int n);
+
+   /** Return the library version string. Caller must NOT free. */
+   const char* calc_version(void);
+
+   #ifdef __cplusplus
+   }
+   #endif
+
+   #endif /* LIBCALC_H */
+   ```
+
+   The `extern "C"` block prevents C++ name mangling, so the module can find the symbols.
+
+1. Create `lib/libcalc.c`:
+
+   ```c
+   #include "libcalc.h"
+
+   int calc_add(int a, int b)
+   {
+       return a + b;
+   }
+
+   int calc_multiply(int a, int b)
+   {
+       return a * b;
+   }
+
+   int calc_factorial(int n)
+   {
+       if (n < 0) return -1;
+       if (n <= 1) return 1;
+       int result = 1;
+       for (int i = 2; i <= n; i++) {
+           result *= i;
+       }
+       return result;
+   }
+
+   int calc_fibonacci(int n)
+   {
+       if (n < 0) return -1;
+       if (n == 0) return 0;
+       if (n == 1) return 1;
+       int a = 0, b = 1;
+       for (int i = 2; i <= n; i++) {
+           int tmp = a + b;
+           a = b;
+           b = tmp;
+       }
+       return b;
+   }
+
+   const char* calc_version(void)
+   {
+       return "1.0.0";
+   }
+   ```
+
+1. Build the shared library:
+
+   ```bash
+   cd lib
+
+   # Linux
+   gcc -shared -fPIC -o libcalc.so libcalc.c
+
+   # macOS
+   # gcc -shared -fPIC -o libcalc.dylib libcalc.c
+
+   cd ..
+   ```
+
+1. Confirm that the symbols are exported:
+
+   ```bash
+   # Linux
+   nm -D lib/libcalc.so | grep calc
+
+   # macOS
+   # nm -gU lib/libcalc.dylib | grep calc
+   ```
+
+   Each function is listed with `T` (the text section). Addresses vary, and macOS prefixes each name with `_`:
+
+   ```text
+   0000000000001139 T calc_add
+   0000000000001179 T calc_factorial
+   00000000000011f5 T calc_fibonacci
+   0000000000001159 T calc_multiply
+   0000000000001299 T calc_version
+   ```
+
+## Step 3: Configure the Logos module
+
+With the pure C++ (`universal`) pattern you write a single C++ class. `metadata.json`, `CMakeLists.txt` and `flake.nix` tell the build system the rest, and `logos-cpp-generator` generates the Qt plugin around the class. After this step, the project looks like this:
+
+```text
+logos-calc-module/
+├── flake.nix          # Nix build configuration (~10 lines)
+├── metadata.json      # Module metadata, build settings, and runtime config
+├── CMakeLists.txt     # CMake build file
+├── lib/
+│   ├── libcalc.h      # C library header
+│   └── libcalc.c      # C library source (compiled by CMake)
+└── src/
+    ├── calc_module_impl.h     # Plain C++ class (no Qt, no plugin macros)
+    └── calc_module_impl.cpp   # Implementation (wrapping logic)
+```
+
+1. Replace `metadata.json` with the following. Set `"interface": "universal"` and declare the library under `nix.external_libraries`:
+
+   ```json
+   {
+     "name": "calc_module",
+     "version": "1.0.0",
+     "type": "core",
+     "category": "general",
+     "description": "Calculator module wrapping libcalc C library",
+     "main": "calc_module_plugin",
+     "interface": "universal",
+     "dependencies": [],
+
+     "nix": {
+       "packages": {
+         "build": [],
+         "runtime": []
+       },
+       "external_libraries": [
+         {
+           "name": "calc",
+           "vendor_path": "lib"
+         }
+       ],
+       "cmake": {
+         "find_packages": [],
+         "extra_sources": [],
+         "extra_include_dirs": ["lib"],
+         "extra_link_libraries": []
+       }
+     }
+   }
+   ```
+
+   This file is the single source of truth for the module. It is embedded in the plugin, read by `logos-module-builder` to configure the Nix build, used by CMake to link the external library, and used to write the [LGX](https://docs.logos.co/get-started/glossary.md#lgx) package manifest.
+
+   | Field | What it does |
+   | --- | --- |
+   | `name` | Module name. It must be a valid C identifier, because it is used in file names and method calls. |
+   | `main` | The name of the generated plugin, `<name>_plugin`. You don't write this file: the build produces `calc_module_plugin.so` or `calc_module_plugin.dylib`. |
+   | `interface` | `"universal"` selects the pure C++ pattern. The build parses `src/calc_module_impl.h` into the module's interface contract and generates the Qt plugin from it. |
+   | `nix.external_libraries` | The C or C++ libraries the module wraps. `name` is the CMake target and `vendor_path` is the directory that holds the source or binary. The build links each library into the plugin. |
+   | `nix.cmake.extra_include_dirs` | Directories added to the include path, so your C++ code can `#include "lib/libcalc.h"`. |
+
+1. Replace `CMakeLists.txt` with the following:
+
+   ```cmake
+   cmake_minimum_required(VERSION 3.14)
+   project(CalcModulePlugin LANGUAGES CXX)
+
+   # Include the Logos Module CMake helper (provided by logos-module-builder)
+   if(DEFINED ENV{LOGOS_MODULE_BUILDER_ROOT})
+       include($ENV{LOGOS_MODULE_BUILDER_ROOT}/cmake/LogosModule.cmake)
+   elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/LogosModule.cmake")
+       include(cmake/LogosModule.cmake)
+   else()
+       message(FATAL_ERROR "LogosModule.cmake not found")
+   endif()
+
+   # Define the module with its external library dependency.
+   # Because metadata.json sets `interface: universal`, the builder runs
+   # logos-cpp-generator over src/calc_module_impl.h before configuring,
+   # and LogosModule.cmake compiles the generated glue automatically.
+   logos_module(
+       NAME calc_module
+       SOURCES
+           src/calc_module_impl.h
+           src/calc_module_impl.cpp
+       EXTERNAL_LIBS
+           calc
+   )
+   ```
+
+   - List only your own source files under `SOURCES`. `LogosModule.cmake` compiles the generated plugin code automatically.
+   - `NAME` must match `name` in `metadata.json`, and `EXTERNAL_LIBS` must match `nix.external_libraries[].name`. If `NAME` differs, the build can succeed and the install phase still fail, because it looks for the plugin file named after `metadata.json`.
+   - `logos_module()` finds `libcalc.so` or `libcalc.dylib` in `lib/`, links it to the plugin and sets the RPATH so the plugin finds it at runtime.
+   - The `if`/`elseif`/`else` block is boilerplate. Don't change it.
+
+1. Replace `flake.nix` with the following. It pins `logos-module-builder` to the release this procedure was tested with:
+
+   ```nix
+   {
+     description = "Calculator module - wraps libcalc C library for Logos";
+
+     inputs = {
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
+     };
+
+     outputs = inputs@{ logos-module-builder, ... }:
+       logos-module-builder.lib.mkLogosModule {
+         src = ./.;
+         configFile = ./metadata.json;
+         flakeInputs = inputs;
+       };
+   }
+   ```
+
+   - `mkLogosModule` fetches Qt, the Logos SDK and the code generators, and derives the build from `metadata.json`.
+   - To depend on another module, add it as a flake input named after the `name` in that module's `metadata.json`. For example, a dependency on `waku_module` is the input `waku_module.url = "github:logos-co/logos-waku-module"`.
+   - To fetch and build the library from source instead of placing it in `lib/`, see [Wrapping a library from a flake input](https://github.com/logos-co/logos-tutorial/blob/master/outputs/tutorial-wrapping-c-library.md#advanced-wrapping-a-library-from-a-flake-input) in the Logos tutorials.
+
+1. Create `src/calc_module_impl.h`. This is the only interface you write, and it is plain C++:
+
+   ```cpp
+   #pragma once
+
+   #include <cstdint>
+   #include <string>
+
+   #include <logos_module_context.h>  // LogosModuleContext base + `logos_events:`
+
+   // Include the C library header (extern "C" already in the header).
+   extern "C" {
+       #include "lib/libcalc.h"
+   }
+
+   class CalcModuleImpl : public LogosModuleContext {
+   public:
+       CalcModuleImpl() = default;
+       ~CalcModuleImpl() = default;
+
+       // ── Public API — every method here is callable over IPC ──────────
+       // The generator maps C++ types onto the contract automatically:
+       //   int64_t  ↔ int      std::string ↔ tstr      bool ↔ bool
+       //
+       // A doc comment directly above a method becomes that method's
+       // `description` in the module's method introspection — surfaced
+       // by `lm`, `logosctl module show`, and Basecamp's Methods list.
+       // Use `///` (one or more lines) or a `/** ... */` block; the
+       // comment's line breaks are preserved. (Plain `//` comments like
+       // this block are ignored, so they never leak into the API.)
+
+       /// Adds two integers and returns the sum.
+       int64_t add(int64_t a, int64_t b);
+
+       /// Multiplies two integers and returns the product.
+       int64_t multiply(int64_t a, int64_t b);
+
+       // A multi-line description: consecutive `///` lines keep their breaks.
+       /// Computes the factorial n! of a non-negative integer.
+       /// Defined as n * (n-1) * ... * 1, with 0! = 1.
+       int64_t factorial(int64_t n);
+
+       /// Returns the nth Fibonacci number (0-indexed).
+       int64_t fibonacci(int64_t n);
+
+       // A `/** ... */` block comment works too (line breaks preserved).
+       /**
+        * Returns the version string of the wrapped libcalc C library.
+        * Read straight from the linked native library, not metadata.json.
+        */
+       std::string libVersion();
+
+       /// Looks up the library version and emits it as a `versionReady`
+       /// event instead of returning it. Used by the QML tutorial (Part 2).
+       void libVersionNotify();
+
+       // ── Events ───────────────────────────────────────────────────────
+       // Declared like Qt signals. The generator emits the body (in
+       // calc_module_events.cpp) that routes the typed args to subscribers
+       // via the host's `eventResponse` mechanism. QML subscribes with
+       // logos.onModuleEvent("calc_module", "versionReady").
+       //
+       // A `///` doc comment documents the event too — it surfaces as the
+       // event's `description` alongside methods (`lm events`, `logosctl
+       // module show`, and Basecamp's Interface screen).
+   logos_events:
+       /// Emitted by libVersionNotify() once the library version is known.
+       /// Carries the version string read from libcalc.
+       void versionReady(const std::string& version);
+   };
+   ```
+
+   - Every `public` method is callable by other modules and by `logosctl`. `private` members are not exposed.
+   - A doc comment directly above a method or event (`///`, or a `/** ... */` block) becomes its description, which `lm`, `logosctl module show` and Basecamp display. Plain `//` comments are ignored.
+   - Events are declared in a `logos_events:` section. Inheriting `LogosModuleContext` lets the class emit them and call other modules.
+   - Use `int64_t` for integers, not `int`. The code generator reads the header as text and recognises only the types in this table:
+
+   | C++ type | Contract type | A Qt caller sees |
+   | --- | --- | --- |
+   | `void` | `void` | `void` |
+   | `bool` | `bool` | `bool` |
+   | `int64_t` | `int` | `qlonglong` |
+   | `uint64_t` | `uint` | `qulonglong` |
+   | `double` | `float64` | `double` |
+   | `std::string` | `tstr` | `QString` |
+   | `std::vector<std::string>` | `[tstr]` | `QStringList` |
+   | `std::vector<uint8_t>` | `bstr` | `QByteArray` |
+   | `LogosMap` / `LogosList` (from `<logos_json.h>`) | `{tstr: any}` / `[any]` | `QVariantMap` / `QVariantList` |
+   | `StdLogosResult` | `result` | `LogosResult` (from `<logos_result.h>`) |
+
+   The contract type is what the module publishes about itself, in LIDL, its interface definition language. It is what `lm` prints in [Step 5](#step-5-inspect-the-module), and what a caller in any language binds to. The last column is what a C++ caller built on Qt compiles against.
+
+1. Create `src/calc_module_impl.cpp`. Each method calls the C function, converts the result to a C++ type if needed, and returns it:
+
+   ```cpp
+   #include "calc_module_impl.h"
+
+   int64_t CalcModuleImpl::add(int64_t a, int64_t b)
+   {
+       return calc_add(static_cast<int>(a), static_cast<int>(b));
+   }
+
+   int64_t CalcModuleImpl::multiply(int64_t a, int64_t b)
+   {
+       return calc_multiply(static_cast<int>(a), static_cast<int>(b));
+   }
+
+   int64_t CalcModuleImpl::factorial(int64_t n)
+   {
+       return calc_factorial(static_cast<int>(n));
+   }
+
+   int64_t CalcModuleImpl::fibonacci(int64_t n)
+   {
+       return calc_fibonacci(static_cast<int>(n));
+   }
+
+   std::string CalcModuleImpl::libVersion()
+   {
+       return std::string(calc_version());
+   }
+
+   void CalcModuleImpl::libVersionNotify()
+   {
+       // Emit the event declared in `logos_events:`. When the module is
+       // loaded by a host, this reaches every subscriber. When the class
+       // is constructed outside a host (e.g. in unit tests), it is a
+       // safe no-op.
+       versionReady(std::string(calc_version()));
+   }
+   ```
+
+   You don't write `initLogos`, `Q_INVOKABLE`, `name()`, `version()` or `lidl()`. The code generator produces them from the header and `metadata.json`.
+
+## Step 4: Build the module
+
+1. Create `.gitignore`, so build output stays out of the repository:
+
+   ```text
+   # Nix build output
+   result
+   result-*
+
+   # CMake build directory
+   build/
+   ```
+
+1. Initialise the Git repository, stage the files and lock the flake inputs:
+
+   ```bash
+   git init
+   git add -A
+   nix flake update
+   git add flake.lock
+   ```
+
+   - Nix only sees files that Git tracks.
+
+1. Build the plugin library:
+
+   ```bash
+   nix build '.#lib'
+   ```
+
+   - The first build takes 5 to 15 minutes while Nix downloads Qt, the Logos SDK and their dependencies. Later builds use the Nix cache.
+   - Keep the quotes around `'.#lib'`. Some shells, notably zsh, interpret `#` otherwise.
+
+1. Build the full [package](https://docs.logos.co/get-started/glossary.md#package):
+
+   ```bash
+   nix build
+   ```
+
+   - This build derives the module's LIDL contract from `src/calc_module_impl.h` and generates the Qt plugin from it before CMake compiles it.
+
+1. Inspect the output:
+
+   ```bash
+   ls -la result/lib/
+   ```
+
+   The plugin and the C library sit side by side, so the plugin finds the library at runtime through its RPATH:
+
+   ```text
+   # Linux
+   calc_module_plugin.so   # Your Logos module plugin
+   libcalc.so              # The C library (copied alongside)
+
+   # macOS
+   calc_module_plugin.dylib
+   libcalc.dylib
+   ```
+
+## Step 5: Inspect the module
+
+Use the [`lm`](https://docs.logos.co/get-started/glossary.md#lm) tool from `logos-module` to inspect the compiled plugin.
+
+1. Build `lm`:
+
+   ```bash
+   nix build 'github:logos-co/logos-module/0.3.0#lm' --out-link ./lm
+   ```
+
+1. View the module's metadata:
+
+   ```bash
+   # Linux
+   ./lm/bin/lm metadata result/lib/calc_module_plugin.so
+
+   # macOS
+   ./lm/bin/lm metadata result/lib/calc_module_plugin.dylib
+   ```
+
+   ```text
+   Plugin Metadata:
+   ================
+   Name:         calc_module
+   Display name: (unset — falls back to name)
+   Version:      1.0.0
+   Description:  Calculator module wrapping libcalc C library
+   Author:
+   Type:         core
+   Protocol:     0.9.0
+   Dependencies: (none)
+   ```
+
+1. List the module's methods:
+
+   ```bash
+   # Linux
+   ./lm/bin/lm methods result/lib/calc_module_plugin.so
+
+   # macOS
+   ./lm/bin/lm methods result/lib/calc_module_plugin.dylib
+   ```
+
+   ```text
+   Plugin Methods:
+   ===============
+
+   int add(int a, int b)
+     Signature: add(int,int)
+     Invokable: yes
+     Description: Adds two integers and returns the sum.
+
+   ...
+
+   int factorial(int n)
+     Signature: factorial(int)
+     Invokable: yes
+     Description:
+       Computes the factorial n! of a non-negative integer.
+       Defined as n * (n-1) * ... * 1, with 0! = 1.
+
+   ...
+
+   tstr lidl()
+     Signature: lidl()
+     Invokable: yes
+     Description: The module's canonical LIDL interface document.
+   ```
+
+   - Signatures use the contract types (`int`, `tstr`), not the C++ types you wrote. In LIDL, `int` is 64-bit, so a value that fits your `int64_t` is never truncated on the way across.
+   - Each `Description` is the method's doc comment, with its line breaks kept.
+   - `name()`, `version()` and `lidl()` are generated for every module. The last one returns the module's LIDL contract.
+   - Add `--json` for output that scripts and CI can parse.
+
+1. List the module's events:
+
+   ```bash
+   # Linux
+   ./lm/bin/lm events result/lib/calc_module_plugin.so
+
+   # macOS
+   ./lm/bin/lm events result/lib/calc_module_plugin.dylib
+   ```
+
+   ```text
+   Plugin Events:
+   ==============
+
+   void versionReady(tstr version)
+     Signature: versionReady(tstr)
+     Description:
+       Emitted by libVersionNotify() once the library version is known.
+       Carries the version string read from libcalc.
+   ```
+
+   Running `lm` with no subcommand prints the metadata, methods and events together.
+
+## Step 6: Install the module with `logosctl`
+
+`logosctl` installs modules from LGX packages, which carry the plugin, its libraries and a `manifest.json`. Build a portable package, start a daemon in a session of its own and install the package into it.
+
+1. Build the portable LGX package:
+
+   ```bash
+   nix build '.#lgx-portable' --out-link result-lgx-portable
+   ```
+
+   - Build `lgx-portable`, not `lgx`. The `lgx` output is a development build that keeps its libraries in the Nix store (variant `darwin-arm64-dev` on Apple Silicon, for example), and `logosctl` refuses to install it. See [Troubleshooting](#logosctl-cannot-find-the-module).
+
+1. Point `logosctl` at a session for this project. Run this in every terminal you use for the rest of this procedure:
+
+   ```bash
+   export LOGOSCTL_CONFIG_DIR="$PWD/session"
+   ```
+
+   - A [session](https://github.com/logos-co/logos-logoscore-cli/blob/master/docs/logosctl.md#sessions) holds its own modules, logs and data, so packages from other projects stay out of it. Without `LOGOSCTL_CONFIG_DIR`, `logosctl` uses `~/.logosctl`.
+
+1. Start the daemon, detached so this terminal stays free:
+
+   ```bash
+   logosctl daemon start --detach
+   ```
+
+   - The command returns once the daemon accepts commands.
+
+1. Install the package:
+
+   ```bash
+   logosctl package install --file ./result-lgx-portable/*.lgx -y
+   ```
+
+   - `-y` applies the install without asking for confirmation.
+
+   The plugin, the C library and the manifest unpack into the session's `modules/` directory:
+
+   ```text
+   session/modules/calc_module/
+   ├── calc_module_plugin.dylib   # (or .so on Linux)
+   ├── libcalc.dylib              # (or .so on Linux)
+   ├── assets/lidl/               # The module's interface, in LIDL
+   ├── manifest.json              # Package manifest
+   ├── variant                    # Platform variant identifier
+   └── ...                        # Runtime libraries bundled by the portable build
+   ```
+
+1. Confirm that the package is installed:
+
+   ```bash
+   logosctl package ls
+   ```
+
+   `calc_module` is listed with the source `user`, next to the packages embedded in `logosctl`.
+
+## Step 7: Call the module from `logosctl`
+
+1. Load the module:
+
+   ```bash
+   logosctl module load calc_module
+   ```
+
+1. Inspect the module's methods and events:
+
+   ```bash
+   logosctl module show calc_module
+   ```
+
+   ```text
+   Name:          calc_module
+   Version:       v1.0.0
+   Status:        loaded
+   ...
+
+   Methods:
+     add(a: int, b: int) -> int
+         Adds two integers and returns the sum.
+     multiply(a: int, b: int) -> int
+         Multiplies two integers and returns the product.
+     factorial(n: int) -> int
+         Computes the factorial n! of a non-negative integer.
+         Defined as n * (n-1) * ... * 1, with 0! = 1.
+     ...
+
+   Events:
+     versionReady(version: tstr)
+         Emitted by libVersionNotify() once the library version is known.
+         Carries the version string read from libcalc.
+   ```
+
+   - The descriptions are the doc comments from `src/calc_module_impl.h`, the same ones `lm` showed.
+
+1. Call its methods:
+
+   ```bash
+   logosctl call calc_module add 3 5
+   logosctl call calc_module factorial 5
+   logosctl call calc_module fibonacci 10
+   logosctl call calc_module libVersion
+   ```
+
+   Each call prints its result:
+
+   ```text
+   8
+   120
+   55
+   1.0.0
+   ```
+
+   - The daemon writes its log, including the output of every module, to `session/logs/daemon.log`.
+
+1. Stop the daemon:
+
+   ```bash
+   logosctl daemon stop
+   ```
+
+## Step 8: Unit-test the module
+
+Because the module is a plain C++ class, you can unit-test it directly, with no Qt and no daemon. The [Logos Test Framework](https://github.com/logos-co/logos-test-framework) provides a test runner (`LOGOS_TEST` and `LOGOS_ASSERT_*`) and link-time mocks of your C library, so each test decides what the C functions return and checks how the wrapper behaves.
+
+1. Enable tests in `flake.nix` by adding a `tests` block to the `mkLogosModule` call. `mockCLibs` lists the external libraries to replace with link-time mocks, so the tests don't link the real `libcalc`:
+
+   ```nix
+   {
+     description = "Calculator module - wraps libcalc C library for Logos";
+
+     inputs = {
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
+     };
+
+     outputs = inputs@{ logos-module-builder, ... }:
+       logos-module-builder.lib.mkLogosModule {
+         src = ./.;
+         configFile = ./metadata.json;
+         flakeInputs = inputs;
+         tests = {
+           dir = ./tests;
+           mockCLibs = [ "calc" ];
+         };
+       };
+   }
+   ```
+
+1. Create `tests/CMakeLists.txt`. The test build configures `tests/` as its own CMake project, which calls `logos_test()` from the framework:
+
+   ```cmake
+   cmake_minimum_required(VERSION 3.14)
+   project(CalcModuleTests LANGUAGES CXX)
+
+   include(LogosTest)
+
+   logos_test(
+       NAME calc_module_tests
+       MODULE_SOURCES
+           ../src/calc_module_impl.cpp
+           mocks/calc_module_events_stub.cpp
+       TEST_SOURCES
+           main.cpp
+           test_calc.cpp
+       MOCK_C_SOURCES
+           mocks/mock_libcalc.cpp
+   )
+   ```
+
+   - `MODULE_SOURCES`: your implementation, compiled into the test binary, and the events stub from the next action.
+   - `TEST_SOURCES`: the runner entry point and your test files.
+   - `MOCK_C_SOURCES`: the link-time replacement for `libcalc`.
+   - `logos_test()` puts the repository root and `../src` on the include path, so `#include "calc_module_impl.h"` and `#include "lib/libcalc.h"` both resolve.
+
+1. Create `tests/mocks/calc_module_events_stub.cpp`. In a normal build, the code generator writes the body of every method in `logos_events:`. The test build skips that step, so `libVersionNotify()` needs a no-op body for `versionReady` to link:
+
+   ```cpp
+   // Stub bodies for the impl's `logos_events:` methods.
+   // In the real build the codegen generates calc_module_events.cpp with
+   // bodies that route through LogosModuleContext. The test build skips
+   // that codegen, so we provide no-op stubs to satisfy the linker.
+   #include "calc_module_impl.h"
+
+   void CalcModuleImpl::versionReady(const std::string&) {}
+   ```
+
+   - Add a matching no-op line for each event you add to `logos_events:`. A module without events doesn't need this file.
+
+1. Create `tests/main.cpp`, which pulls in the framework's `main()`:
+
+   ```cpp
+   #include <logos_test.h>
+
+   LOGOS_TEST_MAIN()
+   ```
+
+1. Create `tests/mocks/mock_libcalc.cpp`. Each function has the signature of a `libcalc` function, records the call and returns the value the test set:
+
+   ```cpp
+   // Link-time replacement for libcalc. Each function records the call
+   // and returns whatever the active test configured via mockCFunction().
+   #include <logos_clib_mock.h>
+
+   extern "C" {
+       #include "lib/libcalc.h"
+   }
+
+   extern "C" int calc_add(int a, int b) {
+       LOGOS_CMOCK_RECORD("calc_add");
+       return LOGOS_CMOCK_RETURN(int, "calc_add");
+   }
+
+   extern "C" int calc_multiply(int a, int b) {
+       LOGOS_CMOCK_RECORD("calc_multiply");
+       return LOGOS_CMOCK_RETURN(int, "calc_multiply");
+   }
+
+   extern "C" int calc_factorial(int n) {
+       LOGOS_CMOCK_RECORD("calc_factorial");
+       return LOGOS_CMOCK_RETURN(int, "calc_factorial");
+   }
+
+   extern "C" int calc_fibonacci(int n) {
+       LOGOS_CMOCK_RECORD("calc_fibonacci");
+       return LOGOS_CMOCK_RETURN(int, "calc_fibonacci");
+   }
+
+   extern "C" const char* calc_version(void) {
+       LOGOS_CMOCK_RECORD("calc_version");
+       return LOGOS_CMOCK_RETURN_STRING("calc_version");
+   }
+   ```
+
+1. Create `tests/test_calc.cpp`. Each test constructs `CalcModuleImpl` directly, sets what the C functions return, calls a method and asserts on the result. `LogosTestContext` resets the mocks between tests:
+
+   ```cpp
+   #include <logos_test.h>
+   #include "calc_module_impl.h"
+
+   LOGOS_TEST(add_forwards_to_calc_add) {
+       auto t = LogosTestContext("calc_module");
+       t.mockCFunction("calc_add").returns(8);
+
+       CalcModuleImpl calc;
+       LOGOS_ASSERT_EQ(calc.add(3, 5), 8);
+       LOGOS_ASSERT(t.cFunctionCalled("calc_add"));
+   }
+
+   LOGOS_TEST(multiply_forwards_to_calc_multiply) {
+       auto t = LogosTestContext("calc_module");
+       t.mockCFunction("calc_multiply").returns(42);
+
+       CalcModuleImpl calc;
+       LOGOS_ASSERT_EQ(calc.multiply(6, 7), 42);
+       LOGOS_ASSERT(t.cFunctionCalled("calc_multiply"));
+   }
+
+   LOGOS_TEST(factorial_returns_mocked_value) {
+       auto t = LogosTestContext("calc_module");
+       t.mockCFunction("calc_factorial").returns(120);
+
+       CalcModuleImpl calc;
+       LOGOS_ASSERT_EQ(calc.factorial(5), 120);
+   }
+
+   LOGOS_TEST(libVersion_converts_cstring_to_string) {
+       auto t = LogosTestContext("calc_module");
+       t.mockCFunction("calc_version").returns("1.0.0");
+
+       CalcModuleImpl calc;
+       LOGOS_ASSERT_EQ(calc.libVersion(), std::string("1.0.0"));
+   }
+   ```
+
+   - `<logos_test.h>` also provides `LOGOS_ASSERT_TRUE`, `LOGOS_ASSERT_FALSE`, `LOGOS_ASSERT_NE`, `LOGOS_ASSERT_GT`, `LOGOS_ASSERT_GE` and `LOGOS_ASSERT_LT`.
+
+1. Track the new files, then build and run the tests:
+
+   ```bash
+   git add tests/ flake.nix
+   nix build '.#unit-tests' -L
+   ```
+
+   The build compiles the implementation against the mocks and runs every test. A passing run ends with a summary:
+
+   ```text
+   logos-calc_module-tests>    PASS  add_forwards_to_calc_add  0ms
+   logos-calc_module-tests>    PASS  multiply_forwards_to_calc_multiply  0ms
+   logos-calc_module-tests>    PASS  factorial_returns_mocked_value  0ms
+   logos-calc_module-tests>    PASS  libVersion_converts_cstring_to_string  0ms
+   logos-calc_module-tests>
+   logos-calc_module-tests>  ── Results: 4 passed (0ms) ──────
+   ```
+
+   - A failed assertion prints its file and line and fails the build.
+
+## Troubleshooting Logos module wrapping
+
+### A method doesn't appear in `lm` or can't be called
+
+The code generator exposes only `public` methods whose parameter and return types it recognises. Check that the method is in the `public:` section, that it uses only the types in the table in [Step 3](#step-3-configure-the-logos-module) (notably `int64_t`, not `int`, and `std::string`, not `char*` or `QString`), and that each method is declared on its own.
+
+### The build fails with an unknown type or a method the generator can't parse
+
+The generator reads `src/calc_module_impl.h` as text to derive the module's contract. Qt types or unusual templates in a public method signature confuse it. Keep Qt out of the header entirely, and move helpers that need other types into the `private:` section or the `.cpp` file.
+
+### The plugin fails with `Cannot load library`
+
+```text
+Cannot load library calc_module_plugin.so: libcalc.so: cannot open shared object file
+```
+
+The C library must sit in the same directory as the plugin. The build sets the plugin's RPATH to `$ORIGIN` on Linux and `@loader_path` on macOS, so it looks for libraries in its own directory.
+
+### Events never reach subscribers
+
+Check that the event is declared in a `logos_events:` section and that the class inherits `LogosModuleContext`. Events fire only when a host such as `logosctl` or Basecamp loads the module; constructed directly, as in unit tests, emitting is a no-op. Subscribers must use the exact event name, for example `logos.onModuleEvent("calc_module", "versionReady")`.
+
+### `logosctl` cannot find the module
+
+Check that:
+
+- The module is installed in the current session: `logosctl package ls` lists it with the source `user`. If you opened a new terminal, export `LOGOSCTL_CONFIG_DIR` again.
+- The install did not stop at the variant check. `logosctl` installs only the portable variant for its own platform. A package from `.#lgx` fails with `Package does not contain variant for platform: … (package provides: …-dev)`, so build `.#lgx-portable`.
+- You load the module by the `name` in `metadata.json` (`calc_module`), not by the package file name.
+
+### `nix build .#lib` does nothing or fails silently
+
+Some shells, notably zsh, treat `#` specially. Put the flake reference in quotes: `nix build '.#lib'`.
+
+### The first build is slow
+
+The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator and their dependencies. This is a one-time cost; later builds use the Nix cache.
+
+### The build fails with undefined symbols from the C library
+
+Check that the `.so` or `.dylib` is in `lib/` before you build, that the header has `extern "C"` guards, and that the symbols are exported: `nm -D lib/libcalc.so | grep calc` on Linux, or `nm -gU lib/libcalc.dylib | grep calc` on macOS.
+
+---
+
+> Source: https://docs.logos.co/core/build-modules/build-a-logos-cpp-ui-module
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Build a Logos C++ UI module
+
+#### Get started building a ui\_qml module with a C++ backend that runs in a separate process.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This guide covers building a [UI module](https://docs.logos.co/get-started/glossary.md#ui-module) that pairs a QML view with a C++ backend. The backend runs in a separate `ui-host` process while the view loads inside the host app ([`logos-standalone-app`](https://docs.logos.co/get-started/glossary.md#logos-standalone-app) or Logos Basecamp), so a backend crash cannot bring down the host. The backend calls the `calc_module` from [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md) through a typed, generated API.
+
+You write two things: a `.rep` file, the contract between the view and the backend, and a C++ backend class that implements it. The build generates the Qt plugin and interface classes around them. This guide is intended for developers who want typed, process-isolated calls from their UI to other modules.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>    - Linux x86_64 or aarch64
+>    - macOS arm64 (Apple Silicon)
+> - The `logos-calc-module` project from [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md), with its shared library built in `logos-calc-module/lib/`. You create this guide's project next to it.
+> - Basic familiarity with [QML](https://doc.qt.io/qt-6/qmlapplications.html).
+> - **Nix** with flakes enabled.
+>    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
+>
+>    ```bash
+>    mkdir -p ~/.config/nix
+>    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+>    ```
+
+## What to expect
+
+- You can build a `calc_ui_cpp` module whose C++ backend runs in its own process, and run it in `logos-standalone-app` with `nix run`.
+- You can connect a QML view to the backend's slots, properties and signals, and to an event that `calc_module` emits.
+- You can reload the view as you edit it, and check it with automated UI tests.
+
+## Step 1: Scaffold the project
+
+1. Create the project directory next to `logos-calc-module`, and enter it:
+
+   ```bash
+   mkdir logos-calc-ui-cpp && cd logos-calc-ui-cpp
+   ```
+
+1. Initialise the project from the C++ backend UI template:
+
+   ```bash
+   nix flake init -t github:logos-co/logos-module-builder/0.3.2#ui-qml-backend
+   ```
+
+   - The template follows the universal authoring model: `metadata.json` sets `"interface": "universal"`, and the only sources are an example `.rep` file and one backend class. The plugin and interface classes are generated.
+
+1. Remove the template's example `.rep` file and backend, which the following steps replace:
+
+   ```bash
+   rm -f src/ui_example.rep src/ui_example_backend.h src/ui_example_backend.cpp
+   ```
+
+1. Initialise a Git repository and stage the files:
+
+   ```bash
+   git init && git add -A
+   ```
+
+## Step 2: Configure the module metadata
+
+1. Replace `metadata.json` with the following:
+
+   ```json
+   {
+     "name": "calc_ui_cpp",
+     "version": "1.0.0",
+     "type": "ui_qml",
+     "interface": "universal",
+     "category": "tools",
+     "description": "Calculator C++ UI — QML view with process-isolated backend for calc_module",
+     "main": "calc_ui_cpp_plugin",
+     "view": "qml/Main.qml",
+     "icon": "icons/calc.png",
+     "dependencies": ["calc_module"],
+     "codegen": { "rep": "src/calc_ui_cpp.rep" },
+
+     "nix": {
+       "packages": {
+         "build": [],
+         "runtime": []
+       },
+       "external_libraries": [],
+       "cmake": {
+         "find_packages": [],
+         "extra_sources": [],
+         "extra_include_dirs": [],
+         "extra_link_libraries": []
+       }
+     }
+   }
+   ```
+
+   | Field | What it does |
+   | --- | --- |
+   | `type` | `"ui_qml"` marks a module with a QML view. |
+   | `interface` | `"universal"` selects the universal authoring model: you write the `.rep` file and a backend class, and the build generates the plugin around them. Without it, the build expects a hand-written plugin. |
+   | `codegen.rep` | Your `.rep` file. `backend_class` and `backend_header` can be set too; they default to `CalcUiCppBackend` and `calc_ui_cpp_backend.h`. |
+   | `main` | The name of the generated backend plugin library, without its extension. |
+   | `view` | The QML entry point. |
+   | `dependencies` | The core modules that the backend calls. Each one is also a flake input of the same name, set up in [Step 8](#step-8-configure-the-nix-flake). |
+
+1. Create the icon that the Logos Basecamp sidebar shows for the module. LGX packaging accepts only a 256×256 PNG, and this command writes a placeholder of that size:
+
+   ```bash
+   mkdir -p icons
+   # Copy any PNG here — or generate a 256×256 placeholder:
+   echo "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAABlBMVEUuzHEuzHEVOa2oAAAAH0lEQVR42u3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAvg0hAAABYOSdlwAAAABJRU5ErkJggg==" | base64 -d > icons/calc.png
+   ```
+
+## Step 3: Define the remote interface
+
+The `.rep` file is the contract between the QML view and the C++ backend, and the one Qt-typed file you write. At build time, Qt's `repc` compiler generates `CalcUiCppSimpleSource`, the base class that your backend implements, and `CalcUiCppReplica`, the typed replica that the view uses.
+
+1. Create `src/calc_ui_cpp.rep`:
+
+   ```rep
+   class CalcUiCpp
+   {
+       // ── SLOTs — call-and-return; each reply reaches QML via logos.watch() ──
+       SLOT(int add(int a, int b))
+       SLOT(int multiply(int a, int b))
+       SLOT(int factorial(int n))
+       SLOT(int fibonacci(int n))
+       SLOT(QString libVersion())
+
+       // Void slot — fire-and-forget. Asks calc_module to (re-)announce
+       // its version as a `versionReady` event; there's no return value
+       // to await, the answer comes back through the PROP below.
+       SLOT(void announceVersion())
+
+       // ── PROPs — auto-synced backend → every QML replica, no polling ──
+       // QString, event-fed: the typed `versionReady` subscription the
+       // backend arms in onContextReady() writes it. Starts empty.
+       PROP(QString versionEvent="" READONLY)
+
+       // int, slot-driven: the backend bumps it after each calculation,
+       // so the view shows a live tally without ever polling.
+       PROP(int computeCount=0 READONLY)
+
+       // int, READWRITE: a memory register the QML view both *reads* and
+       // *writes* (Store / Clear buttons), and the backend may set too.
+       // A write round-trips QML → replica → source → back to every replica.
+       PROP(int memory=0 READWRITE)
+
+       // ── SIGNAL — backend → view push, distinct from a return value ──
+       // Emitted after each calculation. QML catches it with a
+       // Connections block (not logos.watch(), not a PROP read).
+       SIGNAL(computed(QString op, int result))
+   }
+   ```
+
+   Each kind of member reaches the view in its own way:
+
+   | Member | Backend | QML view |
+   | --- | --- | --- |
+   | `SLOT` with a return value, such as `add` | Overrides `int add(int a, int b)` | `logos.watch(backend.add(1, 2), ...)` delivers the reply |
+   | `SLOT` returning `void`, such as `announceVersion` | Overrides `void announceVersion()` | Calls `backend.announceVersion()`, with no reply to wait for |
+   | `READONLY` `PROP`, such as `computeCount` | Writes it with the generated `setComputeCount()` | Reads `backend.computeCount`, which updates without polling |
+   | `READWRITE` `PROP`, such as `memory` | Can write it with `setMemory()` | Reads `backend.memory` and can assign it, for example `backend.memory = 8` |
+   | `SIGNAL`, such as `computed` | Emits it with `emit computed(op, result)` | Handles it in a `Connections` block, in `onComputed` |
+
+## Step 4: Configure the CMake build
+
+1. Replace `CMakeLists.txt` with the following:
+
+   ```cmake
+   cmake_minimum_required(VERSION 3.14)
+   project(CalcUiCppPlugin LANGUAGES CXX)
+
+   if(DEFINED ENV{LOGOS_MODULE_BUILDER_ROOT})
+       include($ENV{LOGOS_MODULE_BUILDER_ROOT}/cmake/LogosModule.cmake)
+   else()
+       message(FATAL_ERROR "LogosModule.cmake not found. Set LOGOS_MODULE_BUILDER_ROOT.")
+   endif()
+
+   # Derive the module name from metadata.json — single source of truth.
+   file(READ "${CMAKE_CURRENT_SOURCE_DIR}/metadata.json" METADATA_JSON)
+   string(JSON MODULE_NAME GET ${METADATA_JSON} name)
+
+   logos_module(
+       NAME ${MODULE_NAME}
+       REP_FILE src/calc_ui_cpp.rep
+       SOURCES
+           src/calc_ui_cpp_backend.h
+           src/calc_ui_cpp_backend.cpp
+       INCLUDE_DIRS
+           src
+   )
+   ```
+
+   - List only your two source files. `REP_FILE` tells `logos_module()` to run `repc`, generate the plugin and interface classes around your backend, and build a separate `calc_ui_cpp_replica_factory` library that the host uses to create typed replicas.
+
+## Step 5: Write the C++ backend
+
+The backend is the only C++ that you write. It derives `CalcUiCppSimpleSource`, generated from the `.rep` file, and `LogosUiPluginContext`, which provides `modules()`: typed calls and event subscriptions for each module in `dependencies`.
+
+1. Create `src/calc_ui_cpp_backend.h`:
+
+   ```cpp
+   #pragma once
+
+   #include "rep_calc_ui_cpp_source.h"
+   #include "logos_ui_plugin_context.h"
+
+   // The whole hand-written backend. Derives:
+   //   - CalcUiCppSimpleSource — generated from calc_ui_cpp.rep; override its
+   //     slots (the QML replica gets each return value via Qt Remote Objects).
+   //   - LogosUiPluginContext — supplies modules() (Qt-typed callers + typed event
+   //     subscriptions for "dependencies") and onContextReady(). A UI plugin is a
+   //     view, not a module, so that is all the context carries.
+   // The *Plugin / *Interface classes (Q_PLUGIN_METADATA, initLogos wiring,
+   // QtRO registration) are generated around it.
+   class CalcUiCppBackend : public CalcUiCppSimpleSource,
+                            public LogosUiPluginContext
+   {
+   public:
+       // Slots from calc_ui_cpp.rep — each delegates to calc_module.
+       int add(int a, int b) override;
+       int multiply(int a, int b) override;
+       int factorial(int n) override;
+       int fibonacci(int n) override;
+       QString libVersion() override;
+
+       // Tells calc_module to emit its `versionReady` event.
+       void announceVersion() override;
+
+       // Fires once when ui-host hands the plugin its LogosAPI — the
+       // typed dependency surface is live, so we arm the event
+       // subscription here (before the view's first call).
+       void onContextReady() override;
+
+   private:
+       // Feeds the non-slot surfaces of the .rep after each calculation:
+       // bumps the computeCount PROP (setComputeCount, generated) and
+       // emits the `computed` SIGNAL. The READWRITE `memory` PROP is
+       // driven from QML, so the backend doesn't have to touch it.
+       void record(const QString& op, int result);
+   };
+   ```
+
+   - There is no `Q_OBJECT`, `Q_PLUGIN_METADATA`, `initLogos`, `name()` or `version()` to write. The build generates them.
+
+1. Create `src/calc_ui_cpp_backend.cpp`:
+
+   ```cpp
+   #include "calc_ui_cpp_backend.h"
+
+   // Generated umbrella: LogosModules (behind modules()) from
+   // metadata.json#dependencies — typed wrappers + typed event accessors.
+   #include "logos_sdk.h"
+
+   int CalcUiCppBackend::add(int a, int b)
+   {
+       int result = modules().calc_module.add(a, b);
+       record("add", result);
+       return result;
+   }
+
+   int CalcUiCppBackend::multiply(int a, int b)
+   {
+       int result = modules().calc_module.multiply(a, b);
+       record("multiply", result);
+       return result;
+   }
+
+   int CalcUiCppBackend::factorial(int n)
+   {
+       int result = modules().calc_module.factorial(n);
+       record("factorial", result);
+       return result;
+   }
+
+   int CalcUiCppBackend::fibonacci(int n)
+   {
+       int result = modules().calc_module.fibonacci(n);
+       record("fibonacci", result);
+       return result;
+   }
+
+   QString CalcUiCppBackend::libVersion()
+   {
+       // A UI plugin is Qt-typed: modules().calc_module's wrapper returns QString
+       // (api-style qt), matching the .rep slot — no conversion needed.
+       return modules().calc_module.libVersion();
+   }
+
+   void CalcUiCppBackend::record(const QString& op, int result)
+   {
+       // PROP: bump the slot-driven counter. setComputeCount() is the
+       // generated setter; Qt Remote Objects syncs the new value to every
+       // replica, so the view's "Computations" label updates with no polling.
+       setComputeCount(computeCount() + 1);
+
+       // SIGNAL: a backend → view push, distinct from the return value the
+       // QML side gets via logos.watch(). `computed` is declared on the
+       // generated SimpleSource, so we just emit it; the typed replica
+       // re-emits it and the view's Connections block catches it.
+       emit computed(op, result);
+   }
+
+   void CalcUiCppBackend::announceVersion()
+   {
+       // Fire-and-forget call into calc_module: it looks up the library
+       // version and emits it as a `versionReady` event. We don't read a
+       // return value here — the event comes back through the subscription
+       // armed in onContextReady() below.
+       modules().calc_module.libVersionNotify();
+   }
+
+   void CalcUiCppBackend::onContextReady()
+   {
+       // Typed module-event subscription. `versionReady` is calc_module's
+       // event (Part 1's `logos_events:` block); the generated wrapper
+       // exposes it as on<Event> + a Qt-typed callback (QString, because a
+       // UI plugin is api-style qt). Push each payload into the versionEvent
+       // PROP — Qt Remote Objects then auto-syncs it to the QML replica.
+       modules().calc_module.onVersionReady([this](const QString& version) {
+           setVersionEvent(version);
+       });
+   }
+   ```
+
+   - `modules().calc_module.add(a, b)` calls `calc_module` through the generated, typed API. A UI plugin gets Qt types (`int`, `QString`) that match its `.rep` slots, even where `calc_module` declares `std::string`; the generated wrapper converts them.
+   - `record()` updates the `computeCount` property and emits the `computed` signal after each calculation.
+   - `onContextReady()` subscribes to the `versionReady` event of `calc_module` and writes each payload to the `versionEvent` property. Subscribe there, not in the constructor: `modules()` is ready only once the framework calls `onContextReady()`.
+
+## Step 6: Write the QML view
+
+1. Create `src/qml/Main.qml`:
+
+   ```qml
+   import QtQuick
+   import QtQuick.Controls
+   import QtQuick.Layouts
+
+   Item {
+       id: root
+
+       property string result: ""
+       property string errorText: ""
+
+       // Last payload from the backend's `computed` SIGNAL (see Connections below).
+       property string lastSignal: "(none)"
+
+       // Typed replica of the backend running in ui-host (generated from calc_ui_cpp.rep).
+       readonly property var backend: logos.module("calc_ui_cpp")
+
+       // The ui-host backend connects asynchronously, so the replica isn't
+       // immediately usable. Track readiness reactively: isViewModuleReady()
+       // is a Q_INVOKABLE (not a property), so we re-check it on the
+       // onViewModuleReadyChanged signal and once at startup — never via a
+       // plain property binding, which would not re-evaluate.
+       property bool ready: false
+
+       Connections {
+           target: logos
+           function onViewModuleReadyChanged(moduleName, isReady) {
+               if (moduleName === "calc_ui_cpp")
+                   root.ready = isReady && root.backend !== null
+           }
+       }
+       Component.onCompleted: {
+           root.ready = root.backend !== null && logos.isViewModuleReady("calc_ui_cpp")
+       }
+
+       // SIGNAL from the .rep: the backend emits `computed(op, result)` after
+       // each calculation. The typed replica re-emits it, so we catch it with
+       // a Connections block — no logos.watch(), no property read. This is the
+       // backend → view push path, distinct from the slot return value above.
+       Connections {
+           target: root.backend
+           function onComputed(op, result) {
+               root.lastSignal = op + " = " + result
+           }
+       }
+
+       // logos.watch() delivers the result of a replica slot call via callbacks.
+       // No QtRemoteObjects import needed — the bridge handles it.
+       function callCalc(method, args) {
+           if (!root.ready) {
+               root.errorText = "Backend not ready"
+               return
+           }
+           root.errorText = ""
+           root.result = "..."
+           logos.watch(backend[method].apply(backend, args),
+               function(value) { root.result = String(value) },
+               function(error) { root.errorText = String(error) }
+           )
+       }
+
+       ColumnLayout {
+           anchors.fill: parent
+           anchors.margins: 24
+           spacing: 16
+
+           Text {
+               text: "Logos Calculator (C++ backend)"
+               font.pixelSize: 20
+               color: "#ffffff"
+               Layout.alignment: Qt.AlignHCenter
+           }
+
+           // Reactive backend-connection indicator.
+           Text {
+               text: root.ready ? "Connected" : "Connecting to backend..."
+               color: root.ready ? "#56d364" : "#f0883e"
+               font.pixelSize: 12
+               Layout.alignment: Qt.AlignHCenter
+           }
+
+           RowLayout {
+               spacing: 12
+               Layout.fillWidth: true
+
+               TextField {
+                   id: inputA
+                   placeholderText: "a"
+                   Layout.preferredWidth: 80
+                   validator: IntValidator {}
+               }
+
+               TextField {
+                   id: inputB
+                   placeholderText: "b"
+                   Layout.preferredWidth: 80
+                   validator: IntValidator {}
+               }
+
+               Button {
+                   text: "Add"
+                   enabled: root.ready
+                   onClicked: root.callCalc("add", [parseInt(inputA.text) || 0, parseInt(inputB.text) || 0])
+               }
+
+               Button {
+                   text: "Multiply"
+                   enabled: root.ready
+                   onClicked: root.callCalc("multiply", [parseInt(inputA.text) || 0, parseInt(inputB.text) || 0])
+               }
+           }
+
+           RowLayout {
+               spacing: 12
+               Layout.fillWidth: true
+
+               TextField {
+                   id: inputN
+                   placeholderText: "n"
+                   Layout.preferredWidth: 80
+                   validator: IntValidator { bottom: 0 }
+               }
+
+               Button {
+                   text: "Factorial"
+                   enabled: root.ready
+                   onClicked: root.callCalc("factorial", [parseInt(inputN.text) || 0])
+               }
+
+               Button {
+                   text: "Fibonacci"
+                   enabled: root.ready
+                   onClicked: root.callCalc("fibonacci", [parseInt(inputN.text) || 0])
+               }
+
+               Button {
+                   text: "libcalc version"
+                   enabled: root.ready
+                   onClicked: root.callCalc("libVersion", [])
+               }
+
+               Button {
+                   // Fires the event path: asks calc_module to emit
+                   // versionReady. No logos.watch() — the result comes
+                   // back through the versionEvent PROP, not a return value.
+                   text: "Announce version (event)"
+                   enabled: root.ready
+                   onClicked: root.backend.announceVersion()
+               }
+           }
+
+           Rectangle {
+               Layout.fillWidth: true
+               height: 56
+               color: root.errorText.length > 0 ? "#3d1a1a" : "#1a2d1a"
+               radius: 8
+
+               Text {
+                   anchors.centerIn: parent
+                   text: root.errorText.length > 0 ? root.errorText
+                           : (root.result.length > 0 ? root.result : "Enter values and press a button")
+                   color: root.errorText.length > 0 ? "#f85149" : "#56d364"
+                   font.pixelSize: 15
+               }
+           }
+
+           // Slot-driven PROP: bumped by the backend's record() after each
+           // calculation. A plain property read — auto-syncs, no polling.
+           Text {
+               text: "Computations: " + ((root.ready && root.backend) ? root.backend.computeCount : 0)
+               color: "#cdd6f4"
+               font.pixelSize: 14
+               Layout.alignment: Qt.AlignHCenter
+           }
+
+           // SIGNAL payload, captured by the Connections block above.
+           Text {
+               text: "Last op (signal): " + root.lastSignal
+               color: "#94e2d5"
+               font.pixelSize: 14
+               Layout.alignment: Qt.AlignHCenter
+           }
+
+           // READWRITE PROP: the memory register. The label *reads*
+           // backend.memory; the buttons *write* it. A write round-trips
+           // QML → replica → backend source → back to every replica, so the
+           // label updates once the new value syncs home.
+           RowLayout {
+               spacing: 12
+               Layout.alignment: Qt.AlignHCenter
+
+               Text {
+                   text: "Memory: " + ((root.ready && root.backend) ? root.backend.memory : 0)
+                   color: "#cdd6f4"
+                   font.pixelSize: 14
+               }
+
+               Button {
+                   text: "Store (MS)"
+                   enabled: root.ready
+                   onClicked: root.backend.memory = parseInt(root.result) || 0
+               }
+
+               Button {
+                   text: "Clear (MC)"
+                   enabled: root.ready
+                   onClicked: root.backend.memory = 0
+               }
+           }
+
+           // Event-fed label: the versionEvent PROP auto-syncs from the
+           // backend's typed versionReady subscription. No polling — it
+           // updates the moment calc_module emits.
+           Text {
+               readonly property string ev: (root.ready && root.backend) ? root.backend.versionEvent : ""
+               text: "Version event: " + (ev.length > 0 ? ev : "(none yet)")
+               color: "#f9e2af"
+               font.pixelSize: 15
+               Layout.alignment: Qt.AlignHCenter
+           }
+
+           Item { Layout.fillHeight: true }
+       }
+   }
+   ```
+
+   - `logos.module("calc_ui_cpp")` returns the typed replica of the backend. The host injects the `logos` object, so no `QtRemoteObjects` import is needed.
+   - The backend connects asynchronously from its own process. `logos.isViewModuleReady()` is a method, not a property, so the view checks it once at startup and again in `onViewModuleReadyChanged`, and enables the buttons only when the backend is ready.
+   - Slot replies arrive through `logos.watch()`, properties are read and written directly, and a `Connections` block on the backend handles the `computed` signal.
+
+## Step 7: Use the Logos Design System in your QML (optional)
+
+The host app has [`logos-design-system`](https://github.com/logos-co/logos-design-system) on its QML import path. Use its themed components instead of raw controls and hard-coded colours, so the module keeps the Logos look as the design system evolves.
+
+1. In `src/qml/Main.qml`, import the design system and replace raw controls with its components, for example:
+
+   ```qml
+   import Logos.Theme
+   import Logos.Controls
+   import Logos.Icons        // optional shared icon assets
+
+   LogosButton {
+       text: qsTr("Add")
+       onClicked: root.callCalc("add", [parseInt(inputA.text) || 0,
+                                        parseInt(inputB.text) || 0])
+   }
+
+   LogosTextField {
+       id: inputA
+       placeholderText: qsTr("a")
+   }
+
+   Rectangle {
+       color: Theme.palette.backgroundSecondary
+       radius: Theme.spacing.radiusSmall
+       LogosText { text: qsTr("Result"); color: Theme.palette.text }
+   }
+   ```
+
+1. Build the design system's storybook, then run it to browse the available components:
+
+   ```bash
+   nix build github:logos-co/logos-design-system#bin-bundle-dir --out-link ../logos-storybook
+   ../logos-storybook/bin/LogosStorybook
+   ```
+
+   - **Controls** are designed and ready for production, for example `LogosButton`, `LogosBadge`, `LogosCheckbox`, `LogosComboBox`, `LogosIconButton`, `LogosPaginator`, `LogosSearchBar`, `LogosTabBar`, `LogosTable`, `LogosText`, `LogosTextField` and `LogosToolTip`.
+   - **Controls (not designed)** have stable APIs but unstyled visuals, for example `LogosDialog`, `LogosDrawer`, `LogosScrollView`, `LogosSpinner`, `LogosTextArea` and `LogosSwitch`. You can ship with them; they get the designed look later without changes to your QML.
+
+   Use theme tokens instead of colour literals and font sizes:
+
+   | Token | Values |
+   | --- | --- |
+   | `Theme.palette.*` | `background`, `backgroundSecondary`, `surface`, `text`, `textSecondary`, `border`, `primary`, `success`, `warning`, `error`, `info`, `hover`, `pressed`, … |
+   | `Theme.spacing.*` | `tiny`, `small`, `medium`, `large`, `xlarge`, `xxlarge`, `radiusSmall`, `radiusMedium`, `radiusLarge` |
+   | `Theme.typography.*` | `pageTitleText` (36), `titleText` (30), `panelTitleText` (24), `subtitleText` (16), `primaryText` (14), `secondaryText` (12), `weightRegular`, `weightMedium`, `weightBold`, `publicSans` |
+   | `LogosIcons.*` (from `Logos.Icons`) | `arrowLeft`, `arrowRight`, `refresh`, `install`, `trash`, `more`, `search`, … |
+
+## Step 8: Configure the Nix flake
+
+1. Replace `flake.nix` with the following:
+
+   ```nix
+   {
+     description = "Calculator C++ UI plugin for Logos - QML view with process-isolated backend for calc_module";
+
+     inputs = {
+       logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.2";
+
+       # Points at your local calc_module checkout. This is a placeholder —
+       # you lock it to your actual path in the next step with
+       # `nix flake update --override-input` (see "Lock and build" below).
+       calc_module.url = "path:/path/to/your/calc_module";
+     };
+
+     outputs = inputs@{ logos-module-builder, calc_module, ... }:
+       logos-module-builder.lib.mkLogosQmlModule {
+         src = ./.;
+         configFile = ./metadata.json;
+         flakeInputs = inputs;
+       };
+   }
+   ```
+
+   - The `calc_module` input has the same name as the dependency in `metadata.json`.
+   - Leave the placeholder `path:/path/to/your/calc_module` as it is. Nix doesn't accept a relative path such as `../logos-calc-module` in `flake.nix`, so [Step 9](#step-9-build-and-run-the-module) records the real path in `flake.lock` instead.
+   - To fetch `calc_module` from a repository instead, use a `github:` URL, for example `calc_module.url = "github:<your-org>/<your-calc-module>";`.
+   - `mkLogosQmlModule` compiles the backend, bundles the view, builds the LGX [packages](https://docs.logos.co/get-started/glossary.md#package) and sets up `nix run`.
+
+## Step 9: Build and run the module
+
+1. Confirm that the shared library of `calc_module` exists:
+
+   ```bash
+   # Linux
+   ls ../logos-calc-module/lib/libcalc.so
+
+   # macOS
+   ls ../logos-calc-module/lib/libcalc.dylib
+   ```
+
+   - If it is missing, build it as in [Wrap a C library as a Logos module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md#step-2-write-the-c-library):
+
+     ```bash
+     cd ../logos-calc-module/lib
+     gcc -shared -fPIC -o libcalc.so libcalc.c     # Linux
+     # gcc -shared -fPIC -o libcalc.dylib libcalc.c  # macOS
+     cd ../../logos-calc-ui-cpp
+     ```
+
+1. Stage the files and lock `calc_module` to your local project:
+
+   ```bash
+   git add -A
+   nix flake update --override-input calc_module path:../logos-calc-module
+   git add flake.lock
+   ```
+
+   - `--override-input` resolves `../logos-calc-module` to an absolute path and records it in `flake.lock`, so later commands need no override.
+   - The lock keeps a copy of `calc_module` as it is now. After you change `calc_module`, run the `nix flake update` command again to build against the change.
+
+1. Build and run the app:
+
+   ```bash
+   nix run
+   ```
+
+   - The first run builds the backend, the replica factory and `logos-standalone-app`, which can take several minutes.
+
+   **Expected result:** `logos-standalone-app` opens the calculator view, which shows **Connected** once the backend is ready:
+
+   ![Logos C++ calculator view with its operation buttons](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/core/assets/build-a-logos-cpp-ui-module/calc-cpp-buttons.png)
+
+1. Enter `3` and `5` in the first two fields, then click **Add**.
+
+   **Expected result:** the result shows `8`, followed by `Computations: 1` and `Last op (signal): add = 8`:
+
+   ![Logos C++ calculator view showing the result of 3 + 5](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/core/assets/build-a-logos-cpp-ui-module/calc-cpp-result.png)
+
+   - `8` is the slot's reply, `Computations: 1` is the `computeCount` property and `Last op (signal): add = 8` is the `computed` signal.
+
+1. Click **Store (MS)**, then **Announce version (event)**.
+
+   **Expected result:** the view shows `Memory: 8` and `Version event: 1.0.0`.
+
+   - `Memory` is the `READWRITE` property: the view wrote it, and the value synced back from the backend.
+   - `Version event` arrives through the event path: the button made `calc_module` emit `versionReady`, and the backend's subscription wrote the payload to the `versionEvent` property.
+
+## Step 10: Reload the view as you edit it (optional)
+
+`nix run` rebuilds the plugin whenever any tracked file changes, including the QML. The development launcher reloads the view from your source tree instead, without a rebuild.
+
+1. Build the development launcher once, then start it from the project root:
+
+   ```bash
+   nix build .#ui-dev
+   ./result/bin/run-logos-standalone-ui
+   ```
+
+   It reports where it reloads QML from:
+
+   ```text
+   run-logos-standalone-ui: hot-reloading QML from /path/to/logos-calc-ui-cpp/src/qml
+     (export DEV_QML_PATH to override, or LOGOS_QML_HOT_RELOAD=0 to disable)
+   ```
+
+1. Edit and save a `.qml` or `.js` file under `src/qml/`.
+
+   **Expected result:** the view re-renders with your change, and the launcher logs `QML reloaded` with the file's path.
+
+   - The backend keeps running in its own process, so its state and connections survive a reload. QML state, such as the text in a field, resets.
+   - A QML syntax error is logged with its line number and blanks the view until the next save that compiles.
+   - Changes to C++, the `.rep` file, `metadata.json` or CMake still need a rebuild: run `nix build .#ui-dev` again and restart the launcher.
+
+## Step 11: Add UI integration tests (optional)
+
+Add automated UI tests with the [logos-qt-mcp](https://github.com/logos-co/logos-qt-mcp) test framework. The tests connect to the QML inspector in `logos-standalone-app` and can find elements, click buttons and check text.
+
+1. Create `tests/ui-tests.mjs`:
+
+   ```javascript
+   import { resolve } from "node:path";
+
+   // CI sets LOGOS_QT_MCP automatically; for interactive use: nix build .#test-framework -o result-mcp
+   const root =
+     process.env.LOGOS_QT_MCP ||
+     new URL("../result-mcp", import.meta.url).pathname;
+   const { test, run } = await import(
+     resolve(root, "test-framework/framework.mjs")
+   );
+
+   test("calc_ui_cpp: loads and shows title", async (app) => {
+     await app.waitFor(
+       async () => {
+         await app.expectTexts(["Logos Calculator (C++ backend)"]);
+       },
+       { timeout: 15000, interval: 500, description: "UI to load" },
+     );
+   });
+
+   test("calc_ui_cpp: operation buttons visible", async (app) => {
+     await app.expectTexts(["Add", "Multiply", "Factorial", "Fibonacci"]);
+   });
+
+   run();
+   ```
+
+1. Stage the test file and run the tests headlessly:
+
+   ```bash
+   git add tests/
+   nix build .#integration-test -L
+   ```
+
+   - `integration-test` launches `logos-standalone-app` with `QT_QPA_PLATFORM=offscreen`, so no display is needed, and runs every `.mjs` file in `tests/`.
+
+1. To run the tests against a running app instead, build the test framework and start the app:
+
+   ```bash
+   nix build .#test-framework -o result-mcp
+   nix run .
+   ```
+
+   Then, in a second terminal in the project directory, run the tests with [Node.js](https://nodejs.org/):
+
+   ```bash
+   node tests/ui-tests.mjs
+   ```
+
+   - The app serves its QML inspector on port 3768.
+
+## Troubleshooting the C++ UI module build
+
+### Linker errors during `nix build`
+
+Confirm that `../logos-calc-module/lib/libcalc.so` (Linux) or `../logos-calc-module/lib/libcalc.dylib` (macOS) exists, and that `flake.lock` was updated with `nix flake update --override-input calc_module path:../logos-calc-module`. A missing library or a lock that still holds the placeholder path is the most common cause.
+
+### The development launcher doesn't find your QML
+
+The launcher looks for the `view` entry from `metadata.json` under `src/<viewDir>/`, then under `<viewDir>/`. If your project is laid out differently, set `DEV_QML_PATH` to the directory that contains the entry file itself, here `Main.qml`, not a parent directory.
+
+### Known constraints
+
+Reloading works only with `logos-standalone-app`. Logos Basecamp loads UI plugins from its own data directory, so it shows your changes only after you rebuild and reinstall the LGX package.
+
+---
+
+> Source: https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# LGX package format and bundling reference
+
+An LGX file (`.lgx`) is the [package](https://docs.logos.co/get-started/glossary.md#package) format for distributing a Logos [module](https://docs.logos.co/get-started/glossary.md#module): a deterministic, gzip-compressed tar archive that bundles one or more platform-specific builds of the module with a signed manifest describing its metadata and dependencies. `lgx` is the CLI that creates, inspects, and signs these archives. [`logosctl`](https://docs.logos.co/core/reference/logos-cli-reference.md) installs them into a session, from a [catalogue](https://docs.logos.co/get-started/glossary.md#catalogue) or from a local file; the standalone `lgpm` installs local files, and `lgpd` downloads packages from a catalogue without installing them.
+
+This page summarises the format. The [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md) is the authoritative reference for the manifest schema and signing details, and the `logos-package` [command reference](https://github.com/logos-co/logos-package#command-reference) lists every `lgx` command; the [catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md) covers how packages are listed and verified for download.
+
+## Package structure
+
+```
+package.lgx (tar.gz)
+├── manifest.json          # Required - package metadata
+├── manifest.sig           # Optional - Ed25519 signature with DID identity
+├── assets/                # Optional - variant-independent package assets
+│   ├── icon.png           #   Package icon: PNG, exactly 256x256
+│   └── lidl/              #   Canonical module interface documents
+│       └── <name>.lidl
+├── variants/              # Required - one directory per platform build
+│   ├── linux-amd64/
+│   ├── darwin-arm64/
+│   └── windows-x86_64/
+├── docs/                  # Optional - documentation
+└── licenses/              # Optional - license files
+```
+
+Only these entries are permitted at the archive root. Each entry under `variants/` is a platform build, named as described in [Variants and bundling](#variants-and-bundling); files directly under `variants/` are not allowed. Everything under `assets/` is platform-independent and stored once, so a registry can read a package's icon or `.lidl` interface documents without unpacking a platform build.
+
+Building a package with `lgx` is deterministic: identical inputs always produce a byte-identical `.lgx`. A catalogue publishes each package's content hash (`rootHash`, the root of the Merkle tree over its contents), and installers check a download against it before installing, rather than trusting the transport.
+
+## Variants and bundling
+
+A variant is named after the platform it runs on. A development variant adds `-dev`: its libraries still resolve from the Nix store, so only an installer built with Nix accepts it. A portable variant bundles its libraries and runs anywhere.
+
+| Platform | Portable variant | Development variant |
+|---|---|---|
+| Linux x86_64 | `linux-amd64` | `linux-amd64-dev` |
+| Linux aarch64 | `linux-arm64` | `linux-arm64-dev` |
+| macOS arm64 | `darwin-arm64` | `darwin-arm64-dev` |
+| macOS x86_64 | `darwin-amd64` | `darwin-amd64-dev` |
+| Windows x86_64 | `windows-x86_64` | `windows-x86_64-dev` |
+
+An installer accepts only variants for its own platform, and only of its own kind: a released `logosctl`, `lgpm` or Basecamp takes portable variants, and a development build of one takes `-dev` variants. Installers from `logos-package-manager` 0.3.0 onwards also accept the other spelling of an architecture (`x86_64` or `amd64`, `aarch64` or `arm64`), but older ones do not, so build packages with the names in the table.
+
+A module built with `logos-module-builder` has these package outputs:
+
+| Output | Produces |
+|---|---|
+| `nix build .#lgx` | The development variant for the build machine |
+| `nix build .#lgx-portable` | The portable variant for the build machine |
+| `nix build '.#packages.x86_64-windows.lgx-portable'` | The `windows-x86_64` variant, cross-built on Linux, since Nix does not run on Windows |
+
+The outputs are made with [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx), which can package the `lib/` output of any Nix build: `#default` makes the development variant, `#portable` the portable one, and `#dual` a package carrying both. To ship one package for several platforms, build a variant on each and combine them with `lgx merge`.
+
+`lgx` has no release binaries; build it with `nix build github:logos-co/logos-package#lgx`.
+
+## Manifest fields
+
+`manifest.json` is a UTF-8 JSON file. The fields most relevant to authoring and consuming a package:
+
+| Field | Type | Purpose |
+|---|---|---|
+| `manifestVersion` | string | Manifest schema version, currently `0.6.0`. Gates the version-dependent rules on this page: the icon contract (`0.4.0`+), `provides` (`0.5.0`+), and `optional_dependencies` and `interface_dependencies` (`0.6.0`+) |
+| `name`, `version` | string | Canonical lowercase package identity |
+| `description`, `author`, `category` | string | Required human-readable metadata |
+| `type` | string | Package classification, for example `core`, `library`, or `ui_qml` |
+| `dependencies` | array | Other packages this one requires to run |
+| `optional_dependencies` | array | Packages this one can call but does not require |
+| `interface_dependencies` | array | Names of interfaces the module binds to a provider at run time. Not resolved to packages; carried so a catalogue or UI can show them |
+| `main` | object | Map of platform variant name to the entry point path for that variant |
+| `display_name` | string | Human-readable label shown by UI consumers (Package Manager, Apps Inspector) and CLI tools. Falls back to `name` when absent |
+| `provides` | array | App-to-app intents the package can service, for example `chat.group.open` |
+| `icon` | string | Path to the package's `assets/icon.png`. Required for `type: "ui_qml"` at `manifestVersion` `0.4.0`+; optional for every other type |
+
+See the [full field reference](https://github.com/logos-co/logos-package/blob/master/docs/spec.md#manifest-schema) for the complete schema, including dependency version ranges and signer pins.
+
+### The `ui_qml` contract
+
+A package's `type` distinguishes a [core module](https://docs.logos.co/get-started/glossary.md#core-module) from a [UI module](https://docs.logos.co/get-started/glossary.md#ui-module):
+
+- A **core module** package uses `main` as its per-variant entry point, same as most other package types.
+- A **UI module** package sets `type: "ui_qml"` and adds a `view` field: the relative path to its QML entry point, identical across variants. `main` becomes optional for this type—when present, it points at a per-variant backend Qt plugin that the host runs in an isolated process and bridges to the QML view; when absent, the QML view loads directly in-process and the package's variant directories carry only its QML files. `variants/` is required either way: it is the directory that is mandatory, not its contents, so a package with no native binary is still valid. From `manifestVersion` `0.4.0` onwards, `type: "ui_qml"` packages must also ship a 256x256 `assets/icon.png`, since these are the packages rendered as tiles in Basecamp's app grid and sidebar.
+
+## Signing and verification
+
+Packages can be signed with an Ed25519 key identified by a `did:jwk:...` DID, producing a `manifest.sig` alongside `manifest.json`. Content hashes (a Merkle tree over the archive) are always present in the manifest regardless of signing, and `lgx verify` recomputes and checks them against the archive contents. A package without them, made by older tooling, fails validation, so installers reject it; rebuild it with current tooling.
+
+Installers apply a signature policy at install time. By default an unsigned package, or one signed by a key the installer does not trust, installs with a warning:
+
+- `logosctl` reads the policy from the `signature_policy` setting of its daemon configuration (`none`, `warn` or `require`) and trusts the keys added with `logosctl key add`, which are kept per session.
+- `lgpm install` rejects such a package with `--require-signatures`, and trusts the keys added with `lgx keyring add`.
+- Basecamp's package manager keeps its own keyring.
+
+Trust comes only from the keyring of the installer itself. A signer named in a package, in a catalogue entry, or in a catalogue's `trustedSigners` list is not trusted until you add its key.
+
+## Further reading
+
+- [`logos-package` spec](https://github.com/logos-co/logos-package/blob/master/docs/spec.md)—manifest schema, `lgx` CLI reference, signing and DID details.
+- [Logos catalogue format spec](https://github.com/logos-co/logos-modules-release-tool/blob/main/docs/catalog-format.md)—for `logos-repo.json` and `index.json`, version selection, and download verification.
+- [Build and run a Logos core module](https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module.md)—building and installing an `.lgx` package end to end.
+- [Logos CLI reference](https://docs.logos.co/core/reference/logos-cli-reference.md)—installing packages and managing trusted keys with `logosctl`.
+- [`nix-bundle-lgx`](https://github.com/logos-co/nix-bundle-lgx)—the tool behind the builder's package outputs.
+
+---
+
+> Source: https://docs.logos.co/core/reference/logos-cli-reference
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Logos CLI Reference
+
+`logosctl` is the command-line tool for running Logos [modules](https://docs.logos.co/get-started/glossary.md#module) without the Basecamp app. It runs the Logos Core runtime as a daemon, which you drive with client commands to install [packages](https://docs.logos.co/get-started/glossary.md#package), load modules, call their methods and watch their events. It bundles the package manager and package downloader modules, so searching a [catalogue](https://docs.logos.co/get-started/glossary.md#catalogue), installing with dependencies resolved, loading and calling all go through one binary.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+This reference describes [`logosctl` 0.3.2](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2). The complete manual, including every configuration key, is [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md) in `logos-logoscore-cli`.
+
+## Install
+
+| Platform | Command |
+|:---|:---|
+| Linux x86_64 or aarch64, macOS arm64 | `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh \| sudo sh` |
+| Windows x86_64 (PowerShell) | `irm https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.ps1 \| iex` |
+
+Both scripts install the release assets published on the [release page](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2). There is no build for macOS on Intel. To build `logosctl` from source, run `nix build github:logos-co/logos-logoscore-cli#ctl`.
+
+## Sessions
+
+Everything `logosctl` needs lives in one directory, a session. `--config-dir` selects it, and so does the `LOGOSCTL_CONFIG_DIR` environment variable. The default is `~/.logosctl`. Each session runs at most one daemon, and two sessions can hold different packages and trust different signers.
+
+| Path | Contents |
+|:---|:---|
+| `daemon/config.yaml` | Daemon configuration, installed with `logosctl daemon config set` |
+| `modules/` | Core modules installed into this session |
+| `plugins/` | UI plugins installed into this session |
+| `keyring/` | Trusted package-signing keys |
+| `logs/` | Daemon log; `logs/daemon.log` always points at the current file |
+| `cache/downloads/` | Downloaded `.lgx` files |
+| `data/` | Per-module persistent data |
+
+Besides the session's own modules, `logosctl` ships with `capability_module` and `modules_state`, which are part of the runtime, and with `package_manager`, `package_downloader` and `storage_module` as embedded packages. A module installed into the session with the same name takes precedence over an embedded one.
+
+## Global options
+
+These options work before or after any command.
+
+| Option | Description |
+|:---|:---|
+| `--config-dir DIR` | Session directory to act on (default `~/.logosctl`, also `LOGOSCTL_CONFIG_DIR`) |
+| `-j`, `--json` | Force JSON output |
+| `--no-json`, `--human` | Force human-readable output, even when the output is piped |
+| `-q`, `--quiet` | Suppress non-essential output |
+| `-v`, `--verbose` | Show debug logs |
+| `--version` | Print the version and exit |
+| `-h`, `--help` | Show help |
+| `-D` | Start the daemon, the same as `daemon start` |
+| `-d`, `--detach` | With `-D` or `daemon start`: fork into the background and return once the daemon accepts commands |
+
+Output is human-readable in a terminal and JSON when piped, unless one of the format options says otherwise.
+
+## Commands
+
+Commands are grouped by what they act on. Within a group, `ls` lists and `show` describes one item; `list` and `info` are accepted as aliases.
+
+### Daemon
+
+| Command | Description |
+|:---|:---|
+| `logosctl daemon start [--detach]` | Start the runtime. `--detach` returns once the daemon accepts commands, unlike `&`, which returns before it is ready. |
+| `logosctl daemon stop` | Shut the daemon down and return once it has exited. Also `logosctl stop`. |
+| `logosctl daemon status` | Daemon health, uptime and a module summary. Also `logosctl status`. |
+| `logosctl daemon config set FILE` | Validate and install the daemon configuration. `FILE` can also be `@file` or `-` for standard input. |
+| `logosctl daemon config show` | Print the daemon configuration and where it lives |
+
+### Modules
+
+| Command | Description |
+|:---|:---|
+| `logosctl module ls [--loaded]` | List known modules, or only the loaded ones |
+| `logosctl module show NAME` | Methods and events with their descriptions, dependencies and crash details |
+| `logosctl module load NAME [--no-optional]` | Load a module and its dependencies. Installed optional dependencies load too, unless `--no-optional` is passed. |
+| `logosctl module unload NAME [--no-dependents]` | Unload a module and, unless `--no-dependents` is passed, the modules that depend on it |
+| `logosctl module reload NAME` | Reload a module |
+| `logosctl module stats` | CPU and memory use per module. Also `logosctl stats`. |
+
+### Calling and watching
+
+| Command | Description |
+|:---|:---|
+| `logosctl call MODULE METHOD [ARGS...]` | Call a method on a loaded module. See [argument typing](#argument-typing). |
+| `logosctl watch MODULE [--event NAME]` | Stream the events a module emits, or only the named event |
+
+### Packages
+
+| Command | Description |
+|:---|:---|
+| `logosctl package install NAME\|FILE.lgx ...` | Install from a catalogue, or from a local `.lgx` file. Also `logosctl install`. |
+| `logosctl package install --dir DIR` | Install every `.lgx` file in a directory |
+| `logosctl package upgrade NAME\|FILE.lgx` | Upgrade an installed package |
+| `logosctl package remove NAME` | Remove a package and the packages that depend on it. Also `logosctl package uninstall`. |
+| `logosctl package ls [--type core\|ui]` | List the packages installed in this session, including embedded ones |
+| `logosctl package show NAME\|FILE.lgx` | Details and every available version of a package, or inspect an `.lgx` file without installing it |
+| `logosctl package deps NAME [-r\|--recursive] [--reverse]` | List a package's dependencies, or with `--reverse` the packages that depend on it |
+| `logosctl package search [QUERY] [--category C] [--catalog C]` | Search the configured catalogues. Also `logosctl search`. |
+| `logosctl package download NAME [--version V] [-o DIR]` | Download an `.lgx` file without installing it |
+
+`install` and `upgrade` take these options:
+
+| Option | Description |
+|:---|:---|
+| `--file FILE.lgx` | Install a local file. An argument ending in `.lgx` is read as a file too. |
+| `--dir DIR` | Install every `.lgx` file in a directory |
+| `--version V`, `--root-hash H` | Select an exact release of a catalogue package |
+| `--catalog C` | Use only this catalogue |
+| `-y`, `--yes` | Apply without asking. Required when no terminal is available to confirm in. |
+| `--dry-run` | Print the changes, and which running modules they would stop, without applying them |
+| `--no-deps` | Do not install dependencies |
+| `--no-optional` | Install only required dependencies, not optional ones |
+| `--no-dependents` | Act on the named packages only, leaving the packages that depend on them in place |
+
+`remove` takes `-y`, `--dry-run` and `--no-dependents`.
+
+- Installing does not load a module. Load it with `logosctl module load NAME`.
+- The daemon rescans after an install, so no restart is needed. Only modules that were already running and had to be stopped are restarted.
+- Catalogue names and local files cannot be mixed in one command.
+- All package commands need a running daemon, which hosts the package manager.
+
+### Catalogues
+
+| Command | Description |
+|:---|:---|
+| `logosctl catalog ls` | List the configured catalogues. The default is `logos-modules-official`. |
+| `logosctl catalog add URL` | Add a catalogue by the URL of its `logos-repo.json`. `remove`, `enable` and `disable` take a URL too. |
+| `logosctl catalog refresh` | Fetch every enabled catalogue again |
+| `logosctl catalog source [any\|logos\|http]` | Show or set where packages download from: Logos Storage first then HTTP (`any`, the default), Logos Storage only (`logos`), or HTTP only (`http`) |
+
+### Signing keys
+
+| Command | Description |
+|:---|:---|
+| `logosctl key ls` | List the keys this session trusts |
+| `logosctl key add NAME --did DID [--display-name N] [--url U]` | Trust a signing key |
+| `logosctl key remove NAME` | Stop trusting a key |
+
+The session's keyring is separate from Basecamp's. The `signature_policy` setting in the daemon configuration decides what happens to a package that is unsigned or signed by a key the session does not trust: `none` skips the check, `warn` (the default) installs it with a warning, and `require` refuses it.
+
+## Argument typing
+
+`logosctl call` turns each argument into a JSON value with the first rule that matches.
+
+| Argument | Becomes | Example |
+|:---|:---|:---|
+| `json:VALUE` | `VALUE` parsed as JSON | `json:[1,2,3]`, `json:{"k":"v"}` |
+| `json:@FILE` | The file's contents parsed as JSON | `json:@payload.json` |
+| `str:TEXT` | `TEXT` as a string, unchanged | `str:42` |
+| `@FILE` | The file's contents as a string | `@config.json` |
+| `true` or `false` | A Boolean | `true` |
+| A decimal whole number | An integer | `42`, `-7` |
+| A decimal number | A double | `3.14`, `1e6` |
+| Anything else | A string | `hello`, `0xf39F...` |
+
+Binary (`bstr`) arguments are JSON objects holding base64url content without padding: `json:{"_bytes":"aGVsbG8"}`.
+
+## Daemon configuration
+
+The daemon configuration is a YAML document that you install with `logosctl daemon config set`. It replaces the previous configuration, takes effect at the next daemon start, and is validated first: an unknown key or a value of the wrong type is reported by name and nothing is written.
+
+| Key | Description |
+|:---|:---|
+| `dirs` | Redirect a session directory: `keyring`, `cache`, `modules`, `plugins`, `data` or `logs`. A relative path stays inside the session. |
+| `modules_dirs` | Extra read-only directories to scan for modules |
+| `signature_policy` | `none`, `warn` (default) or `require`. See [Signing keys](#signing-keys). |
+| `access_group` | Share the daemon with an operating-system group |
+| `access_policy` | Which caller modules may call which modules, as a JSON document in a string |
+| `logging` | Log file name, rotation size and number of files kept |
+
+See [`docs/logosctl.md`](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md) for every key.
+
+## Exit codes
+
+| Code | Meaning |
+|:---|:---|
+| `0` | Success |
+| `1` | General error, or the daemon is not running (for `status`) |
+| `2` | No daemon running, or the daemon did not answer |
+| `3` | Module error: not found, or loading or unloading failed |
+| `4` | Method error: not found, the call failed, or it timed out |
+
+## Other Logos command-line tools
+
+`logosctl` is the tool that Logos releases ship. Module developers also use these standalone tools. Build them with Nix:
+
+| Tool | Purpose | Build |
+|:---|:---|:---|
+| `lgx` | Create, inspect, merge and sign LGX packages. See the [LGX reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md). | `nix build 'github:logos-co/logos-package/0.1.0#lgx'` |
+| `lgpm` | Install local `.lgx` files into a directory of your choice, such as a Logos Basecamp data directory | `nix build 'github:logos-co/logos-package-manager/0.3.0#cli'` |
+| `lm` | Show a built module's metadata, methods and events | `nix build 'github:logos-co/logos-module/0.3.0#lm'` |
+
+## Further reading
+
+- [Start a Logos module from the CLI](https://docs.logos.co/core/build-modules/start-a-logos-module-from-the-cli.md): build a module, install it with `logosctl` and call it.
+- [`logosctl` manual](https://github.com/logos-co/logos-logoscore-cli/blob/0.3.2/docs/logosctl.md): every command, configuration key and example.
+- [LGX package format and bundling reference](https://docs.logos.co/core/reference/lgx-package-format-and-bundling-reference.md)

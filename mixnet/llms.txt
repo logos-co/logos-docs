@@ -1,0 +1,14 @@
+# Logos documentation: Mixnet
+
+> The Logos mix network, which hides who talks to whom from network observers.
+
+Use this section to:
+
+- send anonymised messages over the mix network
+
+Full text of this section: https://docs.logos.co/mixnet/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Send anonymised messages over the mix network](https://docs.logos.co/mixnet/get-started/send-anonymised-messages-over-the-mix-network.md): Get started sending and receiving messages with improved sender privacy using the Logos Chat UI.

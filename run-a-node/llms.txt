@@ -1,0 +1,15 @@
+# Logos documentation: Run a node
+
+> Path pages for node operators.
+
+Use this section to:
+
+- run a full node for blockchain, delivery and storage
+
+Full text of this section: https://docs.logos.co/run-a-node/llms-full.txt
+Index of all sections: https://docs.logos.co/llms.txt
+
+## Pages
+
+- [Run a Logos node with blockchain, storage, and delivery](https://docs.logos.co/run-a-node.md): Get started running a full Logos node with all three core modules on testnet v0.3.
+- [Expose Logos node metrics to Prometheus](https://docs.logos.co/run-a-node/expose-node-metrics.md): Serve the blockchain, storage, and delivery metrics of a running Logos node on one OpenMetrics endpoint and scrape it with Prometheus.

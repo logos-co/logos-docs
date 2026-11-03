@@ -1,0 +1,178 @@
+> Source: https://docs.logos.co/storage/get-started/run-storage-node-from-basecamp
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Run a Storage Node from Basecamp
+
+#### Get started sharing and downloading files on the Logos Storage network
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+The [Logos Storage](https://docs.logos.co/get-started/glossary.md#logos-storage) app is a file-sharing application built on top of the [Logos Storage Module](https://github.com/logos-co/logos-storage-module). This guide covers running the application through Logos [Basecamp](https://docs.logos.co/get-started/glossary.md#basecamp), configuring your node through the onboarding wizard, and using the app to share, download, and delete files. It is intended for node operators running the application on Linux, macOS, or Windows through Basecamp.
+
+> **Info: Prerequisites**
+>
+>
+> - A supported OS:
+>     - Linux
+>     - Mac OS (should work, but not tested)
+>     - Windows 10 or 11 x86_64. The commands in this guide use POSIX shell syntax, so run them in Git Bash (part of [Git for Windows](https://git-scm.com/download/win)).
+> - [Logos Basecamp](https://docs.logos.co/basecamp/install-logos-basecamp.md) version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later, installed and running.
+
+## What to expect
+
+- You can run the Logos Storage app on Basecamp.
+- You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
+- You can share files with other nodes and download files shared by others using a Content Identifier ([CID](https://docs.logos.co/get-started/glossary.md#cid)).
+- You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.
+
+## Step 1: Run the application
+
+1. In the left bar of Basecamp, select **Package Manager**.
+1. Select `Storage` in `Categories`, then click **INSTALL** in the **Storage** row.
+1. In the **Install Package?** dialogue, which lists the `storage_module` [module](https://docs.logos.co/get-started/glossary.md#module) as a dependency to install alongside the UI, click **Install**.
+1. Wait until the **Action** column of the **Storage** row reads **INSTALLED**. A new **Storage** icon appears in the left bar.
+1. In the left bar, select the **Storage** icon to launch the Logos Storage app.
+
+## Step 2: Configure your node through onboarding
+
+On first launch, the [app](https://docs.logos.co/get-started/glossary.md#app) opens the onboarding wizard and asks how you want to set up your node: **Guided** or **Advanced**.
+
+The Guided option will use the default configuration and start the node automatically.
+The Advanced option allows you to edit the configuration before starting the node.
+
+This guide follows the `Guided` setup.
+
+1. Select **Guided** and click **Continue**.
+
+   ![Onboarding](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-onboarding.png)
+
+1. On the **Select Drives** step, choose the folder where downloaded files will be saved, then click **Continue**.
+
+   ![Select Drives step with the downloads folder field](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-select-drives.png)
+
+1. Wait for the dashboard to open and the node status icon to be green.
+
+   ![Storage app dashboard with the node running](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-dashboard.png)
+
+   A red status dot means the node is not running.
+
+   When you start the node, you will see a status `Unknown` with a grey dot blinking. This is the NAT status check, updated every minute.
+   A grey dot means the reachability check has not been performed yet.
+   A green dot means the node is reachable from the network and can upload and download content.
+   An orange dot means the node is not reachable from the network but falls back to the relay network. The node can still upload and download content using a relay with other peers. The speed might be reduced unless both peers were able to create a direct connection (hole punching).
+
+   See [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+
+1. Clicking on the help icon on the right of the NAT status will give you more information about the node's reachability.
+
+   ![NAT status](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-nat.png)
+
+### Configuration
+
+After onboarding, the settings are saved to a file whose location depends on the OS:
+
+| OS    | Path                                                |
+|:------|:-----------------------------------------------------|
+| Linux | `~/.config/Logos/LogosBasecamp.conf`                  |
+| macOS | `~/Library/Preferences/com.logos.LogosBasecamp.plist` |
+
+## Step 3: Share a file
+
+1. In the **Upload** panel, click **browse**. A file selector opens.
+
+1. Select the file you want to share and click **Open**. The file is uploaded to your node and sharing begins automatically.
+
+1. When the upload completes, the file appears in the **Manifests** list at the bottom of the UI, with its CID, filename, mimetype, and size.
+
+   ![Dashboard after an upload, with the file listed in the Manifests panel](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-uploaded.png)
+
+1. Click the copy icon next to the CID. Share this string with others so they can download the file.
+
+## Step 4: Download a file
+
+The manifest is the representation of a file on the network: it carries the metadata (filename, size, mimetype). To download a file, you first fetch its manifest by CID, then download the content itself.
+
+1. Paste the file's CID into the **Fetch Manifest** panel and click **Fetch**. The manifest downloads from the network and an entry appears in the **Manifests** list.
+
+1. In the manifest entry's **Actions** column, click the download icon.
+
+1. Watch the download widget at the top: it shows progress in real time and reports **Complete** when the file has been written to the downloads folder you chose during onboarding.
+
+   ![Dashboard after a download, with the download widget reporting Complete](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-downloaded.png)
+
+> **Info**
+>
+> No CID at hand? Try downloading a public file: fetch `zDvZRwzkzrrYB6sS1rRpRLt4gBhc1pWoyTSjkfszfmj1seaYYLCZ`, the [Farewell to Westphalia book](https://logos.co/farewell-to-westphalia). It is available on the network the default configuration connects to.
+
+When the file is downloaded, the download icon turns orange. This means the file is in your downloads folder.
+
+## Step 5: Fetch and download privately with Mix
+
+A private fetch or download goes over the Logos mix network. This makes it much harder to trace back to you. See [Mix](https://docs.logos.co/storage/concepts/mix.md) for how it works.
+
+1. To fetch a manifest privately, turn on the `Private` switch in the `Fetch Manifest` panel, then click `Fetch`.
+
+1. To download a file privately, click the lock icon in the manifest entry's `Actions` column. The icon turns orange. A private download is not advertised to the network.
+
+   ![Private switch and lock icon turned on](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-private.png)
+
+- By default, fetches and downloads are not private.
+- After a private fetch, the lock icon is already on. Click it to download directly.
+- Private transfers are slower.
+
+> **Warning**
+>
+>
+> When using `nat:auto`, the node first needs to get a reachability status, `Reachable` or `Unreachable`, before it can make DHT queries. See [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) for details.
+>
+
+## Step 6: Settings
+
+In the top right section, the settings icon on the right of **Manage node** opens the settings popup.
+
+![Settings 1](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-settings-1.png)
+
+![Settings 2](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-settings-2.png)
+
+The default configuration should be suitable for most users.
+
+Some settings cannot be updated, such as the `Data directory`.
+Most of the editable settings will require a node restart to take effect. You should see a message indicating that on the bottom right:
+
+> `Unsaved changes — the node must restart to apply them.`
+
+After you click `Save`, the message changes to:
+
+> `Saved. Restart the node to apply and save to disk.`
+
+The new configuration is saved to disk only when the node restarts. Close the settings and click `Stop` then `Start` to restart the node.
+
+> **Info**
+>
+> The active configuration is saved to `${HOME}/.logos_storage/config.json`. This file should not be edited manually. The settings UI should be used to change the configuration instead. If your configuration is messed up, you can delete this file and restart the node to reset it to the default configuration.
+
+## Step 7: Debug
+
+A debug popup is available on the top right section, next to the settings icon. You can also display it using the `Ctrl+D` keyboard shortcut.
+
+![Debug](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/storage/assets/set-up-and-use-logos-storage-ui/storage-ui-debug.png)
+
+While it seems to be oriented toward advanced users, it can be useful to check the node's reachability status and if the relay is running.
+
+## Step 8: Manage the node lifecycle
+
+1. To stop the node, click **Stop** in the **Node** panel. The status indicator turns red, the node reports **Stopped**, and peer connections drop.
+
+1. Click **Start** to start the node again. The status goes back to the reachability check (**Unknown**, then **Reachable** or **Not reachable**) and peers reconnect.
+
+   - Your files survive the restart: the node persists its data in the configured `data-dir`, so previously uploaded files reappear in the **Manifests** list.
+
+1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
+
+   - `.lgx` files have no trash icon: they are module [packages](https://docs.logos.co/get-started/glossary.md#package) downloaded from the Logos Package Manager in Basecamp.
+
+## Troubleshooting Logos Storage
+
+Connectivity problems (no peers, unreachable node, downloads timing out) are covered in the [Troubleshooting](https://docs.logos.co/storage/get-started/faq.md) and [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md) pages.

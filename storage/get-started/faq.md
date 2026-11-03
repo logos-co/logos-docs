@@ -1,0 +1,90 @@
+> Source: https://docs.logos.co/storage/get-started/faq
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# Troubleshooting
+
+#### Fix the most common problems of a storage node.
+
+> **Tip: Version**
+>
+> This document is accurate for **Testnet v0.3**.
+
+## `logosctl` fails with a FUSE error
+
+**Symptom**: running a tool installed from the releases fails with `No suitable fusermount binary found on the $PATH` and `Cannot mount AppImage, please check your FUSE setup`.
+
+**Cause**: on Linux, the release binaries are AppImages, which need FUSE to run. Containers (toolbox, Docker) and some minimal distributions do not ship it.
+
+**Fix**: install FUSE (`sudo dnf install fuse` on Fedora, `sudo apt install libfuse2` on Ubuntu). Without root, extract the AppImage instead and run the extracted binary:
+
+```sh
+./logosctl --appimage-extract
+./squashfs-root/AppRun --help
+```
+
+## Another application is using the listen port
+
+**Symptom**: the node fails to start, or peers cannot connect, because the TCP listen port is already taken.
+
+**Cause**: another process is occupying the port.
+
+**Fix**: stop the other process or change the listen port in the configuration. If you use manual port forwarding, update the router rule to match the new port.
+
+## I can download files, but nobody can download from me
+
+**Symptom**: downloading from the network works, but files you publish cannot be downloaded by other nodes.
+
+**Cause**: your peer is not taking inbound connections. This can happen if your node is behind a NAT and cannot locate a relay, or if the relays it can locate are fully booked. Outgoing connections (your downloads) go through your router normally; incoming connections (peers fetching from you) are blocked by it.
+
+**Fix**: your best bet is to try make your node reachable with UPnP or manual port forwarding: see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).
+
+## UPnP is not working
+
+**Symptom**: UPnP is enabled on your router and `nat` is `auto` (the default), but the node remains unreachable.
+
+**Cause**: UPnP relies on your router supporting and enabling the UPnP protocol. Many routers have it disabled by default for security reasons.
+
+**Fix**: make sure UPnP is enabled on your router, or switch to manual port forwarding.
+
+## Manual port forwarding is not working
+
+**Symptom**: you configured port forwarding but the node remains unreachable.
+
+**Cause**: the TCP listen port is not actually open on your router.
+
+**Fix**: make sure port forwarding is enabled and matches what is in your `listen-port`. Check that rule exists and points to your machine's current local address: see [Forwarding ports manually](https://docs.logos.co/storage/concepts/connectivity.md#forwarding-ports-manually).
+
+## The ports are forwarded, but the node is still unreachable
+
+**Symptom**: UPnP or port forwarding is correctly set up on the router, but peers still cannot connect to you.
+
+**Cause**: the machine's own firewall blocks incoming connections. Some Linux distributions (such as Fedora) enable a firewall by default.
+
+**Fix**: allow inbound connections on your `<listen-port>` in your firewall. With firewalld (Fedora), for instance, you would do:
+
+```sh
+sudo firewall-cmd --permanent --add-port=<listen-port>/tcp
+sudo firewall-cmd --reload
+```
+
+With ufw (Ubuntu):
+
+```sh
+sudo ufw allow <listen-port>/tcp
+```
+
+## The node was reachable, but is not anymore
+
+**Symptom**: the node worked for days or weeks, then peers suddenly cannot download files from you anymore.
+
+**Cause**: most home ISPs change your public IP from time to time. If `nat` is set to `extip:<IP>`, the node keeps announcing the old address.
+
+**Fix**: check your current public IP (see [Finding your public IP](https://docs.logos.co/storage/concepts/connectivity.md#finding-your-public-ip)), update the `extip` value and restart the node. To avoid this, set `nat` back to `auto` (the default) instead: the node then works out its public address by itself.
+
+## Downloads time out when downloading from a different machine
+
+**Symptom**: downloading a [CID](https://docs.logos.co/get-started/glossary.md#cid) works on the node that published it, but times out from another machine.
+
+**Cause**: NAT is blocking the peer connection: the publishing node is not reachable from the internet.
+
+**Fix**: make the publishing node reachable: see [Connectivity](https://docs.logos.co/storage/concepts/connectivity.md).

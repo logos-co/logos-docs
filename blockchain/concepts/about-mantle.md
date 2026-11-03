@@ -1,0 +1,64 @@
+> Source: https://docs.logos.co/blockchain/concepts/about-mantle
+> Markdown index of all Logos docs: https://docs.logos.co/llms.txt
+
+# About Mantle
+
+#### Understand how Mantle lets nodes and Zones interact with Bedrock.
+
+> **Info**
+>
+> This document reflects the state of this Logos component as it will exist on mainnet. Some features described here may not be available on the current testnet.
+
+[Mantle](https://docs.logos.co/get-started/glossary.md#mantle) is a [Bedrock](https://docs.logos.co/get-started/glossary.md#bedrock) component that serves as the operating system of Logos. It provides operations that allow nodes to participate in the [Blend Network](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md), as well as to enable [Zones](https://docs.logos.co/blockchain/concepts/about-zones.md) to interact with Bedrock. Mantle is also responsible for handling Logos notes, which are Bedrock-native fungible tokens.
+
+## The basics
+
+- Mantle serves as Bedrock's execution layer, providing operations that allow nodes to participate in Bedrock [Services](https://docs.logos.co/get-started/glossary.md#service), as well as an execution environment that allows for interactions between Zones and Bedrock.
+- Mantle maintains a limited ledger for fee payment, tracking fungible assets called notes with UTXO-based transactions.
+- Mantle supports channels, which enforce immediate transaction ordering for Zones and facilitate decentralised sequencing and token bridging.
+
+## Operations and transactions
+
+Mantle operations are the way [Logos nodes](https://docs.logos.co/get-started/glossary.md#logos-node) interact with Bedrock Services, and allow Zones to interact with Bedrock. Operations are submitted to Mantle via transactions, with each transaction potentially including several operations. The cost of executing operations is paid for by gas fees, denoted in [notes](https://docs.logos.co/blockchain/concepts/about-mantle.md#mantle-ledger). All Logos nodes re-execute Mantle operations independently to ensure that the ledger state is updated correctly.
+
+Logos nodes use Mantle operations to indicate their participation in the Blend Network, with Mantle providing a locking mechanism used to incentivise correct behaviour by participants. The operations supported by Mantle include transferring notes, staking notes for participation in the Blend Network, paying rewards to compensate participants, and unstaking notes.
+
+[Inscription](https://docs.logos.co/get-started/glossary.md#inscription) operations can be used to write arbitrary data to the [Logos Blockchain](https://docs.logos.co/get-started/glossary.md#logos-blockchain), enabling a variety of ways to leverage the blockchain as a permanent, decentralised record. Crucially, Mantle can be used as a censorship resistant [message](https://docs.logos.co/get-started/glossary.md#message) delivery mechanism for Zones, allowing Zone sequencers to send information to each other and engage in coordinated action. This form of message passing facilitates cross-Zone interaction including arranging atomic transactions and state updates.
+
+## Mantle ledger
+
+Mantle maintains a restricted ledger that keeps track of fungible assets known as notes, which are bound to their owners. Notes are primarily used to pay for Mantle operations, but can also be bridged to equivalent Zone tokens. Mantle notes are stored by Logos nodes in a dictionary mapping notes to their unique note identifiers.
+
+Note transfers are effected by using transfer operations, which are based on the UTXO model. To transfer value, a sender spends their note and creates an equivalent new note belonging to the recipient. A spent note can never be spent again. These notes each have their own secret key for spending, and a corresponding public key for receiving new notes.
+
+### Mining notes
+
+Owning notes is a prerequisite to meaningful involvement in the Logos Blockchain, allowing users to participate in consensus, join the Blend Network, and post transactions. To allow users to independently acquire notes in a private, decentralised way, Mantle supports mining notes via a Proof of Work mechanism known as *[EmPoWering](https://docs.logos.co/get-started/glossary.md#empowering)*. Notes are mined by solving a cryptographic "puzzle" - similar to how Bitcoin is mined.
+
+To mine a new note, a user chooses a value and hashes it together with the consensus randomness value for the current or previous [epoch](https://docs.logos.co/get-started/glossary.md#epoch). This hash is compared to a threshold value derived from a recent canonical block selected by the user - if the hash is below the threshold, the user is eligible to claim some notes from Mantle's reward pool. The difficulty of solving the puzzle (that is, how many tries it would take on average to find a winning value) is adjusted periodically to target an average of 10 claims per block. A user with a winning hash can submit their claim transaction via the Blend Network to make it infeasible to link the transaction with their identity.
+
+## Logos channels
+
+Logos channels, or channels for short, are lightweight virtual chains overlaid on top of the Logos Blockchain. The purpose of channels is to immediately enforce the correct ordering of transactions from Zones. These channels are implemented as permissioned, ordered logs of messages signed by a sequencer. These messages usually take the form of state updates from a particular Zone. Channels also provide several key features to Zones, which are described below.
+
+### Immediate ordering
+
+Logos channels ensure that their transactions will eventually be included on-chain in the correct order, regardless of how the Logos Blockchain may fork or reorganise. This allows new transactions that depend on earlier ones to be submitted immediately, without waiting for finality. An example with two channels is shown below:
+
+![A diagram illustrating how two channels are included in the Logos Blockchain.](https://raw.githubusercontent.com/logos-co/logos-docs/main/docs/blockchain/assets/about-mantle/two-channels.png)
+
+It is important to note that Logos channels can only be relied on if the sequencer is trusted to act honestly. In the absence of this assumption, users must wait for the true blockchain finality.
+
+### Decentralised sequencing
+
+A [channel](https://docs.logos.co/get-started/glossary.md#channel) may have one or several sequencers; in the latter case, authorised sequencers may take turns publishing messages according to a round-robin schedule, with unresponsive sequencers losing their turn via an automated timeout. Alternatively, sequencers can compete to update the Zone state via a "first write wins" model.
+
+A given threshold of sequencers may also modify the sequencer list or change other channel properties by signing a message together, allowing an honest majority to remove a malicious sequencer. This form of decentralised Zone sequencing distributes the potential for MEV extraction across a set of parties rather than concentrating it as in the single-sequencer rollup design.
+
+### Token bridging
+
+Logos channels also enable token bridging and inter-Zone token transfers for Zones via the use of channel notes. Channel notes are notes that can only be spent by a channel's accredited keys, created when note value is bridged to the channel's Zone as part of a deposit operation. Conversely, channel notes are destroyed during a withdrawal operation, with new Mantle notes of equivalent value credited to recipients. Logos channel note transfers can also be used to effect atomic token transfers between Zones. While channel notes cannot be locked for [SDP participation](https://docs.logos.co/blockchain/concepts/about-the-blend-network.md#service-declaration-protocol), they remain eligible for the consensus lottery.
+
+### Cross-Zone messaging
+
+Since channel messages can include arbitrary data and are publicly visible, they can also be used for asynchronous or synchronous messaging. Used as a messaging platform, Logos channels can be used to coordinate action between sequencers of a single channel, for example to agree to sign a message modifying the sequencer list. They can also be used to arrange action across several Zones, such as atomic token transfers or other coordinated state transitions.

@@ -37,7 +37,7 @@ const savedAssistant = (): Assistant =>
 //   Report issue    opens a pre-filled GitHub issue for the page
 //   Open in X | ▾   split button: one click opens the page in the reader's
 //                   assistant; the menu switches assistant and holds the
-//                   Markdown view
+//                   Markdown view and the agent set-up page
 export default function PageActions(): ReactNode {
   const {metadata} = useDoc();
   const {siteConfig} = useDocusaurusContext();
@@ -169,6 +169,13 @@ export default function PageActions(): ReactNode {
               ))}
               <div className={styles.divider} role="separator" />
               {item('view-markdown', 'View as Markdown', 'The plain-text version agents read', mdPath)}
+              {item(
+                'connect-agent',
+                'Connect your coding agent',
+                'llms.txt, AGENTS.md block and agent skill',
+                '/get-started/coding-with-agents',
+                {external: false},
+              )}
             </div>
           )}
         </div>

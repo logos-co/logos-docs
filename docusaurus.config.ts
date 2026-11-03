@@ -29,6 +29,15 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    // Before first paint, apply the reader's saved assistant for the page
+    // actions' "Open in" button (src/components/PageActions), so it does not
+    // flicker from the default.
+    {
+      tagName: 'script',
+      attributes: {},
+      innerHTML:
+        "try{var a=localStorage.getItem('logos-docs:assistant');if(a)document.documentElement.dataset.assistant=a}catch(e){}",
+    },
     {
       tagName: 'script',
       attributes: {

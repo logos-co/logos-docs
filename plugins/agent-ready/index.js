@@ -6,7 +6,7 @@
 //   /llms-full.txt             every page in one file
 //   /<section>/llms.txt        per-section index (and llms-full.txt)
 //   /.well-known/llms.txt      copy of /llms.txt
-//   /agents/docs.json          sections, pages and content, for tools
+//   /agents/docs.json          sections, pages and content for the docs MCP server (mcp-server/)
 //   /agents/AGENTS.md          copy-paste block for a project's AGENTS.md
 //
 // See docs/get-started/coding-with-agents.md for the reader-facing side.
@@ -29,6 +29,11 @@ module.exports = function agentReadyPlugin(context, options = {}) {
   const siteUrl = context.siteConfig.url.replace(/\/$/, '');
   const repoRoot = context.siteDir;
   const rawBase = options.rawBase || 'https://raw.githubusercontent.com/logos-co/logos-docs/main';
+  // Public URL of the hosted docs MCP server, once there is one.
+  const mcpUrl = options.mcpUrl || '';
+  const mcpLine = `- Docs MCP server (search, fetch, and a metadata.json validator): ${
+    mcpUrl || 'https://github.com/logos-co/logos-docs/tree/main/mcp-server'
+  }`;
   let docsContent;
 
   return {
@@ -135,7 +140,8 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         `- Every page is available as Markdown: add \`.md\` to its URL (for example ${mdUrl('/get-started/what-is-logos')}).`,
         `- Each section has its own index (\`/<section>/llms.txt\`) and full text (\`/<section>/llms-full.txt\`). The whole set is at ${siteUrl}/llms-full.txt.`,
         `- Structured index with section use cases: ${siteUrl}/agents/docs.json`,
-        `- Coding with agents (AGENTS.md block, skill): ${mdUrl('/get-started/coding-with-agents')}`,
+        mcpLine,
+        `- Coding with agents (MCP set-up, AGENTS.md block, skill): ${mdUrl('/get-started/coding-with-agents')}`,
         '',
       ].join('\n');
 
@@ -215,7 +221,7 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         });
       }
 
-      // Structured index for tools.
+      // Structured index for the docs MCP server and other tools.
       write(
         'agents/docs.json',
         JSON.stringify(
@@ -243,6 +249,7 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         'relevant page below. Prefer the docs over memory, and cite the page you used.',
         '',
         `- Fetch any page as Markdown by adding \`.md\` to its URL. Full index: ${siteUrl}/llms.txt`,
+        '- If the `logos-docs` MCP server is connected, use `search_docs` / `get_page`, and run `validate_module_metadata` on every metadata.json you write.',
         '',
         `Docs index (base URL ${siteUrl}, append \`.md\`):`,
         '',

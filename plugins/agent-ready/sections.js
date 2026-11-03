@@ -1,5 +1,5 @@
 // Section metadata for the agent-facing outputs (llms.txt, the per-section
-// indexes and docs.json).
+// indexes, docs.json and the docs MCP server's `list_sections` tool).
 //
 // `use_cases` is what an agent reads to decide which section to open, so phrase
 // each entry as a task the reader is trying to do, not as a topic name.

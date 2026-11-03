@@ -11,22 +11,26 @@ write code, configuration or commands.
 
 ## Where to read
 
-Fetch the docs as Markdown over HTTP:
-
-- Index of every page with a one-line summary: https://docs.logos.co/llms.txt
-- One section: `https://docs.logos.co/<section>/llms.txt` (sections: get-started,
-  basecamp, build-an-app, core, blockchain, lez, messaging, storage, mixnet,
-  peer-discovery, run-a-node)
-- Any page as Markdown: add `.md` to its URL.
-- Everything in one file (about 1 MB): https://docs.logos.co/llms-full.txt
+1. If the `logos-docs` MCP server is connected, use it:
+   - `list_sections` to pick a section by its use cases,
+   - `search_docs` for a specific error message, command, field or concept,
+   - `get_page` (optionally with `heading`) to read the page you found.
+2. Otherwise fetch Markdown over HTTP:
+   - Index of every page with a one-line summary: https://docs.logos.co/llms.txt
+   - One section: `https://docs.logos.co/<section>/llms.txt` (sections: get-started,
+     basecamp, build-an-app, core, blockchain, lez, messaging, storage, mixnet,
+     peer-discovery, run-a-node)
+   - Any page as Markdown: add `.md` to its URL.
+   - Everything in one file (about 1 MB): https://docs.logos.co/llms-full.txt
 
 Read the version banner at the top of each page ("This document is accurate for
 Testnet vX"). If it does not match the version the user's project targets, say so.
 
 ## Rules
 
-- After writing or editing a module's `metadata.json`, check it against
-  https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module.md.
+- After writing or editing a module's `metadata.json`, run the MCP tool
+  `validate_module_metadata` on it and fix every error. Without the MCP server, check it
+  against https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module.md.
 - Use the versions the docs pin (for example `github:logos-co/logos-module-builder/<tag>`),
   not `main`, unless the user asks otherwise.
 - Quote flake references in shell commands: `nix build '.#lgx-portable'`. Nix only sees

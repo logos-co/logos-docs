@@ -172,7 +172,7 @@ export default function PageActions(): ReactNode {
               {item(
                 'connect-agent',
                 'Connect your coding agent',
-                'llms.txt, AGENTS.md block and agent skill',
+                'MCP server, llms.txt and AGENTS.md',
                 '/get-started/coding-with-agents',
                 {external: false},
               )}

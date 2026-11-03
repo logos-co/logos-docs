@@ -80,13 +80,14 @@ flowchart LR
     LW -->|node API| LN
     BW -->|node API| BN
     LN -->|finalised LEZ state| BN
+    BW -.-|used if it acts as sequencer| LN
     LN <-->|p2p| LP(("Other LEZ nodes"))
     BN <-->|p2p| BP(("Other Blockchain nodes"))
 ```
 
 - **Wallet modules** handle keys, derivation, signing, and proving. Both chains need proofs generated on the client: LEZ executes and proves transactions on [private accounts](../get-started/glossary.md#private-account) locally, and Logos Blockchain value transfers carry a zero-knowledge proof in place of a signature. Wallet modules therefore run where the keys are, which is normally in the user's application. Support for hardware signers, starting with Keycard, is planned.
 - **Node modules** follow their network over peer-to-peer connections, serve chain state, and relay the transactions the wallets produce.
-- **An LEZ node depends on a Logos Blockchain node** to obtain the finalised LEZ state.
+- **An LEZ node depends on a Logos Blockchain node** to obtain the finalised LEZ state. An LEZ node that acts as a sequencer also uses a Logos Blockchain wallet (the dotted line).
 - **A wallet reaches its node only through the node API.** This is what lets the node run in the application, on another device the user owns, or in your infrastructure without any change to the wallet.
 
 Storage and Delivery follow the same pattern without a wallet: an application calls the [Storage module](../get-started/glossary.md#storage-module) or the [Delivery module](../get-started/glossary.md#delivery-module) directly. Logos Delivery protects its network against spam with [Rate Limiting Nullifiers](../messaging/concepts/understand-logos-delivery-protocols.md#rln-relay) (RLN), and publishers hold an RLN membership [registered on LEZ](../lez/rln/register-rln-membership-from-basecamp.md).

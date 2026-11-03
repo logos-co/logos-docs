@@ -8,6 +8,8 @@
 //   /.well-known/llms.txt      copy of /llms.txt
 //   /agents/docs.json          sections, pages and content, for tools
 //   /agents/AGENTS.md          copy-paste block for a project's AGENTS.md
+//
+// See docs/get-started/coding-with-agents.md for the reader-facing side.
 
 const fs = require('fs');
 const path = require('path');
@@ -133,6 +135,7 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         `- Every page is available as Markdown: add \`.md\` to its URL (for example ${mdUrl('/get-started/what-is-logos')}).`,
         `- Each section has its own index (\`/<section>/llms.txt\`) and full text (\`/<section>/llms-full.txt\`). The whole set is at ${siteUrl}/llms-full.txt.`,
         `- Structured index with section use cases: ${siteUrl}/agents/docs.json`,
+        `- Coding with agents (AGENTS.md block, skill): ${mdUrl('/get-started/coding-with-agents')}`,
         '',
       ].join('\n');
 

@@ -22,7 +22,7 @@ const startHere: CardItem[] = [
   },
   {
     title: 'Coding with agents',
-    description: 'Give Claude Code, Cursor or Codex these docs: llms.txt, an AGENTS.md block and an agent skill',
+    description: 'Connect Claude Code, Cursor, Codex or VS Code to these docs: MCP server, llms.txt and AGENTS.md',
     to: '/get-started/coding-with-agents',
   },
   {

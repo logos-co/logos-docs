@@ -243,7 +243,7 @@ Running the node somewhere other than in the application changes what the node o
 What that exposes depends on the component:
 
 - **LEZ.** Private transactions remain mostly private. The node receives commitments and nullifiers, but private account state is encrypted to the recipient's [viewing key](../get-started/glossary.md#viewing-keys) and stays with the account owner. Any [public account](../get-started/glossary.md#public-account) involved in a transaction is visible, as it is to every node, so the operator may be able to correlate public accounts with a user's PII.
-- **Logos Blockchain.** Transaction contents are public on the ledger. Privacy comes from the [Blend Network](../get-started/glossary.md#blend-network), which hides where a transaction originates. Submitting through someone else's node bypasses Blend for that transaction, so the operator can link its contents to you. To benefit from Blend, submit through your own node. Encrypted UTXOs are planned and may improve privacy in this specific scenario.
+- **Logos Blockchain.** Transaction contents are public on the ledger in the current testnet version. Privacy comes from the [Blend Network](../get-started/glossary.md#blend-network), which hides where a transaction originates. Submitting through someone else's node bypasses Blend for that transaction, so the operator can link its contents to you. To benefit from Blend, submit through your own node.
 - **Storage and Delivery.** Privacy comes from taking part in the [mix](../get-started/glossary.md#mix), gossip, and [peer discovery](../get-started/glossary.md#peer-discovery) networks directly. Routing reads and writes through someone else's node weakens it.
 
 ## Tell us what you need

@@ -34,7 +34,7 @@ This procedure walks through the example guests in the [`examples/program_deploy
 
 - [Git](https://git-scm.com/) and the [Rust toolchain](https://www.rust-lang.org/tools/install).
 - Familiarity with Rust and the [`borsh`](https://borsh.io/) serialisation format.
-- To build guest programs yourself: the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`), as used in [Write and deploy an LEZ program with `logos-scaffold`](./write-and-deploy-lez-program-with-scaffold.md).
+- To build guest programs yourself, and to run the second command in [Step 8](#step-8-run-the-engine-tests): the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`), as used in [Write and deploy an LEZ program with `logos-scaffold`](./write-and-deploy-lez-program-with-scaffold.md).
 :::
 
 ## What to expect
@@ -183,13 +183,7 @@ The engine calls `apply` once per effect, with the shard that effect targets and
 1. Split a change that touches several accounts into one effect per shard. Open `hello_world_with_move_function.rs`, which moves bytes from one account's shard to another's:
 
    ```rust
-   #[derive(borsh::BorshSerialize, borsh::BorshDeserialize)]
-   enum Effect {
-       Append(Vec<u8>),
-       MoveOut(Vec<u8>),
-   }
-
-   fn plan(input: &PlanInput, instruction: Instruction) -> Plan {
+   
        let mut plan = Plan::new(input);
        let (function_id, data) = instruction;
 
@@ -232,7 +226,7 @@ The engine calls `apply` once per effect, with the shard that effect targets and
 
 ## Step 6: Chain a call to another program
 
-A program composes with others by declaring chained calls in `plan`. A caller names (account, shard) pairs only. It cannot hand the called program an account value or an authorisation bit, because the engine resolves each selector against live execution state and computes `is_authorized` itself. Calls run depth-first, and the depth is capped at 10 (`MAX_NUMBER_CHAINED_CALLS`).
+A program composes with others by declaring chained calls in `plan`. A caller names (account, shard) pairs only. It cannot hand the called program an account value or an authorisation bit, because the engine resolves each selector against live execution state and computes `is_authorized` itself. Calls run depth-first, and a transaction may prepare at most 10 chained calls in total (`MAX_NUMBER_CHAINED_CALLS`), counted across the whole traversal rather than per branch.
 
 1. Open `simple_tail_call.rs`. It writes nothing itself, so it skips `run_program`, reads the call with `read_program_call`, and refuses an apply call:
 
@@ -336,12 +330,12 @@ The engine's test suite reads as a specification of the contract your program mu
 1. From the repository root, run the traversal engine tests:
 
    ```bash
-   RISC0_DEV_MODE=1 cargo test --release -p lee_core execution_state
+   RISC0_DEV_MODE=1 cargo test --release -p lee_core --features host execution_state
    ```
 
    **Expected result:** the suite passes. It covers input echoes, effect scoping, depth-first traversal, PDA grant scoping and validity-window intersection.
 
-1. Optionally, drive all three `apply` outcomes (keep, clear, write) through a scripted guest:
+1. Optionally, drive all three `apply` outcomes (keep, clear, write) through a scripted guest. Unlike the previous command, this one builds guest programs, so it needs the RISC Zero toolchain from the prerequisites:
 
    ```bash
    RISC0_DEV_MODE=1 cargo test --release -p lee the_runner_echoes_its_input

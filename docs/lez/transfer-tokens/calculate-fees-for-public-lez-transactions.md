@@ -147,7 +147,9 @@ Run every command in the following steps in a second terminal, from the reposito
    Public/CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
    / Public/<derived-public-id>
    / Private/<derived-private-id>
-   
+   ```
+
+   `CbgR6tj5…` starts with a balance of `10000000000000` and `2RHZhw9h…` with `20000000000000`.
 
 ## Step 4: Calculate the fee of a native transfer
 

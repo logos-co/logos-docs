@@ -136,7 +136,7 @@ Your application keeps its own code, user interface, and distribution, and hosts
 1. Logos Core loads the modules, resolves their dependencies, and manages their lifecycle, exactly as it does in Basecamp.
 1. Your application calls modules through typed clients generated from each module's contract (a [CDDL](https://www.rfc-editor.org/rfc/rfc8610) schema), and subscribes to their events.
 
-Your own code does not need to be a module. You can still write modules, and doing so lets the same logic run in Basecamp later.
+Your own application code does not need to be implemented as a Logos module. Choosing to package it as a module allows your application to be easily distributed via Basecamp.
 
 This is not a library wrapper per Logos component. Your application gets the module runtime itself, so every Logos module, including third-party modules, is reachable the same way, and the runtime chooses where each module runs.
 

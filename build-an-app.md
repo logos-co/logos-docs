@@ -5,6 +5,7 @@
 
 Build and ship apps on Logos.
 
+- [Integrate Logos into your application](https://docs.logos.co/build-an-app/integrate-logos.md)
 - Build modules
   - [Build and run a Logos core module](https://docs.logos.co/core/build-modules/build-and-run-a-logos-core-module.md)
   - [Wrap a C library as a Logos core module](https://docs.logos.co/core/build-modules/wrap-a-c-library-as-a-logos-core-module.md)

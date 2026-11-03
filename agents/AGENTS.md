@@ -20,6 +20,7 @@ Basecamp:
 - /basecamp/install-and-load-module-in-basecamp — Access features and functionalities through modules in Logos Basecamp.
 - /basecamp/atomic-swaps-poc — Install the atomic swap app from a catalogue URL and trade Sepolia ETH for LEZ testnet to…
 Build an app:
+- /build-an-app/integrate-logos — Choose how your application reaches the Logos stack, and where the nodes it depends on ru…
 - /build-an-app/scaffold/about-logos-scaffold — Understand what Logos Scaffold manages and when to reach for it.
 - /build-an-app/scaffold/get-started/develop-a-logos-module-with-logos-scaffold — Build a module, install it into Basecamp, and iterate on it.
 - /build-an-app/scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp — Diagnose the failures that show up while iterating on a module.

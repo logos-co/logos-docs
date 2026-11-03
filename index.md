@@ -37,6 +37,7 @@ Logos Scaffold: the CLI that creates, builds and runs Logos modules and Basecamp
 Use this section to: create a new Logos module or Basecamp app with logos-scaffold (lgs); configure a scaffold project for Basecamp; debug a module that Basecamp does not load.
 Section index: https://docs.logos.co/build-an-app/llms.txt
 
+- [Integrate Logos into your application](https://docs.logos.co/build-an-app/integrate-logos.md): Choose how your application reaches the Logos stack, and where the nodes it depends on run.
 - [About Logos Scaffold](https://docs.logos.co/build-an-app/scaffold/about-logos-scaffold.md): Understand what Logos Scaffold manages and when to reach for it.
 - [Develop a Logos module with Logos Scaffold](https://docs.logos.co/build-an-app/scaffold/get-started/develop-a-logos-module-with-logos-scaffold.md): Build a module, install it into Basecamp, and iterate on it.
 - [Troubleshoot Logos module development with Basecamp](https://docs.logos.co/build-an-app/scaffold/troubleshooting/troubleshoot-logos-module-development-with-basecamp.md): Diagnose the failures that show up while iterating on a module.

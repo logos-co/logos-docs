@@ -1,15 +1,15 @@
 {
-    "timestamp": "2026-11-03T00:46:27Z",
+    "timestamp": "2026-11-03T15:48:07Z",
     "git": {
-        "commit": "588d998270ac88c04006d7fd061f8406dae21680",
+        "commit": "e3753514476bbe762f2a4c3ce4e820376d01a546",
         "branch": "origin/main",
         "url": "git@github.com:logos-co/logos-docs.git"
     },
     "build": {
-        "id": "185",
-        "number": "185",
+        "id": "186",
+        "number": "186",
         "name": "website/docs.logos.co",
         "slave": "linux-02",
-        "url": "https://ci.infra.status.im/job/website/job/docs.logos.co/185/"
+        "url": "https://ci.infra.status.im/job/website/job/docs.logos.co/186/"
     }
 }

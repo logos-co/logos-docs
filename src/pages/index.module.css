@@ -107,3 +107,26 @@
     flex-direction: column;
   }
 }
+
+/* "Start here": three wider cards spanning the same width as the 4-up grid. */
+.cardGridThree {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.agentNote {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+@media (max-width: 768px) {
+  .cardGridThree {
+    grid-template-columns: repeat(2, 240px);
+  }
+}
+
+@media (max-width: 520px) {
+  .cardGridThree {
+    grid-template-columns: 1fr;
+  }
+}

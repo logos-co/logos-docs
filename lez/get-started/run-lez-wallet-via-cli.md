@@ -11,6 +11,8 @@
 
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](https://docs.logos.co/get-started/glossary.md#lez) testnet sequencer.
 
+For a description of all available `wallet` commands, see the [Wallet commands reference](#wallet-commands-reference) below.
+
 > **Info: Prerequisites**
 >
 >
@@ -165,7 +167,21 @@ The sender's `Balance` should be `37` lower than before the transfer.
 
 This should show `Balance 37`.
 
+## Wallet commands reference
+
+The following are all the commands available for the `wallet` CLI, what they are used for, and the parameters they require. Run `wallet help` for more information.
+
+| Command                | Description                                                 |
+|------------------------|-------------------------------------------------------------|
+| `wallet auth-transfer` | Authenticated transfer (send)                               |
+| `wallet chain-info`    | Chain info queries (current-block-id, block, transaction)   |
+| `wallet account`       | Account management (get, list, new, sync-private)           |
+| `wallet check-health`  | Health checks that the wallet is connected to the node      |
+| `wallet config`        | Config Setup (get, set)                                     |
+| `wallet restore-keys ` | Keys restore from a given password at given `depth`         |
+| `wallet deploy-program`| Program deployment                                          |
+| `wallet help`          | Help   
+
 ## Next steps
 
 - [Transfer native tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/transfer-native-tokens-on-lez.md)
-- [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md)

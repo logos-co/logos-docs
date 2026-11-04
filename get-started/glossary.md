@@ -457,18 +457,6 @@ A protocol that enables the storage of relayed messages in the Logos Delivery ne
 
 ## T
 
-### Token definition account
-
-An LEZ account that defines the properties and behaviour of a custom token. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
-### Token holding account
-
-An LEZ account that is able to hold a custom token. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
-### Token program
-
-An LEZ program that provides the functionality for the creation of custom LEZ tokens. See [Create and transfer custom tokens on the LEZ](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
 ### Transport
 
 A network mechanism that establishes connections between Logos Delivery peers and enables efficient transmission, routing, and delivery of data packets.

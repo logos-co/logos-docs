@@ -21,7 +21,6 @@ This procedure covers how to credit a [private account](https://docs.logos.co/ge
 - You can credit a recipient's private account using only their published [NPK](https://docs.logos.co/get-started/glossary.md#npk) and [VPK](https://docs.logos.co/get-started/glossary.md#vpk), with no interactive setup required.
 - You can receive tokens into up to 2^128 distinct accounts from the same keypair by varying the identifier, so one published key serves many independent senders.
 - You can discover and spend incoming funds with `wallet account sync-private` after the sender's transaction is confirmed.
-- Transfers work for both native LEZ tokens and [custom tokens](https://docs.logos.co/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
 
 ## Step 1: Publish a reusable keypair as the recipient
 

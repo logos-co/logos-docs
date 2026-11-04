@@ -253,7 +253,11 @@ const config: Config = {
           },
           {
             from: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone',
-            to: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez',
+            to: '/lez/transfer-tokens/transfer-native-tokens-on-lez',
+          },
+          {
+            from: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez',
+            to: '/lez/transfer-tokens/transfer-native-tokens-on-lez',
           },
           {
             from: '/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone',

@@ -1,5 +1,5 @@
 ---
-title: Write an LEZ program with plan and apply entry points
+title: Write an LEZ program that updates an account via `plan` and `apply`
 doc_type: procedure
 product: lez
 topics:
@@ -13,7 +13,7 @@ slug: write-lez-program-with-plan-and-apply
 sidebar_position: 2
 ---
 
-# Write an LEZ program with plan and apply entry points
+# Write an LEZ program that updates an account via `plan` and `apply`
 
 #### Walk through the example guest programs to learn how an LEZ program declares effects in `plan` and writes one shard at a time in `apply`.
 
@@ -21,20 +21,20 @@ sidebar_position: 2
 This document is accurate for **Testnet v0.3**.
 :::
 
-A [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) [program](../../get-started/glossary.md#program) no longer receives full account states or returns full post-states. Instead, it has two entry points that each see only what the execution engine gives them:
+When a [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) [program](../../get-started/glossary.md#program) executes and consequently modifies an LEZ [account](../../get-started/glossary.md#account), it does not receive full account states or return full post-states. Instead, it has two distinct entry points that have access only to what the execution engine gives them:
 
-- **`plan`** sees the instruction and a list of account handles, but no account data. It turns the instruction into a list of intents: effects on shards, chained calls to other programs, and events.
+- **`plan`** sees the instruction and a list of account handles, but no account data. It turns the instruction into a list of intents: effects on account data [shards](../../get-started/glossary.md#shard), chained calls to other programs, and events.
 - **`apply`** materialises one effect against exactly one shard of one account, and sees nothing else.
 
-The engine, not the program, decides what data each step may see, and it rejects any output that does not match what it computed. A program written this way cannot assert stale account values into a program it calls, write outside the accounts it declared, or write a shard another program owns. Programs written against the old `ProgramOutput`/`AccountPostState` interface no longer compile.
+For more information about this two-step update process, see [Introduction to the Logos Execution Zone](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state).
 
-This procedure walks through the example guests in the [`examples/program_deployment`](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.1/examples/program_deployment) directory of the LEZ repository, from a 25-line program to one that chains calls and emits events. It is for developers writing or reviewing LEZ programs who want to understand the interface before writing their own.
+This procedure walks through the example programs in the [`examples/program_deployment`](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2/examples/program_deployment) directory of the LEZ repository, from a short program to one that chains calls and emits events. It is intended for developers writing or reviewing LEZ programs who want to understand the interface before writing their own.
 
 :::info[Prerequisites]
 
 - [Git](https://git-scm.com/) and the [Rust toolchain](https://www.rust-lang.org/tools/install).
 - Familiarity with Rust and the [`borsh`](https://borsh.io/) serialisation format.
-- To build guest programs yourself, and to run the second command in [Step 8](#step-8-run-the-engine-tests): the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`), as used in [Write and deploy an LEZ program with `logos-scaffold`](./write-and-deploy-lez-program-with-scaffold.md).
+- To build guest programs yourself, and to run the second command in [Step 8](#step-8-run-the-engine-tests-optional): the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`), as used in [Write and deploy an LEZ program with `logos-scaffold`](./write-and-deploy-lez-program-with-scaffold.md).
 :::
 
 ## What to expect
@@ -45,12 +45,12 @@ This procedure walks through the example guests in the [`examples/program_deploy
 
 ## Step 1: Get the example programs
 
-1. Clone the LEZ repository at the release the testnet runs and open the example guests:
+1. Clone the LEZ repository at the release the testnet runs and open the example programs:
 
    ```bash
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.1
+   git checkout v0.3.2
    ls examples/program_deployment/methods/guest/src/bin
    ```
 
@@ -64,11 +64,11 @@ This procedure walks through the example guests in the [`examples/program_deploy
    tail_call_with_pda.rs
    ```
 
-   Each file is a standalone guest program. The rest of this procedure reads them in order of complexity.
+   Each file is a standalone program. The rest of this procedure reads them in order of complexity.
 
 ## Step 2: Understand how account data is stored
 
-Before writing a program, you need to know what `apply` is allowed to change. An [account](../../get-started/glossary.md#account) is a nonce plus a map of **shards**, each keyed by the account ID of the program that owns it (`AccountData { shards: BTreeMap<AccountId, ShardData> }`). A program may only write the shard keyed by its own account ID. There is no claiming of accounts: any program can write its own shard on any account it is given.
+Before writing a program, you need to know what `apply` is allowed to change. An account is a nonce plus a map of **shards**, each keyed by the account ID of the program that owns it (`AccountData { shards: BTreeMap<AccountId, ShardData> }`). A program may only write the shard keyed by its own account ID. There is no claiming of accounts: any program can write its own shard on any account it is given.
 
 1. Note the types that name a shard, which you pass around instead of account data:
 
@@ -134,14 +134,19 @@ Every guest that writes data starts the same way. `run_program` reads one invoca
    | `accounts` | One `AccountMeta` handle per input the caller selected, in order. |
    | `instruction_data` | The raw instruction bytes. `run_program` has already decoded these into your instruction type. |
 
-1. Check authorisation in `plan` when the program must not act for an account that did not consent. Open `hello_world_with_authorization.rs`. The only difference from `hello_world.rs` is one assertion:
+1. Check authorisation in `plan` when the program must only modify an account that is authorised. Open `hello_world_with_authorization.rs`. The only difference from `hello_world.rs` is one assertion:
 
    ```rust
    // Fail if the input account is not authorized
    assert!(account.is_authorized, "Missing required authorization");
    ```
 
-   The engine sets `is_authorized` itself: from a transaction signature for a public account, from knowledge of the authorisation secret key for a [private account](../../get-started/glossary.md#private-account), or from a delegated PDA seed (see [Step 6](#step-6-chain-a-call-to-another-program)). A caller cannot set it.
+   :::info
+   The engine sets `is_authorized` in one of three ways:
+   - For a [public account](../../get-started/glossary.md#public-account): if it signed the transaction that ran the program
+   - For a [private account](../../get-started/glossary.md#private-account): from knowledge of the [authorisation secret key](../../get-started/glossary.md#authorisation-secret-key)
+   - For a delegated PDA: if the calling program attaches a seed to delegate authorisation
+   :::
 
 1. Use the other `Plan` builder methods as your program needs them:
 
@@ -150,7 +155,7 @@ Every guest that writes data starts the same way. `run_program` reads one invoca
    | `effect(account, &effect)` | An effect on this program's own shard of `account`. Panics if the handle names another program's shard. |
    | `inspect(account, owner, &guard)` | A read-only check routed through `owner`'s own `apply`, for a shard this program does not own. |
    | `call(ChainedCall)` | A call to another program, run after this one. |
-   | `event(ProgramEvent)` | An event for off-chain consumers to read from an indexer. It changes no state. |
+   | `event(ProgramEvent)` | An event for off-chain consumers to read from an indexer. It does not change the state. |
    | `block_window(..)`, `timestamp_window(..)` | Narrows the block ID or timestamp range in which the transaction is valid, for example `plan.block_window(..100)`. |
 
    An effect may only target a shard that is an input of the call. The engine rejects anything else with `EffectOutsideInputs`.
@@ -237,7 +242,7 @@ The engine calls `apply` once per effect, with the shard that effect targets and
 
 ## Step 6: Chain a call to another program
 
-A program composes with others by declaring chained calls in `plan`. A caller names (account, shard) pairs only. It cannot hand the called program an account value or an authorisation bit, because the engine resolves each selector against live execution state and computes `is_authorized` itself. Calls run depth-first, and a transaction may prepare at most 10 chained calls in total (`MAX_NUMBER_CHAINED_CALLS`), counted across the whole traversal rather than per branch.
+A program composes with others by declaring chained calls in `plan`. A caller names `(account, shard)` pairs only. It cannot hand the called program an account value or an authorisation bit, because the engine resolves each selector against live execution state and computes `is_authorized` itself. Calls run depth-first, and a transaction may prepare at most 10 chained calls in total (`MAX_NUMBER_CHAINED_CALLS`), counted across the whole traversal rather than per branch.
 
 1. Open `simple_tail_call.rs`. It writes nothing itself, so it skips `run_program`, reads the call with `read_program_call`, and refuses an apply call:
 
@@ -294,7 +299,7 @@ A program composes with others by declaring chained calls in `plan`. A caller na
 
 ## Step 7: Combine effects, calls and events
 
-Production programs mix all three outputs in one `plan`. The bridge program's deposit, in [`lez/programs/bridge/src/main.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/programs/bridge/src/main.rs), is a compact example.
+Production programs mix all three outputs in one `plan`. The bridge program's deposit, in [`lez/programs/bridge/src/main.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/programs/bridge/src/main.rs), is a compact example.
 
 1. Read the deposit branch of the bridge's `plan`:
 
@@ -334,7 +339,7 @@ Production programs mix all three outputs in one `plan`. The bridge program's de
    - **Native balance through a call.** `custody_transfer(from, seed, to, amount)` returns a `ChainedCall` to the native token program, with the bridge's PDA seed attached so it can debit its own custody account.
    - **Event for off-chain consumers.** The event carries no state and changes nothing on chain.
 
-## Step 8: Run the engine tests
+## Step 8: Run the engine tests (Optional)
 
 The engine's test suite reads as a specification of the contract your program must meet. Run it to see the rules enforced.
 
@@ -356,10 +361,10 @@ The engine's test suite reads as a specification of the contract your program mu
 
    | Rule | Tests |
    | :--- | :--- |
-   | `plan` must echo its input, effects land only on declared handles, `apply` must echo its input | `a_plan_must_repeat_the_prepared_inputs_exactly`, `an_effect_outside_the_call_inputs_is_rejected`, `an_apply_output_must_echo_the_input_the_engine_computed` in [`lee/state_machine/core/src/execution_state/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lee/state_machine/core/src/execution_state/tests.rs) |
-   | Shard ownership and the native-balance boundary | `a_data_write_on_a_shard_the_executing_program_does_not_own_is_rejected`, `a_guest_cannot_write_the_native_balance_shard` in [`lee/state_machine/core/src/program/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lee/state_machine/core/src/program/tests.rs) |
-   | Real guests on the public path, including dropped or injected accounts | [`lee/state_machine/src/state/tests/public_program_rules.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lee/state_machine/src/state/tests/public_program_rules.rs) |
-   | The same contract on the private path | The `an_apply_forging_*` tests in [`lee/state_machine/src/state/tests/privacy_preserving.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lee/state_machine/src/state/tests/privacy_preserving.rs) |
+   | `plan` must echo its input, effects land only on declared handles, `apply` must echo its input | `a_plan_must_repeat_the_prepared_inputs_exactly`, `an_effect_outside_the_call_inputs_is_rejected`, `an_apply_output_must_echo_the_input_the_engine_computed` in [`lee/state_machine/core/src/execution_state/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/core/src/execution_state/tests.rs) |
+   | Shard ownership and the native-balance boundary | `a_data_write_on_a_shard_the_executing_program_does_not_own_is_rejected`, `a_guest_cannot_write_the_native_balance_shard` in [`lee/state_machine/core/src/program/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/core/src/program/tests.rs) |
+   | Real guests on the public path, including dropped or injected accounts | [`lee/state_machine/src/state/tests/public_program_rules.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/src/state/tests/public_program_rules.rs) |
+   | The same contract on the private path | The `an_apply_forging_*` tests in [`lee/state_machine/src/state/tests/privacy_preserving.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/src/state/tests/privacy_preserving.rs) |
 
 ## Troubleshooting
 

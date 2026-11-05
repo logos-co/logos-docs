@@ -8,7 +8,7 @@ authors: erhant, kashepavadan
 owner: logos
 doc_version: 1
 slug: calculate-fees-for-public-lez-transactions
-sidebar_position: 4
+sidebar_position: 2
 ---
 
 # Calculate the fees for public LEZ transactions
@@ -31,7 +31,7 @@ refund  = reserve − actual
 
 A transaction that reverts stays in the block and still pays: up to the point of the revert for a clean non-zero exit, or the full gas limit for a panic or out-of-gas.
 
-This procedure runs a standalone sequencer on your machine, sends a native transfer and two [token program](../../get-started/glossary.md#token-program) calls, and derives each fee from the payer's balance. It's intended for wallet and app developers who need to size balances, choose gas limits, and explain charges to their users. The standalone sequencer mocks the Logos Blockchain layer and applies the same fee rules as the Testnet v0.3 zone.
+This procedure runs a standalone sequencer on your machine, sends a native transfer and two program calls, and derives each fee from the payer's balance. It's intended for wallet and app developers who need to size balances, choose gas limits, and explain charges to their users. It uses a local LEZ sequencer because program deployment is not yet fully supported on Testnet v0.3.
 
 :::info[Prerequisites]
 
@@ -61,7 +61,6 @@ This procedure runs a standalone sequencer on your machine, sends a native trans
    ```
 
 - [`just`](https://github.com/casey/just) (**1.38 or later**), `curl`, and `git`.
-- About 30 minutes, most of it for the first release build.
 
 :::
 
@@ -73,7 +72,7 @@ This procedure runs a standalone sequencer on your machine, sends a native trans
 
 ## Step 1: Start a local sequencer
 
-The standalone sequencer runs a local zone with no Logos Blockchain node and no Docker. Its debug genesis funds two test accounts, so you need no tokens.
+The standalone sequencer runs a local LEZ with no Logos Blockchain node and no Docker. Its debug genesis funds two test accounts, so you need no tokens.
 
 1. Clone the LEZ repository and check out the `v0.3.0` release:
 
@@ -83,7 +82,7 @@ The standalone sequencer runs a local zone with no Logos Blockchain node and no 
    git checkout v0.3.0
    ```
 
-   - Use `v0.3.0` even though the Testnet v0.3 zone runs `v0.3.1`. The fee rules are the same in both, but `v0.3.1` removed the wallet's `token` commands that Steps 5 to 7 use.
+   - Use `v0.3.0` for this tutorial even though the Testnet v0.3 zone runs `v0.3.1`. The fee rules are the same in both, but `v0.3.1` removed the wallet's `token` commands that Steps 5 to 7 use.
 
 1. Start the sequencer. It stays in the foreground, serves RPC on port `3040`, and produces a block every 15 seconds:
 
@@ -202,7 +201,7 @@ A native transfer meters no execution gas, so it pays storage gas only. The wall
 
 ## Step 5: Calculate the fee of a program call
 
-A token program call runs guest code, so it pays execution gas for its cycles on top of storage gas. The payer must hold the reserve, and a new account holds nothing, so fund it first.
+Running a program requires execution gas for its cycles on top of storage gas. The payer must hold the reserve, and a new account holds nothing, so fund it first. Below, you'll use the custom token program as an example of how transaction fees are calculated for programs in general.
 
 1. Create the token definition and supply accounts:
 
@@ -358,7 +357,7 @@ The wallet printed `Transaction is included in block <n>`, the payer's balance d
 
 ### Token balances are missing from `account get`
 
-`account get` shows only the native `Balance` and `nonce` by default. Add `--scope all` to include program state such as token holdings.
+`account get` shows only the native `Balance` and `nonce` by default. Add `--scope all` to include program state such as custom token holdings.
 
 ### Known constraints
 

@@ -55,7 +55,7 @@ For a description of all available `wallet` commands, see the [Wallet commands r
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.0
+   git checkout v0.3.2
    ```
 
    - The tag must match the programs the testnet runs.

@@ -225,7 +225,7 @@ The indexer only ingests finalised blocks, so an event becomes available to quer
 
    **Expected result:** the indexer replies with a subscription ID, then sends one notification per matching event record as new blocks finalise.
 
-1. To read events from C or another language with C bindings, use the FFI instead of RPC. The indexer FFI exposes `query_events(indexer, from_block, to_block, tx_hash, program_account_id, selector)` in [`lez/indexer/ffi/src/api/query.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/indexer/ffi/src/api/query.rs), and the sequencer FFI exposes `sequencer_ffi_query_events` with the same filter fields and span cap. Pass a null pointer for any filter you do not set, and free the returned vector when you are done.
+1. To read events from C or another language with C bindings, use the FFI instead of RPC. The indexer FFI exposes `query_events(indexer, from_block, to_block, tx_hash, program_account_id, selector)` in [`lez/indexer/ffi/src/api/query.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/indexer/ffi/src/api/query.rs), and the sequencer FFI exposes `sequencer_ffi_query_events` with the same filter fields and span cap. `from_block` is required and `to_block` is an optional value, not a pointer; pass a null pointer for any of `tx_hash`, `program_account_id` and `selector` you do not set, and free the returned vector when you are done.
 
 ## Troubleshooting
 
@@ -236,6 +236,10 @@ The indexer's filter did not keep the events you asked for, for some or all of t
 ### Queries return an empty array for recent transactions
 
 The block holding the transaction has not finalised yet, or the transaction ran privately. Wait for finalisation and check that the program ran on the public execution path.
+
+### A query fails with `from_block ... exceeds the indexed tip` or `block span ... exceeds the maximum`
+
+The requested range is not one the indexer can serve. `from_block` must not be greater than the last block ingested, and the range may span at most 1,000 blocks, counting both ends. An omitted `to_block` defaults to that last block, so it trips the span cap on any chain past block 1,000. Set both bounds and read longer histories in windows of 1,000 blocks.
 
 ### A subscription returns an ID but no notifications arrive
 

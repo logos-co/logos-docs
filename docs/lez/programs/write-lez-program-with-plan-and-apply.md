@@ -475,7 +475,7 @@ Each run of a runner deploys a new copy of its program at a new program account 
        write-public <public_account_id> mundo!
    ```
 
-   The runner also has `write-private`, `move-data-public-to-public` and `move-data-public-to-private` subcommands. Before a move, the runner reads the source shard and puts those bytes in the instruction, which is the pinning pattern from [Step 5](#step-5-write-one-shard-in-apply). A `move-data-*` run deploys a new copy of the program, though, so the source shard it reads is that copy's empty shard, not the one an earlier `write-*` run wrote.
+   The runner also has `write-private`, `move-data-public-to-public` and `move-data-public-to-private` subcommands. Before a move, the runner reads the source shard and puts those bytes in the instruction, which is the pinning pattern from [Step 5](#step-5-write-one-shard-in-apply). A `move-data-*` run deploys a new copy of the program, though, so the source shard it reads is the empty shard of that new copy, not the one an earlier `write-*` run wrote.
 
 1. Run `simple_tail_call`, which chains a call to `hello_world`. The runner deploys both programs and passes the account ID of `hello_world` as the instruction:
 

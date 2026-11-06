@@ -430,14 +430,14 @@ Each run of a runner deploys a new copy of its program at a new program account 
 
    The guest binary is the same: only the privacy of the input account differs. Your machine runs `plan` and `apply` locally and generates the proofs, which can take several minutes.
 
-1. Sync private state, then inspect the account:
+1. Wait for the next block, then sync private state and inspect the account:
 
    ```bash
    wallet account sync-private
    wallet account get --raw --scope all --account-id Private/<private_account_id>
    ```
 
-   **Expected result:** the program's shard holds `486f6c61206d756e646f21`. Before the sync, the wallet still reports `Account is Uninitialized`, because the new state exists on chain only as an encrypted commitment.
+   **Expected result:** the program's shard holds `486f6c61206d756e646f21`. The runner returns as soon as it submits the transaction, without waiting for a block to include it. If the wallet still reports `Account is Uninitialized`, the transaction is not in a block yet: wait a few seconds and run both commands again. Before the sync, the wallet always reports `Account is Uninitialized`, because the new state exists on chain only as an encrypted commitment.
 
 ### Check authorisation with `hello_world_with_authorization`
 

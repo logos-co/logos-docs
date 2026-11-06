@@ -131,7 +131,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](https:/
 
     > **Info**
     >
-    > Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` can be found in `user_config.yaml` under `blend.core.backend.listening_address`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
+    > Make sure to open `<YOUR_BLEND_PORT>/udp` on the public host firewall before running the following command. `<YOUR_BLEND_PORT>` is `3400` unless you set `blend.core.backend.listening_address` in `user_config.yaml`. Configure the firewall and NAT forwarding before joining and verify the local listener and public reachability after activation.
 
     ```sh
     logosctl call blockchain_module blend_join_as_core_node \
@@ -143,7 +143,7 @@ Complete these steps to fund the required keys, retrieve a locked [note](https:/
     ```
 
     - `<YOUR_IP>`: Must be your external IP address
-    - `<YOUR_BLEND_PORT>`: Your configured Blend port from the `user_config.yaml` file (`blend.core.backend.listening_address`). Note that if you do port-mapping, the external mapped port must be used.
+    - `<YOUR_BLEND_PORT>`: Your Blend port, `3400` by default, or the port in `blend.core.backend.listening_address` if you set it in `user_config.yaml`. Note that if you do port-mapping, the external mapped port must be used.
     - `<BLEND_ZK_NOTE_ID>`: The ID of the 1 billion note held by your `BlendZk` key, as queried above.
     - The Blend core listener starts only after the node's declaration becomes active.
 

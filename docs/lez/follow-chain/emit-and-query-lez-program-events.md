@@ -24,15 +24,16 @@ This document is accurate for **Testnet v0.3**.
 
 A [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) [program](../../get-started/glossary.md#program) can emit typed **events** while it runs: a deposit, a swap, a delivery, or anything else off-chain consumers should see without re-deriving it from state changes. An LEZ Indexer stores the events it is configured to keep and serves them over JSON-RPC with exact-match filtering. Events are the basis for explorers, bots, bridges and any service that reacts to on-chain activity.
 
-This procedure uses the bridge program's `Deposit` event in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.1) as its example. It walks through how a program defines and emits an event, how an indexer decides which events to keep, and how a client queries and streams them. It is for program developers who want to expose activity, and for developers building services that consume it.
+This procedure uses the bridge program's `Deposit` event in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2) as its example. It walks through how a program defines and emits an event, how an indexer decides which events to keep, and how a client queries and streams them. It is for program developers who want to expose activity, and for developers building services that consume it.
 
 Events are not stored in blocks and no hash commits to them. Re-executing a block produces them again, so any party holding the chain can re-derive the same event stream.
 
 :::info[Prerequisites]
 
-- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) at `v0.3.1`, to read the example code.
-- A running [LEZ Indexer](./run-lez-indexer.md) that follows a chain whose blocks finalise. The indexer serves JSON-RPC on `http://localhost:8779` by default.
+- A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) at `v0.3.2`, to read the example code.
+- A running [LEZ Indexer](./run-lez-indexer.md). The indexer serves JSON-RPC on `http://localhost:8779` by default.
 - [`curl`](https://curl.se/) and [`jq`](https://jqlang.org/). To stream events, a WebSocket client such as [`websocat`](https://github.com/vi/websocat).
+- An understanding of [how LEZ programs update account state](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state). It is also helpful to have gone through [Write an LEZ program that updates an account via `plan` and `apply`](../programs/write-lez-program-with-plan-and-apply.md).
 :::
 
 ## What to expect
@@ -43,9 +44,9 @@ Events are not stored in blocks and no hash commits to them. Re-executing a bloc
 
 ## Step 1: Define an event type and its selector
 
-An event on the wire is a `ProgramEvent { selector: [u8; 8], data: Vec<u8> }`. The selector tells consumers which event type the data holds. By convention it is the first 8 bytes of `sha256("<program>::<EventName>")`, so consumers can compute it without a registry. Nothing enforces the convention at runtime.
+An event is defined as a `ProgramEvent { selector: [u8; 8], data: Vec<u8> }`. The selector here tells consumers which event type the data holds. By convention, it is the first 8 bytes of `sha256("<program>::<EventName>")`, so consumers can compute it without a registry. Nothing enforces the convention at runtime.
 
-1. Open [`lez/programs/bridge/core/src/event.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/programs/bridge/core/src/event.rs). It defines the event as a struct that derives the `borsh` traits, pins the selector as a constant next to the name it is derived from, and provides byte conversions:
+1. Open [`lez/programs/bridge/core/src/event.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/programs/bridge/core/src/event.rs). It defines the event as a struct that derives the `borsh` traits, pins the selector as a constant next to the name it is derived from, and provides byte conversions:
 
    ```rust
    #[derive(Debug, PartialEq, Eq, BorshSerialize, BorshDeserialize)]
@@ -71,27 +72,15 @@ An event on the wire is a `ProgramEvent { selector: [u8; 8], data: Vec<u8> }`. T
 
    Put the event types in a `core` crate that both the program and its off-chain consumers depend on, so both sides decode the same layout.
 
-1. Add a unit test that checks the constant matches its derivation, as the bridge does:
-
-   ```rust
-   #[test]
-   fn event_selectors_match_their_derivations() {
-       use sha2::Digest as _;
-
-       assert_eq!(
-           Deposit::SELECTOR[..],
-           sha2::Sha256::digest(Deposit::SELECTOR_NAME.as_bytes())[..8]
-       );
-   }
-   ```
-
-   - To compute a selector from the command line, run `printf 'bridge::Deposit' | sha256sum | cut -c1-16`. The output is `cd499ae548cdf23d`, the same hex string you use in queries.
+   :::tip
+   To compute a selector from the command line, run `printf 'bridge::Deposit' | sha256sum | cut -c1-16`. The output here is `cd499ae548cdf23d`, the same hex string you use in queries.
+   :::
 
 ## Step 2: Emit the event from `plan`
 
-Events are declared in a program's `plan` function, the state-blind entrypoint that also declares the program's effects and chained calls.
+Events are declared in a program's `plan` function, the [state-blind entrypoint](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state) that also declares the program's effects and chained calls.
 
-1. Open [`lez/programs/bridge/src/main.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/programs/bridge/src/main.rs) and find the end of `plan`. After declaring its effect and its chained transfer, the bridge emits the deposit:
+1. Open [`lez/programs/bridge/src/main.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/programs/bridge/src/main.rs) and find the end of `plan`. After declaring its effect and its chained transfer, the bridge emits the deposit:
 
    ```rust
    plan.event(ProgramEvent {
@@ -108,7 +97,7 @@ Events are declared in a program's `plan` function, the state-blind entrypoint t
 
    `plan.event(..)` adds the event to `PlanOutput.events`. It changes no state.
 
-1. Note how the runtime records the event. When the transaction executes, the runtime stamps each event with the emitting program's account ID, taken from the call frame rather than from the program, and stores it as a `TransactionEvent { account_id, event }`. A program cannot emit an event that appears to come from another program. Within a transaction:
+1. Note how the runtime records the event. When the transaction executes, the runtime stamps each event with the emitting program's account ID and stores it as a `TransactionEvent { account_id, event }`. A program cannot emit an event that appears to come from another program. Within a transaction:
 
    - Events come out in emission order, and events from chained calls follow depth-first pre-order.
    - An event from a chained call is attributed to the program that was called, not to its caller.
@@ -152,7 +141,7 @@ Each indexer decides at ingest which events to store, through the `event_filter`
 `getEvents` takes one filter object. With `tx_hash` set, it returns the events of that transaction. Otherwise `from_block` is required and `to_block` defaults to the indexer's tip.
 
 :::info
-The indexer only ingests finalised blocks, so an event becomes available to query once its block finalises. On a stack whose blocks do not finalise, only genesis events are ever stored.
+The indexer only ingests finalised blocks, so an event becomes available to query once its block finalises.
 :::
 
 1. Query the bridge's `Deposit` events from block 1 onwards:
@@ -160,8 +149,12 @@ The indexer only ingests finalised blocks, so an event becomes available to quer
    ```bash
    curl -s -X POST http://localhost:8779 \
      -H "Content-Type: application/json" \
-     -d '{"jsonrpc":"2.0","id":1,"method":"getEvents","params":[{"from_block":1,"selector":"cd499ae548cdf23d"}]}' | jq .
+     -d '{"jsonrpc":"2.0","id":1,"method":"getEvents","params":[{"from_block":0,"to_block":999,"selector":"cd499ae548cdf23d"}]}' | jq .
    ```
+
+   :::warning
+   Always set `to_block`. Omitted, it defaults to the last block the indexer has ingested, which breaks the 1,000-block span cap as soon as the chain passes block 1,000. Read longer histories in windows of 1,000 blocks.
+   :::
 
    **Expected result:** `result` is an array of event records, empty if no deposit has finalised in the range. Each record has these fields:
 
@@ -188,7 +181,7 @@ The indexer only ingests finalised blocks, so an event becomes available to quer
    - A response is capped at 8 MiB. Narrow the range or the filter if a query exceeds it.
    - With a `sources` filter configured, include `program_account_id`, and `selector` where the source lists selectors, so the indexer can confirm it kept everything you ask for.
 
-1. Decode an event's `data` with the event type from Step 1. A `Deposit` is Borsh-encoded as 32 bytes of `l1_deposit_op_id`, 32 bytes of `recipient_id`, then `amount` as a little-endian `u64`:
+1. Decode an event's `data` with the event type from [Step 1](#step-1-define-an-event-type-and-its-selector). A `Deposit` is Borsh-encoded as 32 bytes of `l1_deposit_op_id`, 32 bytes of `recipient_id`, then `amount` as a little-endian `u64`:
 
    ```rust
    use base64::prelude::*;
@@ -225,7 +218,7 @@ The indexer only ingests finalised blocks, so an event becomes available to quer
 
    **Expected result:** the indexer replies with a subscription ID, then sends one notification per matching event record as new blocks finalise.
 
-1. To read events from C or another language with C bindings, use the FFI instead of RPC. The indexer FFI exposes `query_events(indexer, from_block, to_block, tx_hash, program_account_id, selector)` in [`lez/indexer/ffi/src/api/query.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/indexer/ffi/src/api/query.rs), and the sequencer FFI exposes `sequencer_ffi_query_events` with the same filter fields and span cap. `from_block` is required and `to_block` is an optional value, not a pointer; pass a null pointer for any of `tx_hash`, `program_account_id` and `selector` you do not set, and free the returned vector when you are done.
+1. To read events from C or another language with C bindings, use the FFI instead of RPC. The indexer FFI exposes `query_events(indexer, from_block, to_block, tx_hash, program_account_id, selector)` in [`lez/indexer/ffi/src/api/query.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/indexer/ffi/src/api/query.rs), and the sequencer FFI exposes `sequencer_ffi_query_events` with the same filter fields and span cap. `from_block` is required and `to_block` is an optional value, not a pointer; pass a null pointer for any of `tx_hash`, `program_account_id` and `selector` you do not set, and free the returned vector when you are done.
 
 ## Troubleshooting
 

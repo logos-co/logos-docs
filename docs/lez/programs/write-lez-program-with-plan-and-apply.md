@@ -36,6 +36,7 @@ This procedure walks through the example programs in the [`examples/program_depl
 - Familiarity with Rust and the [`borsh`](https://borsh.io/) serialisation format.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`) and [Docker](https://docs.docker.com/get-docker/), to build the guest programs.
 - An [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) funded and connected to the testnet.
+- `xxd` installed. Install it with `sudo apt install xxd` on Ubuntu or Debian.
 :::
 
 ## What to expect
@@ -394,7 +395,7 @@ Each run of a runner deploys a new copy of its program at a new program account 
        $PAYER
    ```
 
-   The runner selects the program's shard with `ProgramShardSelector::new(account_id, program_account_id)` and submits an unsigned public transaction. The sequencer runs `plan` and `apply` for you.
+   The runner selects the program's shard with `ProgramShardSelector::new(account_id, program_account_id)` and submits a public transaction. The sequencer runs `plan` and `apply` for you.
 
 1. Inspect the account:
 
@@ -453,7 +454,7 @@ Each run of a runner deploys a new copy of its program at a new program account 
 
    **Expected result:** the program's shard holds `486f6c61206d756e646f21`.
 
-1. Optionally, run the unsigned runner against the same program:
+1. Optionally, run the unauthorised runner against the same program:
 
    ```bash
    cargo run --bin run_hello_world \

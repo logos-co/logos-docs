@@ -16,7 +16,7 @@ sidebar_position: 2
 #### Try the wallet CLI against the live LEZ testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.2**.
 :::
 
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.

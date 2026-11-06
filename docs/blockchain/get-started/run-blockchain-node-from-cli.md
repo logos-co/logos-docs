@@ -6,7 +6,7 @@ topics: blockchain
 steps_layout: sectioned
 authors: kashepavadan, davidrusu
 owner: logos
-doc_version: 2
+doc_version: 3
 slug: run-blockchain-node-from-cli
 sidebar_position: 2
 ---
@@ -73,13 +73,15 @@ Download the Logos Blockchain [module](../../get-started/glossary.md#module) fro
     logosctl catalog refresh
     ```
 
-1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.2:
+1.  Install the Logos Blockchain module [package](../../get-started/glossary.md#package) version 0.3.4:
 
     ```sh
     logosctl package install blockchain_module \
-    --version 0.3.2 \
+    --version 0.3.4 \
     --yes
     ```
+
+    - If you are upgrading a node from 0.3.2, keep your existing `user_config.yaml`. On its first start, 0.3.4 upgrades the file to the new format and saves the original as `user_config.yaml.0.3.2.bak`.
 
     :::note
     Individual module package versions are pinned independently and do not necessarily match the testnet version number.
@@ -101,7 +103,7 @@ The `generate_user_config` subcommand generates a user configuration that includ
 Make sure to use the current bootstrap peer addresses in the [Logos Blockchain Node release notes](https://github.com/logos-blockchain/logos-blockchain/releases/latest) for your selected release.
 :::
 
-1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.2:
+1.  Generate your `user_config.yaml` and `keystore.yaml` files by running `generate_user_config` with the bootstrap peer addresses. The daemon writes both files to the directory you ran `logosctl daemon start` from, so run the commands in this step from that directory. The examples assume it is `$HOME`. For example, for release 0.3.4:
 
     ```sh
     logosctl call blockchain_module generate_user_config '{
@@ -117,17 +119,17 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     ```
 
     :::info
-    `user_config.yaml` contains node-local wallet and key-management configuration. Keep it private, restrict file permissions, and do not publish it. Generate a fresh file for each node.
+    `keystore.yaml` holds the node's secret keys, and the node derives its wallet and key-management settings from it. Keep it private, restrict file permissions, and do not publish it. Generate a fresh pair of files for each node.
     :::
 
-    - Important fields in `user_config.yaml` include:
+    - The generated `user_config.yaml` lists only the values that differ from the defaults: the bootstrap peers you passed in. Every other field takes its default. To change one, add it to the file under its full path, for example `api.backend.listen_address`. Fields you may want to set include:
 
-    | Field | Purpose | Guidance |
+    | Field | Purpose | Default and guidance |
     |-------|---------|----------|
-    | `network.backend.initial_peers` | Bootstrap peers | Use the current network document |
-    | `network.backend.swarm.port` | Public UDP P2P port | Keep aligned with firewall/NAT, normally `3000` |
-    | `api.backend.listen_address` | Local API bind | Keep private, normally `127.0.0.1:8080`. Edit the file if you want to change the port |
-    | `state.base_folder` | State directory | Use a persistent local path |
+    | `network.backend.initial_peers` | Bootstrap peers | Set by `generate_user_config`. Use the current release notes |
+    | `network.backend.swarm.port` | Public UDP P2P port | `3000`. Keep aligned with firewall/NAT |
+    | `api.backend.listen_address` | Local API bind | `127.0.0.1:8080`. Keep it private |
+    | `state.base_folder` | State directory | `./state`. Use a persistent local path |
     | logger filters | Log verbosity | Use `INFO` for unattended operation |
 
 1.  Start the node:
@@ -140,7 +142,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     - The second argument is intentionally an empty string; the blockchain module no longer requires a downloaded `deployment.yaml` file.
 
     :::info
-    The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `user_config.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
+    The Logos Blockchain node does not currently support dynamic wallet key management. To add new keys you must manually edit `keystore.yaml` and restart the node. If the node is restarted while [bootstrapping](../../get-started/glossary.md#bootstrapping), it does not save sync progress and restarts from the beginning.
     :::
 
 ## Step 3: Verify that your node is running and connected to peers
@@ -220,7 +222,7 @@ Wait for your node to finish syncing and reach `Online` mode before mining. Pipe
 
 ## Step 4: Mine tokens to fund your node
 
-A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The `user_config.yaml` generated in [Step 2](#step-2-configure-and-start-the-node) includes a `pow` section that automatically claims mined rewards into your node's `PoWClaim` key.
+A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The node automatically claims mined rewards into the `PoWClaim` key from the `keystore.yaml` generated in [Step 2](#step-2-configure-and-start-the-node), so `user_config.yaml` needs no `pow` section.
 
 :::warning
 Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.

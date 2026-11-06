@@ -369,7 +369,13 @@ Each example ships with a runner in `examples/program_deployment/src/bin` that d
    export PAYER=<funded_public_account_id>
    ```
 
-   Every runner first deploys its program through the program loader, which takes one transaction per bytecode segment and one for the program header. The payer covers all of them. The runners take account IDs as bare base58 strings, so drop the `Public/` or `Private/` prefix that the wallet prints.
+   Every runner first deploys its program through the program loader, which takes one transaction per bytecode segment and one for the program header. The payer covers all of them: each deployment of an example program costs about 3.2 million native units on the testnet. The runners take account IDs as bare base58 strings, so drop the `Public/` or `Private/` prefix that the wallet prints.
+
+1. Give the wallet more time to wait for each transaction. A deployment submits about five transactions in sequence, and by default the wallet waits less than a minute for each one. When testnet blocks are slower than that, the runner panics with `segment <n> transaction did not finalize`, and running it again deploys and pays for a new copy:
+
+   ```bash
+   wallet config set seq_tx_poll_max_blocks 300
+   ```
 
 :::note
 Each run of a runner deploys a new copy of its program at a new program account ID. Because a program owns the shard keyed by its own account ID, a run never sees data that an earlier run wrote.

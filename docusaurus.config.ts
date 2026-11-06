@@ -29,6 +29,15 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    // Before first paint, apply the reader's saved assistant for the page
+    // actions' "Open in" button (src/components/PageActions), so it does not
+    // flicker from the default.
+    {
+      tagName: 'script',
+      attributes: {},
+      innerHTML:
+        "try{var a=localStorage.getItem('logos-docs:assistant');if(a)document.documentElement.dataset.assistant=a}catch(e){}",
+    },
     {
       tagName: 'script',
       attributes: {
@@ -53,6 +62,7 @@ const config: Config = {
   onBrokenLinks: 'throw',
 
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'throw',
     },
@@ -62,6 +72,8 @@ const config: Config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [
@@ -82,6 +94,9 @@ const config: Config = {
   ],
 
   plugins: [
+    // Markdown pages, llms.txt indexes and the AGENTS.md block for coding
+    // agents. See plugins/agent-ready/index.js.
+    './plugins/agent-ready',
     [
       '@docusaurus/plugin-client-redirects',
       {
@@ -238,7 +253,11 @@ const config: Config = {
           },
           {
             from: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-the-logos-execution-zone',
-            to: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez',
+            to: '/lez/transfer-tokens/transfer-native-tokens-on-lez',
+          },
+          {
+            from: '/lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez',
+            to: '/lez/transfer-tokens/transfer-native-tokens-on-lez',
           },
           {
             from: '/lez/transfer-tokens/transfer-native-tokens-on-the-logos-execution-zone',

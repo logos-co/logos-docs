@@ -1,0 +1,96 @@
+.bar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  z-index: 2;
+}
+
+.button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+}
+
+.split {
+  position: relative;
+  display: inline-flex;
+}
+
+.splitMain {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Both main buttons are rendered; <html data-assistant> picks one. */
+html[data-assistant='chatgpt'] .claude,
+html:not([data-assistant='chatgpt']) .chatgpt {
+  display: none;
+}
+
+.splitToggle {
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0.3rem 0.5rem;
+}
+
+.divider {
+  height: 1px;
+  margin: 0.3rem 0.2rem;
+  background: var(--ifm-color-emphasis-200);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 17rem;
+  padding: 0.3rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background: var(--ifm-background-surface-color);
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  color: var(--ifm-font-color-base);
+}
+
+.item:hover {
+  background: var(--ifm-color-emphasis-100);
+  text-decoration: none;
+  color: var(--ifm-font-color-base);
+}
+
+.itemLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.itemHint {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-700);
+}

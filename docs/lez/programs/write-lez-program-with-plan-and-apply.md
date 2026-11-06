@@ -48,14 +48,16 @@ This procedure walks through the example programs in the [`examples/program_depl
 
 ## Step 1: Get the example programs
 
-1. Clone the LEZ repository at the release the testnet runs and open the example programs:
+1. Clone the LEZ repository, check out the branch that fixes the example runners for the testnet, and open the example programs:
 
    ```bash
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.2
+   git checkout fix/program-deployment-runners-declare-fees-v0.3.2
    ls examples/program_deployment/methods/guest/src/bin
    ```
+
+   - The branch is the `v0.3.2` release the testnet runs, plus one commit that makes the public runners in [Step 8](#step-8-see-the-example-programs-in-action) declare a transaction fee. At `v0.3.2` the sequencer rejects those runners' transactions with `Incorrect fee`.
 
    **Expected result:**
 

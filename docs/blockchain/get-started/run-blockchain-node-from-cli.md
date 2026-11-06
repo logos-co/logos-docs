@@ -138,7 +138,7 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     | `api.backend.listen_address` | Local API bind | `127.0.0.1:8080`. Keep private |
     | `state.base_folder` | State directory | `./state`, relative to the Logos node's working directory (`/var/lib/logos-node/state` with this guide's layout). Use a persistent local path |
     | `tracing.level` | Log verbosity | `INFO`. Use `INFO` for unattended operation |
-    | `tracing.metrics.open_metrics.enabled` | Node metrics | `true`. See [expose the node's metrics](../../run-a-node/get-started/expose-logos-node-metrics-to-prometheus.md/) |
+    | `tracing.metrics.open_metrics.enabled` | Node metrics | `true`. See [expose the node's metrics](../../run-a-node/get-started/expose-logos-node-metrics-to-prometheus.md) |
     | `blend.core.backend.listening_address` | Blend listener | `/ip4/0.0.0.0/udp/3400/quic-v1`. Only used if the node [joins the Blend Network](../blend/join-the-blend-network-as-a-core-node.md) |
 
     - The node writes hourly log files named `logos-blockchain.log.<date-hour>` to its working directory. `logos-blockchain.log.latest` links to the current one. A node upgraded from `0.3.2` keeps the log file prefix it used before, which `tracing.logger.file.prefix` in `user_config.yaml` shows.

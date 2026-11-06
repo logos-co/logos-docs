@@ -122,15 +122,30 @@ Make sure to use the current bootstrap peer addresses in the [Logos Blockchain N
     `keystore.yaml` holds the node's secret keys, and the node derives its wallet and key-management settings from it. Keep it private, restrict file permissions, and do not publish it. Generate a fresh pair of files for each node.
     :::
 
-    - The generated `user_config.yaml` lists only the values that differ from the defaults: the bootstrap peers you passed in. Every other field takes its default. To change one, add it to the file under its full path, for example `api.backend.listen_address`. Fields you may want to set include:
+    - The generated `user_config.yaml` lists only the values that differ from the defaults: the bootstrap peers you passed in. Every other field takes its default. To change one, add it to the file under its full path. For example, to change the P2P port, add:
 
+    ```yaml
+    network:
+        backend:
+        swarm:
+            port: 3000
+    ```
+    
     | Field | Purpose | Default and guidance |
     |-------|---------|----------|
-    | `network.backend.initial_peers` | Bootstrap peers | Set by `generate_user_config`. Use the current release notes |
+    | `network.backend.initial_peers` | Bootstrap peers | Generated from `peers.json`. Use the current network document |
     | `network.backend.swarm.port` | Public UDP P2P port | `3000`. Keep aligned with firewall/NAT |
-    | `api.backend.listen_address` | Local API bind | `127.0.0.1:8080`. Keep it private |
-    | `state.base_folder` | State directory | `./state`. Use a persistent local path |
-    | logger filters | Log verbosity | Use `INFO` for unattended operation |
+    | `api.backend.listen_address` | Local API bind | `127.0.0.1:8080`. Keep private |
+    | `state.base_folder` | State directory | `./state`, relative to the Logos node's working directory (`/var/lib/logos-node/state` with this guide's layout). Use a persistent local path |
+    | `tracing.level` | Log verbosity | `INFO`. Use `INFO` for unattended operation |
+    | `tracing.metrics.open_metrics.enabled` | Node metrics | `true`. See [expose the node's metrics](../../run-a-node/get-started/expose-logos-node-metrics-to-prometheus.md/) |
+    | `blend.core.backend.listening_address` | Blend listener | `/ip4/0.0.0.0/udp/3400/quic-v1`. Only used if the node [joins the Blend Network](../blend/join-the-blend-network-as-a-core-node.md) |
+
+    - The node writes hourly log files named `logos-blockchain.log.<date-hour>` to its working directory. `logos-blockchain.log.latest` links to the current one. A node upgraded from `0.3.2` keeps the log file prefix it used before, which `tracing.logger.file.prefix` in `user_config.yaml` shows.
+
+    :::tip
+    A complete `user_config.yaml` file, with all values filled in with their defaults, can be found [here](https://github.com/logos-co/logos-docs/blob/main/resources/configs/sample_blockchain_user_config.yaml).
+    :::
 
 1.  Start the node:
 
@@ -222,7 +237,7 @@ Wait for your node to finish syncing and reach `Online` mode before mining. Pipe
 
 ## Step 4: Mine tokens to fund your node
 
-A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. The node automatically claims mined rewards into the `PoWClaim` key from the `keystore.yaml` generated in [Step 2](#step-2-configure-and-start-the-node), so `user_config.yaml` needs no `pow` section.
+A synced node validates the chain but does not propose blocks unless its wallet holds notes, which can be obtained by mining. By default, the node claims mined rewards into the `public_keys.PoWClaim` key from the `keystore.yaml` generated in [Step 2](#step-2-configure-and-start-the-node).
 
 :::warning
 Do not call `pow_status` or `pow_claimable_rewards` before the node is `Online`. While the node is bootstrapping these calls never return, and every later `logosctl call blockchain_module` command fails with `RPC call failed` until you restart the daemon with `logosctl daemon stop`.
@@ -363,3 +378,14 @@ Open `https://testnet.blockchain.logos.co/web/explorer/transactions/<TX_HASH>`, 
 ### My wallet balance is not updating after mining?
 
 If the balance endpoint returns `404` with `The requested address could not be found in the wallet`, your node hasn't yet synced past the block containing the claim transaction. Funded addresses aren't visible while the node is still `Bootstrapping`. Wait for the node to reach `Online` mode and check again. If `pow_status` shows `is_mining` as `false`, run `pow_start_mining` again: mining stops when the node restarts.
+
+### The node stops with "`The node is no longer running, most likely because one of its services panicked`"
+
+This occurs if no bootstrap peer answers when the node starts. The node log will show `Initial Block Download failed: AllPeersFailed`. Check that outbound UDP traffic is allowed and that `peers.json` lists the current bootstrap peers, then restart the module:
+
+    ```sh
+    logosctl call blockchain_module stop
+    logosctl call blockchain_module start /var/lib/logos-node/user_config.yaml ""
+    ```
+
+After a restart, the node first replays the blocks it already stored. The `start` call, and every `logosctl call blockchain_module` command until the replay ends, can return `RPC call failed`. The node still starts. The replay takes longer the more blocks the node has stored, from seconds on a new node to 10 minutes or more on a node that has synced the testnet. The node log reports `found <N> stored blocks to replay during chain recovery` when it begins.

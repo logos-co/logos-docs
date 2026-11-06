@@ -380,8 +380,6 @@ While the programs below can also be deployed on testnet, deploying and running 
    just wallet-import-test-accounts
    ```
 
-   The first wallet command builds the wallet, asks you to set a password, and prints a recovery phrase for the new local wallet.
-
    **Expected result:** the command lists both accounts, above the local pair the wallet just derived for itself:
 
    ```text
@@ -392,6 +390,14 @@ While the programs below can also be deployed on testnet, deploying and running 
    ```
 
    `CbgR6tj5…` starts with a balance of `10000000000000` and `2RHZhw9h…` with `20000000000000`.
+
+1. Point the runners at this wallet:
+
+   ```bash
+   export LEE_WALLET_HOME_DIR=$(pwd)/lez/wallet/configs/debug
+   ```
+
+   The runners in this step are not run through `just`. Without `LEE_WALLET_HOME_DIR` they load the default wallet home `~/.lee/wallet` instead of the one `just run-wallet` created, and panic with `Failed to load storage from <home>/.lee/wallet/storage.json`.
 
 ### Build the example programs
 
@@ -419,7 +425,8 @@ Each example ships with a runner in `examples/program_deployment/src/bin` that d
    export PAYER=<funded_public_account_id>
    ```
 
-   Every runner first deploys its program through the program loader, which takes one transaction per bytecode segment and one for the program header. The payer covers all of them: each deployment of an example program settles at about 3.2 million native units on the testnet. Fund the payer well above that, though. The sequencer refuses a transaction unless the payer's balance covers the whole fee reserve the transaction declares, which is at least 17 million native units per loader transaction at the minimum base fee, and more when the testnet is busy. Too small a balance is rejected with `Incorrect fee`, followed by `payer <account_id> holds <balance> but the fee reserve is <reserve>`. The runners take account IDs as bare base58 strings, so drop the `Public/` or `Private/` prefix that the wallet prints.
+   - Every runner first deploys its program through the program loader, which takes one transaction per bytecode segment and one for the program header. The payer covers all of them: each deployment of an example program settles at about 3.2 million native units on the testnet. Fund the payer well above that, though. The sequencer refuses a transaction unless the payer's balance covers the whole fee reserve the transaction declares, which is at least 17 million native units per loader transaction at the minimum base fee, and more when the testnet is busy.
+   - The runners take account IDs as bare base58 strings, so drop the `Public/` or `Private/` prefix that the wallet prints.
 
 1. Give the wallet more time to wait for each transaction. A deployment submits about five transactions in sequence, and by default the wallet waits less than a minute for each one. When testnet blocks are slower than that, the runner panics with `segment <n> transaction did not finalize`, and running it again deploys and pays for a new copy:
 

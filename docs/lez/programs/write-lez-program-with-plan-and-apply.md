@@ -18,7 +18,7 @@ sidebar_position: 2
 #### Walk through the example guest programs to learn how an LEZ program declares effects in `plan` and writes one shard at a time in `apply`.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3**.
+This document is accurate for **Testnet v0.3.2**.
 :::
 
 When a [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) [program](../../get-started/glossary.md#program) executes and consequently modifies an LEZ [account](../../get-started/glossary.md#account), it does not receive full account states or return full post-states. Instead, it has two distinct entry points that have access only to what the execution engine gives them:
@@ -28,13 +28,16 @@ When a [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-executio
 
 For more information about this two-step update process, see [Introduction to the Logos Execution Zone](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state).
 
-This procedure walks through the example programs in the [`examples/program_deployment`](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2/examples/program_deployment) directory of the LEZ repository, from a short program to one that chains calls and emits events. It is intended for developers writing or reviewing LEZ programs who want to understand the interface before writing their own.
+This procedure walks through the example programs in the [`examples/program_deployment`](https://github.com/logos-blockchain/logos-execution-zone/tree/fix/program-deployment-runners-declare-fees-v0.3.2/examples/program_deployment) directory of the LEZ repository, from a short program to one that chains calls and emits events. It is intended for developers writing or reviewing LEZ programs who want to understand the interface before writing their own.
 
 :::info[Prerequisites]
 
 - [Git](https://git-scm.com/) and the [Rust toolchain](https://www.rust-lang.org/tools/install).
 - Familiarity with Rust and the [`borsh`](https://borsh.io/) serialisation format.
-- To build guest programs yourself, and to run the second command in [Step 8](#step-8-run-the-engine-tests-optional): the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`), as used in [Write and deploy an LEZ program with `logos-scaffold`](./write-and-deploy-lez-program-with-scaffold.md).
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`) and [Docker](https://docs.docker.com/get-docker/), to build the guest programs.
+- For deploying to testnet: a funded and connected [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md).
+- For the local sequencer: [`just`](https://github.com/casey/just).
+- `xxd` installed. Install it with `sudo apt install xxd` on Ubuntu or Debian.
 :::
 
 ## What to expect
@@ -42,15 +45,16 @@ This procedure walks through the example programs in the [`examples/program_depl
 - You can write a program's `plan` function that declares effects on account handles without reading account data.
 - You can write a program's `apply` function that keeps, clears, or replaces exactly one shard.
 - You can compose programs by chaining calls, delegating PDA authorisation, and emitting events from `plan`.
+- You can deploy the example programs to the testnet and run them against public and private accounts.
 
 ## Step 1: Get the example programs
 
-1. Clone the LEZ repository at the release the testnet runs and open the example programs:
+1. Clone the LEZ repository, check out the branch that fixes the example runners for the testnet, and open the example programs. The branch used is the `v0.3.2` release the testnet runs, plus one commit that makes the public runners in [Step 8](#step-8-see-the-example-programs-in-action) declare a transaction fee. At `v0.3.2` the sequencer rejects those runners' transactions with `Incorrect fee`.
 
    ```bash
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.2
+   git checkout fix/program-deployment-runners-declare-fees-v0.3.2
    ls examples/program_deployment/methods/guest/src/bin
    ```
 
@@ -339,32 +343,260 @@ Production programs mix all three outputs in one `plan`. The bridge program's de
    - **Native balance through a call.** `custody_transfer(from, seed, to, amount)` returns a `ChainedCall` to the native token program, with the bridge's PDA seed attached so it can debit its own custody account.
    - **Event for off-chain consumers.** The event carries no state and changes nothing on chain.
 
-## Step 8: Run the engine tests (Optional)
+## Step 8: See the example programs in action
 
-The engine's test suite reads as a specification of the contract your program must meet. Run it to see the rules enforced.
+### Start a local sequencer and import wallet accounts (optional)
 
-1. From the repository root, run the traversal engine tests:
+While the programs below can also be deployed on testnet, deploying and running them is quicker on a local, standalone LEZ sequencer. The standalone sequencer runs a local LEZ with no Logos Blockchain node and no Docker. Its debug genesis funds two test accounts, so you need no tokens.
 
-   ```bash
-   RISC0_DEV_MODE=1 cargo test --release -p lee_core --features host execution_state
-   ```
-
-   **Expected result:** the suite passes. It covers input echoes, effect scoping, depth-first traversal, PDA grant scoping and validity-window intersection.
-
-1. Optionally, drive all three `apply` outcomes (keep, clear, write) through a scripted guest. Unlike the previous command, this one builds guest programs, so it needs the RISC Zero toolchain from the prerequisites:
+1. In the `logos-execution-zone` repository, start the local sequencer. It stays in the foreground, serves RPC on port `3040`, and produces a block every 15 seconds:
 
    ```bash
-   RISC0_DEV_MODE=1 cargo test --release -p lee the_runner_echoes_its_input
+   RISC0_DEV_MODE=1 just run-sequencer-standalone
    ```
 
-   The tests to read for each rule:
+   The first run builds the sequencer in release mode, which takes several minutes.
 
-   | Rule | Tests |
-   | :--- | :--- |
-   | `plan` must echo its input, effects land only on declared handles, `apply` must echo its input | `a_plan_must_repeat_the_prepared_inputs_exactly`, `an_effect_outside_the_call_inputs_is_rejected`, `an_apply_output_must_echo_the_input_the_engine_computed` in [`lee/state_machine/core/src/execution_state/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/core/src/execution_state/tests.rs) |
-   | Shard ownership and the native-balance boundary | `a_data_write_on_a_shard_the_executing_program_does_not_own_is_rejected`, `a_guest_cannot_write_the_native_balance_shard` in [`lee/state_machine/core/src/program/tests.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/core/src/program/tests.rs) |
-   | Real guests on the public path, including dropped or injected accounts | [`lee/state_machine/src/state/tests/public_program_rules.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/src/state/tests/public_program_rules.rs) |
-   | The same contract on the private path | The `an_apply_forging_*` tests in [`lee/state_machine/src/state/tests/privacy_preserving.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lee/state_machine/src/state/tests/privacy_preserving.rs) |
+   **Expected result:** the log shows the RPC server starting, then a new block every 15 seconds:
+
+   ```text
+   INFO  sequencer_rpc_server_actor::actor] Starting RPC Server on 0.0.0.0:3040
+   INFO  sequencer_core] Publishing block 2 on pin <msg-id>
+   ```
+
+   - Append `RISC0_DEV_MODE=1` to skip proof generation and verification. Use this on a local chain only.
+
+1. Open a second terminal in the `logos-execution-zone` repository, and run every remaining command in this procedure there. Create a new wallet with `just run-wallet`, which keeps its wallet home in `lez/wallet/configs/debug`, so it leaves any wallet you already have untouched:
+
+    ```bash
+    just run-wallet check-health
+    ```
+
+    - If this is your first time, the wallet will ask for a password. This is used as seed to deterministically generate all account keys (public and private).
+
+1. Import the two funded genesis accounts that the recipe ships private keys for:
+
+   ```bash
+   just wallet-import-test-accounts
+   ```
+
+   **Expected result:** the command lists both accounts, above the local pair the wallet just derived for itself:
+
+   ```text
+   Public/2RHZhw9h534Zr3eq2RGhQete2Hh667foECzXPmSkGni2
+   Public/CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r
+   / Public/<derived-public-id>
+   / Private/<derived-private-id>
+   ```
+
+   `CbgR6tj5…` starts with a balance of `10000000000000` and `2RHZhw9h…` with `20000000000000`.
+
+1. Point the runners at this wallet:
+
+   ```bash
+   export LEE_WALLET_HOME_DIR=$(pwd)/lez/wallet/configs/debug
+   ```
+
+   The runners in this step are not run through `just`. Without `LEE_WALLET_HOME_DIR` they load the default wallet home `~/.lee/wallet` instead of the one `just run-wallet` created, and panic with `Failed to load storage from <home>/.lee/wallet/storage.json`.
+
+### Build the example programs
+
+Each example ships with a runner in `examples/program_deployment/src/bin` that deploys its program to the testnet and submits a transaction to it. Before you run them, build the guest binaries and set up the accounts the runners need.
+
+1. From the repository root, build the example guest programs and export the directory they are written to:
+
+   ```bash
+   cargo risczero build --manifest-path examples/program_deployment/methods/guest/Cargo.toml
+   export EXAMPLE_PROGRAMS_BUILD_DIR=$(pwd)/target/riscv32im-risc0-zkvm-elf/docker
+   ls $EXAMPLE_PROGRAMS_BUILD_DIR/*.bin
+   ```
+
+   **Expected result:** one `.bin` file per program from [Step 1](#step-1-get-the-example-programs), such as `hello_world.bin`.
+
+1. Change to the example directory. Run all remaining commands from here:
+
+   ```bash
+   cd examples/program_deployment
+   ```
+
+1. Choose a funded public account to pay deployment fees, and export its account ID without the `Public/` prefix. On the local sequencer, use the genesis account `CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r`:
+
+   ```bash
+   export PAYER=<funded_public_account_id>
+   ```
+
+   - Every runner first deploys its program through the program loader, which takes one transaction per bytecode segment and one for the program header. The payer covers all of them: each deployment of an example program settles at about 3.2 million native units on the testnet. Fund the payer well above that, though. The sequencer refuses a transaction unless the payer's balance covers the whole fee reserve the transaction declares, which is at least 17 million native units per loader transaction at the minimum base fee, and more when the testnet is busy.
+   - The runners take account IDs as bare base58 strings, so drop the `Public/` or `Private/` prefix that the wallet prints.
+
+1. Give the wallet more time to wait for each transaction. A deployment submits about five transactions in sequence, and by default the wallet waits less than a minute for each one. When testnet blocks are slower than that, the runner panics with `segment <n> transaction did not finalize`, and running it again deploys and pays for a new copy:
+
+   
+
+:::note
+Each run of a runner deploys a new copy of its program at a new program account ID. Because a program owns the shard keyed by its own account ID, a run never sees data that an earlier run wrote.
+:::
+
+### Run `hello_world` publicly and privately
+
+1. Create a public account and record its account ID:
+
+   ```bash
+   # testnet
+   wallet account new public
+
+   # local sequencer
+   just run-wallet account new public
+   ```
+
+   **Expected result:** `Generated new account with account_id Public/<account_id> at path /0`
+
+1. Deploy `hello_world` and append the greeting `Hola mundo!` to its shard on the account:
+
+   ```bash
+   cargo run --bin run_hello_world \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world.bin \
+       <public_account_id> \
+       $PAYER
+   ```
+
+   The runner selects the program's shard with `ProgramShardSelector::new(account_id, program_account_id)` and submits a public transaction. The sequencer runs `plan` and `apply` for you.
+
+1. Inspect the account:
+
+   ```bash
+   # testnet
+   wallet account get --raw --scope all --account-id Public/<public_account_id>
+
+   # local sequencer
+   just run-wallet account get --raw --scope all --account-id Public/<public_account_id>
+   ```
+
+   **Expected result:** the `shards` map has an entry keyed by the new program's account ID, with the hex value `486f6c61206d756e646f21`. Decode it with `echo 486f6c61206d756e646f21 | xxd -r -p` to see `Hola mundo!`. The runner returns as soon as it submits the program call, without waiting for a block to include it, so if the shards map is empty, wait a few seconds and run the command again.
+
+1. Run the same program against a private account. Create the account and record its account ID:
+
+   ```bash
+   # testnet
+   wallet account new private
+
+   # local sequencer
+   just run-wallet account new private
+   ```
+
+1. Run the private runner:
+
+   ```bash
+   cargo run --bin run_hello_world_private \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world.bin \
+       <private_account_id> \
+       $PAYER
+   ```
+
+   The guest binary is the same: only the privacy of the input account differs. Your machine runs `plan` and `apply` locally and generates the proofs, which can take several minutes.
+
+1. Wait for the next block, then sync private state and inspect the account:
+
+   ```bash
+   # testnet
+   wallet account sync-private
+   wallet account get --raw --scope all --account-id Private/<private_account_id>
+
+   # local sequencer
+   just run-wallet account sync-private
+   just run-wallet account get --raw --scope all --account-id Private/<private_account_id>
+   ```
+
+   **Expected result:** the program's shard holds `486f6c61206d756e646f21`. The runner returns as soon as it submits the transaction, without waiting for a block to include it. If the wallet still reports `Account is Uninitialized`, the transaction is not in a block yet: wait a few seconds and run both commands again. Before the sync, the wallet always reports `Account is Uninitialized`, because the new state exists on chain only as an encrypted commitment.
+
+### Check authorisation with `hello_world_with_authorization`
+
+1. Create a public account for this example and record its account ID:
+
+   ```bash
+   # testnet
+   wallet account new public
+
+   # local sequencer
+   just run-wallet account new public
+   ```
+
+1. Run the authorised runner:
+
+   ```bash
+   cargo run --bin run_hello_world_with_authorization \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world_with_authorization.bin \
+       <public_account_id> \
+       $PAYER
+   ```
+
+   Unlike `run_hello_world`, this runner loads the account's signing key, includes its current nonce in the message, and signs the transaction. The engine therefore sets `is_authorized` on the account, and the assertion from [Step 4](#step-4-declare-effects-in-plan) passes.
+
+1. Inspect the account as in the previous step.
+
+   **Expected result:** the program's shard holds `486f6c61206d756e646f21`.
+
+1. Optionally, run the unauthorised runner against the same program:
+
+   ```bash
+   cargo run --bin run_hello_world \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world_with_authorization.bin \
+       <public_account_id> \
+       $PAYER
+   ```
+
+   **Expected result:** the account gains no new shard. This run deploys its own copy of the program, so wait for the next block, inspect the account, and confirm that no shard appeared under the new program's account ID. The runner itself prints nothing and exits successfully: `plan` runs on the sequencer, where the assertion panics with `Missing required authorization`, so the transaction never takes effect.
+
+### Move data and chain calls
+
+1. Write to a public account with `hello_world_with_move_function`. Note that `$PAYER` comes before the subcommand for this runner:
+
+   ```bash
+   cargo run --bin run_hello_world_with_move_function \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world_with_move_function.bin \
+       $PAYER \
+       write-public <public_account_id> mundo!
+   ```
+
+   **Expected result:** after the next block, the account has a shard keyed by the new program's account ID holding `6d756e646f21`, which decodes to `mundo!`. The guest appends its instruction to its own shard, and this is a fresh deployment, so the shard holds only the greeting you passed.
+
+   The runner also has `write-private`, `move-data-public-to-public` and `move-data-public-to-private` subcommands. Before a move, the runner reads the source shard and puts those bytes in the instruction, which is the pinning pattern from [Step 5](#step-5-write-one-shard-in-apply). A `move-data-*` run deploys a new copy of the program, though, so the source shard it reads is the empty shard of that new copy, not the one an earlier `write-*` run wrote.
+
+1. Run `simple_tail_call`, which chains a call to `hello_world`. The runner deploys both programs and passes the account ID of `hello_world` as the instruction:
+
+   ```bash
+   cargo run --bin run_hello_world_through_tail_call \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/simple_tail_call.bin \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world.bin \
+       <public_account_id> \
+       $PAYER
+   ```
+
+   **Expected result:** inspecting the account shows a new shard, keyed by the new `hello_world` deployment, that decodes to `Hello from tail call`. `simple_tail_call` itself writes no shard.
+
+   To run the same chain privately, use `run_hello_world_through_tail_call_private` with the same arguments and a private account ID, then sync private state before you inspect it. The runner proves both programs locally, so it takes longer than the earlier private run.
+
+1. Run `tail_call_with_pda`, which delegates authorisation over its PDA to `hello_world_with_authorization`. The runner computes the PDA itself, so it takes no account ID:
+
+   ```bash
+   cargo run --bin run_hello_world_with_authorization_through_tail_call_with_pda \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/tail_call_with_pda.bin \
+       $EXAMPLE_PROGRAMS_BUILD_DIR/hello_world_with_authorization.bin \
+       $PAYER
+   ```
+
+   **Expected result:** `The program derived account id is: <pda_account_id>`
+
+1. Inspect the PDA:
+
+   ```bash
+   # testnet
+   wallet account get --raw --scope all --account-id Public/<pda_account_id>
+
+   # local sequencer
+   just run-wallet account get --raw --scope all --account-id Public/<pda_account_id>
+   ```
+
+   **Expected result:** the shard of `hello_world_with_authorization` decodes to `Hello from tail call with Program Derived Account ID`. Nobody signed for the PDA: the engine authorised it because `tail_call_with_pda` attached its seed to the call.
 
 ## Troubleshooting
 

@@ -387,6 +387,10 @@ Delivery waits for the source block to finalise on Bedrock, which dominates the 
 
 `peers[].channel_id` must be a JSON array of 32 numbers. Unlike `bedrock_config.channel_id`, it does not accept a hex string. Unknown or misspelled keys are also refused.
 
+### The emission fails with `Outbox slot already written`
+
+The (emitter, target zone, ordinal) slot is already occupied. The slot is keyed by the sending program rather than by the signer, and an emission needs no signature, so another client of the same sender may hold the value you chose, and a chain that has already run the demos holds the low ones. Derive the slot address with `outbox_pda` and read it before submitting, then retry with a free `ordinal`.
+
 ### Cross-zone tests fail to compile with `--release`
 
 Tests in `sequencer_core` and the `test-utils` feature refuse to build in the release profile, by design, so test-only helpers cannot ship. Run those tests in the debug profile. The `just` demos above run the integration tests and are not affected.

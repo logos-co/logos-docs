@@ -36,6 +36,7 @@ This procedure walks through the example programs in the [`examples/program_depl
 - Familiarity with Rust and the [`borsh`](https://borsh.io/) serialisation format.
 - The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install) (`rzup`) and [Docker](https://docs.docker.com/get-docker/), to build the guest programs.
 - For deploying to testnet: a funded and connected [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md).
+- For the local sequencer: [`just`](https://github.com/casey/just).
 - `xxd` installed. Install it with `sudo apt install xxd` on Ubuntu or Debian.
 :::
 
@@ -344,7 +345,7 @@ Production programs mix all three outputs in one `plan`. The bridge program's de
 
 ## Step 8: See the example programs in action
 
-## Start a local sequencer and import wallet accounts (optional)
+### Start a local sequencer and import wallet accounts (optional)
 
 While the programs below can also be deployed on testnet, deploying and running them is quicker on a local, standalone LEZ sequencer. The standalone sequencer runs a local LEZ with no Logos Blockchain node and no Docker. Its debug genesis funds two test accounts, so you need no tokens.
 
@@ -365,7 +366,7 @@ While the programs below can also be deployed on testnet, deploying and running 
 
    - Append `RISC0_DEV_MODE=1` to skip proof generation and verification. Use this on a local chain only.
 
-1. Create a new wallet with `just run-wallet` to avoid overwriting the wallet on your device, if you have one:
+1. Open a second terminal in the `logos-execution-zone` repository, and run every remaining command in this procedure there. Create a new wallet with `just run-wallet`, which keeps its wallet home in `lez/wallet/configs/debug`, so it leaves any wallet you already have untouched:
 
     ```bash
     just run-wallet check-health
@@ -412,7 +413,7 @@ Each example ships with a runner in `examples/program_deployment/src/bin` that d
    cd examples/program_deployment
    ```
 
-1. Choose a funded public account to pay deployment fees, and export its account ID without the `Public/` prefix:
+1. Choose a funded public account to pay deployment fees, and export its account ID without the `Public/` prefix. On the local sequencer, use the genesis account `CbgR6tj5kWx5oziiFptM7jMvrQeYY3Mzaao6ciuhSr2r`:
 
    ```bash
    export PAYER=<funded_public_account_id>
@@ -422,9 +423,7 @@ Each example ships with a runner in `examples/program_deployment/src/bin` that d
 
 1. Give the wallet more time to wait for each transaction. A deployment submits about five transactions in sequence, and by default the wallet waits less than a minute for each one. When testnet blocks are slower than that, the runner panics with `segment <n> transaction did not finalize`, and running it again deploys and pays for a new copy:
 
-   ```bash
-   wallet config set seq_tx_poll_max_blocks 300
-   ```
+   
 
 :::note
 Each run of a runner deploys a new copy of its program at a new program account ID. Because a program owns the shard keyed by its own account ID, a run never sees data that an earlier run wrote.
@@ -497,7 +496,7 @@ Each run of a runner deploys a new copy of its program at a new program account 
 
    # local sequencer
    just run-wallet account sync-private
-   wallet account get --raw --scope all --account-id Private/<private_account_id>
+   just run-wallet account get --raw --scope all --account-id Private/<private_account_id>
    ```
 
    **Expected result:** the program's shard holds `486f6c61206d756e646f21`. The runner returns as soon as it submits the transaction, without waiting for a block to include it. If the wallet still reports `Account is Uninitialized`, the transaction is not in a block yet: wait a few seconds and run both commands again. Before the sync, the wallet always reports `Account is Uninitialized`, because the new state exists on chain only as an encrypted commitment.

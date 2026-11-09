@@ -1,0 +1,12 @@
+# Copy to wrangler.toml and adjust before `npx wrangler deploy`.
+name = "logos-docs-edge"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# Run in front of the existing origin for the docs hostname.
+routes = [{ pattern = "docs.logos.co/*", zone_name = "logos.co" }]
+
+# Optional: agent-traffic logging (Workers Analytics Engine).
+[[analytics_engine_datasets]]
+binding = "AGENT_TRAFFIC"
+dataset = "logos_docs_agent_traffic"

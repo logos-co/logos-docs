@@ -59,6 +59,8 @@ npm start
 
 The agent-facing output (`.md` pages, `llms.txt`, `agents/`) is generated only by a production build. To preview it, run `npm run build && npm run serve`. See [`plugins/agent-ready`](plugins/agent-ready/index.js).
 
+An optional Cloudflare Worker for agent traffic (Markdown content negotiation, discovery headers, real 404 status codes, agent-traffic logging) lives in [`edge/`](edge/README.md). It is not deployed.
+
 To create a production build:
 
 ```bash

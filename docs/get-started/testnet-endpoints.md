@@ -15,7 +15,7 @@ sidebar_position: 3
 #### Look up the RPC, explorer, release, and channel for each Logos Testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.2**.
 :::
 
 This page lists the public endpoints for each Testnet version, so you can find the right one when a procedure refers to the testnet sequencer or explorer. Use the row that matches the version your procedure targets.
@@ -25,7 +25,7 @@ This page lists the public endpoints for each Testnet version, so you can find t
 | Version | LEZ RPC | LEZ explorer | Blockchain explorer | LEZ release | Blockchain channel |
 |:---|:---|:---|:---|:---|:---|
 | 0.4 (actor model) | TBD | TBD | TBD | TBD | TBD |
-| 0.3 (current) | `https://testnet.lez.logos.co` | `https://explorer.testnet.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.3.1`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.1) | [`0101010101010101010101010101010101010101010101010101010101010101`](https://testnet.blockchain.logos.co/web/explorer/channel/0101010101010101010101010101010101010101010101010101010101010101) |
+| 0.3 (current) | `https://testnet.lez.logos.co` | `https://explorer.testnet.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.3.2`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.2) | [`0101010101010101010101010101010101010101010101010101010101010101`](https://testnet.blockchain.logos.co/web/explorer/channel/0101010101010101010101010101010101010101010101010101010101010101) |
 | 0.2.4 (legacy) | `https://testnet-legacy.lez.logos.co/` | `https://explorer.testnet-legacy.lez.logos.co/` | `https://testnet.blockchain.logos.co/web/explorer/` | [`v0.2.4-lez-legacy`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.2.4-lez-legacy) | [`0240240240240240240240240240240240240240240240240240240240240240`](https://testnet.blockchain.logos.co/web/explorer/channel/0240240240240240240240240240240240240240240240240240240240240240) |
 
 ## Related information

@@ -18,6 +18,14 @@ The basic organisational unit of the LEZ state, with all persistent data stored 
 
 In the context of Logos modules, a user-facing bundle of a UI package combined with its core dependencies. See [Package](#package).
 
+### ASK
+
+An **Authorisation Secret Key** - a secret key required to run authorised program executions on an LEZ private account. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+
+### Authorisation Secret Key
+
+A secret key required to run authorised program executions on an LEZ private account, also known as an **ASK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+
 ---
 
 ## B
@@ -304,7 +312,7 @@ A fungible UTXO token used on Mantle. See [About Mantle](../blockchain/concepts/
 
 ### NPK
 
-A **Nullifier Public Key** - a public key used to verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Nullifier Public Key** - a public key used to derive an account ID on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### NSSA
 
@@ -312,19 +320,19 @@ An old name for the Logos Execution Environment. See [Introduction to the Logos 
 
 ### NSK
 
-A **Nullifier Secret Key** - a secret key used to sign LEZ transactions. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Nullifier Secret Key** - a secret key used to mark an LEZ account's old state commitment as spent. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### Nullifier keys
 
-A key pair used to sign transactions and verify token ownership on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A key pair used to mark spent account state commitments on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### Nullifier Public Key
 
-A public key used to verify token ownership on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A public key used to derive an account ID on the LEZ, also known as an **NPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### Nullifier Secret Key
 
-A secret key used to sign LEZ transactions, also known as an **NSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A secret key used to mark an LEZ account's old state commitment as spent, also known as an **NSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ---
 
@@ -426,6 +434,10 @@ Used to keep track of Logos Blockchain nodes that opted in to participate in the
 
 Enables reward distribution to Logos Blockchain nodes participating in the Blend Network. Also known as the **SRDP**. See [About the Blend Network](../blockchain/concepts/about-the-blend-network.md#service-reward-distribution-protocol).
 
+### Shard
+
+A portion of an LEZ account's data, keyed by the program that owns it and writable only by that program. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#how-programs-update-account-state).
+
 ### Slot
 
 The basic time unit used by the Logos Blockchain, equivalent to 1 second. See [About Cryptarchia](../blockchain/concepts/about-cryptarchia.md#time-units).
@@ -446,18 +458,6 @@ A protocol that enables the storage of relayed messages in the Logos Delivery ne
 
 ## T
 
-### Token definition account
-
-An LEZ account that defines the properties and behaviour of a custom token. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
-### Token holding account
-
-An LEZ account that is able to hold a custom token. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
-### Token program
-
-An LEZ program that provides the functionality for the creation of custom LEZ tokens. See [Create and transfer custom tokens on the LEZ](../lez/transfer-tokens/create-and-transfer-custom-tokens-on-lez.md).
-
 ### Transport
 
 A network mechanism that establishes connections between Logos Delivery peers and enables efficient transmission, routing, and delivery of data packets.
@@ -476,23 +476,23 @@ A Logos module that includes a user interface view.
 
 ### Viewing keys
 
-A key pair used to generate and verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A key pair used to encrypt and decrypt a private account's state on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### Viewing Public Key
 
-A public key used to verify ZK proofs on the LEZ, also known as a **VPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A public key used to update a private account's state on the LEZ, also known as a **VPK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### Viewing Secret Key
 
-A secret key used to generate ZK proofs on the LEZ, also known as a **VSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A secret key used to decrypt a private account's state, also known as a **VSK**. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### VPK
 
-A **Viewing Public Key** - a public key used to verify ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Viewing Public Key** - a public key used to update a private account's state on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ### VSK
 
-A **Viewing Secret Key** - a secret key used to generate ZK proofs on the LEZ. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
+A **Viewing Secret Key** - a secret key used to decrypt a private account's state. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#accounts-model).
 
 ---
 

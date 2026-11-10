@@ -16,10 +16,12 @@ sidebar_position: 2
 #### Try the wallet CLI against the live LEZ testnet.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.2**.
 :::
 
 This procedure explains how to install the wallet CLI from the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/) and point it at the public [LEZ](../../get-started/glossary.md#lez) testnet sequencer.
+
+For a description of all available `wallet` commands, see the [Wallet commands reference](#wallet-commands-reference) below.
 
 :::info[Prerequisites]
 
@@ -53,7 +55,7 @@ This procedure explains how to install the wallet CLI from the [LEZ repository](
    ```sh
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.0
+   git checkout v0.3.2
    ```
 
    - The tag must match the programs the testnet runs.
@@ -175,7 +177,21 @@ The sender's `Balance` should be `37` lower than before the transfer.
 
 This should show `Balance 37`.
 
+## Wallet commands reference
+
+The following are all the commands available for the `wallet` CLI, what they are used for, and the parameters they require. Run `wallet help` for more information.
+
+| Command                | Description                                                 |
+|------------------------|-------------------------------------------------------------|
+| `wallet auth-transfer` | Authenticated transfer (send)                               |
+| `wallet chain-info`    | Chain info queries (current-block-id, block, transaction)   |
+| `wallet account`       | Account management (get, list, new, sync-private)           |
+| `wallet check-health`  | Health checks that the wallet is connected to the node      |
+| `wallet config`        | Config Setup (get, set)                                     |
+| `wallet restore-keys ` | Keys restore from a given password at given `depth`         |
+| `wallet deploy-program`| Program deployment                                          |
+| `wallet help`          | Help   
+
 ## Next steps
 
 - [Transfer native tokens on the LEZ](../transfer-tokens/transfer-native-tokens-on-lez.md)
-- [Create and transfer custom tokens on the LEZ](../transfer-tokens/create-and-transfer-custom-tokens-on-lez.md)

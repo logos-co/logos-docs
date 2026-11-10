@@ -30,7 +30,7 @@ Two [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-z
 
 The destination's sequencer drives delivery, but the destination's indexer verifies it against the source zone's finalised, committee-signed blocks. A sequencer that lies is caught, not trusted: the worst it achieves is a halt, not a forged message. Each target program decides which sources it accepts, so anything that holds value sits behind explicit, per-route authorisation.
 
-This procedure walks through the cross-zone ping example in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.1), in which `ping_sender` on zone A sends a payload that `ping_receiver` on zone B records. It is for developers who want to send messages from their own LEZ programs, and for operators who configure zones to accept them. The token bridge demo follows the same pipeline, with escrow on zone A and a capped mint on zone B.
+This procedure walks through the cross-zone ping example in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2), in which `ping_sender` on zone A sends a payload that `ping_receiver` on zone B records. It is for developers who want to send messages from their own LEZ programs, and for operators who configure zones to accept them. The token bridge demo follows the same pipeline, with escrow on zone A and a capped mint on zone B.
 
 :::info[Prerequisites]
 
@@ -47,12 +47,12 @@ This procedure walks through the cross-zone ping example in the [LEZ repository]
 
 ## Step 1: Get the example code
 
-1. Clone the LEZ repository at the release the testnet runs:
+1. Clone the LEZ repository at the `v0.3.2` release:
 
    ```bash
    git clone https://github.com/logos-blockchain/logos-execution-zone.git
    cd logos-execution-zone
-   git checkout v0.3.1
+   git checkout v0.3.2
    ```
 
    The programs this procedure reads are in `lez/programs`:
@@ -153,7 +153,7 @@ A program sends a cross-zone message by chaining a call into `cross_zone_outbox`
 
 ## Step 3: Build the source transaction
 
-The client submits a normal public transaction to zone A's sequencer. The integration test [`integration_tests/tests/cross_zone_verified.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/integration_tests/tests/cross_zone_verified.rs) builds one in `build_ping_tx`.
+The client submits a normal public transaction to zone A's sequencer. The integration test [`integration_tests/tests/cross_zone_verified.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/integration_tests/tests/cross_zone_verified.rs) builds one in `build_ping_tx`.
 
 1. Encode the target program's instruction as the payload, and name the target's input shards:
 
@@ -252,7 +252,7 @@ Declaring `cross_zone` selects the cross-zone genesis program set. It must be pr
 
 No user action is needed on zone B. This step explains what its sequencer, inbox and indexer do, so you can follow a message through the logs and the indexer's status.
 
-1. Zone B's sequencer runs one **watcher** per configured peer, in [`lez/sequencer/core/src/cross_zone_watcher.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/sequencer/core/src/cross_zone_watcher.rs). It streams the peer's finalised blocks from Bedrock, screens each block through the shared acceptance policy, extracts the emissions addressed to this zone, and queues a dispatch transaction for each. Block production includes up to 16 dispatches per block. The watcher keeps a per-peer delivery floor, so a restart resumes instead of replaying.
+1. Zone B's sequencer runs one **watcher** per configured peer, in [`lez/sequencer/core/src/cross_zone_watcher.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/sequencer/core/src/cross_zone_watcher.rs). It streams the peer's finalised blocks from Bedrock, screens each block through the shared acceptance policy, extracts the emissions addressed to this zone, and queues a dispatch transaction for each. Block production includes up to 16 dispatches per block. The watcher keeps a per-peer delivery floor, so a restart resumes instead of replaying.
 
 1. Each dispatch calls `cross_zone_inbox` with a `CrossZoneMessage`, in `lez/programs/cross_zone_inbox/src/main.rs`. Only the sequencer can submit it: a user-signed inbox call is rejected at ingress. The inbox authenticates transport only:
 
@@ -279,7 +279,7 @@ No user action is needed on zone B. This step explains what its sequencer, inbox
    - `MarkDelivery` records the message in a seen shard keyed by the source block, and refuses a message it has already delivered.
    - The chained call passes a **source marker** account at position 0. Its address encodes (source zone, source program), so the target can tell where the message came from. The remaining inputs are the `target_accounts` from the emission.
 
-1. Zone B's **indexer** checks every block that contains a dispatch before applying it, in [`lez/indexer/core/src/cross_zone_verifier.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.1/lez/indexer/core/src/cross_zone_verifier.rs). It re-derives the dispatch byte for byte from the peer's finalised chain, after recomputing each peer block's hash, checking its signatures, and linking it back to the peer's genesis.
+1. Zone B's **indexer** checks every block that contains a dispatch before applying it, in [`lez/indexer/core/src/cross_zone_verifier.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/indexer/core/src/cross_zone_verifier.rs). It re-derives the dispatch byte for byte from the peer's finalised chain, after recomputing each peer block's hash, checking its signatures, and linking it back to the peer's genesis.
 
    - A mismatch is a `Forged` verdict. The indexer halts ingestion and stores the halt, so it persists across restarts.
    - A peer block that is not available yet is a visible, retried stall, not a forgery.

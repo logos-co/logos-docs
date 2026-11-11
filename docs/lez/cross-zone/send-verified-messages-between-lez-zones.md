@@ -35,7 +35,17 @@ This procedure walks through the cross-Zone ping example in the [LEZ repository]
 :::info[Prerequisites]
 
 - [Git](https://git-scm.com/), the [Rust toolchain](https://www.rust-lang.org/tools/install), and [`just`](https://github.com/casey/just).
+- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup` at the versions LEZ `v0.3.2` is tested against:
+
+    ```bash
+    curl -L https://risczero.com/install | bash   # installs rzup; restart your shell afterwards
+    rzup install rust 1.94.1
+    rzup install cpp 2024.1.5
+    rzup install r0vm 3.0.5
+    rzup install cargo-risczero 3.0.5
+    ```
 - [Docker](https://docs.docker.com/get-docker/) running locally, to run the demos in [Step 7](#step-7-run-the-demos).
+- `pkconf` and one of `libpcsclite-dev` (Debian and derivatives), `pcsclite` (Arch and derivatives), or `pcsc-lite-devel` (Fedora and derivatives).
 - [Familiarity with how LEZ programs declare effects and chained calls in `plan` and write one shard in `apply`](../programs/write-lez-program-with-plan-and-apply.md).
 :::
 
@@ -109,7 +119,7 @@ A program sends a cross-Zone message by chaining a call into `cross_zone_outbox`
    | `target_account_id` | The program on the destination Zone to deliver to. |
    | `target_accounts` | Shard selectors forwarded unchanged to the target program as its inputs. |
    | `payload` | The instruction data the target program receives. |
-   | `ordinal` | A per-emitter, per-Zone sequence number. Each value can be used once. |
+   | `ordinal` | A caller-chosen sequence number for the outbox slot. Each (emitter, target zone, ordinal) slot can be written once. The emitter is the sending program, not the signer, so every client of one sender shares the numbering and any of them can take a given value. Pick a value the chain does not already hold instead of counting from zero.|
 
 1. Read how the outbox stores the message, in `lez/programs/cross_zone_outbox/src/main.rs`:
 
@@ -195,7 +205,7 @@ The client submits a normal public transaction to Zone A's sequencer. The integr
    )?;
    ```
 
-   - `outbox_pda(outbox_id, emitter, &target_zone, ordinal)` derives the same slot address the outbox checks in [Step 2](#step-2-emit-a-message-on-the-source-zone). Use a new `ordinal` for each message to the same Zone.
+   - `outbox_pda(outbox_id, emitter, &target_zone, ordinal)` derives the same slot address the outbox checks in [Step 2](#step-2-emit-a-message-on-the-source-zone). The `emitter` is the sending program, so every client of one sender shares the slot namespace. Read the derived address first and submit with an `ordinal` whose slot is still empty, rather than counting from zero.
 
 1. Submit the transaction to Zone A's sequencer with `send_transaction`, as for any other public transaction.
 
@@ -343,7 +353,15 @@ The inbox delivers to whatever program a message names. The target program, not 
 
 ## Step 7: Run the demos
 
-The `Justfile` has three recipes that boot two Zones and one Bedrock node on your machine. Each takes a few minutes, mostly waiting for Bedrock finality. Run them from the repository root.
+The `Justfile` has three recipes that boot two zones and one Bedrock node on your machine. Each takes a few minutes, mostly waiting for Bedrock finality. Run them from the repository root.
+
+1. Resolve the Bedrock node binary that the demos run in Docker. You only need to do this once per checkout:
+
+   ```bash
+   just resolve-bedrock-node
+   ```
+
+   **Expected result:** the command writes `bedrock/.resolved/logos-blockchain-node`. Without it, each demo fails with `Resolved Bedrock node is missing`.
 
 1. Run the verified ping, which runs the `indexer_verifies_and_delivers_cross_zone_ping` test:
 
@@ -394,3 +412,7 @@ The (emitter, target Zone, ordinal) slot is already occupied. The slot is keyed 
 ### Cross-Zone tests fail to compile with `--release`
 
 Tests in `sequencer_core` and the `test-utils` feature refuse to build in the release profile, by design, so test-only helpers cannot ship. Run those tests in the debug profile. The `just` demos above run the integration tests and are not affected.
+
+### A demo fails with `Resolved Bedrock node is missing`
+
+The demos run a Bedrock node binary resolved ahead of time into `bedrock/.resolved/`. Run `just resolve-bedrock-node` from the repository root, with Docker running, then run the demo again.

@@ -1,5 +1,5 @@
 ---
-title: Send verified messages between LEZ zones
+title: Send verified messages between LEZ Zones
 doc_type: procedure
 product: lez
 topics:
@@ -14,36 +14,36 @@ slug: send-verified-messages-between-lez-zones
 sidebar_position: 1
 ---
 
-# Send verified messages between LEZ zones
+# Send verified messages between LEZ Zones
 
-#### Walk through the cross-zone ping example to learn how one LEZ zone emits a message that another zone delivers and independently verifies.
+#### Walk through the cross-Zone ping example to learn how one LEZ Zone emits a message that another Zone delivers and independently verifies.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3**.
 :::
 
-Two [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) zones, each with its own [Bedrock](../../get-started/glossary.md#bedrock) [channel](../../get-started/glossary.md#channel), can exchange messages asynchronously, with no shared sequencer and no trusted relay:
+Two independent [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-execution-zone) Zones, each with its own [Bedrock](../../get-started/glossary.md#bedrock) [channel](../../get-started/glossary.md#channel), can exchange messages asynchronously, with no shared sequencer and no trusted relay:
 
-1. A program on zone A emits a message into a write-once outbox.
-1. Zone B's sequencer watches zone A's finalised blocks and injects a delivery transaction.
-1. Zone B's indexer re-derives the same delivery from zone A's chain before accepting it.
+1. A program on Zone A emits a message into a write-once outbox.
+1. Zone B's sequencer watches Zone A's finalised blocks and injects a delivery transaction.
+1. Zone B's indexer re-derives the same delivery from Zone A's chain before accepting it.
 
-The destination's sequencer drives delivery, but the destination's indexer verifies it against the source zone's finalised, committee-signed blocks. A sequencer that lies is caught, not trusted: the worst it achieves is a halt, not a forged message. Each target program decides which sources it accepts, so anything that holds value sits behind explicit, per-route authorisation.
+The destination's sequencer drives delivery, but the destination's indexer verifies it against the source Zone's finalised, committee-signed blocks. A lying sequencer that lies is caught: the worst it achieves is a halt, not a forged message. Each target program decides which sources it accepts, so anything that holds value sits behind explicit, per-route authorisation.
 
-This procedure walks through the cross-zone ping example in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2), in which `ping_sender` on zone A sends a payload that `ping_receiver` on zone B records. It is for developers who want to send messages from their own LEZ programs, and for operators who configure zones to accept them. The token bridge demo follows the same pipeline, with escrow on zone A and a capped mint on zone B.
+This procedure walks through the cross-Zone ping example in the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2), in which `ping_sender` on Zone A sends a payload that `ping_receiver` on Zone B records. It is written for developers who want to send messages from their own LEZ programs, and for operators who configure Zones to accept them. The token bridge demo follows the same pipeline, with escrow on Zone A and a capped mint on Zone B.
 
 :::info[Prerequisites]
 
 - [Git](https://git-scm.com/), the [Rust toolchain](https://www.rust-lang.org/tools/install), and [`just`](https://github.com/casey/just).
 - [Docker](https://docs.docker.com/get-docker/) running locally, to run the demos in [Step 7](#step-7-run-the-demos).
-- Familiarity with how LEZ programs declare effects and chained calls in `plan` and write one shard in `apply`.
+- [Familiarity with how LEZ programs declare effects and chained calls in `plan` and write one shard in `apply`](../programs/write-lez-program-with-plan-and-apply.md).
 :::
 
 ## What to expect
 
-- You can emit a cross-zone message from a program by chaining a call into the cross-zone outbox.
-- You can configure a destination zone to watch a peer zone and accept messages only from routes you allow.
-- You can run the ping, bridge and chat demos to watch messages cross between two local zones.
+- You can emit a cross-Zone message from a program by chaining a call into the cross-Zone outbox.
+- You can configure a destination Zone to watch a peer Zone and accept messages only from routes you allow.
+- You can run the ping, bridge and chat demos to watch messages cross between two local Zones.
 
 ## Step 1: Get the example code
 
@@ -65,9 +65,9 @@ This procedure walks through the cross-zone ping example in the [LEZ repository]
    | `ping_receiver` | Destination | The target program. It checks the source and records the payload. |
    | `ping_core` | Both | Shared instruction types and PDA helpers. |
 
-## Step 2: Emit a message on the source zone
+## Step 2: Emit a message on the source Zone
 
-A program sends a cross-zone message by chaining a call into `cross_zone_outbox` with an `Emit` instruction. The outbox writes an `OutboxRecord` into a PDA keyed by (emitter, target zone, ordinal). Each slot is write-once, and the outbox takes the identity of the emitter from the caller, not from the instruction.
+A program sends a cross-Zone message by chaining a call into `cross_zone_outbox` with an `Emit` instruction. The outbox writes an `OutboxRecord` into a PDA keyed by (emitter, target Zone, ordinal). Each slot is write-once, and the outbox takes the identity of the emitter from the caller, not from the instruction.
 
 1. Open `lez/programs/ping_sender/src/main.rs` and read the `Send` branch of `plan`:
 
@@ -99,17 +99,17 @@ A program sends a cross-zone message by chaining a call into `cross_zone_outbox`
    ```
 
    - The transaction chooses which program the outbox handle names. The `OutboxIs` effect checks it against the outbox ID pinned in the sender's config PDA at genesis, so the emission cannot be redirected to another program.
-   - `plan` also asserts `input.caller_account_id.is_none()`. An emitter should refuse to be called by another program, because cross-zone discovery attributes the message to the top-level program.
+   - `plan` also asserts `input.caller_account_id.is_none()`. An emitter should refuse to be called by another program, because cross-Zone discovery attributes the message to the top-level program.
 
    The `Emit` fields are:
 
    | Field | Description |
    | :--- | :--- |
-   | `target_zone` | The destination zone's ID: the raw 32 bytes of its Bedrock channel ID. |
-   | `target_account_id` | The program on the destination zone to deliver to. |
+   | `target_zone` | The destination Zone's ID: the raw 32 bytes of its Bedrock channel ID. |
+   | `target_account_id` | The program on the destination Zone to deliver to. |
    | `target_accounts` | Shard selectors forwarded unchanged to the target program as its inputs. |
    | `payload` | The instruction data the target program receives. |
-   | `ordinal` | A per-emitter, per-zone sequence number. Each value can be used once. |
+   | `ordinal` | A per-emitter, per-Zone sequence number. Each value can be used once. |
 
 1. Read how the outbox stores the message, in `lez/programs/cross_zone_outbox/src/main.rs`:
 
@@ -153,7 +153,7 @@ A program sends a cross-zone message by chaining a call into `cross_zone_outbox`
 
 ## Step 3: Build the source transaction
 
-The client submits a normal public transaction to zone A's sequencer. The integration test [`integration_tests/tests/cross_zone_verified.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/integration_tests/tests/cross_zone_verified.rs) builds one in `build_ping_tx`.
+The client submits a normal public transaction to Zone A's sequencer. The integration test [`integration_tests/tests/cross_zone_verified.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/integration_tests/tests/cross_zone_verified.rs) builds one in `build_ping_tx`.
 
 1. Encode the target program's instruction as the payload, and name the target's input shards:
 
@@ -195,31 +195,31 @@ The client submits a normal public transaction to zone A's sequencer. The integr
    )?;
    ```
 
-   - `outbox_pda(outbox_id, emitter, &target_zone, ordinal)` derives the same slot address the outbox checks in Step 2. Use a new `ordinal` for each message to the same zone.
+   - `outbox_pda(outbox_id, emitter, &target_zone, ordinal)` derives the same slot address the outbox checks in [Step 2](#step-2-emit-a-message-on-the-source-zone). Use a new `ordinal` for each message to the same Zone.
 
-1. Submit the transaction to zone A's sequencer with `send_transaction`, as for any other public transaction.
+1. Submit the transaction to Zone A's sequencer with `send_transaction`, as for any other public transaction.
 
-## Step 4: Configure the destination zone
+## Step 4: Configure the destination Zone
 
-Cross-zone messaging is off by default, and no shipped configuration file enables it. A zone takes part by declaring a `cross_zone` section in **both** its sequencer and indexer configurations.
+Cross-Zone messaging is off by default, and no shipped configuration file enables it. A Zone takes part by declaring a `cross_zone` section in **both** its sequencer and indexer configurations.
 
 :::warning
-Declaring `cross_zone` selects the cross-zone genesis program set. It must be present in both the sequencer and the indexer configuration, and you cannot add or remove it on an existing chain. Peers are read once at startup, so adding a peer needs a configuration change and a restart of both services.
+Declaring `cross_zone` selects the cross-Zone genesis program set. It must be present in both the sequencer and the indexer configuration, and you cannot add or remove it on an existing chain. Peers are read once at startup, so adding a peer needs a configuration change and a restart of both services.
 :::
 
-1. On the source zone, declare an empty section. A zone that only sends needs no peers:
+1. On the source Zone, declare an empty section. A Zone that only sends needs no peers:
 
    ```json
    "cross_zone": {}
    ```
 
-1. On the destination zone, declare each peer it watches and the routes it accepts:
+1. On the destination Zone, declare each peer it watches and the routes it accepts:
 
    ```json
    "cross_zone": {
      "peers": [
        {
-         "channel_id": [<32 comma-separated bytes of zone A's channel ID>],
+         "channel_id": [<32 comma-separated bytes of Zone A's channel ID>],
          "allowed_routes": [
            {
              "src_account_id": "<ping_sender account ID>",
@@ -238,7 +238,7 @@ Declaring `cross_zone` selects the cross-zone genesis program set. It must be pr
 
    | Key | Description |
    | :--- | :--- |
-   | `peers[].channel_id` | The peer's Bedrock channel ID, which is also its zone ID. |
+   | `peers[].channel_id` | The peer's Bedrock channel ID, which is also its Zone ID. |
    | `peers[].allowed_routes` | Pairs of a source program on the peer and a target program here. Genesis writes each pair into the target's own config PDA. |
    | `allowed_routes[].mint_cap` | Optional lifetime mint allowance for the route. Only valid on a target that mints, such as `wrapped_token`. |
    | `peers[].min_committee_size` | Suspends reading from the peer if its live committee drops below this size. `0`, the default, disables the floor; set it in production. |
@@ -246,13 +246,13 @@ Declaring `cross_zone` selects the cross-zone genesis program set. It must be pr
    | `source_governance` | Optional program that may act for a PDA `source_authority` through a chained call. |
 
    - Unknown keys are refused at startup, so a misspelled key fails loudly instead of being ignored.
-   - When you run two zones on one host, give each sequencer its own `metrics_address`, or the second fails to start.
+   - When you run two Zones on one host, give each sequencer its own `metrics_address`, or the second fails to start.
 
-## Step 5: Follow delivery and verification on the destination zone
+## Step 5: Follow delivery and verification on the destination Zone
 
-No user action is needed on zone B. This step explains what its sequencer, inbox and indexer do, so you can follow a message through the logs and the indexer's status.
+No user action is needed on Zone B. This step explains what its sequencer, inbox and indexer do, so you can follow a message through the logs and the indexer's status.
 
-1. Zone B's sequencer runs one **watcher** per configured peer, in [`lez/sequencer/core/src/cross_zone_watcher.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/sequencer/core/src/cross_zone_watcher.rs). It streams the peer's finalised blocks from Bedrock, screens each block through the shared acceptance policy, extracts the emissions addressed to this zone, and queues a dispatch transaction for each. Block production includes up to 16 dispatches per block. The watcher keeps a per-peer delivery floor, so a restart resumes instead of replaying.
+1. Zone B's sequencer runs one **watcher** per configured peer, in [`lez/sequencer/core/src/cross_zone_watcher.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/sequencer/core/src/cross_zone_watcher.rs). It streams the peer's finalised blocks from Bedrock, screens each block through the shared acceptance policy, extracts the emissions addressed to this Zone, and queues a dispatch transaction for each. Block production includes up to 16 dispatches per block. The watcher keeps a per-peer delivery floor, so a restart resumes instead of replaying.
 
 1. Each dispatch calls `cross_zone_inbox` with a `CrossZoneMessage`, in `lez/programs/cross_zone_inbox/src/main.rs`. Only the sequencer can submit it: a user-signed inbox call is rejected at ingress. The inbox authenticates transport only:
 
@@ -275,9 +275,9 @@ No user action is needed on zone B. This step explains what its sequencer, inbox
    });
    ```
 
-   - `ForeignZone` refuses a message whose source is this zone.
+   - `ForeignZone` refuses a message whose source is this Zone.
    - `MarkDelivery` records the message in a seen shard keyed by the source block, and refuses a message it has already delivered.
-   - The chained call passes a **source marker** account at position 0. Its address encodes (source zone, source program), so the target can tell where the message came from. The remaining inputs are the `target_accounts` from the emission.
+   - The chained call passes a **source marker** account at position 0. Its address encodes (source Zone, source program), so the target can tell where the message came from. The remaining inputs are the `target_accounts` from the emission.
 
 1. Zone B's **indexer** checks every block that contains a dispatch before applying it, in [`lez/indexer/core/src/cross_zone_verifier.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/indexer/core/src/cross_zone_verifier.rs). It re-derives the dispatch byte for byte from the peer's finalised chain, after recomputing each peer block's hash, checking its signatures, and linking it back to the peer's genesis.
 
@@ -298,7 +298,7 @@ The inbox delivers to whatever program a message names. The target program, not 
        assert_config_account(config, self_account_id);
        let Some(caller) = caller_account_id else {
            panic!(
-               "Record is only callable by the authorized deliverer (the cross-zone inbox)"
+               "Record is only callable by the authorized deliverer (the cross-Zone inbox)"
            );
        };
        // ... the record account must be this receiver's record PDA
@@ -323,7 +323,7 @@ The inbox delivers to whatever program a message names. The target program, not 
        let cfg = decode_config(pre_data);
        assert_eq!(
            caller, cfg.deliverer,
-           "Record is only callable by the authorized deliverer (the cross-zone inbox)"
+           "Record is only callable by the authorized deliverer (the cross-Zone inbox)"
        );
        assert!(
            cfg.sources.iter().any(|(src_zone, src_account_id)| {
@@ -343,7 +343,7 @@ The inbox delivers to whatever program a message names. The target program, not 
 
 ## Step 7: Run the demos
 
-The `Justfile` has three recipes that boot two zones and one Bedrock node on your machine. Each takes a few minutes, mostly waiting for Bedrock finality. Run them from the repository root.
+The `Justfile` has three recipes that boot two Zones and one Bedrock node on your machine. Each takes a few minutes, mostly waiting for Bedrock finality. Run them from the repository root.
 
 1. Run the verified ping, which runs the `indexer_verifies_and_delivers_cross_zone_ping` test:
 
@@ -351,7 +351,7 @@ The `Justfile` has three recipes that boot two zones and one Bedrock node on you
    just demo-cross-zone-ping
    ```
 
-   **Expected result:** the test passes once zone B's indexer records the payload `hello-verified-zone` in the receiver's record PDA. The payload only reaches indexer state after verification passes.
+   **Expected result:** the test passes once Zone B's indexer records the payload `hello-verified-zone` in the receiver's record PDA. The payload only reaches indexer state after verification passes.
 
 1. Run the token bridge, which runs the `lock_on_zone_a_mints_wrapped_token_on_zone_b` test:
 
@@ -359,7 +359,7 @@ The `Justfile` has three recipes that boot two zones and one Bedrock node on you
    just demo-cross-zone-bridge
    ```
 
-   **Expected result:** the test passes. Zone B's wrapped-token holding for the recipient reads 30, zone A's escrow reads 30, and the holding of the account that locked the tokens is debited by 30, all confirmed through indexer state on both zones.
+   **Expected result:** the test passes. Zone B's wrapped-token holding for the recipient reads 30, Zone A's escrow reads 30, and the holding of the account that locked the tokens is debited by 30, all confirmed through indexer state on both Zones.
 
 1. Optionally, start the interactive chat app:
 
@@ -367,15 +367,15 @@ The `Justfile` has three recipes that boot two zones and one Bedrock node on you
    just cross-zone-chat
    ```
 
-   Open `http://127.0.0.1:8088`. Type a message in one zone's column and watch it move through the pipeline stages: submitted, source block, Bedrock finalised, delivered.
+   Open `http://127.0.0.1:8088`. Type a message in one Zone's column and watch it move through the pipeline stages: submitted, source block, Bedrock finalised, delivered.
 
 ## Troubleshooting
 
 ### The destination indexer stops ingesting after a `Forged` verdict
 
-The indexer re-derived a dispatch that did not match zone A's chain. The halt is stored and does not clear itself on restart. Investigate the destination sequencer before taking operator action to clear the halt.
+The indexer re-derived a dispatch that did not match Zone A's chain. The halt is stored and does not clear itself on restart. Investigate the destination sequencer before taking operator action to clear the halt.
 
-### A message never arrives on the destination zone
+### A message never arrives on the destination Zone
 
 Delivery waits for the source block to finalise on Bedrock, which dominates the end-to-end time. If it still does not arrive, check the following:
 
@@ -389,8 +389,8 @@ Delivery waits for the source block to finalise on Bedrock, which dominates the 
 
 ### The emission fails with `Outbox slot already written`
 
-The (emitter, target zone, ordinal) slot is already occupied. The slot is keyed by the sending program rather than by the signer, and an emission needs no signature, so another client of the same sender may hold the value you chose, and a chain that has already run the demos holds the low ones. Derive the slot address with `outbox_pda` and read it before submitting, then retry with a free `ordinal`.
+The (emitter, target Zone, ordinal) slot is already occupied. The slot is keyed by the sending program rather than by the signer, and an emission needs no signature, so another client of the same sender may hold the value you chose, and a chain that has already run the demos holds the low ones. Derive the slot address with `outbox_pda` and read it before submitting, then retry with a free `ordinal`.
 
-### Cross-zone tests fail to compile with `--release`
+### Cross-Zone tests fail to compile with `--release`
 
 Tests in `sequencer_core` and the `test-utils` feature refuse to build in the release profile, by design, so test-only helpers cannot ship. Run those tests in the debug profile. The `just` demos above run the integration tests and are not affected.

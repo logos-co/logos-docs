@@ -221,7 +221,11 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
    }
    ```
 
-1. Send a message. On success, `getString()` returns the request ID; track it through `messagePropagated` → `messageSent` events (or `messageError`):
+   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. The node delivers only messages published after the subscription takes effect: anything sent on the topic earlier never arrives through `messageReceived`.
+
+   Calling `subscribe()` on a topic the node already subscribes to succeeds and changes nothing, so you can repeat the call—after a module reload, for example—without tracking subscriptions yourself.
+
+1. Send a message. On success, `getString()` returns the request ID. `messagePropagated` fires when the message reaches the network but is not yet validated, and `messageSent` fires when the network confirms it; `messageError` fires instead if the send fails. Each event carries the request ID, so you can match it to the `send()` call that produced it:
 
    ```cpp
    // payload is a QByteArray of raw bytes, the same type messageReceived delivers.
@@ -235,7 +239,7 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
 
 1. Receive messages through the `onMessageReceived` subscription you armed in Step 3. It fires for every message on a subscribed topic, including messages sent by you.
 
-1. Stop receiving on a topic with `delivery.unsubscribe(contentTopic)`. Subscriptions are node-wide, so unsubscribing a topic another module subscribed to stops its traffic too.
+1. Stop receiving on a topic with `delivery.unsubscribe(contentTopic)`. Subscriptions are node-wide and not counted per caller: one `unsubscribe()` drops the topic however many times it was subscribed, so unsubscribing a topic another module subscribed to stops its traffic too. Calling `unsubscribe()` on a topic the node doesn't subscribe to succeeds and does nothing.
 
 ## Step 6: Use the Reliable Channels API
 
@@ -395,7 +399,9 @@ The node may not be connected to peers yet, or the network layer rejected the me
 
 ### `messageReceived` never fires?
 
-`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic.
+`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic. Messages published before you subscribed are not delivered, which matters most for topics your module subscribes to at runtime (see [Step 5](#step-5-use-the-messaging-api)).
+
+If it stopped firing after working, another module may have unsubscribed the topic: a single `unsubscribe()` removes it for every module on the node. Calling `subscribe()` again is safe and restores it.
 
 ### The node process dies when I re-open a channel I closed?
 

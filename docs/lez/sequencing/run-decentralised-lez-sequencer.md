@@ -244,7 +244,15 @@ The node follows the chain as soon as it starts, and starts producing once the c
 1. Look up the channel's minimum stake:
 
    ```bash
-   just committee-watch --sequencer "$SEQUENCER_RPC" --node "$NODE_URL" --channel "$CHANNEL_ID"
+1. Read the channel's minimum stake from the node's own config:
+
+   ```bash
+   MIN=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["bedrock_config"]["channel_params"]["minimum_sequencer_stake"])' \
+       "$NODE_HOME/sequencer_config.json")
+   echo "$MIN"
+   ```
+
+   **Expected result:** the channel's minimum stake. The local debug config sets it to `149`.
    ```
 
    **Expected result:** the first line starts with `minimum stake <n>`. The local debug config sets it to `149`.

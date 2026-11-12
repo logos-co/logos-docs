@@ -38,15 +38,11 @@ const config: Config = {
       innerHTML:
         "try{var a=localStorage.getItem('logos-docs:assistant');if(a)document.documentElement.dataset.assistant=a}catch(e){}",
     },
-    {
-      tagName: 'script',
-      attributes: {
-        src: 'https://umami.bi.status.im/script.js',
-        defer: true,
-        'data-website-id': '0f95ea33-c693-4fe7-91dc-8effe9645fa8',
-      },
-    },
   ],
+
+  // Umami analytics, injected after the page's `load` event so the analytics
+  // host can never delay page loads.
+  clientModules: ['./src/clientModules/umami.js'],
 
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4

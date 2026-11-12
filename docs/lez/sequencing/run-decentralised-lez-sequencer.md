@@ -37,7 +37,7 @@ The stake is what makes misbehaviour costly. A member that inscribes an invalid 
 - [`just`](https://github.com/casey/just), Python 3, and the build dependencies listed in the repository [`README.md`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/README.md).
 - Only to rebuild the zkVM artifacts: the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup install`. The repository uses risc0 3.0.5 and commits the built artifacts, so [Step 1](#step-1-build-the-sequencer-from-the-release-tag) doesn't need it.
 - For the public testnet:
-  - A [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) on the testnet, running Logos Blockchain [`0.3.4`](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4). When you follow that page, install module version `0.3.4` instead of `0.3.2`. Release 0.3.4 includes the zone-sdk fix that LEZ v0.3.2 depends on, and upgrades a 0.3.2 node config automatically.
+  - A [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) on the testnet, running Logos Blockchain [`0.3.4`](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4), which is the version that page installs. Release 0.3.4 carries the zone-sdk fix that LEZ v0.3.2 depends on.
   - A funded key in that node's wallet, such as the `PoWClaim` key funded by [mining](../../blockchain/get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). It pays for the node's inscriptions and for the channel-config transactions it drafts.
   - A [public account](../../get-started/glossary.md#public-account) holding at least the network's minimum stake, in an [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) pointed at the testnet RPC. Stake transactions are fee-exempt, so the stake amount is all it needs.
 - For a local network: [Docker](https://docs.docker.com/get-docker/), to run Bedrock.
@@ -85,7 +85,7 @@ Join the public testnet, or start a local network to try the flow first. You onl
 The joining sequencer config for the public testnet isn't published with the v0.3.2 release yet. Every node on a channel has to agree on its genesis and `channel_params`, so don't substitute the debug config. Ask the LEZ team on the [Logos Discord](https://discord.gg/logosnetwork) for the current config before you continue.
 :::
 
-1. Set the variables for the testnet. Replace `<your-bedrock-node>` with your Bedrock node's API address, and `<joining-config>` with the path to the testnet joining config:
+1. Set the variables for the testnet. Replace `<your-bedrock-node>` with your Bedrock node's API address, and `<joining-config>` with an absolute path to the testnet joining config (`just setup-sequencer` resolves a relative path against the repository root and doesn't expand `~`):
 
    ```bash
    NODE_HOME=~/.logos-execution-zone/sequencer
@@ -100,7 +100,7 @@ The joining sequencer config for the public testnet isn't published with the v0.
    - `SEQUENCER_RPC` is any committee member's RPC. The node's own wallet talks to it.
    - The channel ID for each release is listed on [Testnet endpoints](../../get-started/testnet-endpoints.md).
 
-1. Set `FUNDING_KEY` to the public part of the funded key in your Bedrock node's wallet:
+1. Set `FUNDING_KEY` to the public part of the funded key in your Bedrock node's wallet, such as the `public_key` of the auto-claim target printed in [Step 4](../../blockchain/get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node) of the Blockchain node page:
 
    ```bash
    FUNDING_KEY=<bedrock-wallet-public-key>
@@ -171,7 +171,7 @@ You need four terminals for this option. Run [Step 1](#step-1-build-the-sequence
    just setup-sequencer "$NODE_HOME" --sequencer "$SEQUENCER_RPC" --node-url "$NODE_URL" --config "$CONFIG"
    ```
 
-   **Expected result:** the command ends with `<NODE_HOME> is ready.` and prints the funding account and the Bedrock key. The home contains:
+   **Expected result:** the command prints `<NODE_HOME> is ready.`, followed by the funding account, the Bedrock key, and the paths it wrote. The home contains:
 
    | File | Contents |
    |:---|:---|
@@ -216,7 +216,8 @@ The node follows the chain as soon as it starts, and starts producing once the c
 
    ```bash
    RUST_LOG=info sequencer_service "$NODE_HOME/sequencer_config.json" \
-       --home "$NODE_HOME" --port 3041 --metrics-address 127.0.0.1:9001
+       --home "$NODE_HOME" --listen-address 127.0.0.1 \
+       --port 3041 --metrics-address 127.0.0.1:9001
    ```
 
    - The sequencer RPC has no caller authentication. `--listen-address 127.0.0.1` keeps it on the local machine; only bind it to a public address if a firewall protects the port.
@@ -365,13 +366,9 @@ On the public testnet, run the node under systemd so that it survives reboots. T
 
 Stopping the process doesn't remove the node from the committee. Request the unstake first, and stop the node only once the key has left `accredited_keys`.
 
-1. Request the unstake. Replace `<destination-account>` with the account that receives the stake:
+1. Request the unstake. Replace `<destination-account>` with the account that receives the stake, as a bare base58 account ID with no `Public/` prefix:
 
-   ```bash
-   submit_stake --wallet "$NODE_HOME/wallet" unstake-request \
-       --ownership-account "$(cat "$NODE_HOME/stake-ownership-account")" \
-       --amount "$MIN" --destination <destination-account>
-   ```
+   
 
    **Expected result:** `Submitted transaction <tx hash>`.
 

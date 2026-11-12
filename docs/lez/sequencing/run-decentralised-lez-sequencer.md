@@ -165,11 +165,22 @@ You need four terminals for this option. Run [Step 1](#step-1-build-the-sequence
 
 `just setup-sequencer` creates the node home. It submits nothing, so it doesn't need funds.
 
+1. Patch the setup script. At `v0.3.2`, `tools/setup_sequencer.py` writes the node wallet's config in an older format that the v0.3.2 wallet rejects, so the next action fails with a `missing field` error:
+
+   ```bash
+   sed -i.orig 's|"sequencers": \[{"sequencer_addr": args.sequencer}\],|"sequencer": {"sequencer_addr": args.sequencer},|' \
+       tools/setup_sequencer.py
+   ```
+
+   - This works with both GNU and macOS `sed`, and keeps the original as `tools/setup_sequencer.py.orig`.
+
 1. Create the node home:
 
    ```bash
    just setup-sequencer "$NODE_HOME" --sequencer "$SEQUENCER_RPC" --node-url "$NODE_URL" --config "$CONFIG"
    ```
+
+   - If the command fails, it leaves a partial home behind. Delete `$NODE_HOME` before you run it again.
 
    **Expected result:** the command prints `<NODE_HOME> is ready.`, followed by the funding account, the Bedrock key, and the paths it wrote. The home contains:
 
@@ -184,7 +195,12 @@ You need four terminals for this option. Run [Step 1](#step-1-build-the-sequence
    :::danger
    `bedrock_signing_key` is the staked identity. If you lose it, you lose the seat. Back it up, restrict its permissions, and never run two nodes with the same key: two nodes inscribing for one key produce misplaced blocks, which are slashed.
 
-   The node's wallet holds the key that's needed to unstake, and `wallet-seed` holds its password and recovery phrase in the clear. Anyone who can read the home controls the stake, so restrict its permissions and back it up.
+   The node's wallet holds the key that's needed to unstake, and `wallet-seed` holds its password and recovery phrase in the clear. Anyone who can read the home controls the stake, so restrict its permissions and back it up. `just setup-sequencer` creates `bedrock_signing_key` readable by every user on the machine:
+
+   ```bash
+   chmod 700 "$NODE_HOME"
+   chmod 600 "$NODE_HOME/bedrock_signing_key"
+   ```
    :::
 
 1. (Public testnet only) Set the config's `funding_key` to your Bedrock wallet key:
@@ -208,14 +224,14 @@ The node follows the chain as soon as it starts, and starts producing once the c
 1. Start the node. On the public testnet:
 
    ```bash
-   RUST_LOG=info sequencer_service "$NODE_HOME/sequencer_config.json" \
+   RUST_LOG=info,kameo=warn sequencer_service "$NODE_HOME/sequencer_config.json" \
        --home "$NODE_HOME" --listen-address 127.0.0.1
    ```
 
    On a local network, the first sequencer already holds ports 3040 and 9000:
 
    ```bash
-   RUST_LOG=info sequencer_service "$NODE_HOME/sequencer_config.json" \
+   RUST_LOG=info,kameo=warn sequencer_service "$NODE_HOME/sequencer_config.json" \
        --home "$NODE_HOME" --listen-address 127.0.0.1 \
        --port 3041 --metrics-address 127.0.0.1:9001
    ```
@@ -240,29 +256,21 @@ The node follows the chain as soon as it starts, and starts producing once the c
    done
    ```
 
+   - The node's RPC only starts listening once it has caught up on the channel, about 12 seconds after launch on a local network. Until then, the line for `$NODE_RPC` is empty.
+   - While it catches up, the node can log warnings such as `Finalized block 1 did not apply`. They stop once its block ID matches the committee member's.
+
 ## Step 5: Stake the node's key
 
-1. Look up the channel's minimum stake:
-
-   ```bash
-1. Read the channel's minimum stake from the node's own config:
+1. Read the channel's minimum stake from the node's own config. Every node on the channel has to agree on `channel_params`, so this is the value the committee enforces. Save it in the home, because you need the staked amount to unstake:
 
    ```bash
    MIN=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["bedrock_config"]["channel_params"]["minimum_sequencer_stake"])' \
        "$NODE_HOME/sequencer_config.json")
+   echo "$MIN" > "$NODE_HOME/stake-amount"
    echo "$MIN"
    ```
 
    **Expected result:** the channel's minimum stake. The local debug config sets it to `149`.
-   ```
-
-   **Expected result:** the first line starts with `minimum stake <n>`. The local debug config sets it to `149`.
-
-1. Set the amount to stake. It must be at least the minimum:
-
-   ```bash
-   MIN=<minimum-stake>
-   ```
 
 1. Fund the node's funding account from your funded account. Replace `<funded-account>` with your account ID:
 
@@ -336,7 +344,7 @@ On the public testnet, run the node under systemd so that it survives reboots. T
 
    [Service]
    User=$USER
-   Environment=RUST_LOG=info
+   Environment=RUST_LOG=info,kameo=warn
    ExecStart=$PWD/target/release/sequencer_service $(realpath "$NODE_HOME")/sequencer_config.json --home $(realpath "$NODE_HOME") --listen-address 127.0.0.1
    Restart=on-failure
    TimeoutStopSec=60
@@ -368,7 +376,15 @@ Stopping the process doesn't remove the node from the committee. Request the uns
 
 1. Request the unstake. Replace `<destination-account>` with the account that receives the stake, as a bare base58 account ID with no `Public/` prefix:
 
-   
+   ```bash
+   submit_stake --wallet "$NODE_HOME/wallet" unstake-request \
+       --ownership-account "$(cat "$NODE_HOME/stake-ownership-account")" \
+       --amount "$(cat "$NODE_HOME/stake-amount")" --destination <destination-account>
+   ```
+
+   - `--destination` doesn't accept the `Public/` prefix that the wallet commands use. On a local network, a genesis account such as `2RHZhw9h534Zr3eq2RGhQete2Hh667foECzXPmSkGni2` works as the destination.
+   - The amount is the whole stake from [Step 5](#step-5-stake-the-nodes-key). A partial release must leave at least the minimum, or the program drops the request without reporting an error.
+   - On a local network, submit the request while the first sequencer holds the turn: wait for `Turn update: our_turn=true` in terminal 2. The two local nodes don't share pending transactions, and the request goes only to the first sequencer, so it can expire while your node holds the turn.
 
    **Expected result:** `Submitted transaction <tx hash>`.
 
@@ -378,7 +394,7 @@ Stopping the process doesn't remove the node from the committee. Request the uns
    curl -s "$NODE_URL/channel/$CHANNEL_ID"
    ```
 
-   - The request is only valid for 16 blocks. If the key is still listed a few minutes later, submit the request again.
+   - The request is only valid for 16 blocks. If it expires, the sequencer it was sent to logs `Execution outside of the validity window` for its transaction hash. Submit the request again.
 
 1. Stop the node. On the public testnet:
 
@@ -405,7 +421,9 @@ Check the funding account's balance:
 LEE_WALLET_HOME_DIR="$NODE_HOME/wallet" wallet account get --account-id "Public/$FUNDING"
 ```
 
-If the funds are still there, the stake reverted: stake again with at least the minimum. Otherwise, wait. `just committee-watch` shows the stake entry and the live committee side by side while the change settles.
+If the funds are still there, the stake reverted: stake again with at least the minimum. Otherwise, wait for the change to settle.
+
+- At `v0.3.2`, `just committee-watch` fails with a `KeyError`, because it looks up the stake program's account under the wrong ID. Use the `accredited_keys` check from [Step 6](#step-6-confirm-the-key-is-accredited) instead.
 
 ### The node starts its own channel
 

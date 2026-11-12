@@ -34,8 +34,8 @@ The stake is what makes misbehaviour costly. A member that inscribes an invalid 
   The service setup in [Step 7](#step-7-run-the-node-as-a-service) is for Linux with systemd only.
 - Disk space for the node's database, which grows with the chain. No GPU is needed.
 - The [Rust toolchain](https://www.rust-lang.org/tools/install). `rustup` installs the pinned 1.98.1 on the first build.
-- The [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup install`. The repository uses risc0 3.0.5.
 - [`just`](https://github.com/casey/just), Python 3, and the build dependencies listed in the repository [`README.md`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/README.md).
+- Only to rebuild the zkVM artifacts: the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup install`. The repository uses risc0 3.0.5 and commits the built artifacts, so [Step 1](#step-1-build-the-sequencer-from-the-release-tag) doesn't need it.
 - For the public testnet:
   - A [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) on the testnet, running Logos Blockchain [`0.3.4`](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4). When you follow that page, install module version `0.3.4` instead of `0.3.2`. Release 0.3.4 includes the zone-sdk fix that LEZ v0.3.2 depends on, and upgrades a 0.3.2 node config automatically.
   - A funded key in that node's wallet, such as the `PoWClaim` key funded by [mining](../../blockchain/get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). It pays for the node's inscriptions and for the channel-config transactions it drafts.

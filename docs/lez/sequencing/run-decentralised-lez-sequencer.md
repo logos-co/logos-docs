@@ -19,9 +19,9 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3.2**.
 :::
 
-The [LEZ](../../get-started/glossary.md#lez) sequencer (`sequencer_service`) orders mempool transactions into blocks and inscribes them on the zone's [channel](../../get-started/glossary.md#channel) on [Bedrock](../../get-started/glossary.md#bedrock). On v0.3, a committee of sequencers takes turns doing this. Anyone who meets the minimum stake can join the committee: the committee follows the stake recorded on chain, so no existing operator has to add you by hand.
+Zone sequencers order mempool transactions into blocks and inscribe them on the Zone's [channel](../../get-started/glossary.md#channel) on [Bedrock](../../get-started/glossary.md#bedrock). The LEZ is sequenced by a committee of sequencer who take turns doing this in a round-robin schedule. Anybody who meets the minimum stake can join the committee, and membership in the committee is granted automatically, without explicit approval.
 
-This procedure shows how to build the sequencer from the [`v0.3.2`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.2) release, prepare a node home, stake its Bedrock key, and confirm the node produces blocks on its turn. It's for operators who want to run a committee member on the public testnet, or try the flow on a local network first.
+This procedure shows how to build the sequencer from the [`v0.3.2`](https://github.com/logos-blockchain/logos-execution-zone/releases/tag/v0.3.2) release, prepare a node home, stake its Bedrock key, and confirm the node produces blocks on its turn. It's for operators who want to run a committee member on a local network, in preparation for 
 
 The stake is what makes misbehaviour costly. A member that inscribes an invalid or misplaced block is slashed, and slashing burns the key's whole stake. Being offline isn't slashed.
 
@@ -32,15 +32,15 @@ The stake is what makes misbehaviour costly. A member that inscribes an invalid 
   - macOS
 
   The service setup in [Step 7](#step-7-run-the-node-as-a-service) is for Linux with systemd only.
-- Disk space for the node's database, which grows with the chain. No GPU is needed.
 - The [Rust toolchain](https://www.rust-lang.org/tools/install). `rustup` installs the pinned 1.98.1 on the first build.
-- [`just`](https://github.com/casey/just), Python 3, and the build dependencies listed in the repository [`README.md`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/README.md).
+- [`just`](https://github.com/casey/just), Python 3.
 - Only to rebuild the zkVM artifacts: the [RISC Zero toolchain](https://dev.risczero.com/api/zkvm/install), installed with `rzup install`. The repository uses risc0 3.0.5 and commits the built artifacts, so [Step 1](#step-1-build-the-sequencer-from-the-release-tag) doesn't need it.
 - For the public testnet:
-  - A [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) on the testnet, running Logos Blockchain [`0.3.4`](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4), which is the version that page installs. Release 0.3.4 carries the zone-sdk fix that LEZ v0.3.2 depends on.
-  - A funded key in that node's wallet, such as the `PoWClaim` key funded by [mining](../../blockchain/get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node). It pays for the node's inscriptions and for the channel-config transactions it drafts.
-  - A [public account](../../get-started/glossary.md#public-account) holding at least the network's minimum stake, in an [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md) pointed at the testnet RPC. Stake transactions are fee-exempt, so the stake amount is all it needs.
-- For a local network: [Docker](https://docs.docker.com/get-docker/), to run Bedrock.
+  - A funded key in that node's wallet, such as the `PoWClaim` key funded by [mining](../../blockchain/get-started/run-blockchain-node-from-cli.md#step-4-mine-tokens-to-fund-your-node).
+  - A [Logos Blockchain node](../../blockchain/get-started/run-blockchain-node-from-cli.md) version [`0.3.4`](https://github.com/logos-blockchain/logos-blockchain/releases/tag/0.3.4).
+  - A [public account](../../get-started/glossary.md#public-account) holding at least the network's minimum stake, in an [LEZ CLI wallet](../get-started/run-lez-wallet-via-cli.md).
+- For a local network:
+   - [Docker](https://docs.docker.com/get-docker/).
 :::
 
 ## What to expect
@@ -165,14 +165,12 @@ You need four terminals for this option. Run [Step 1](#step-1-build-the-sequence
 
 `just setup-sequencer` creates the node home. It submits nothing, so it doesn't need funds.
 
-1. Patch the setup script. At `v0.3.2`, `tools/setup_sequencer.py` writes the node wallet's config in an older format that the v0.3.2 wallet rejects, so the next action fails with a `missing field` error:
+1. Patch the setup script. At `v0.3.2`, `tools/setup_sequencer.py` writes the node wallet's config in an older format that the v0.3.2 wallet rejects. Use the following command to update the script as a quick workaround:
 
    ```bash
    sed -i.orig 's|"sequencers": \[{"sequencer_addr": args.sequencer}\],|"sequencer": {"sequencer_addr": args.sequencer},|' \
        tools/setup_sequencer.py
    ```
-
-   - This works with both GNU and macOS `sed`, and keeps the original as `tools/setup_sequencer.py.orig`.
 
 1. Create the node home:
 
@@ -221,14 +219,18 @@ You need four terminals for this option. Run [Step 1](#step-1-build-the-sequence
 
 The node follows the chain as soon as it starts, and starts producing once the committee accredits its key. Start it in its own terminal, terminal 4 on a local network, and set `NODE_HOME` and `PATH` there too.
 
-1. Start the node. On the public testnet:
+:::warning
+Your Blockchain node must be in `Online` mode before you can begin this step: `curl -s http://<your-bedrock-node>/cryptarchia/info` must report `"state":"Online"`. While it's still `Bootstrapping`, the sequencer can't backfill the channel and logs `408 Request Timeout` errors.
+:::
+
+1. Start the node. **On the public testnet**:
 
    ```bash
    RUST_LOG=info,kameo=warn sequencer_service "$NODE_HOME/sequencer_config.json" \
        --home "$NODE_HOME" --listen-address 127.0.0.1
    ```
 
-   On a local network, the first sequencer already holds ports 3040 and 9000:
+   **On a local network**, the first sequencer already holds ports 3040 and 9000:
 
    ```bash
    RUST_LOG=info,kameo=warn sequencer_service "$NODE_HOME/sequencer_config.json" \

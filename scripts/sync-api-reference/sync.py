@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
-"""Mirror a Logos module's published API reference into these docs.
+"""Mirror reference pages that other Logos repos publish into these docs.
 
-Each module repo below publishes a Sphinx site to its gh-pages branch when a
-GitHub release is published (its .github/workflows/docs.yml), one directory
-per tag. This script takes the module's latest release, downloads that
-release's rendered API reference page, and converts the article to
-Markdown at the page's path under docs/. The content is exactly what the
-module's own site shows for that release; only the presentation changes.
+Every source below is read at its repo's latest GitHub release, and the
+result is written to the page's path under docs/, in the section's Reference
+folder. There are two kinds of source:
+
+- 'sphinx': the repo publishes a Sphinx site to its gh-pages branch when a
+  release is published (its .github/workflows/docs.yml), one directory per
+  tag. The release's rendered page is downloaded and its article converted
+  to Markdown.
+- 'markdown': the repo keeps the reference as a Markdown file. The file is
+  read at the release tag, its own title is replaced with this page's, and
+  relative links are pointed at the file's neighbours on GitHub at that tag.
+
+Either way the content is exactly what the source repo has for that release;
+only the presentation changes.
 
 Run by .github/workflows/sync-api-reference.yml, which opens a PR when the
 output differs from what is committed. Run it locally the same way:
 
     pip install -r scripts/sync-api-reference/requirements.txt
-    python3 scripts/sync-api-reference/sync.py [module ...] [--tag vX.Y.Z]
+    python3 scripts/sync-api-reference/sync.py [source ...] [--tag vX.Y.Z]
 
-Do not edit the generated pages by hand: the next sync overwrites them. Fix
-wording in the module repo, and presentation here.
+Do not edit the mirrored pages by hand: the next sync overwrites them. Fix
+wording in the source repo, and presentation here.
 """
 
 import argparse
 import json
 import os
+import posixpath
 import re
 import sys
 import urllib.error
@@ -31,12 +40,15 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-MODULES = {
+# Every mirrored page. Adding one here also needs its `out` path added to
+# .vale.ini (excluded from linting) and to add-paths in the workflow.
+SOURCES = {
     'delivery': {
+        'kind': 'sphinx',
         'repo': 'logos-co/logos-delivery-module',
         'page': 'pages/api_reference.html',
         'product': 'messaging',
-        'out': 'docs/messaging/delivery/delivery-module-api-reference.md',
+        'out': 'docs/messaging/reference/delivery-module-api-reference.md',
         'title': 'Delivery module API reference',
         'subtitle': 'Look up every method and event the Delivery module exposes.',
         'lang': 'cpp',
@@ -44,24 +56,64 @@ MODULES = {
         'edit': 'src/delivery_module_plugin.h',
     },
     'chat': {
+        'kind': 'sphinx',
         'repo': 'logos-co/logos-chat-module',
         'page': 'pages/api_reference.html',
         'product': 'messaging',
-        'out': 'docs/messaging/chat-module/chat-module-api-reference.md',
+        'out': 'docs/messaging/reference/chat-module-api-reference.md',
         'title': 'Chat module API reference',
         'subtitle': 'Look up every method, event and record the Chat module exposes.',
         'lang': 'text',
         'edit': 'rust-lib/chat_module.lidl',
     },
     'storage': {
+        'kind': 'sphinx',
         'repo': 'logos-co/logos-storage-module',
         'page': 'api_reference.html',
         'product': 'storage',
-        'out': 'docs/storage/storage-module-api-reference.md',
+        'out': 'docs/storage/reference/storage-module-api-reference.md',
         'title': 'Storage module API reference',
         'subtitle': 'Look up every method and event the Storage module exposes.',
         'lang': 'cpp',
         'edit': 'src/storage_module_plugin.h',
+    },
+    'logosctl': {
+        'kind': 'markdown',
+        'repo': 'logos-co/logos-logoscore-cli',
+        'page': 'docs/logosctl.md',
+        'product': 'core',
+        'out': 'docs/core/reference/logos-cli-reference.md',
+        # Published URL (docs.logos.co/core/reference/logos-cli-reference): keep it.
+        'slug': 'logos-cli-reference',
+        'title': 'Logos CLI reference',
+        'subtitle': 'Look up every logosctl command, option and configuration key.',
+    },
+    'scaffold': {
+        'kind': 'markdown',
+        'repo': 'logos-co/scaffold',
+        'page': 'docs/commands.md',
+        'product': 'core',
+        'out': 'docs/build-an-app/scaffold/reference/logos-scaffold-command-reference.md',
+        'title': 'Logos Scaffold command reference',
+        'subtitle': 'Look up every logos-scaffold command and what it does.',
+    },
+    'module-builder-cmake': {
+        'kind': 'markdown',
+        'repo': 'logos-co/logos-module-builder',
+        'page': 'docs/cmake-reference.md',
+        'product': 'core',
+        'out': 'docs/core/reference/module-builder-cmake-reference.md',
+        'title': 'Module builder CMake reference',
+        'subtitle': 'Look up the CMake functions, variables and targets logos-module-builder provides.',
+    },
+    'module-builder-nix': {
+        'kind': 'markdown',
+        'repo': 'logos-co/logos-module-builder',
+        'page': 'docs/nix-api.md',
+        'product': 'core',
+        'out': 'docs/core/reference/module-builder-nix-api-reference.md',
+        'title': 'Module builder Nix API reference',
+        'subtitle': 'Look up the Nix functions logos-module-builder provides for building modules.',
     },
 }
 
@@ -317,79 +369,158 @@ class Converter:
         return '\n'.join(lines)
 
 
-def render(module, tag, html):
-    cfg = MODULES[module]
-    soup = BeautifulSoup(html, 'html.parser')
-    article = soup.select_one('article.bd-article')
-    if article is None:
-        raise SystemExit(f'{module}: no <article class="bd-article"> in the published page')
-    repo = cfg['repo']
-    owner, name = repo.split('/')
-    page_dir = cfg['page'].rpartition('/')[0]
-    site_base = f'https://{owner}.github.io/{name}/{tag}/' + (f'{page_dir}/' if page_dir else '')
-    body = '\n\n'.join(Converter(article, site_base, cfg['lang']).blocks(article, 1))
-
-    front = '\n'.join([
+def front_matter(cfg, tag, edit_url):
+    lines = [
         '---',
         f'title: {cfg["title"]}',
         'doc_type: reference',
         f'product: {cfg["product"]}',
         'owner: logos',
-        # Plain CommonMark, not MDX: C++ and LIDL signatures are full of < and {.
+    ]
+    if cfg.get('slug'):
+        lines.append(f'slug: {cfg["slug"]}')
+    lines += [
+        # Plain CommonMark, not MDX: signatures and usage lines are full of < and {.
         'mdx:',
         '  format: md',
         'sidebar_position: 100',
         f'description: {cfg["subtitle"]}',
-        f'custom_edit_url: https://github.com/{repo}/blob/master/{cfg["edit"]}',
-        f'source_repo: {repo}',
+        f'custom_edit_url: {edit_url}',
+        f'source_repo: {cfg["repo"]}',
         f'source_version: {tag}',
         '---',
-    ])
+    ]
+    return '\n'.join(lines)
+
+
+def page(cfg, tag, edit_url, source_link, body):
+    repo = cfg['repo']
+    name = repo.split('/')[1]
     banner = '\n'.join([
         ':::note[Mirrored page]',
-        f'This page mirrors the [API reference](https://{owner}.github.io/{name}/{tag}/{cfg["page"]}) published with',
+        f'This page mirrors {source_link}',
         f'`{name}` {tag}, and is regenerated automatically after each release. To change it, edit',
         f'the source in [`{repo}`](https://github.com/{repo}), not this page.',
         ':::',
     ])
     # The page is excluded from Vale in .vale.ini: its prose belongs to the
-    # module repo. (Vale's HTML-comment switches would not parse here.)
-    return f'{front}\n\n# {cfg["title"]}\n\n#### {cfg["subtitle"]}\n\n{banner}\n\n{body}\n'
+    # source repo. (Vale's HTML-comment switches would not parse here.)
+    return (f'{front_matter(cfg, tag, edit_url)}\n\n# {cfg["title"]}\n\n'
+            f'#### {cfg["subtitle"]}\n\n{banner}\n\n{body.strip()}\n')
+
+
+def render_sphinx(source, tag, html):
+    cfg = SOURCES[source]
+    soup = BeautifulSoup(html, 'html.parser')
+    article = soup.select_one('article.bd-article')
+    if article is None:
+        raise SystemExit(f'{source}: no <article class="bd-article"> in the published page')
+    repo = cfg['repo']
+    owner, name = repo.split('/')
+    page_dir = cfg['page'].rpartition('/')[0]
+    site_base = f'https://{owner}.github.io/{name}/{tag}/' + (f'{page_dir}/' if page_dir else '')
+    body = '\n\n'.join(Converter(article, site_base, cfg['lang']).blocks(article, 1))
+    link = f'the [API reference](https://{owner}.github.io/{name}/{tag}/{cfg["page"]}) published with'
+    edit_url = f'https://github.com/{repo}/blob/master/{cfg["edit"]}'
+    return page(cfg, tag, edit_url, link, body)
+
+
+FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})')
+# Inline links and images, [text](target "title"), and reference definitions.
+INLINE_LINK = re.compile(r'(!?\[[^\]]*\]\()(<[^>]*>|[^)\s]+)')
+REF_DEF = re.compile(r'^( {0,3}\[[^\]]+\]:\s*)(\S+)', re.M)
+
+
+def render_markdown(source, tag, text):
+    """The source file, minus its own title, with relative links made absolute.
+
+    Relative links resolve against the file's directory and point at the
+    release tag on GitHub (images at raw.githubusercontent.com), so they keep
+    working outside the source repo and match the mirrored version.
+    """
+    cfg = SOURCES[source]
+    repo = cfg['repo']
+    src_dir = posixpath.dirname(cfg['page'])
+
+    def absolute(target, image):
+        bare = target[1:-1] if target.startswith('<') else target
+        if not bare or bare.startswith('#') or re.match(r'^[a-z][a-z0-9+.-]*:', bare, re.I):
+            return target
+        path, _, frag = bare.partition('#')
+        path = posixpath.normpath(posixpath.join(src_dir, path)).lstrip('/')
+        if image:
+            url = f'https://raw.githubusercontent.com/{repo}/{tag}/{path}'
+        else:
+            kind = 'blob' if posixpath.splitext(path)[1] else 'tree'
+            url = f'https://github.com/{repo}/{kind}/{tag}/{path}'
+        return url + (f'#{frag}' if frag else '')
+
+    text = re.sub(r'\A---\n.*?\n---\n', '', text, flags=re.S)  # source's own front matter
+    out, fence, dropped_title = [], None, False
+    for line in text.split('\n'):
+        m = FENCE.match(line)
+        if fence:
+            if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= len(fence):
+                fence = None
+            out.append(line)
+            continue
+        if m:
+            fence = m.group(1)
+            out.append(line)
+            continue
+        if not dropped_title and re.match(r'^# ', line):
+            dropped_title = True  # this page's title replaces the source's
+            continue
+        line = INLINE_LINK.sub(lambda m: m.group(1) + absolute(m.group(2), m.group(1).startswith('!')), line)
+        line = REF_DEF.sub(lambda m: m.group(1) + absolute(m.group(2), False), line)
+        out.append(line)
+
+    edit_url = f'https://github.com/{repo}/blob/master/{cfg["page"]}'
+    link = f'[`{cfg["page"]}`](https://github.com/{repo}/blob/{tag}/{cfg["page"]}) from'
+    return page(cfg, tag, edit_url, link, '\n'.join(out))
+
+
+def raw_url(cfg, tag):
+    owner, name = cfg['repo'].split('/')
+    if cfg['kind'] == 'sphinx':
+        return f'https://raw.githubusercontent.com/{owner}/{name}/gh-pages/{tag}/{cfg["page"]}'
+    return f'https://raw.githubusercontent.com/{owner}/{name}/{tag}/{cfg["page"]}'
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('modules', nargs='*', metavar='module',
-                    help=f'modules to sync: {", ".join(MODULES)} (default: all)')
-    ap.add_argument('--tag', help='sync this release tag instead of the latest release (needs one module)')
+    ap.add_argument('sources', nargs='*', metavar='source',
+                    help=f'sources to sync: {", ".join(SOURCES)} (default: all)')
+    ap.add_argument('--tag', help='sync this release tag instead of the latest release (needs one source)')
     args = ap.parse_args()
-    modules = args.modules or list(MODULES)
-    unknown = [m for m in modules if m not in MODULES]
+    sources = args.sources or list(SOURCES)
+    unknown = [s for s in sources if s not in SOURCES]
     if unknown:
-        ap.error(f'unknown module(s): {", ".join(unknown)}')
-    if args.tag and len(modules) != 1:
-        ap.error('--tag needs exactly one module')
+        ap.error(f'unknown source(s): {", ".join(unknown)}')
+    if args.tag and len(sources) != 1:
+        ap.error('--tag needs exactly one source')
 
-    for module in modules:
-        cfg = MODULES[module]
+    for source in sources:
+        cfg = SOURCES[source]
         tag = args.tag or latest_release(cfg['repo'])
-        owner, name = cfg['repo'].split('/')
-        url = f'https://raw.githubusercontent.com/{owner}/{name}/gh-pages/{tag}/{cfg["page"]}'
+        url = raw_url(cfg, tag)
         try:
-            html = fetch(url)
+            content = fetch(url)
         except urllib.error.HTTPError as e:
-            # The module's docs workflow publishes a few minutes after the
-            # release; the next scheduled run picks it up.
-            print(f'::warning::{module}: {tag} is not published to gh-pages yet ({e.code} {url})')
+            # A Sphinx site reaches gh-pages a few minutes after the release;
+            # the next scheduled run picks it up.
+            print(f'::warning::{source}: {tag} has no {cfg["page"]} yet ({e.code} {url})')
             continue
+        render = render_sphinx if cfg['kind'] == 'sphinx' else render_markdown
+        new = render(source, tag, content)
         out = REPO_ROOT / cfg['out']
-        new = render(module, tag, html)
         old = out.read_text() if out.exists() else None
+        out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(new)
-        print(f'{module}: {tag} -> {cfg["out"]} ({"unchanged" if new == old else "updated"})')
+        print(f'{source}: {tag} -> {cfg["out"]} ({"unchanged" if new == old else "updated"})')
         if os.environ.get('GITHUB_OUTPUT'):
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                f.write(f'{module}={tag}\n')
+                f.write(f'{source.replace("-", "_")}={tag}\n')
     return 0
 
 

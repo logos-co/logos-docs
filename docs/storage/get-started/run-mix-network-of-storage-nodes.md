@@ -63,6 +63,10 @@ All six nodes below share one already-unpacked copy of `storage_module`, install
 
     The package is now unpacked under `./install-session/modules/storage_module/`.
 
+:::note
+`logosctl` also ships the storage module and loads it when each daemon starts, because the package downloader uses it as an optional dependency. The package downloader may then start a storage node with the default configuration or the one saved by the last `init` (`~/.logos_storage/config.json`, shared by every session on the machine). So after starting each daemon below, stop and destroy that node before you initialise it with the node's own config.
+:::
+
 ## Launch the bootstrap Mix node (node 1)
 
 The first node is the bootstrap node: the other nodes use it to join the Mix network.
@@ -90,6 +94,15 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
       | logosctl --config-dir ./logosctl-1 daemon config set -
     logosctl daemon start --detach --config-dir ./logosctl-1
+    ```
+
+1.  Stop and destroy the storage node that the package downloader may have started. Wait a few seconds after `stop`, until `isRunning` returns `false`, then destroy it. On a node that isn't running, `stop` returns an error, which you can ignore:
+
+    ```sh
+    logosctl --config-dir ./logosctl-1 call storage_module stop
+    # Wait a few seconds, then check that isRunning returns false
+    logosctl --config-dir ./logosctl-1 call storage_module isRunning
+    logosctl --config-dir ./logosctl-1 call storage_module destroy
     ```
 
 1.  Load the module, initialise it, and start the node:
@@ -139,6 +152,19 @@ Nodes 2, 3 and 4 are identical to node 1, except that they join through node 1's
       printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
         | logosctl --config-dir ./logosctl-$id daemon config set -
       logosctl daemon start --detach --config-dir ./logosctl-$id
+    done
+    ```
+
+1.  Stop and destroy the storage nodes that the package downloader may have started, as for node 1:
+
+    ```sh
+    for id in 2 3 4; do
+      logosctl --config-dir ./logosctl-$id call storage_module stop
+    done
+    # Wait a few seconds, then check that isRunning returns false and destroy each node
+    for id in 2 3 4; do
+      logosctl --config-dir ./logosctl-$id call storage_module isRunning
+      logosctl --config-dir ./logosctl-$id call storage_module destroy
     done
     ```
 
@@ -239,6 +265,19 @@ The four nodes so far are the Mix relays. Now add the storage nodes that actuall
       printf 'modules_dirs:\n  - %s\n' "$(pwd)/install-session/modules" \
         | logosctl --config-dir ./logosctl-$id daemon config set -
       logosctl daemon start --detach --config-dir ./logosctl-$id
+    done
+    ```
+
+1.  Stop and destroy the storage nodes that the package downloader may have started, as for node 1:
+
+    ```sh
+    for id in 5 6; do
+      logosctl --config-dir ./logosctl-$id call storage_module stop
+    done
+    # Wait a few seconds, then check that isRunning returns false and destroy each node
+    for id in 5 6; do
+      logosctl --config-dir ./logosctl-$id call storage_module isRunning
+      logosctl --config-dir ./logosctl-$id call storage_module destroy
     done
     ```
 

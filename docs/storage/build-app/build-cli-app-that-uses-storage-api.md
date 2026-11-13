@@ -21,7 +21,7 @@ This document is accurate for **Testnet v0.3.0**.
 
 This tutorial uses **Storage module v3.0.2**, **Logos module builder 0.3.2**, and `logosctl 0.3.2`.
 
-The [Storage Module API](https://logos-co.github.io/logos-storage-module/latest/api_reference.html) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
+The [Storage Module API](../storage-module-api-reference.md) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
 
 :::info[Prerequisites]
 - A supported OS
@@ -250,7 +250,7 @@ The rest of the implementation goes in `src/storage_cli_impl.cpp`. Add the file'
 
 ## Step 5: Implement the synchronous transfer helper
 
-1.  Add the `onProgress` and `onDone` callbacks. Both [`uploadUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl9uploadUrlERKNSt6stringE7int64_tb) and [`downloadToUrl`](https://logos-co.github.io/logos-storage-module/latest/api_reference.html#_CPPv4N17StorageModuleImpl13downloadToUrlERKNSt6stringERKNSt6stringEb7int64_tbb) report progress and completion through these callbacks. Progress events contain a byte increment and the total size. `onStarted` resolves the startup promise once, regardless of the result:
+1.  Add the `onProgress` and `onDone` callbacks. Both [`uploadUrl`](../storage-module-api-reference.md#uploadUrl) and [`downloadToUrl`](../storage-module-api-reference.md#downloadToUrl) report progress and completion through these callbacks. Progress events contain a byte increment and the total size. `onStarted` resolves the startup promise once, regardless of the result:
 
     ```cpp showLineNumbers=73
     void onProgress(const std::string &payload) {

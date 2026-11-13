@@ -16,7 +16,7 @@ sidebar_position: 5
 #### Get started with typed, service-keyed peer lookups in a live Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 Applications on the Logos network need a protocol-agnostic way to find peers offering specific services—[mix](../../get-started/glossary.md#mix) nodes, relay nodes, storage providers—at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](../../get-started/glossary.md#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
@@ -48,10 +48,10 @@ Applications on the Logos network need a protocol-agnostic way to find peers off
 
 Build and run the self-contained two-node demo to confirm the module and its C bindings are working before writing your own module.
 
-1. Clone the repository and enter the project directory:
+1. Clone the repository at the [`v1.1.1`](https://github.com/logos-co/logos-libp2p-module/releases/tag/v1.1.1) release and enter the project directory:
 
    ```sh
-   git clone https://github.com/logos-co/logos-libp2p-module
+   git clone --branch v1.1.1 https://github.com/logos-co/logos-libp2p-module
    cd logos-libp2p-module
    ```
 
@@ -199,17 +199,22 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    }
    ```
 
-1. Add `libp2p_module` as a flake input in `flake.nix`:
+1. Pin `logos-module-builder` and add `libp2p_module` as a flake input in `flake.nix`:
 
    ```nix
    inputs = {
-     logos-module-builder.url = "github:logos-co/logos-module-builder";
-     libp2p_module.url  = "github:logos-co/logos-libp2p-module";
+     logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.3";
+     libp2p_module = {
+       url = "github:logos-co/logos-libp2p-module/v1.1.1";
+       inputs.logos-module-builder.follows = "logos-module-builder";
+     };
    };
    ```
 
+   - The `follows` line builds both modules with the same `logos-module-builder`, so they share one SDK.
+
    :::info
-   For local development, override`flake.nix` at build time:
+   For local development, override the `libp2p_module` input at build time:
 
    ```bash
    nix build --override-input libp2p_module path:../logos-libp2p-module

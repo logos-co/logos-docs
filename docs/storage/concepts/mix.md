@@ -56,7 +56,7 @@ Example:
 When Mix is configured (`mix-enabled` true and at least one `dht-mix-proxy`
 set), you can set the `isPrivate` flag in download operations like
 `downloadToUrl` and `downloadChunks` (see [API
-reference](https://logos-co.github.io/logos-storage-module/v3.0.0-rc1/api_reference.html))
+reference](../storage-module-api-reference.md))
 so that downloads happen over mix. This in practice makes your download
 privacy-preserving; that is, it is difficult for third parties to tell that you
 are downloading a file, even if they are serving the file to you themselves.

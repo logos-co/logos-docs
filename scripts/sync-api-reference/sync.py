@@ -4,7 +4,7 @@
 Each module repo below publishes a Sphinx site to its gh-pages branch when a
 GitHub release is published (its .github/workflows/docs.yml), one directory
 per tag. This script takes the module's latest release, downloads that
-release's rendered ``pages/api_reference.html``, and converts the article to
+release's rendered API reference page, and converts the article to
 Markdown at the page's path under docs/. The content is exactly what the
 module's own site shows for that release; only the presentation changes.
 
@@ -34,6 +34,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MODULES = {
     'delivery': {
         'repo': 'logos-co/logos-delivery-module',
+        'page': 'pages/api_reference.html',
+        'product': 'messaging',
         'out': 'docs/messaging/delivery/delivery-module-api-reference.md',
         'title': 'Delivery module API reference',
         'subtitle': 'Look up every method and event the Delivery module exposes.',
@@ -43,11 +45,23 @@ MODULES = {
     },
     'chat': {
         'repo': 'logos-co/logos-chat-module',
+        'page': 'pages/api_reference.html',
+        'product': 'messaging',
         'out': 'docs/messaging/chat-module/chat-module-api-reference.md',
         'title': 'Chat module API reference',
         'subtitle': 'Look up every method, event and record the Chat module exposes.',
         'lang': 'text',
         'edit': 'rust-lib/chat_module.lidl',
+    },
+    'storage': {
+        'repo': 'logos-co/logos-storage-module',
+        'page': 'api_reference.html',
+        'product': 'storage',
+        'out': 'docs/storage/storage-module-api-reference.md',
+        'title': 'Storage module API reference',
+        'subtitle': 'Look up every method and event the Storage module exposes.',
+        'lang': 'cpp',
+        'edit': 'src/storage_module_plugin.h',
     },
 }
 
@@ -87,7 +101,7 @@ def classes(el):
 
 class Converter:
     def __init__(self, article, site_base, lang):
-        self.site_base = site_base  # e.g. https://logos-co.github.io/<repo>/<tag>/pages/
+        self.site_base = site_base  # the published page's directory, for its relative links
         self.lang = lang
         self.ids = {}  # every id Sphinx gave an anchor -> the id used here
         self.used = set()
@@ -102,6 +116,19 @@ class Converter:
             anchor, n = f'{wanted}-{n}', n + 1
         self.used.add(anchor)
         return anchor
+
+    def level(self, el):
+        """Heading level for an item at el: one below its section and group."""
+        n = len(el.find_parents('section'))
+        n += sum(1 for d in el.find_parents('div') if self.titled_group(d))
+        return min(n + 1, 6)
+
+    @staticmethod
+    def titled_group(div):
+        # Breathe wraps each member group in a container whose first child is
+        # a <p class="rubric"> title ("Public Functions", a \name group, ...).
+        return ('breathe-sectiondef' in classes(div)
+                and div.find('p', class_='rubric', recursive=False) is not None)
 
     def _collect_ids(self, article):
         for section in article.find_all('section'):
@@ -192,6 +219,9 @@ class Converter:
         if name == 'p':
             if 'admonition-title' in cls:
                 return []
+            if 'rubric' in cls:
+                text = ''.join(self.inline(c) for c in el.children).strip()
+                return [f'{"#" * (self.level(el) - 1)} {text}']
             return self.blocks(el, depth)
         if name in ('ul', 'ol'):
             return [self.list_(el, depth)]
@@ -258,11 +288,16 @@ class Converter:
             signature = re.sub(r'\s+', ' ', dt.get_text()).strip()
             signature = re.sub(r'\s+([,)])', r'\1', signature).replace('( ', '(')
             label = name.get_text().strip() if name else signature
-            # One level below the section the item sits in (h1 is the page).
-            heading = '#' * min(len(el.find_parents('section')) + 1, 6)
-            out.append(f'{heading} {code_span(label)} {{#{dt["data-anchor"]}}}')
-            out.append(f'```{self.lang}\n{signature}\n```')
             dd = dt.find_next_sibling('dd')
+            # A documented class (doxygenclass without :members-only:) wraps
+            # the whole page: render it as the introduction, not as an item.
+            if {'class', 'struct'} & set(classes(el)) and not el.find_parent('dl'):
+                out.append(f'```{self.lang}\n{signature}\n```')
+                if dd:
+                    out.extend(self.blocks(dd, depth))
+                continue
+            out.append(f'{"#" * self.level(el)} {code_span(label)} {{#{dt["data-anchor"]}}}')
+            out.append(f'```{self.lang}\n{signature}\n```')
             if dd:
                 out.extend(self.blocks(dd, depth + 1))
         return out
@@ -290,14 +325,15 @@ def render(module, tag, html):
         raise SystemExit(f'{module}: no <article class="bd-article"> in the published page')
     repo = cfg['repo']
     owner, name = repo.split('/')
-    site_base = f'https://{owner}.github.io/{name}/{tag}/pages/'
+    page_dir = cfg['page'].rpartition('/')[0]
+    site_base = f'https://{owner}.github.io/{name}/{tag}/' + (f'{page_dir}/' if page_dir else '')
     body = '\n\n'.join(Converter(article, site_base, cfg['lang']).blocks(article, 1))
 
     front = '\n'.join([
         '---',
         f'title: {cfg["title"]}',
         'doc_type: reference',
-        'product: messaging',
+        f'product: {cfg["product"]}',
         'owner: logos',
         # Plain CommonMark, not MDX: C++ and LIDL signatures are full of < and {.
         'mdx:',
@@ -311,7 +347,7 @@ def render(module, tag, html):
     ])
     banner = '\n'.join([
         ':::note[Mirrored page]',
-        f'This page mirrors the [API reference]({site_base}api_reference.html) published with',
+        f'This page mirrors the [API reference](https://{owner}.github.io/{name}/{tag}/{cfg["page"]}) published with',
         f'`{name}` {tag}, and is regenerated automatically after each release. To change it, edit',
         f'the source in [`{repo}`](https://github.com/{repo}), not this page.',
         ':::',
@@ -338,7 +374,7 @@ def main():
         cfg = MODULES[module]
         tag = args.tag or latest_release(cfg['repo'])
         owner, name = cfg['repo'].split('/')
-        url = f'https://raw.githubusercontent.com/{owner}/{name}/gh-pages/{tag}/pages/api_reference.html'
+        url = f'https://raw.githubusercontent.com/{owner}/{name}/gh-pages/{tag}/{cfg["page"]}'
         try:
             html = fetch(url)
         except urllib.error.HTTPError as e:

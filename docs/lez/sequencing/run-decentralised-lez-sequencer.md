@@ -270,7 +270,7 @@ The node follows the chain as soon as it starts, and starts producing once the c
    echo "$MIN"
    ```
 
-   **Expected result:** the channel's minimum stake. The local debug config sets it to `149`.
+   **Expected result:** the channel's minimum stake. The local debug config sets it to `149`. On the public testnet it's `25000000000`.
 
 1. Fund the node's funding account from your funded account. Replace `<funded-account>` with your account ID:
 

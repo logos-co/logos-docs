@@ -239,7 +239,7 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
    ```
 
    :::note
-   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. Live relay only delivers messages published after the subscription takes effect. However, note that historical messages from topics subscribed to during a Delivery node's initial Store "catchup" period are also delivered as part of the catchup process.
+   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. Live relay only delivers messages published after the subscription takes effect. However, note that historical messages from topics subscribed to during a Delivery node's initial Store "catch-up" period are also delivered as part of the catch-up process.
 
    Calling `subscribe()` on a topic the node already subscribes to succeeds and changes nothing, so you can repeat the call—after a module reload, for example—without tracking subscriptions yourself.
    :::

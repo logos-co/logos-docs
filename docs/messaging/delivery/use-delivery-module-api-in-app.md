@@ -19,9 +19,9 @@ sidebar_position: 1
 This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) (tag `v0.3.0`).
+This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules.
 
-The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.3.3`](https://github.com/logos-co/logos-delivery-module/tree/1d995bda3128e13f21ed17e0f925f4c04d2bd117)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
+The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.3.3`](https://github.com/logos-co/logos-delivery-module/tree/1d995bda3128e13f21ed17e0f925f4c04d2bd117)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) (tag `v0.3.0`). Note that the demo pins `delivery_module` v0.3.0 and older RLN modules than this page does, so use it to explore the API rather than to verify sending on `logos.test`.
 
 :::info[Prerequisites]
 
@@ -36,7 +36,7 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
-- To send on the `logos.test` network: an [RLN membership](../../lez/rln/register-rln-membership-from-basecamp.md). Receiving doesn't need one.
+- To send on the `logos.test` network: an [RLN membership](../../lez/rln/register-rln-membership-from-basecamp.md). Receiving doesn't require an RLN membership.
 :::
 
 ## What to expect
@@ -159,9 +159,11 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
        delivery.onConnectionStateChanged([](QString status, qint64 timestamp) {});
 
        delivery.onMessageReceived(
-           [this](QString messageHash, QString contentTopic, QByteArray payload, qint64 timestamp) {
-               // payload is raw bytes, not text.
-           });
+       [this](QString messageHash, QString contentTopic, QByteArray payload,
+              QString source, qint64 timestamp) {
+           // payload is raw bytes, not text.
+           // source is "live", or "history" when Store catch-up recovered it.
+       });
 
        delivery.onMessageSent([](QString requestId, QString messageHash, qint64 timestamp) {});
        delivery.onMessagePropagated([](QString requestId, QString messageHash, qint64 timestamp) {});
@@ -221,6 +223,7 @@ The node is a singleton per Logos Core instance: call `createNode` exactly once 
    The node is not connected the moment `start()` returns. Wait for `connectionStateChanged` before sending on either API.
 
    - On `logos.test`, `createNode` also brings up RLN in the background and returns without waiting. Sends need RLN to reach `Ready`: check `delivery.rlnState()`, or subscribe to the `rlnStateChanged` event, which moves from `Disabled` through `Initializing` to `Ready` or `Failed`.
+   - `Ready` means the RLN backend started and answers, not that it has finished loading the recent membership roots, so a send fired immediately after Ready can still fail; if this occurs, restart the node.
 
 ## Step 5: Use the Messaging API
 
@@ -235,9 +238,11 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
    }
    ```
 
-   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. The node delivers only messages published after the subscription takes effect: anything sent on the topic earlier never arrives through `messageReceived`.
+   :::note
+   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. Live relay only delivers messages published after the subscription takes effect. However, note that historical messages from topics subscribed to during a Delivery node's initial Store "catchup" period are also delivered as part of the catchup process.
 
    Calling `subscribe()` on a topic the node already subscribes to succeeds and changes nothing, so you can repeat the call—after a module reload, for example—without tracking subscriptions yourself.
+   :::
 
 1. Send a message. On success, `getString()` returns the request ID. `messagePropagated` fires when the message reaches the network but is not yet validated, and `messageSent` fires when the network confirms it; `messageError` fires instead if the send fails. Each event carries the request ID, so you can match it to the `send()` call that produced it:
 
@@ -418,7 +423,7 @@ On `logos.test`, check RLN too:
 
 ### `messageReceived` never fires?
 
-`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic. Messages published before you subscribed are not delivered, which matters most for topics your module subscribes to at runtime (see [Step 5](#step-5-use-the-messaging-api)).
+`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic. Live relay doesn't replay messages published before you subscribed, which matters most for topics your module subscribes to at runtime (see [Step 5](#step-5-use-the-messaging-api)).
 
 If it stopped firing after working, another module may have unsubscribed the topic: a single `unsubscribe()` removes it for every module on the node. Calling `subscribe()` again is safe and restores it.
 

@@ -264,7 +264,7 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
 
 ## Step 4: Load the modules and verify the single-node flow
 
-1. Return to `logos-my-service-module` and pin a known, fixed listen address via the `LIBP2P_MODULE_CONFIG` environment variable:
+1. Return to `logos-my-service-module` and set `LIBP2P_MODULE_CONFIG`: a known, fixed listen address together with `mountServiceDiscovery`, which makes the node use the Service Discovery distributed hash table (DHT) format, rather than Kademlia, when set to `true`:
 
    ```sh
    cd ../logos-my-service-module
@@ -396,3 +396,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 ### Why does `discover` return `[]` even after waiting?
 
 The Kad-DHT needs a few seconds to propagate the advertisement from the advertiser through the bootstrap node to the discoverer. Repeat `logosctl --config-dir ~/.logosctl-discoverer call my_service_module discover myservice/v1` after 5–10 seconds. If it still returns empty, confirm that the advertiser's `advertise` call succeeded and that both the advertiser and the discoverer share the same `<BOOTSTRAP_PEER_ID>` for the bootstrap node.
+
+### Why does every `disco*` call fail with `service discovery not mounted`?
+
+`mountServiceDiscovery` defaults to `false`, so a `LIBP2P_MODULE_CONFIG` that leaves it out loads both modules and then fails every discovery call. Add `"mountServiceDiscovery":true` to the config of each instance, as [Step 4](#step-4-load-the-modules-and-verify-the-single-node-flow) and [Step 5](#step-5-run-three-node-local-discovery) do, and restart its daemon.

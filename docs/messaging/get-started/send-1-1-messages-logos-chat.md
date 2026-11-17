@@ -88,7 +88,7 @@ Both instances need to reach a shared bootstrap peer to connect to the peer-to-p
 ### Messages send but never arrive
 
 - Check that the sending instance has an active RLN membership. Delivery rate-limits sends with RLN on `logos.test`, so without a membership the app connects and receives, but each send is retried and then dropped. See [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md).
-- Check that the instance runs **Chat** and **Chat Module** 0.3.0 or later. The 0.3.0 Chat view is built against the `chat_module` 0.3.0 contract and needs matching modules installed;
+- Check that the instance runs **Chat** and **Chat Module** 0.3.0 or later. The 0.3.0 Chat view is built against the `chat_module` 0.3.0 contract and needs matching modules installed.
 
 ### A conversation can't be replied to
 

@@ -33,15 +33,18 @@ There are two ways to describe a database: the data it contains now, and the wri
 
 The blockchain does not execute the SQL. Logos SQL runs it on each participant's machine and uses the [Zone SDK](../zone-sdk/inscribe-data-on-chain-using-zone-sdk.md) to publish and receive the shared history.
 
-```text
-Application A --> Logos SQL A <--> Local SQLite A
-                       |
-                       |
-              Shared channel history
-                 Logos Blockchain
-                       |
-                       |
-Application B --> Logos SQL B <--> Local SQLite B
+```mermaid
+flowchart TB
+    subgraph PA[Participant A]
+        direction LR
+        AppA[Application A] --> SqlA[Logos SQL A] <--> DbA[(Local SQLite A)]
+    end
+    Chain[Shared channel history<br/>on the Logos Blockchain]
+    subgraph PB[Participant B]
+        direction LR
+        AppB[Application B] --> SqlB[Logos SQL B] <--> DbB[(Local SQLite B)]
+    end
+    PA <--> Chain <--> PB
 ```
 
 Both library instances follow the channel. Instances configured as writers can also publish to it.

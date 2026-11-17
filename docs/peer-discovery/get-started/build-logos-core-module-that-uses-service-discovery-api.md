@@ -239,7 +239,11 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
    result/modules/my_service_module/
      ├── manifest.json
      ├── variant
-     └── my_service_module_plugin.so
+     ├── assets/
+     ├── my_service_module_plugin.so
+     ├── libcrypto.so.3
+     ├── libssl.so.3
+     └── libboost_system.so.1.87.0
    ```
 
 1. In `logos-libp2p-module`, run the install build:

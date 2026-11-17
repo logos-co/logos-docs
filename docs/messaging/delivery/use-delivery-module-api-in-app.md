@@ -223,7 +223,7 @@ The node is a singleton per Logos Core instance: call `createNode` exactly once 
    The node is not connected the moment `start()` returns. Wait for `connectionStateChanged` before sending on either API.
 
    - On `logos.test`, `createNode` also brings up RLN in the background and returns without waiting. Sends need RLN to reach `Ready`: check `delivery.rlnState()`, or subscribe to the `rlnStateChanged` event, which moves from `Disabled` through `Initializing` to `Ready` or `Failed`.
-   - `Ready` means the RLN backend started and answers, not that it has finished loading the recent membership roots, so a send fired immediately after Ready can still fail; if this occurs, restart the node.
+   - `Ready` means the RLN backend started and its bridge answers, not that it has finished loading the recent membership roots. A send fired immediately after `Ready` can still fail, so retry an early `messageError` after a short delay rather than reading it as a bad membership.
 
 ## Step 5: Use the Messaging API
 
@@ -419,7 +419,7 @@ The node may not be connected to peers yet, or the network layer rejected the me
 On `logos.test`, check RLN too:
 
 - `rlnState()` reports `Failed`: RLN couldn't come up, and the state carries the RLN module's error. The usual cause is that the host didn't load `liblogos_rln_module` before `createNode`. Declare it in `metadata.json` and `flake.nix` as in [Step 2](#step-2-declare-delivery_module-as-a-dependency).
-- `rlnState()` reports `Ready`, but sends still fail: the node has no active membership in the testnet registry. [Register one](../../lez/rln/register-rln-membership-from-basecamp.md). Without a membership the node still starts, subscribes and receives.
+- `rlnState()` reports `Ready`, but sends still fail: either the send was fired before the RLN module's valid-root window warmed up (retry after a short delay, see [Step 4](#step-4-create-and-start-the-node)), or the node has no active membership in the testnet registry. [Register one](../../lez/rln/register-rln-membership-from-basecamp.md). Without a membership the node still starts, subscribes and receives.
 
 ### `messageReceived` never fires?
 

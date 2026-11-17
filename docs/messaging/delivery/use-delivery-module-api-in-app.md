@@ -222,7 +222,7 @@ The node is a singleton per Logos Core instance: call `createNode` exactly once 
 
    The node is not connected the moment `start()` returns. Wait for `connectionStateChanged` before sending on either API.
 
-   - On `logos.test`, `createNode` also brings up RLN in the background and returns without waiting. Sends need RLN to reach `Ready`: check `delivery.rlnState()`, or subscribe to the `rlnStateChanged` event, which moves from `Disabled` through `Initializing` to `Ready` or `Failed`.
+   - On `logos.test`, `createNode` also brings up RLN in the background and returns without waiting. Sends need RLN to reach `Ready`: check `delivery.rlnState()`, or arm the event alongside the other subscriptions in [Step 3](#step-3-subscribe-to-events-in-your-backend) with `delivery.onRlnStateChanged([](QString state, QString message, qint64 timestamp) {});`. The state moves from `Disabled` through `Initializing` to `Ready` or `Failed`.
    - `Ready` means the RLN backend started and its bridge answers, not that it has finished loading the recent membership roots. A send fired immediately after `Ready` can still fail, so retry an early `messageError` after a short delay rather than reading it as a bad membership.
 
 ## Step 5: Use the Messaging API

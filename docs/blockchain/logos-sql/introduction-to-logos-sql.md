@@ -35,10 +35,16 @@ The blockchain does not execute the SQL. Logos SQL runs it on each participant's
 
 ```mermaid
 flowchart TB
-    AppA[Application A] --> SqlA[Logos SQL A] <--> DbA[(Local SQLite A)]
-    SqlA <--> Chain[Shared channel history<br/>on the Logos Blockchain]
-    Chain <--> SqlB[Logos SQL B]
-    AppB[Application B] --> SqlB <--> DbB[(Local SQLite B)]
+    subgraph PA[Participant A]
+        direction LR
+        AppA[Application A] --> SqlA[Logos SQL A] <--> DbA[(Local SQLite A)]
+    end
+    Chain[Shared channel history<br/>on the Logos Blockchain]
+    subgraph PB[Participant B]
+        direction LR
+        AppB[Application B] --> SqlB[Logos SQL B] <--> DbB[(Local SQLite B)]
+    end
+    PA <--> Chain <--> PB
 ```
 
 Both library instances follow the channel. Instances configured as writers can also publish to it.

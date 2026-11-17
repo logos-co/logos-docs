@@ -159,11 +159,11 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
        delivery.onConnectionStateChanged([](QString status, qint64 timestamp) {});
 
        delivery.onMessageReceived(
-       [this](QString messageHash, QString contentTopic, QByteArray payload,
-              QString source, qint64 timestamp) {
-           // payload is raw bytes, not text.
-           // source is "live", or "history" when Store catch-up recovered it.
-       });
+           [this](QString messageHash, QString contentTopic, QByteArray payload,
+                  QString source, qint64 timestamp) {
+               // payload is raw bytes, not text.
+               // source is "live", or "history" when Store catch-up recovered it.
+           });
 
        delivery.onMessageSent([](QString requestId, QString messageHash, qint64 timestamp) {});
        delivery.onMessagePropagated([](QString requestId, QString messageHash, qint64 timestamp) {});
@@ -240,9 +240,9 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
 
    :::note
    The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. Live relay only delivers messages published after the subscription takes effect. However, note that historical messages from topics subscribed to during a Delivery node's initial Store "catch-up" period are also delivered as part of the catch-up process.
+   :::
 
    Calling `subscribe()` on a topic the node already subscribes to succeeds and changes nothing, so you can repeat the call—after a module reload, for example—without tracking subscriptions yourself.
-   :::
 
 1. Send a message. On success, `getString()` returns the request ID. `messagePropagated` fires when the message reaches the network but is not yet validated, and `messageSent` fires when the network confirms it; `messageError` fires instead if the send fails. Each event carries the request ID, so you can match it to the `send()` call that produced it:
 
@@ -399,7 +399,7 @@ Reliability shows only between two participants of the same channel. Use the sam
 Messages arriving on both sides, each attributed to the sending participant, confirms the channel journey: channel creation on a shared content topic and acknowledgement through SDS.
 
 :::tip
-[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
+[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) drives both verifications from its UI: every API call is a button, and its event log renders every event described above. Its `v0.3.0` tag pins older versions than this page does, so use it to explore the API rather than to verify sending on `logos.test`.
 :::
 
 ## Troubleshooting the Logos Delivery module

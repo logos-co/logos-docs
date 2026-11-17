@@ -29,6 +29,20 @@ const config: Config = {
         media: '(prefers-color-scheme: dark)',
       },
     },
+    // Preload the Rhymes Display headline font, as logos.co does, so titles
+    // don't flash in the fallback serif. It is served by logos.co rather than
+    // this public repo for licensing reasons; see the @font-face note in
+    // src/css/custom.css and keep the two URLs in sync.
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preload',
+        href: 'https://logos.co/_next/static/media/6be45a1297e41e4c-s.p.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: 'anonymous',
+      },
+    },
     // Before first paint, apply the reader's saved assistant for the page
     // actions' "Open in" button (src/components/PageActions), so it does not
     // flicker from the default.

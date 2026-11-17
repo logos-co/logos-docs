@@ -9,11 +9,26 @@
  *   brown, deep purple) is reserved for admonitions; the six tertiary greys
  *   build rules, fills and muted text. Dark mode uses the field guide's
  *   dark tokens.
- * - Type: Rhymes Display for display headings (licensed, so it is only used
- *   when installed locally, falling back to Times New Roman as the guide
- *   specifies); Public Sans for interface and body text; Fira Code for code
- *   and for the small uppercase "details" labels.
+ * - Type: Rhymes Display for display headings, as on logos.co; Public Sans
+ *   for interface and body text; Fira Code for code and for the small
+ *   uppercase "details" labels.
  */
+
+/* Rhymes Display is licensed from MaxiType, and its licence forbids storing
+   the font file on publicly available servers, so it is not committed to
+   this public repository. It loads from the copy logos.co already serves
+   (logos.co sends Access-Control-Allow-Origin: *). The URL is content-hashed
+   by logos.co's Next.js build: if a logos.co release changes the file, this
+   404s and headings fall back to Times New Roman, the guide's fallback.
+   Keep this URL in sync with the preload in docusaurus.config.ts. */
+@font-face {
+  font-family: 'Rhymes Display';
+  src: url('https://logos.co/_next/static/media/6be45a1297e41e4c-s.p.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 @import '@fontsource/public-sans/400.css';
 @import '@fontsource/public-sans/500.css';

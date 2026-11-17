@@ -204,6 +204,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    ```nix
    inputs = {
      logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.3";
+     nix-bundle-lgx.url = "github:logos-co/nix-bundle-lgx";
      libp2p_module = {
        url = "github:logos-co/logos-libp2p-module/v1.1.1";
        inputs.logos-module-builder.follows = "logos-module-builder";
@@ -211,7 +212,7 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    };
    ```
 
-   - The `follows` line builds both modules with the same `logos-module-builder`, so they share one SDK.
+   - The `follows` line makes this module's `libp2p_module` input use the same `logos-module-builder` as the module itself, so the generated SDK comes from a single builder. The `libp2p_module` you build in [Step 3](#step-3-build-both-modules) keeps the builder pinned in its own `flake.nix`.
 
    :::info
    For local development, override the `libp2p_module` input at build time:
@@ -267,7 +268,7 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"],"mountServiceDiscovery":true}'
    ```
 
 1. Start the daemon, detached so this terminal stays free, pointing at both module directories:
@@ -323,7 +324,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"],"mountServiceDiscovery":true}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-bootstrap daemon config set -
@@ -341,7 +342,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"mountServiceDiscovery":true,"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-advertiser daemon config set -
@@ -356,7 +357,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"mountServiceDiscovery":true,"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-discoverer daemon config set -

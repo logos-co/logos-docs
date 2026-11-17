@@ -26,7 +26,7 @@ Each launch of the app starts a new identity with a new address. Conversations f
 :::info[Prerequisites]
 
 - [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md). Sending on the `logos.test` network needs one.
+- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md). Sending on the `logos.test` network needs one, so keep `liblogos_rln_module` ticked under **Optional Packages** when you install **Chat** in [Step 1](#step-1-run-the-logos-chat-app).
 - Network access, so that both instances can reach the `logos.test` network and the key-package registry.
 :::
 

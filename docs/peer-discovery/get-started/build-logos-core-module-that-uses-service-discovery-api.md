@@ -264,7 +264,7 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
 
 ## Step 4: Load the modules and verify the single-node flow
 
-1. Return to `logos-my-service-module` and set `LIBP2P_MODULE_CONFIG`: a known, fixed listen address together with `mountServiceDiscovery`, which makes the node use the Service Discovery distributed hash table (DHT) format, rather than Kademlia, when set to `true`:
+1. Return to `logos-my-service-module` and set `LIBP2P_MODULE_CONFIG`: a known, fixed listen address together with `mountServiceDiscovery`, which, when set to `true`, makes the node's Kademlia distributed hash table (DHT) speak the Logos service discovery protocol (`/logos/service-discovery/1.0.0`) instead of plain `/ipfs/kad/1.0.0`:
 
    ```sh
    cd ../logos-my-service-module
@@ -399,4 +399,4 @@ The Kad-DHT needs a few seconds to propagate the advertisement from the advertis
 
 ### Why does every `disco*` call fail with `service discovery not mounted`?
 
-`mountServiceDiscovery` defaults to `false`, so a `LIBP2P_MODULE_CONFIG` that leaves it out loads both modules and then fails every discovery call. Add `"mountServiceDiscovery":true` to the config of each instance, as [Step 4](#step-4-load-the-modules-and-verify-the-single-node-flow) and [Step 5](#step-5-run-three-node-local-discovery) do, and restart its daemon.
+`mountServiceDiscovery` defaults to `false`, so a `LIBP2P_MODULE_CONFIG` that leaves it out loads both modules and then fails every discovery call. The call still returns `"status":"ok"`, with the failure in `result`, for example `discoStart failed: Failed to start discovery: service discovery not mounted`. Add `"mountServiceDiscovery":true` to the config of each instance, as [Step 4](#step-4-load-the-modules-and-verify-the-single-node-flow) and [Step 5](#step-5-run-three-node-local-discovery) do, and restart its daemon.

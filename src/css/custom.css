@@ -1,30 +1,611 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Logos brand theme for Infima.
+ *
+ * Source: Logos Brand Guidelines v2.0 (January 2026), with the web treatment
+ * taken from logos.co/field-guide and the logos.co marketing pages.
+ *
+ * - Colour: Black #152521 and Off-white #F5F5EF carry text and background;
+ *   Steel Teal and Light Blue are accents; the secondary palette (yellow,
+ *   brown, deep purple) is reserved for admonitions; the six tertiary greys
+ *   build rules, fills and muted text. Dark mode uses the field guide's
+ *   dark tokens.
+ * - Type: Rhymes Display for display headings (licensed, so it is only used
+ *   when installed locally, falling back to Times New Roman as the guide
+ *   specifies); Public Sans for interface and body text; Fira Code for code
+ *   and for the small uppercase "details" labels.
  */
 
-/* You can override the default Infima variables here. */
+@import '@fontsource/public-sans/400.css';
+@import '@fontsource/public-sans/500.css';
+@import '@fontsource/public-sans/600.css';
+@import '@fontsource/public-sans/400-italic.css';
+@import '@fontsource/fira-code/400.css';
+@import '@fontsource/fira-code/500.css';
+@import '@fontsource/fira-code/600.css';
+
+/* ---------------------------------------------------------------------- */
+/* Brand tokens                                                            */
+/* ---------------------------------------------------------------------- */
+
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  /* Primary palette */
+  --logos-black: #152521;
+  --logos-off-white: #f5f5ef;
+  --logos-steel-teal: #5f797c;
+  --logos-light-blue: #c6ebf7;
+  /* Secondary palette */
+  --logos-tan: #e2e0c9;
+  --logos-brown: #a18863;
+  --logos-yellow: #ffd328;
+  --logos-deep-purple: #48373f;
+  /* Tertiary greys */
+  --logos-grey-01: #dbddd7;
+  --logos-grey-02: #b8bdb8;
+  --logos-grey-03: #9ea5a0;
+  --logos-grey-04: #848e88;
+  --logos-grey-05: #616e69;
+  --logos-grey-06: #475651;
+
+  /* Semantic tokens (light) */
+  --logos-ink: var(--logos-black);
+  --logos-paper: var(--logos-off-white);
+  --logos-fog: var(--logos-grey-01);
+  --logos-fog-soft: #ebece6;
+  --logos-slate: var(--logos-grey-06);
+  --logos-muted: var(--logos-grey-05);
+  /* Steel Teal, darkened just enough to reach 4.5:1 as text on Off-white. */
+  --logos-accent: #4f696c;
+  --logos-rule: #d6d6ce;
+  --logos-rule-strong: var(--logos-grey-02);
+
+  /* Type */
+  --logos-font-display: 'Rhymes Display', 'Times New Roman', Times, ui-serif,
+    Georgia, serif;
+  --logos-font-sans: 'Public Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --logos-font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* Motion (field guide) */
+  --logos-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --logos-dur: 180ms;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --logos-ink: #f0efe7;
+  --logos-paper: #0e1814;
+  --logos-fog: #1a2723;
+  --logos-fog-soft: #142019;
+  --logos-slate: #a8b0a9;
+  --logos-muted: #8f9892;
+  --logos-accent: #9fb6b8;
+  --logos-rule: rgba(240, 239, 231, 0.14);
+  --logos-rule-strong: rgba(240, 239, 231, 0.24);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Infima mapping                                                          */
+/* ---------------------------------------------------------------------- */
+
+:root {
+  /* Primary is the brand Black: links, active states, primary buttons. */
+  --ifm-color-primary: #152521;
+  --ifm-color-primary-dark: #13211e;
+  --ifm-color-primary-darker: #121f1c;
+  --ifm-color-primary-darkest: #0e1a17;
+  --ifm-color-primary-light: #2b3a36;
+  --ifm-color-primary-lighter: #475651;
+  --ifm-color-primary-lightest: #616e69;
+
+  /* Infima's grey scale, rebuilt from the tertiary greys. */
+  --ifm-color-gray-0: #ffffff;
+  --ifm-color-gray-100: #ebece6;
+  --ifm-color-gray-200: #dbddd7;
+  --ifm-color-gray-300: #b8bdb8;
+  --ifm-color-gray-400: #9ea5a0;
+  --ifm-color-gray-500: #848e88;
+  --ifm-color-gray-600: #616e69;
+  --ifm-color-gray-700: #475651;
+  --ifm-color-gray-800: #2b3a36;
+  --ifm-color-gray-900: #1a2723;
+  --ifm-color-gray-1000: #152521;
+
+  --ifm-background-color: var(--logos-paper);
+  --ifm-background-surface-color: var(--logos-paper);
+  --ifm-font-color-base: var(--logos-ink);
+  --ifm-font-color-secondary: var(--logos-muted);
+  --ifm-heading-color: var(--logos-ink);
+
+  --ifm-font-family-base: var(--logos-font-sans);
+  --ifm-heading-font-family: var(--logos-font-sans);
+  --ifm-font-family-monospace: var(--logos-font-mono);
+  --ifm-font-size-base: 100%;
+  --ifm-line-height-base: 1.65;
+  --ifm-heading-font-weight: 600;
+  --ifm-font-weight-bold: 600;
+
+  --ifm-link-color: var(--logos-ink);
+  --ifm-link-hover-color: var(--logos-accent);
+
+  --ifm-code-font-size: 88%;
+  --ifm-code-background: var(--logos-fog);
+  --ifm-code-border-radius: 2px;
+  --ifm-code-padding-horizontal: 0.35rem;
+  --docusaurus-highlighted-code-line-bg: rgba(95, 121, 124, 0.16);
+
+  --ifm-global-radius: 0.375rem;
+  --ifm-card-border-radius: 0.75rem;
+  --ifm-button-border-radius: 0.75rem;
+  --ifm-global-shadow-lw: none;
+  --ifm-global-shadow-md: 0 8px 24px rgba(21, 37, 33, 0.08);
+
+  --ifm-hr-border-color: var(--logos-rule);
+  --ifm-toc-border-color: var(--logos-rule);
+  --ifm-table-border-color: var(--logos-rule);
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-head-background: transparent;
+
+  --ifm-navbar-background-color: color-mix(in oklab, var(--logos-paper) 92%, transparent);
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-link-color: var(--logos-ink);
+  --ifm-navbar-link-hover-color: var(--logos-accent);
+
+  --ifm-menu-color: var(--logos-ink);
+  --ifm-menu-color-active: var(--logos-ink);
+  --ifm-menu-color-background-active: var(--logos-fog);
+  --ifm-menu-color-background-hover: var(--logos-fog-soft);
+
+  --ifm-color-content-secondary: var(--logos-muted);
+  --ifm-breadcrumb-item-background-active: var(--logos-fog);
+  --ifm-dropdown-background-color: var(--logos-paper);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #f0efe7;
+  --ifm-color-primary-dark: #e2e0d3;
+  --ifm-color-primary-darker: #dbd9ca;
+  --ifm-color-primary-darkest: #c6c3b0;
+  --ifm-color-primary-light: #f5f5ef;
+  --ifm-color-primary-lighter: #f8f8f4;
+  --ifm-color-primary-lightest: #ffffff;
+  --ifm-global-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --docusaurus-highlighted-code-line-bg: rgba(198, 235, 247, 0.1);
+}
+
+::selection {
+  background: var(--logos-light-blue);
+  color: var(--logos-black);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Headings                                                                */
+/* ---------------------------------------------------------------------- */
+
+/* H1 is the display style: Rhymes Display, regular weight, tight tracking. */
+h1 {
+  font-family: var(--logos-font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.markdown h1:first-child,
+.markdown header h1 {
+  --ifm-h1-font-size: 2.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Smaller headlines are Public Sans, per the guide's H3/H4 and the field
+   guide's section headings; H2 opens a section with a hairline rule. */
+.markdown h2 {
+  --ifm-h2-font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-top: 2.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--logos-rule);
+}
+
+/* An explicit `---` already separates the section; don't double the rule. */
+.markdown hr + h2 {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.markdown h3 {
+  --ifm-h3-font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  font-weight: 600;
+}
+
+@media (max-width: 996px) {
+  .markdown h1:first-child,
+  .markdown header h1 {
+    --ifm-h1-font-size: 2.25rem;
+  }
+  .markdown h2 {
+    --ifm-h2-font-size: 1.35rem;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Article body                                                            */
+/* ---------------------------------------------------------------------- */
+
+.markdown a:not(.hash-link):not([class*='card']) {
+  color: var(--logos-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--logos-rule-strong);
+  transition: color var(--logos-dur) var(--logos-ease-out),
+    text-decoration-color var(--logos-dur) var(--logos-ease-out);
+}
+
+.markdown a:not(.hash-link):not([class*='card']):hover {
+  color: var(--logos-accent);
+  text-decoration-color: var(--logos-accent);
+}
+
+.markdown li::marker {
+  color: var(--logos-muted);
+}
+
+.markdown em {
+  font-family: var(--logos-font-display);
+  font-size: 1.04em;
+}
+
+.markdown blockquote {
+  border-left: 3px solid var(--logos-accent);
+  color: var(--logos-ink);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+}
+
+.markdown hr {
+  border-top: 1px solid var(--logos-rule);
+}
+
+/* Inline code */
+code {
+  border: 0;
+  color: var(--logos-ink);
+}
+
+/* Tables: hairline rules, no zebra stripes (field guide). */
+.markdown table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.markdown table thead tr {
+  border-bottom: 1px solid var(--logos-ink);
+}
+
+.markdown table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--logos-slate);
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.markdown table th,
+.markdown table td {
+  border: 0;
+  border-bottom: 1px solid var(--logos-rule);
+  padding: 0.75rem 1rem 0.75rem 0;
+}
+
+.markdown table tr {
+  border-top: 0;
+  background: transparent;
+}
+
+.markdown table tbody tr:hover {
+  background: color-mix(in oklab, var(--logos-fog) 40%, transparent);
+}
+
+.markdown table td code {
+  background: var(--logos-paper);
+  border: 1px solid var(--logos-rule);
+}
+
+/* Code blocks: tinted panel with a solid ink edge (field guide). */
+.theme-code-block {
+  border-radius: 2px;
+  box-shadow: none;
+  border-left: 3px solid var(--logos-ink);
+}
+
+.theme-code-block pre,
+.theme-code-block code {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+[class*='codeBlockTitle'] {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  color: var(--logos-slate);
+  border-bottom: 1px solid var(--logos-rule) !important;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Admonitions                                                             */
+/* ---------------------------------------------------------------------- */
+
+/* A quiet panel with a coloured edge; the label is a Fira Code "details"
+   eyebrow. Accent colours come from the brand palette only. */
+.alert {
+  --ifm-alert-background-color: var(--logos-fog-soft);
+  --ifm-alert-background-color-highlight: var(--logos-fog);
+  --ifm-alert-foreground-color: var(--logos-ink);
+  --ifm-alert-border-color: var(--logos-grey-04);
+  --ifm-alert-border-width: 0;
+  --ifm-alert-border-left-width: 3px;
+  --ifm-alert-border-radius: 2px;
+  box-shadow: none;
+  border-left: 3px solid var(--ifm-alert-border-color);
+}
+
+.alert a {
+  color: var(--logos-ink);
+  text-decoration-color: var(--logos-rule-strong);
+}
+
+.alert--success {
+  --ifm-alert-border-color: var(--logos-steel-teal);
+}
+
+.alert--info {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-light-blue) 30%, var(--logos-paper));
+  --ifm-alert-border-color: var(--logos-steel-teal);
+}
+
+.alert--warning {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-yellow) 16%, var(--logos-paper));
+  --ifm-alert-border-color: var(--logos-yellow);
+}
+
+.alert--danger {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-deep-purple) 9%, var(--logos-paper));
+  --ifm-alert-border-color: var(--logos-deep-purple);
+}
+
+[data-theme='dark'] .alert--info {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-light-blue) 8%, var(--logos-paper));
+  --ifm-alert-border-color: var(--logos-light-blue);
+}
+
+[data-theme='dark'] .alert--success {
+  --ifm-alert-border-color: #9fb6b8;
+}
+
+[data-theme='dark'] .alert--warning {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-yellow) 7%, var(--logos-paper));
+}
+
+[data-theme='dark'] .alert--danger {
+  --ifm-alert-background-color: color-mix(in oklab, var(--logos-brown) 10%, var(--logos-paper));
+  --ifm-alert-border-color: var(--logos-brown);
+}
+
+[class*='admonitionHeading'] {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+[class*='admonitionIcon'] svg {
+  fill: var(--logos-slate);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Navbar, sidebar, table of contents                                      */
+/* ---------------------------------------------------------------------- */
+
+.navbar {
+  border-bottom: 1px solid var(--logos-rule);
+  backdrop-filter: saturate(1.1) blur(8px);
+  -webkit-backdrop-filter: saturate(1.1) blur(8px);
+}
+
+/* Nav items use logos.co's eyebrow style: small uppercase Fira Code. */
+.navbar__item.navbar__link,
+.navbar__items .dropdown > .navbar__link {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.navbar__link--active {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.dropdown__menu {
+  border: 1px solid var(--logos-rule);
+  border-radius: var(--ifm-card-border-radius);
+}
+
+.dropdown__link {
+  font-size: 0.875rem;
+}
+
+.navbar__search-input {
+  background-color: var(--logos-fog-soft);
+  border: 1px solid var(--logos-rule);
+  border-radius: 0.75rem;
+  font-family: var(--logos-font-sans);
+}
+
+.navbar-sidebar {
+  background-color: var(--logos-paper);
+}
+
+/* Sidebar (field guide): compact sans, active item marked by a left rule. */
+.theme-doc-sidebar-container {
+  border-right-color: var(--logos-rule) !important;
+}
+
+.theme-doc-sidebar-menu {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.menu__link,
+.menu__caret {
+  border-radius: 0;
+}
+
+.menu__link {
+  border-left: 2px solid transparent;
+  transition: background var(--logos-dur) var(--logos-ease-out),
+    border-color var(--logos-dur) var(--logos-ease-out);
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  border-left-color: var(--logos-ink);
+  font-weight: 500;
+}
+
+.menu__list-item-collapsible {
+  border-radius: 0;
+}
+
+/* Table of contents */
+.table-of-contents {
+  font-size: 0.8125rem;
+}
+
+.table-of-contents__link {
+  color: var(--logos-muted);
+}
+
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+  color: var(--logos-ink);
+}
+
+.table-of-contents__link--active {
+  font-weight: 500;
+}
+
+/* Breadcrumbs */
+.breadcrumbs__link {
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons, cards, pagination                                              */
+/* ---------------------------------------------------------------------- */
+
+/* logos.co CTA: rounded-xl, uppercase Fira Code, opacity on hover. */
+.button {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  transition: opacity var(--logos-dur) var(--logos-ease-out),
+    background var(--logos-dur) var(--logos-ease-out);
+}
+
+.button--primary {
+  --ifm-button-color: var(--logos-paper);
+}
+
+.button--primary:hover {
+  opacity: 0.85;
+}
+
+.card {
+  border: 1px solid var(--logos-rule);
+  box-shadow: none;
+}
+
+/* Prev/next pager (field guide) */
+.pagination-nav__link {
+  border: 1px solid var(--logos-rule);
+  border-radius: 0;
+  transition: background var(--logos-dur) var(--logos-ease-out),
+    border-color var(--logos-dur) var(--logos-ease-out);
+}
+
+.pagination-nav__link:hover {
+  background: var(--logos-fog-soft);
+  border-color: var(--logos-ink);
+}
+
+.pagination-nav__sublabel {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--logos-muted);
+}
+
+.pagination-nav__label {
+  font-weight: 500;
+}
+
+/* "Edit this page" and last-updated metadata read as details. */
+.theme-doc-footer {
+  font-size: 0.8125rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Footer                                                                  */
+/* ---------------------------------------------------------------------- */
+
+/* logos.co's footer: brand Black with Off-white text, in both themes. */
+.footer--dark {
+  --ifm-footer-background-color: var(--logos-black);
+  --ifm-footer-color: var(--logos-off-white);
+  --ifm-footer-link-color: rgba(245, 245, 239, 0.8);
+  --ifm-footer-link-hover-color: var(--logos-off-white);
+  --ifm-footer-title-color: var(--logos-off-white);
+}
+
+[data-theme='dark'] .footer--dark {
+  border-top: 1px solid var(--logos-rule);
+}
+
+.footer__title {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.footer__link-item {
+  font-size: 0.875rem;
+}
+
+.footer__copyright {
+  font-family: var(--logos-font-mono);
+  font-size: 0.75rem;
+  color: rgba(245, 245, 239, 0.6);
 }

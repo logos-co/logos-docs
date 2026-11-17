@@ -1,4 +1,4 @@
-import {themes as prismThemes} from 'prism-react-renderer';
+import {logosDark, logosLight} from './src/lib/prismThemes';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as PluginClientRedirects from '@docusaurus/plugin-client-redirects';
@@ -294,6 +294,12 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/social-card-v2.jpg',
+    mermaid: {
+      theme: {light: 'neutral', dark: 'dark'},
+      options: {
+        fontFamily: "'Public Sans', ui-sans-serif, system-ui, sans-serif",
+      },
+    },
     colorMode: {
       respectPrefersColorScheme: true,
     },
@@ -401,8 +407,9 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Logos. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      // Brand-palette themes; see src/lib/prismThemes.ts.
+      theme: logosLight,
+      darkTheme: logosDark,
       // see https://github.com/facebook/docusaurus/issues/3559
       additionalLanguages: ['bash', 'cmake', 'nix'],
     },

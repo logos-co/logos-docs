@@ -26,7 +26,7 @@ Each launch of the app starts a new identity with a new address. Conversations f
 :::info[Prerequisites]
 
 - [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md). Sending on the `logos.test` network needs one, so keep `liblogos_rln_module` ticked under **Optional Packages** when you install **Chat** in [Step 1](#step-1-run-the-logos-chat-app).
+- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
 - Network access, so that both instances can reach the `logos.test` network and the key-package registry.
 :::
 
@@ -40,14 +40,19 @@ Each launch of the app starts a new identity with a new address. Conversations f
 
 You need two running instances to complete this procedure. Each instance can be started with the instructions below.
 
-1.  In the left bar of Logos Basecamp, select **Package Manager**.
+1.  In Logos Basecamp, select **Discover Applications**.
 
-    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-1.  Find **Chat** (type `ui_qml`) in the [package](../../get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-launch.png)
 
-    ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
-1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
-1. In the left bar, select the new chat icon to launch the Logos Chat app.
+1.  Search **Chat** in the application list and click on it.
+
+    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/chat-app-in-applications.png)
+
+1. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+
+    ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/chat-app-install.png)
+
+1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**. Click **Launch**.
 
 ## Step 2: Start a conversation
 

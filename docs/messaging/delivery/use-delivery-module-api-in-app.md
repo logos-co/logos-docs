@@ -16,12 +16,12 @@ sidebar_position: 1
 #### Get started integrating Logos messaging into a C++ module.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) (tag `v0.2.1`).
+This procedure covers building a Logos [module](../../get-started/glossary.md#module) that calls the [Logos Delivery](../../get-started/glossary.md#logos-delivery) API to subscribe to content topics, send messages, react to delivery events, and exchange messages over a reliable channel. It gives application developers a working pattern for integrating Logos messaging into their C++ modules.
 
-The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.2.1`](https://github.com/logos-co/logos-delivery-module/tree/b8b9ac2f4667bc63644b2116f64a07aa30cfd3ef)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix.
+The two repositories used in this tutorial are [`logos-delivery-module`](https://github.com/logos-co/logos-delivery-module) (pinned to [`v0.3.3`](https://github.com/logos-co/logos-delivery-module/tree/1d995bda3128e13f21ed17e0f925f4c04d2bd117)) and [`logos-delivery`](https://github.com/logos-messaging/logos-delivery), which is a transitive dependency resolved and linked statically by Nix. A complete, runnable reference implementation is available in [`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) (tag `v0.3.0`). Note that the demo pins `delivery_module` v0.3.0 and older RLN modules than this page does, so use it to explore the API rather than to verify sending on `logos.test`.
 
 :::info[Prerequisites]
 
@@ -36,6 +36,7 @@ The two repositories used in this tutorial are [`logos-delivery-module`](https:/
     mkdir -p ~/.config/nix
     echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
     ```
+- To send on the `logos.test` network: an [RLN membership](../../lez/rln/register-rln-membership-from-basecamp.md). Receiving doesn't require an RLN membership.
 :::
 
 ## What to expect
@@ -58,7 +59,7 @@ Scaffold a new module using [`logos-module-builder`](https://github.com/logos-co
 1. Initialise from the template:
 
    ```bash
-   nix flake init -t github:logos-co/logos-module-builder/0.2.5#ui-qml-backend
+   nix flake init -t github:logos-co/logos-module-builder/0.3.1#ui-qml-backend
    ```
 
 1. Initialise a Git repository and stage all generated files:
@@ -84,29 +85,40 @@ Add `delivery_module` to both `metadata.json` and `flake.nix`, pinning to the re
 The flake input name (`delivery_module`) must exactly match the dependency name in `metadata.json`. `logos-module-builder` uses this name to generate the typed wrapper at build time.
 :::
 
-1. In `metadata.json`, add `delivery_module` to the dependencies array:
+1. In `metadata.json`, add `delivery_module` and `liblogos_rln_module` to the dependencies array:
 
    ```json
    {
-     "dependencies": ["delivery_module"],
+     "dependencies": ["delivery_module", "liblogos_rln_module"],
      ...
    }
    ```
+
+   - `logos.test` rate-limits sends with RLN, and `delivery_module` only lists the RLN module as optional, so the host doesn't load it on its own. Declaring it makes the host load it before your module calls `createNode`. A module that only joins `logos.dev`, which runs without RLN, can leave it out.
 
 1. In `flake.nix`, add a matching pinned input:
 
    ```nix
    inputs = {
-     logos-module-builder.url = "github:logos-co/logos-module-builder/0.2.5";
+     logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.1";
      delivery_module = {
-       url = "github:logos-co/logos-delivery-module/v0.2.1";
+       url = "github:logos-co/logos-delivery-module/v0.3.3";
        # Your module and delivery_module must be built by the same
        # logos-module-builder: the event emitter and the consumer have to agree
        # on the binary event wire format.
        inputs.logos-module-builder.follows = "logos-module-builder";
+       inputs.liblogos_rln_module.follows = "liblogos_rln_module";
+     };
+     # The RLN module and its LEZ registry provider, at the revision
+     # delivery_module v0.3.3 pins.
+     liblogos_rln_module = {
+       url = "git+https://github.com/logos-co/logos-rln-modules?ref=main&rev=a814e7feda974a16eaa5dd50667b8fd843177f0e&dir=logos-rln-module";
+       inputs.liblogos_lez_rln_module.url = "git+https://github.com/logos-co/logos-rln-modules?ref=main&rev=a814e7feda974a16eaa5dd50667b8fd843177f0e&dir=logos-lez-rln-module";
      };
    };
    ```
+
+   - The `liblogos_rln_module` input name must match the dependency name in `metadata.json`, like `delivery_module`. Making `delivery_module` follow it keeps one copy of the RLN module in the build.
 
    :::warning
    Use `logos-module-builder` 0.2.5 or newer. On older builders, binary event payloads (`messageReceived`, `channelMessageReceived`) arrive empty.
@@ -147,8 +159,10 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
        delivery.onConnectionStateChanged([](QString status, qint64 timestamp) {});
 
        delivery.onMessageReceived(
-           [this](QString messageHash, QString contentTopic, QByteArray payload, qint64 timestamp) {
+           [this](QString messageHash, QString contentTopic, QByteArray payload,
+                  QString source, qint64 timestamp) {
                // payload is raw bytes, not text.
+               // source is "live", or "history" when Store catch-up recovered it.
            });
 
        delivery.onMessageSent([](QString requestId, QString messageHash, qint64 timestamp) {});
@@ -178,7 +192,7 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
 The node is a singleton per Logos Core instance: call `createNode` exactly once per context, and expect the node to already exist when another module created it first.
 :::
 
-1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](https://logos-co.github.io/logos-delivery-module/v0.2.1/pages/api_reference.html#_CPPv4N18DeliveryModuleImpl10createNodeERKNSt6stringE) in the Delivery module API reference.
+1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](../reference/delivery-module-api-reference.md#createNode) in the Delivery module API reference.
 
    ```cpp
    auto& delivery = modules().delivery_module;
@@ -208,6 +222,9 @@ The node is a singleton per Logos Core instance: call `createNode` exactly once 
 
    The node is not connected the moment `start()` returns. Wait for `connectionStateChanged` before sending on either API.
 
+   - On `logos.test`, `createNode` also brings up RLN in the background and returns without waiting. Sends need RLN to reach `Ready`: check `delivery.rlnState()`, or arm the event alongside the other subscriptions in [Step 3](#step-3-subscribe-to-events-in-your-backend) with `delivery.onRlnStateChanged([](QString state, QString message, qint64 timestamp) {});`. The state moves from `Disabled` through `Initializing` to `Ready` or `Failed`.
+   - `Ready` means the RLN backend started and its bridge answers, not that it has finished loading the recent membership roots. A send fired immediately after `Ready` can still fail, so retry an early `messageError` after a short delay rather than reading it as a bad membership.
+
 ## Step 5: Use the Messaging API
 
 The Messaging API is publish/subscribe on a [content topic](../../get-started/glossary.md#content-topic): you subscribe to the topics you care about and send raw payloads to them.
@@ -221,7 +238,13 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
    }
    ```
 
-1. Send a message. On success, `getString()` returns the request ID; track it through `messagePropagated` → `messageSent` events (or `messageError`):
+   :::note
+   The topic doesn't have to be known up front. You can subscribe at any point after `start()`, for example to a per-session topic your module derives from an on-chain event. Live relay only delivers messages published after the subscription takes effect. However, note that historical messages from topics subscribed to during a Delivery node's initial Store "catch-up" period are also delivered as part of the catch-up process.
+   :::
+
+   Calling `subscribe()` on a topic the node already subscribes to succeeds and changes nothing, so you can repeat the call—after a module reload, for example—without tracking subscriptions yourself.
+
+1. Send a message. On success, `getString()` returns the request ID. `messagePropagated` fires when the message reaches the network but is not yet validated, and `messageSent` fires when the network confirms it; `messageError` fires instead if the send fails. Each event carries the request ID, so you can match it to the `send()` call that produced it:
 
    ```cpp
    // payload is a QByteArray of raw bytes, the same type messageReceived delivers.
@@ -235,7 +258,7 @@ The Messaging API is publish/subscribe on a [content topic](../../get-started/gl
 
 1. Receive messages through the `onMessageReceived` subscription you armed in Step 3. It fires for every message on a subscribed topic, including messages sent by you.
 
-1. Stop receiving on a topic with `delivery.unsubscribe(contentTopic)`. Subscriptions are node-wide, so unsubscribing a topic another module subscribed to stops its traffic too.
+1. Stop receiving on a topic with `delivery.unsubscribe(contentTopic)`. Subscriptions are node-wide and not counted per caller: one `unsubscribe()` drops the topic however many times it was subscribed, so unsubscribing a topic another module subscribed to stops its traffic too. Calling `unsubscribe()` on a topic the node doesn't subscribe to succeeds and does nothing.
 
 ## Step 6: Use the Reliable Channels API
 
@@ -356,7 +379,7 @@ nix run . -- --user-dir ~/.local/share/ui_example_a
 nix run . -- --user-dir ~/.local/share/ui_example_b
 ```
 
-1. In both instances, run `createNode` with the same preset, then `start()`, and wait until each reports a connected state through `connectionStateChanged`.
+1. In both instances, run `createNode` with the same preset, then `start()`, and wait until each reports a connected state through `connectionStateChanged`. On `logos.test`, each instance that sends needs an active RLN membership.
 1. In both instances, call `subscribe(contentTopic)` on the same content topic.
 1. In instance A, call `send(contentTopic, payload)`. A's `messagePropagated` and `messageSent` events fire, carrying the request id the call returned.
 1. Instance B fires `messageReceived` with the same payload bytes on that content topic.
@@ -376,7 +399,7 @@ Reliability shows only between two participants of the same channel. Use the sam
 Messages arriving on both sides, each attributed to the sending participant, confirms the channel journey: channel creation on a shared content topic and acknowledgement through SDS.
 
 :::tip
-[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.2.1) drives both verifications from its UI: every API call is a button, and its event log renders every event described above.
+[`logos-delivery-demo`](https://github.com/logos-co/logos-delivery-demo/tree/v0.3.0) drives both verifications from its UI: every API call is a button, and its event log renders every event described above. Its `v0.3.0` tag pins older versions than this page does, so use it to explore the API rather than to verify sending on `logos.test`.
 :::
 
 ## Troubleshooting the Logos Delivery module
@@ -393,13 +416,16 @@ The node was not started, or `contentTopic` is empty or invalid. Call `start()` 
 
 The node may not be connected to peers yet, or the network layer rejected the message (for example, an RLN proof failure). Wait for `connectionStateChanged` before sending. If `messageError` fires, its `error` argument carries the reason.
 
+On `logos.test`, check RLN too:
+
+- `rlnState()` reports `Failed`: RLN couldn't come up, and the state carries the RLN module's error. The usual cause is that the host didn't load `liblogos_rln_module` before `createNode`. Declare it in `metadata.json` and `flake.nix` as in [Step 2](#step-2-declare-delivery_module-as-a-dependency).
+- `rlnState()` reports `Ready`, but sends still fail: either the send was fired before the RLN module's valid-root window warmed up (retry after a short delay, see [Step 4](#step-4-create-and-start-the-node)), or the node has no active membership in the testnet registry. [Register one](../../lez/rln/register-rln-membership-from-basecamp.md). Without a membership the node still starts, subscribes and receives.
+
 ### `messageReceived` never fires?
 
-`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic.
+`subscribe()` was not called before messages were sent, or the payload was sent on a different content topic. Call `subscribe(topic)` before any messages are sent on that topic. Live relay doesn't replay messages published before you subscribed, which matters most for topics your module subscribes to at runtime (see [Step 5](#step-5-use-the-messaging-api)).
 
-### The node process dies when I re-open a channel I closed?
-
-Known issue in this release: ([logos-delivery#4116](https://github.com/logos-messaging/logos-delivery/issues/4116)). Calling `channelCreate` with the id of a channel you closed with `channelClose` crashes the delivery node, if that channel had received a message from a peer. The module reports the call as failed and the node is gone—every later call fails until the module is reloaded and the node re-created. Use a fresh channel id rather than re-opening a closed one.
+If it stopped firing after working, another module may have unsubscribed the topic: a single `unsubscribe()` removes it for every module on the node. Calling `subscribe()` again is safe and restores it.
 
 ### `channelCreate` returns `channel already exists`?
 

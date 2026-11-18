@@ -16,7 +16,7 @@ sidebar_position: 5
 #### Get started with typed, service-keyed peer lookups in a live Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 Applications on the Logos network need a protocol-agnostic way to find peers offering specific services—[mix](../../get-started/glossary.md#mix) nodes, relay nodes, storage providers—at runtime without hard-coding topology or peer lists. The Service Discovery API enables any Logos Core [module](../../get-started/glossary.md#module) to perform typed, service-keyed peer lookups that work from lightweight client nodes that do not participate in DHT routing, unblocking any app that needs to wire itself into a live Logos network service. This procedure covers how to write and run a Logos Core module that calls the `libp2p_module` Service Discovery API to advertise a named service to the network and discover other peers offering that same service.
@@ -48,10 +48,10 @@ Applications on the Logos network need a protocol-agnostic way to find peers off
 
 Build and run the self-contained two-node demo to confirm the module and its C bindings are working before writing your own module.
 
-1. Clone the repository and enter the project directory:
+1. Clone the repository at the [`v1.1.1`](https://github.com/logos-co/logos-libp2p-module/releases/tag/v1.1.1) release and enter the project directory:
 
    ```sh
-   git clone https://github.com/logos-co/logos-libp2p-module
+   git clone --branch v1.1.1 https://github.com/logos-co/logos-libp2p-module
    cd logos-libp2p-module
    ```
 
@@ -199,17 +199,23 @@ Run the scaffold tool from the parent directory to generate the module skeleton,
    }
    ```
 
-1. Add `libp2p_module` as a flake input in `flake.nix`:
+1. Pin `logos-module-builder` and add `libp2p_module` as a flake input in `flake.nix`:
 
    ```nix
    inputs = {
-     logos-module-builder.url = "github:logos-co/logos-module-builder";
-     libp2p_module.url  = "github:logos-co/logos-libp2p-module";
+     logos-module-builder.url = "github:logos-co/logos-module-builder/0.3.3";
+     nix-bundle-lgx.url = "github:logos-co/nix-bundle-lgx";
+     libp2p_module = {
+       url = "github:logos-co/logos-libp2p-module/v1.1.1";
+       inputs.logos-module-builder.follows = "logos-module-builder";
+     };
    };
    ```
 
+   - The `follows` line makes this module's `libp2p_module` input use the same `logos-module-builder` as the module itself, so the generated SDK comes from a single builder. The `libp2p_module` you build in [Step 3](#step-3-build-both-modules) keeps the builder pinned in its own `flake.nix`.
+
    :::info
-   For local development, override`flake.nix` at build time:
+   For local development, override the `libp2p_module` input at build time:
 
    ```bash
    nix build --override-input libp2p_module path:../logos-libp2p-module
@@ -233,7 +239,11 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
    result/modules/my_service_module/
      ├── manifest.json
      ├── variant
-     └── my_service_module_plugin.so
+     ├── assets/
+     ├── my_service_module_plugin.so
+     ├── libcrypto.so.3
+     ├── libssl.so.3
+     └── libboost_system.so.1.87.0
    ```
 
 1. In `logos-libp2p-module`, run the install build:
@@ -258,11 +268,11 @@ The `.#install-portable` target runs `lgpm` internally and produces the director
 
 ## Step 4: Load the modules and verify the single-node flow
 
-1. Return to `logos-my-service-module` and pin a known, fixed listen address via the `LIBP2P_MODULE_CONFIG` environment variable:
+1. Return to `logos-my-service-module` and set `LIBP2P_MODULE_CONFIG`: a known, fixed listen address together with `mountServiceDiscovery`, which, when set to `true`, makes the node's Kademlia distributed hash table (DHT) speak the Logos service discovery protocol (`/logos/service-discovery/1.0.0`) instead of plain `/ipfs/kad/1.0.0`:
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"],"mountServiceDiscovery":true}'
    ```
 
 1. Start the daemon, detached so this terminal stays free, pointing at both module directories:
@@ -318,7 +328,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9000"],"mountServiceDiscovery":true}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-bootstrap daemon config set -
@@ -336,7 +346,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9001"],"mountServiceDiscovery":true,"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-advertiser daemon config set -
@@ -351,7 +361,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 
    ```sh
    cd ../logos-my-service-module
-   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
+   export LIBP2P_MODULE_CONFIG='{"addrs":["/ip4/127.0.0.1/tcp/9002"],"mountServiceDiscovery":true,"bootstrapNodes":[{"peerId":"<BOOTSTRAP_PEER_ID>","addrs":["/ip4/127.0.0.1/tcp/9000"]}]}'
    printf 'modules_dirs:\n  - %s\n  - %s\n' \
      "$(cd ../logos-libp2p-module/result/modules && pwd)" "$(pwd)/result/modules" \
      | logosctl --config-dir ~/.logosctl-discoverer daemon config set -
@@ -390,3 +400,7 @@ Each daemon needs its own session (`--config-dir`) and `LIBP2P_MODULE_CONFIG` wi
 ### Why does `discover` return `[]` even after waiting?
 
 The Kad-DHT needs a few seconds to propagate the advertisement from the advertiser through the bootstrap node to the discoverer. Repeat `logosctl --config-dir ~/.logosctl-discoverer call my_service_module discover myservice/v1` after 5–10 seconds. If it still returns empty, confirm that the advertiser's `advertise` call succeeded and that both the advertiser and the discoverer share the same `<BOOTSTRAP_PEER_ID>` for the bootstrap node.
+
+### Why does every `disco*` call fail with `service discovery not mounted`?
+
+`mountServiceDiscovery` defaults to `false`, so a `LIBP2P_MODULE_CONFIG` that leaves it out loads both modules and then fails every discovery call. The call still returns `"status":"ok"`, with the failure in `result`, for example `discoStart failed: Failed to start discovery: service discovery not mounted`. Add `"mountServiceDiscovery":true` to the config of each instance, as [Step 4](#step-4-load-the-modules-and-verify-the-single-node-flow) and [Step 5](#step-5-run-three-node-local-discovery) do, and restart its daemon.

@@ -73,6 +73,7 @@ module.exports = [
       'write and deploy a LEZ program',
       'register an RLN membership',
       'run a LEZ explorer or follow the chain',
+      'run a decentralised LEZ sequencer and stake into the committee',
     ],
   },
   {

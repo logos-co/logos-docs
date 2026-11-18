@@ -16,17 +16,18 @@ sidebar_position: 1
 #### Try out end-to-end encrypted private messaging over the Logos network.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.2.1**.
+This document is accurate for **Testnet v0.3**.
 :::
 
 This procedure shows how to use the [Logos Chat](../../get-started/glossary.md#logos-chat) app to exchange encrypted 1:1 messages between two running instances. The [app](../../get-started/glossary.md#app) is a QML and C++ UI built on top of the [`logos-chat-module`](https://github.com/logos-co/logos-chat-module), which wraps the [Logos Chat SDK](https://github.com/logos-messaging/logos-chat). It demonstrates the basic private-messaging capabilities of the Logos Chat [Module](../../get-started/glossary.md#module): ephemeral identity, address-based contact discovery, and encrypted messaging with no central server. Use this procedure to verify the setup works or to explore the messaging flow for development purposes.
 
-Identity, conversations, and message history exist only while the app is running. Restarting an instance gives it a new identity and clears all conversations.
+Each launch of the app starts a new identity with a new address. Conversations from an earlier launch stay readable under **Previous sessions**, but you can't send to them.
 
 :::info[Prerequisites]
 
 - [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- Network access.
+- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
+- Network access, so that both instances can reach the `logos.test` network and the key-package registry.
 :::
 
 ## What to expect
@@ -39,14 +40,19 @@ Identity, conversations, and message history exist only while the app is running
 
 You need two running instances to complete this procedure. Each instance can be started with the instructions below.
 
-1.  In the left bar of Logos Basecamp, select **Package Manager**.
+1.  In Logos Basecamp, select **Discover Applications**.
 
-    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-package-manager.png)
-1.  Find **Chat** (type `ui_qml`) in the [package](../../get-started/glossary.md#package) list and click **INSTALL** in its row. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/basecamp-launch.png)
 
-    ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/basecamp-install-packages.png)
-1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**.
-1. In the left bar, select the new chat icon to launch the Logos Chat app.
+1.  Search **Chat** in the application list and click on it.
+
+    ![Logos Basecamp screenshot](../assets/send-1-1-messages-logos-chat/chat-app-in-applications.png)
+
+1. The **Install Package?** dialogue lists the `chat_module` and `delivery_module` packages it depends on. Click **Install** to confirm.
+
+    ![Logos Basecamp package installation screenshot](../assets/send-1-1-messages-logos-chat/chat-app-install.png)
+
+1. Wait until the **Action** column reads **INSTALLED** for both **Chat** and **Chat Module**. Click **Launch**.
 
 ## Step 2: Start a conversation
 
@@ -80,10 +86,15 @@ Instance B does not need to accept anything. The conversation appears in B's lis
 
 ## Troubleshooting Logos Chat
 
-### Messages never arrive and the left panel shows "Waiting for connection…"
+### Messages never arrive and the left panel shows `Waiting for connection...`
 
 Both instances need to reach a shared bootstrap peer to connect to the peer-to-peer network and discover each other. Ensure that both instances have a stable internet connection for [peer discovery](../../get-started/glossary.md#peer-discovery).
 
-### A previously open conversation has disappeared
+### Messages send but never arrive
 
-Conversations are ephemeral and are not persisted between sessions. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.
+- Check that the sending instance has an active RLN membership. Delivery rate-limits sends with RLN on `logos.test`, so without a membership the app connects and receives, but each send is retried and then dropped. See [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md).
+- Check that the instance runs **Chat** and **Chat Module** 0.3.0 or later. The 0.3.0 Chat view is built against the `chat_module` 0.3.0 contract and needs matching modules installed.
+
+### A conversation can't be replied to
+
+The conversation is from an earlier launch, listed under **Previous sessions**. Opening it replaces the message box with a **From a previous session** notice, because each launch has a new identity and earlier conversations are kept for reading only. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.

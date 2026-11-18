@@ -192,7 +192,7 @@ Add `onContextReady()` to the backend the template scaffolded, and arm the deliv
 The node is a singleton per Logos Core instance: call `createNode` exactly once per context, and expect the node to already exist when another module created it first.
 :::
 
-1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](https://logos-co.github.io/logos-delivery-module/v0.3.3/pages/api_reference.html#_CPPv4N18DeliveryModuleImpl10createNodeERKNSt6stringE) in the Delivery module API reference.
+1. Initialise the node with `createNode`. For a complete list of node configuration keys, see [`createNode`](../reference/delivery-module-api-reference.md#createNode) in the Delivery module API reference.
 
    ```cpp
    auto& delivery = modules().delivery_module;

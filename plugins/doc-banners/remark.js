@@ -7,8 +7,7 @@
 // directly follows it. The photo credit is the image's title (hover) text.
 //
 // Works on the source tree, so it covers mirrored reference pages too
-// without editing them. The images live in static/img/banners and are built
-// by scripts/doc-banners/build.py.
+// without editing them. The images are committed in static/img/banners.
 
 const path = require('path');
 const {banners, DEFAULT_BANNER} = require('./banners');
@@ -81,7 +80,7 @@ module.exports = function docBanners(options = {}) {
         attr('alt', ''),
         attr('title', creditOf(banner)),
         attr('width', '1200'),
-        attr('height', '600'),
+        attr('height', '400'),
         attr('loading', 'eager'),
         attr('decoding', 'async'),
       ],

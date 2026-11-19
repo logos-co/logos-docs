@@ -295,24 +295,19 @@ h1 {
   border-top: 1px solid var(--logos-rule);
 }
 
-/* Doc banners (plugins/doc-banners): a 4:1 photo strip under the page title
-   and subtitle. The stored images are 2:1, cropped around their subject. */
+/* Doc banners (plugins/doc-banners): a 3:1 photo strip under the page title
+   and subtitle. The stored images are already 3:1, cropped around their
+   subject, so they show whole. */
 .markdown .doc-banner {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 1;
+  aspect-ratio: 3 / 1;
   object-fit: cover;
   object-position: center;
   margin: 0.25rem 0 var(--ifm-spacing-vertical);
   border-radius: 2px;
   background: var(--logos-fog);
-}
-
-@media (max-width: 600px) {
-  .markdown .doc-banner {
-    aspect-ratio: 5 / 2;
-  }
 }
 
 /* Inline code */

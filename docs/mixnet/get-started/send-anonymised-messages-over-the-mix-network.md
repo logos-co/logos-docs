@@ -3,6 +3,7 @@ title: Send anonymised messages over the mix network
 doc_type: procedure
 product: mixnet
 topics: [chat, mix]
+banner: mixnet
 steps_layout: flat
 authors: chaitanyaprem, kashepavadan
 owner: logos

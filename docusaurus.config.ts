@@ -1,4 +1,5 @@
 import {logosCode} from './src/lib/prismThemes';
+import docBanners from './plugins/doc-banners/remark.js';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as PluginClientRedirects from '@docusaurus/plugin-client-redirects';
@@ -94,6 +95,8 @@ const config: Config = {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/logos-co/logos-docs/tree/main/',
+          // Banner image under each page's title; see plugins/doc-banners.
+          remarkPlugins: [docBanners],
         },
         blog: false,
         theme: {

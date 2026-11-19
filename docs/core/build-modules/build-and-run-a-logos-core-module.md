@@ -300,7 +300,7 @@ Windows packages are cross-compiled: Nix runs on Linux and targets `x86_64-windo
    sudo tee -a /etc/nix/nix.conf <<'EOF'
    experimental-features = nix-command flakes
    extra-substituters = https://cache.nix.logos.co/public
-   extra-trusted-public-keys = public:l4HrXgL4nw246+LBh2SOJyhz64BoGegOYLheT/iIAPU=
+   extra-trusted-public-keys = public:zaDAOkd+E3cQyFm9J7qejQYd9HoLJc1SJvnk68hNWeI=
    EOF
    sudo systemctl restart nix-daemon
    ```

@@ -6,9 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Required sections** are the minimum for the Docs team to start a draft. If any required field is left blank, Docs will publish a stub page and flag the gap.
-
-        **This doc packet does not replace your PR review.** After Docs writes the draft, you will review it for technical correctness on the pull request.
+        **Required sections** are the minimum for the Docs team to start a draft.
 
         Even if you provide a draft covering the user journey, you must still fill out this form. Your draft may lack details that are important for the Docs team and the end user.
 
@@ -19,6 +17,19 @@ body:
   - type: markdown
     attributes:
       value: "### 1. Outcome and purpose"
+
+  - type: dropdown
+    id: journey-type
+    attributes:
+      label: Journey type
+      description: The type label this journey is tagged with.
+      options:
+        - gui user
+        - cli user
+        - developer
+        - node operator
+    validations:
+      required: true
 
   - type: input
     id: outcome
@@ -97,6 +108,74 @@ body:
       label: Commands and expected outputs
       description: Link to an existing document that covers these steps (for example, a `README.md` or `docs/setup.md` in your repo) or enter the commands below. Describe any UI elements, button labels or interactions if applicable. Cover the exact steps from a clean setup to a working result, with expected output or success indicators after each major step — a copy-pasted terminal session is ideal.
       render: sh
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "#### Journey fit checklists"
+
+  - type: markdown
+    attributes:
+      value: "Navigate to the checklist that matches the journey type you selected earlier, and make sure your journey matches the criteria in that checklist. If any of the checks is false, explain why below."
+
+  - type: checkboxes
+    id: gui-user-checks
+    attributes:
+      label: Journey fit checklists (GUI user)
+      options:
+        - label: Installing though Basecamp is the only or preferred path.
+        - label: App is in the default Logos catalogue.
+        - label: No CLI commands required.
+        - label: No build required.
+        - label: Prerequisites should be obtainable in GUI (Basecamp or other).
+        - label: GUI steps described exactly (e.g. give exact names for buttons to press).
+
+  - type: checkboxes
+    id: cli-user-checks
+    attributes:
+      label: Journey fit checklists (CLI user)
+      options:
+        - label: No GUI steps.
+        - label: No build required (include instructions for obtaining binaries).
+        - label: Relevant settings or config fields described.
+        - label: Expected output/logs/state included.
+        - label: Prerequisites should be obtainable via CLI (can link to existing docs).
+
+  - type: checkboxes
+    id: developer-checks
+    attributes:
+      label: Journey fit checklists (developer)
+      options:
+        - label: Target to build is clearly mentioned (e.g. Basecamp app, LEZ program etc).
+        - label: Once user goes through the journey, they must have a runnable program. If necessary, include example code.
+        - label: Large or non-obvious code blocks should include comments for clarity.
+        - label: No missing prerequisites (can link to existing docs).
+        - label: Expected output/logs/state included.
+        - label: Main functionality/use cases (beyond the example) described. Can take the form of "next steps" or "use cases".
+        - label: Link to API reference where relevant.
+        - label: Includes error handling.
+        - label: Build and deploy is described.
+
+  - type: checkboxes
+    id: node-operator-checks
+    attributes:
+      label: Journey fit checklists (node operator)
+      options:
+        - label: No GUI, CLI only.
+        - label: Description of where to obtain binaries. No build step.
+        - label: Prerequisites clearly mentioned (can link to existing docs).
+        - label: Node start command included.
+        - label: Node functionality while running described.
+        - label: Relevant settings or config fields described.
+        - label: Includes health checks or other verification command.
+        - label: Describes how keys are stored, generated, and handled.
+        - label: Instructions on how to set up a long-running node included.
+
+  - type: textarea
+    id: missing-checks
+    attributes:
+      label: Explanation for any missing journey fit checks
     validations:
       required: true
 
@@ -221,4 +300,4 @@ body:
     attributes:
       value: |
         ---
-        **Reminder:** Completing this doc packet starts the documentation process. You will still be asked to review the draft on the pull request. For more information, see the [contributing guide](../../CONTRIBUTING.md).
+        **Reminder:** Completing this doc packet starts the documentation process. For more information, see the [contributing guide](../../CONTRIBUTING.md).

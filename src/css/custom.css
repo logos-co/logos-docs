@@ -146,7 +146,7 @@
   --ifm-code-background: var(--logos-fog);
   --ifm-code-border-radius: 2px;
   --ifm-code-padding-horizontal: 0.35rem;
-  --docusaurus-highlighted-code-line-bg: rgba(95, 121, 124, 0.16);
+  --docusaurus-highlighted-code-line-bg: rgba(198, 235, 247, 0.1);
 
   --ifm-global-radius: 0.375rem;
   --ifm-card-border-radius: 0.75rem;
@@ -341,11 +341,21 @@ code {
   border: 1px solid var(--logos-rule);
 }
 
-/* Code blocks: tinted panel with a solid ink edge (field guide). */
+/* Code blocks: a Black (#152521) panel in both site themes, with a Steel
+   Teal edge. Colours for the tokens are in src/lib/prismThemes.ts. */
 .theme-code-block {
+  --logos-code-rule: rgba(245, 245, 239, 0.12);
   border-radius: 2px;
   box-shadow: none;
-  border-left: 3px solid var(--logos-ink);
+  border-left: 3px solid var(--logos-steel-teal);
+  /* Dark native scrollbars and form controls inside the panel. */
+  color-scheme: dark;
+}
+
+/* In dark mode the panel is close to the page, so give it a hairline. */
+[data-theme='dark'] .theme-code-block {
+  outline: 1px solid var(--logos-code-rule);
+  outline-offset: -1px;
 }
 
 .theme-code-block pre,
@@ -354,11 +364,20 @@ code {
   line-height: 1.6;
 }
 
+.theme-code-block pre {
+  scrollbar-color: var(--logos-grey-05) transparent;
+}
+
 [class*='codeBlockTitle'] {
   font-family: var(--logos-font-mono);
   font-size: 0.75rem;
-  color: var(--logos-slate);
-  border-bottom: 1px solid var(--logos-rule) !important;
+  color: var(--logos-grey-03);
+  border-bottom: 1px solid var(--logos-code-rule) !important;
+}
+
+/* Copy and word-wrap buttons. */
+.theme-code-block [class*='buttonGroup'] button {
+  border-color: var(--logos-code-rule);
 }
 
 /* ---------------------------------------------------------------------- */

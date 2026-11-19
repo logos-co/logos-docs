@@ -1,4 +1,4 @@
-import {logosDark, logosLight} from './src/lib/prismThemes';
+import {logosCode} from './src/lib/prismThemes';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as PluginClientRedirects from '@docusaurus/plugin-client-redirects';
@@ -421,11 +421,12 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Logos. Built with Docusaurus.`,
     },
     prism: {
-      // Brand-palette themes; see src/lib/prismThemes.ts.
-      theme: logosLight,
-      darkTheme: logosDark,
+      // One brand-palette theme on Black (#152521) for both site themes; see
+      // src/lib/prismThemes.ts.
+      theme: logosCode,
+      darkTheme: logosCode,
       // see https://github.com/facebook/docusaurus/issues/3559
-      additionalLanguages: ['bash', 'cmake', 'nix'],
+      additionalLanguages: ['bash', 'cmake', 'nix', 'toml', 'ini', 'qml', 'powershell'],
     },
   } satisfies Preset.ThemeConfig,
 };

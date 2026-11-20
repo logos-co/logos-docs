@@ -33,6 +33,7 @@ You write a core module as one plain C++ class: its public methods are the modul
 - Git
 - [`logosctl`](https://github.com/logos-co/logos-logoscore-cli/releases/tag/0.3.2) installed.
    - Install it by running `curl -fsSL https://raw.githubusercontent.com/logos-co/logos-docs/main/resources/scripts/install-logosctl.sh | sudo sh`
+   - The Linux build is an AppImage and needs FUSE. If `logosctl` reports `No suitable fusermount binary found on the $PATH`, install it with `sudo apt install fuse3`.
 - **Nix** with flakes enabled.
    - Install from [nixos.org](https://nixos.org/download.html), then enable flakes:
 
@@ -310,7 +311,7 @@ Windows packages are cross-compiled: Nix runs on Linux and targets `x86_64-windo
 1. Build the portable Windows package:
 
    ```bash
-   nix build .#packages.x86_64-windows.lgx-portable
+   nix build '.#packages.x86_64-windows.lgx-portable'
    ```
 
    - `result/logos-<module-name>-module-lib.lgx` holds a `windows-x86_64` variant whose plugin is a `.dll`.

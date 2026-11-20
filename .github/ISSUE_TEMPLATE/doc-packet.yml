@@ -22,7 +22,7 @@ body:
     id: journey-type
     attributes:
       label: Journey type
-      description: We have identified four types of procedure docs, and so each procedure must belong to one of the following types:
+      description: "We have identified four types of procedure docs, and so each procedure must belong to one of the following types:"
       options:
         - gui user
         - cli user

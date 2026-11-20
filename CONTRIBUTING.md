@@ -6,7 +6,7 @@ This guide explains how to contribute to the Logos Documentation project, hosted
 
 The Logos Documentation lives in the [`docs/`](./docs) folder of this repository. Every document follows an applicable [template](./resources/templates) and goes through a review process before being published.
 
-The Logos Docs team own the documentation workflow. R&D teams provide technical input and review in the form of [doc packets](./resources/templates/doc-packet.md). The Logos Red Team validates that published documentation works end-to-end in a testing environment.
+The Logos Docs team own the documentation workflow. R&D teams provide technical input and review in the form of [doc packets](https://github.com/logos-co/logos-docs/issues/new?template=doc-packet.yml). The Logos Red Team validates that published documentation works end-to-end in a testing environment.
 
 ## How to contribute
 
@@ -64,7 +64,7 @@ Constructive input on suggested changes to the repo, both from humans and AI age
 
 ### Write a new document
 
-Writing a new document is a task typically handled by the Docs team, but can be taken up by anyone. The easiest way to write a new document is to take pre-existing documentation, a [doc packet](./resources/templates/doc-packet.md), or an *ad hoc* text and use AI to make it conform with the template required for its [document type](#document-types). Once the document is written, [open a PR](#fix-or-improve-an-existing-document) to start the review process.
+Writing a new document is a task typically handled by the Docs team, but can be taken up by anyone. The easiest way to write a new document is to take pre-existing documentation, a [doc packet](https://github.com/logos-co/logos-docs/issues/new?template=doc-packet.yml), or an *ad hoc* text and use AI to make it conform with the template required for its [document type](#document-types). Once the document is written, [open a PR](#fix-or-improve-an-existing-document) to start the review process.
 
 > [!IMPORTANT]
 > Core contributors should follow the phased process tracked in the [Journeys repository](https://github.com/logos-co/journeys.logos.co/issues). For more information, see [Workflow for core contributors](#workflow-for-core-contributors).
@@ -98,7 +98,7 @@ All documents must follow these rules regardless of who writes them.
 
 ## Workflow for core contributors
 
-The documentation process starts with R&D. The SME responsible for a feature or workflow is the one who opens the issue and provides the [doc packet](./resources/templates/doc-packet.md). The Docs team then takes that input and turns it into structured, publishable documentation.
+The documentation process starts with R&D. The SME responsible for a feature or workflow is the one who opens the issue and provides the [doc packet](https://github.com/logos-co/logos-docs/issues/new?template=doc-packet.yml). The Docs team then takes that input and turns it into structured, publishable documentation.
 
 ### Board sections
 

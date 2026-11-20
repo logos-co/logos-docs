@@ -21,6 +21,15 @@
   min-width: 0;
 }
 
+/* Headlines in the display serif, as on logos.co (text-h2). */
+.heroText h2 {
+  font-family: var(--logos-font-display);
+  font-weight: 400;
+  font-size: 2.75rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
 /* Both the heading and the grid below it share this width, so the
    heading's left edge lines up with the grid's leftmost box instead of
    the (wider) page container's edge. */
@@ -34,6 +43,12 @@
 .sectionTitle {
   margin-top: 3rem;
   margin-bottom: 1.5rem;
+  /* logos.co text-h3-serif */
+  font-family: var(--logos-font-display);
+  font-weight: 400;
+  font-size: 1.875rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .cardGrid {
@@ -89,6 +104,11 @@
 .cardIcon {
   width: 32px;
   height: 32px;
+}
+
+/* The icons are black PNGs; flip them to Off-white on the dark theme. */
+[data-theme='dark'] .cardIcon {
+  filter: invert(0.95);
 }
 
 .cardTitle {

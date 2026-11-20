@@ -1,4 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
+import {logosCode} from './src/lib/prismThemes';
+import docBanners from './plugins/doc-banners/remark.js';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as PluginClientRedirects from '@docusaurus/plugin-client-redirects';
@@ -27,6 +28,20 @@ const config: Config = {
         rel: 'icon',
         href: '/img/favicon-dark.png',
         media: '(prefers-color-scheme: dark)',
+      },
+    },
+    // Preload the Rhymes Display headline font, as logos.co does, so titles
+    // don't flash in the fallback serif. It is served by logos.co rather than
+    // this public repo for licensing reasons; see the @font-face note in
+    // src/css/custom.css and keep the two URLs in sync.
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preload',
+        href: 'https://logos.co/_next/static/media/6be45a1297e41e4c-s.p.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: 'anonymous',
       },
     },
     // Before first paint, apply the reader's saved assistant for the page
@@ -80,6 +95,8 @@ const config: Config = {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/logos-co/logos-docs/tree/main/',
+          // Banner image under each page's title; see plugins/doc-banners.
+          remarkPlugins: [docBanners],
         },
         blog: false,
         theme: {
@@ -294,6 +311,12 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/social-card-v2.jpg',
+    mermaid: {
+      theme: {light: 'neutral', dark: 'dark'},
+      options: {
+        fontFamily: "'Public Sans', ui-sans-serif, system-ui, sans-serif",
+      },
+    },
     colorMode: {
       respectPrefersColorScheme: true,
     },
@@ -401,10 +424,12 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Logos. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      // One brand-palette theme on Black (#152521) for both site themes; see
+      // src/lib/prismThemes.ts.
+      theme: logosCode,
+      darkTheme: logosCode,
       // see https://github.com/facebook/docusaurus/issues/3559
-      additionalLanguages: ['bash', 'cmake', 'nix'],
+      additionalLanguages: ['bash', 'cmake', 'nix', 'toml', 'ini', 'qml', 'powershell'],
     },
   } satisfies Preset.ThemeConfig,
 };

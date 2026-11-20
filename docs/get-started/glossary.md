@@ -396,7 +396,7 @@ The ZK proof that a note's owner is eligible to propose a block. Also known as *
 
 ### Proposer privacy
 
-The difficulty of linking a block proposer on the Logos Blockchain to the block they proposed. See [Blockchain FAQ](../blockchain/faq-logos-blockchain.md#how-is-the-logos-blockchain-private-if-mantle-notes-are-public-utxos).
+The difficulty of linking a block proposer on the Logos Blockchain to the block they proposed. See [Blockchain FAQ](../blockchain/get-started/faq-logos-blockchain.md#how-is-the-logos-blockchain-private-if-mantle-notes-are-public-utxos).
 
 ### Public account
 

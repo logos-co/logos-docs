@@ -150,3 +150,8 @@ The indexer config used by `just run-indexer` is located at [lez/indexer/service
 
 - `bedrock_config`—the HTTP address of the Logos Blockchain node.
 - `channel_id`—the channel that LEZ Sequencer writes into. This must match the sequencer you are using.
+
+## Next steps
+
+- [Emit and query LEZ program events](./emit-and-query-lez-program-events.md)
+- [Start and use an instance of the LEZ Explorer](./start-and-use-instance-of-lez-explorer.md)

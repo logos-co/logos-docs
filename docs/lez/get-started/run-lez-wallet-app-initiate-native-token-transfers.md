@@ -162,3 +162,7 @@ The settings are stored under the organisation `Logos` and application `Executio
 ### Why does creating a wallet fail with `A wallet already exists at`?
 
 The wallet UI won't create a new wallet over existing wallet files. The error message names the existing storage file. To keep using that wallet, select **I already have a wallet** in the **Setup** step and choose that storage file and the `config.json` file in the same folder. To create a new wallet instead, move or remove those files first.
+
+## Next steps
+
+- [Bridge assets from Logos Blockchain to a Zone on Basecamp](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md)

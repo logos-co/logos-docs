@@ -25,8 +25,7 @@ Each launch of the app starts a new identity with a new address. Conversations f
 
 :::info[Prerequisites]
 
-- [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
+- [RLN membership registered on Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md).
 - Network access, so that both instances can reach the `logos.test` network and the key-package registry.
 :::
 

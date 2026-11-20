@@ -112,6 +112,10 @@ const config: Config = {
     './plugins/agent-ready',
     // Hover previews for internal links (src/theme/MDXComponents/A).
     './plugins/link-previews',
+    // Prerequisite graph between procedures: the diagram on
+    // /get-started/tech-tree, and a build failure when a prerequisite's
+    // "Next steps" section doesn't link back. See plugins/tech-tree.
+    './plugins/tech-tree',
     [
       '@docusaurus/plugin-client-redirects',
       {

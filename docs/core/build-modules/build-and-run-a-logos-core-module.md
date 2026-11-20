@@ -549,3 +549,7 @@ nix build '.#lib'
 ### First build is slow
 
 The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and the rest of the build dependencies. This is a one-time cost; subsequent builds reuse the cache.
+
+## Next steps
+
+- [Install and load a module in Basecamp](../../basecamp/install-and-load-module-in-basecamp.md)

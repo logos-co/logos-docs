@@ -56,7 +56,7 @@ This procedure covers how to install and start a `logos-delivery-module` node co
    logosctl catalog refresh
    ```
 
-1. Download and install the [delivery module](../../get-started/glossary.md#delivery-module):
+1. Download and install the [Delivery module](../../get-started/glossary.md#delivery-module):
 
    ```bash
    logosctl package install delivery_module \
@@ -65,7 +65,7 @@ This procedure covers how to install and start a `logos-delivery-module` node co
    ```
 
    :::note
-   Individual module [package](../../get-started/glossary.md#package) versions (for example, delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
+   Individual module [package](../../get-started/glossary.md#package) versions (for example, Delivery module version 0.3.0) are pinned independently and do not necessarily match the testnet version number (0.3.0).
    :::
 
 1. Write the testnet config:

@@ -3,7 +3,7 @@
 
 Every source below is read at its repo's latest GitHub release, and the
 result is written to the page's path under docs/, in the section's Reference
-folder. There are two kinds of source:
+folder. There are three kinds of source:
 
 - 'sphinx': the repo publishes a Sphinx site to its gh-pages branch when a
   release is published (its .github/workflows/docs.yml), one directory per
@@ -12,8 +12,12 @@ folder. There are two kinds of source:
 - 'markdown': the repo keeps the reference as a Markdown file. The file is
   read at the release tag, its own title is replaced with this page's, and
   relative links are pointed at the file's neighbours on GitHub at that tag.
+- 'jsonrpsee': the repo defines a JSON-RPC API as a Rust `pub trait Rpc`
+  with jsonrpsee's #[method]/#[subscription] attributes. The file is read at
+  the release tag and each method's name, doc comment, parameters and return
+  type are laid out as a reference.
 
-Either way the content is exactly what the source repo has for that release;
+Whatever the kind, the content is exactly what the source repo has for that release;
 only the presentation changes.
 
 Run by .github/workflows/sync-api-reference.yml, which opens a PR when the
@@ -115,6 +119,29 @@ SOURCES = {
         'title': 'Module builder Nix API reference',
         'subtitle': 'Look up the Nix functions logos-module-builder provides for building modules.',
     },
+    'lez-sequencer-rpc': {
+        'kind': 'jsonrpsee',
+        'repo': 'logos-blockchain/logos-execution-zone',
+        'branch': 'dev',
+        'page': 'lez/sequencer/service/rpc/src/lib.rs',
+        'product': 'lez',
+        'out': 'docs/lez/reference/lez-sequencer-rpc-reference.md',
+        'title': 'LEZ sequencer RPC reference',
+        'subtitle': 'Look up every JSON-RPC method a LEZ sequencer serves.',
+        # The crate the parameter and return types come from, and its path at the tag.
+        'types': ('sequencer_service_protocol', 'lez/sequencer/service/protocol'),
+    },
+    'lez-indexer-rpc': {
+        'kind': 'jsonrpsee',
+        'repo': 'logos-blockchain/logos-execution-zone',
+        'branch': 'dev',
+        'page': 'lez/indexer/service/rpc/src/lib.rs',
+        'product': 'lez',
+        'out': 'docs/lez/reference/lez-indexer-rpc-reference.md',
+        'title': 'LEZ indexer RPC reference',
+        'subtitle': 'Look up every JSON-RPC method and subscription a LEZ indexer serves.',
+        'types': ('indexer_service_protocol', 'lez/indexer/service/protocol'),
+    },
 }
 
 
@@ -130,6 +157,10 @@ def fetch(url):
 def latest_release(repo):
     """The repo's latest published release (GitHub excludes drafts and prereleases)."""
     return json.loads(fetch(f'https://api.github.com/repos/{repo}/releases/latest'))['tag_name']
+
+
+def edit_url(cfg, path):
+    return f'https://github.com/{cfg["repo"]}/blob/{cfg.get("branch", "master")}/{path}'
 
 
 # ---------------------------------------------------------------- conversion
@@ -421,8 +452,7 @@ def render_sphinx(source, tag, html):
     site_base = f'https://{owner}.github.io/{name}/{tag}/' + (f'{page_dir}/' if page_dir else '')
     body = '\n\n'.join(Converter(article, site_base, cfg['lang']).blocks(article, 1))
     link = f'the [API reference](https://{owner}.github.io/{name}/{tag}/{cfg["page"]}) published with'
-    edit_url = f'https://github.com/{repo}/blob/master/{cfg["edit"]}'
-    return page(cfg, tag, edit_url, link, body)
+    return page(cfg, tag, edit_url(cfg, cfg['edit']), link, body)
 
 
 FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})')
@@ -475,9 +505,118 @@ def render_markdown(source, tag, text):
         line = REF_DEF.sub(lambda m: m.group(1) + absolute(m.group(2), False), line)
         out.append(line)
 
-    edit_url = f'https://github.com/{repo}/blob/master/{cfg["page"]}'
-    link = f'[`{cfg["page"]}`](https://github.com/{repo}/blob/{tag}/{cfg["page"]}) from'
-    return page(cfg, tag, edit_url, link, '\n'.join(out))
+    return page(cfg, tag, edit_url(cfg, cfg['page']), file_link(cfg, tag), '\n'.join(out))
+
+
+def file_link(cfg, tag):
+    return f'[`{cfg["page"]}`](https://github.com/{cfg["repo"]}/blob/{tag}/{cfg["page"]}) from'
+
+
+def cell(text):
+    """Table-cell text: one line, pipes escaped."""
+    return ' '.join(text.split()).replace('|', '\\|')
+
+
+def split_top(text, sep=','):
+    """Split on `sep` outside <>, (), [] and {}."""
+    parts, depth, cur = [], 0, ''
+    for ch in text:
+        if ch in '<([{':
+            depth += 1
+        elif ch in '>)]}':
+            depth -= 1
+        if ch == sep and depth == 0:
+            parts.append(cur.strip())
+            cur = ''
+        else:
+            cur += ch
+    if cur.strip():
+        parts.append(cur.strip())
+    return parts
+
+
+def generic_args(ty, outer):
+    """['T', 'E'] for `outer<T, E>`, else None."""
+    ty = ty.strip()
+    if ty.startswith(outer + '<') and ty.endswith('>'):
+        return split_top(ty[len(outer) + 1:-1])
+    return None
+
+
+# ---------------------------------------------------------------- jsonrpsee
+
+RPC_ITEM = re.compile(
+    r'(?P<doc>(?:[ \t]*///[^\n]*\n)*)'
+    r'[ \t]*#\[(?P<kind>method|subscription)\((?P<args>[^)]*)\)\]\s*'
+    r'(?:async\s+)?fn\s+\w+\s*\((?P<params>[^)]*)\)\s*(?:->\s*(?P<ret>[^;{]+?))?\s*[;{]')
+
+
+def parse_rpc_trait(text):
+    m = re.search(r'\bpub\s+trait\s+Rpc\b[^{]*\{', text)
+    if m is None:
+        raise SystemExit('no `pub trait Rpc` in the source file')
+    # Plain // comments (TODOs, separators) are the source's notes to itself, not docs.
+    body = re.sub(r'^[ \t]*//(?!/)[^\n]*\n', '', text[m.end():], flags=re.M)
+    items = []
+    for it in RPC_ITEM.finditer(body):
+        args = dict(re.findall(r'(\w+)\s*=\s*("[^"]*"|[^,]+)', it['args']))
+        args = {k: v.strip().strip('"') for k, v in args.items()}
+        doc = '\n'.join(re.sub(r'^\s*/// ?', '', l) for l in it['doc'].rstrip('\n').split('\n')) if it['doc'] else ''
+        params = []
+        for p in split_top(it['params']):
+            if p.lstrip('&').startswith(('self', 'mut self')):
+                continue
+            name, _, ty = p.partition(':')
+            params.append((name.strip(), ' '.join(ty.split())))
+        if it['kind'] == 'subscription':
+            returns = args.get('item', '')
+        else:
+            ret = ' '.join((it['ret'] or '()').split())
+            returns = (generic_args(ret, 'Result') or [ret])[0]
+        items.append({'kind': it['kind'], 'name': args['name'], 'doc': doc.strip(),
+                      'params': params, 'returns': returns})
+    if not items:
+        raise SystemExit('no #[method] or #[subscription] items in `pub trait Rpc`')
+    return items
+
+
+def render_jsonrpsee(source, tag, text):
+    cfg = SOURCES[source]
+    repo = cfg['repo']
+    items = parse_rpc_trait(text)
+    crate, crate_path = cfg['types']
+    crate_link = f'[`{crate}`](https://github.com/{repo}/tree/{tag}/{crate_path})'
+    out = [
+        'The server speaks JSON-RPC 2.0. Parameter and return types are the Rust types the '
+        f'server is written against; most come from the {crate_link} crate, and their JSON '
+        'shape is their `serde` serialisation. A failed call returns a JSON-RPC error object.',
+    ]
+    for kind, heading in (('method', 'Methods'), ('subscription', 'Subscriptions')):
+        group = [i for i in items if i['kind'] == kind]
+        if not group:
+            continue
+        out.append(f'## {heading}')
+        out.append('| Name | Parameters | ' + ('Item' if kind == 'subscription' else 'Returns') + ' |\n| --- | --- | --- |\n'
+                   + '\n'.join(f'| [`{i["name"]}`](#{i["name"].lower()}) | '
+                                + (', '.join(f'`{n}`' for n, _ in i['params']) or 'None')
+                                + ' | ' + ('None' if i['returns'] == '()' else code_span(i['returns'])) + ' |'
+                                for i in group))
+        for i in group:
+            out.append(f'### `{i["name"]}`')
+            if i['doc']:
+                out.append(i['doc'])
+            if i['params']:
+                out.append('Parameters, in order:\n\n| Name | Type |\n| --- | --- |\n'
+                           + '\n'.join(f'| `{n}` | {code_span(t)} |' for n, t in i['params']))
+            else:
+                out.append('Takes no parameters.')
+            if kind == 'subscription':
+                out.append(f'Each notification carries {code_span(i["returns"])}.')
+            elif i['returns'] == '()':
+                out.append('Returns no value: the result is `null`.')
+            else:
+                out.append(f'Returns {code_span(i["returns"])}.')
+    return page(cfg, tag, edit_url(cfg, cfg['page']), file_link(cfg, tag), '\n\n'.join(out))
 
 
 def raw_url(cfg, tag):
@@ -511,7 +650,8 @@ def main():
             # the next scheduled run picks it up.
             print(f'::warning::{source}: {tag} has no {cfg["page"]} yet ({e.code} {url})')
             continue
-        render = render_sphinx if cfg['kind'] == 'sphinx' else render_markdown
+        render = {'sphinx': render_sphinx, 'markdown': render_markdown,
+                  'jsonrpsee': render_jsonrpsee}[cfg['kind']]
         new = render(source, tag, content)
         out = REPO_ROOT / cfg['out']
         old = out.read_text() if out.exists() else None

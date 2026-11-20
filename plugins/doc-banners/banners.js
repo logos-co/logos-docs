@@ -1,7 +1,9 @@
-// Banner images for doc pages, one per Logos concept.
+// Banner images for doc pages, one per top-level folder under docs/. The id
+// is the folder name, and the image is static/img/banners/<id>.webp.
 //
-// Each image is the one logos.co shows for that concept (technology stack,
-// its sub-pages, the roadmap, Basecamp and node programme pages). Where a
+// Each image comes from logos.co or from the Logos design files (the Figma
+// export of logos.co, shared 2026-11-19). `logos` records where logos.co shows
+// it; `figma` names the file it has in that export's images/ folder. Where a
 // reverse image search (TinEye, 2026-11-18) found the photographer's own,
 // larger original, `original` records it. The banners themselves are the
 // committed crops in static/img/banners (3:1, at most 2400px wide); they are
@@ -12,167 +14,91 @@
 // (the photographer's, or confirmation that the logos.co licence covers the
 // docs). Entries marked 'cc-by-sa-4.0' are openly licensed and only need the
 // attribution the banner caption already gives.
-//
-// `keys` are matched, in order, against a page's frontmatter `topics`, then
-// its `product`, then its top-level docs folder (see ./remark.js).
 
 const LOGOS = 'https://logos.co';
 
 /** @type {Record<string, Banner>} */
 const banners = {
-  logos: {
-    concept: 'Logos (default)',
-    keys: [],
-    logos: {page: `${LOGOS}/`, image: `${LOGOS}/images/home/hero-bg.webp`, size: '1920x1080'},
+  'get-started': {
+    figma: {image: 'b3f9b8d74158bac9fdcd722c8e991a837d289232', size: '2739x4096'},
     credit: null,
     permission: 'needed',
-    note: 'Poster frame of the logos.co home page hero video; stock footage, source not identified.',
-  },
-  'technology-stack': {
-    concept: 'Logos technology stack (architecture)',
-    keys: ['architecture', 'technology-stack', 'stack'],
-    logos: {page: `${LOGOS}/technology-stack`, image: `${LOGOS}/images/technology-stack/architecture-overview.webp`, size: '1404x1872'},
-    original: {page: 'https://www.bernhardlang.de/solarplants/', image: 'https://a.1stdibscdn.com/bernhard-lang-photography-solar-plants-010-usa-aerial-abstract-photography-for-sale/a_8031/a_39608121549897965503/av_solar_plants_010_by_bernhard_lang_master.jpg?width=1500', size: '1500x2000'},
-    credit: {name: 'Bernhard Lang, Solar Plants 010', url: 'https://www.bernhardlang.de/solarplants/'},
-    permission: 'needed',
+    note: 'Photograph from the Logos design files; source not identified. Also the default banner.',
   },
   basecamp: {
-    concept: 'Logos Basecamp',
-    keys: ['basecamp'],
-    logos: {page: `${LOGOS}/basecamp`, image: `${LOGOS}/images/basecamp/renewal/build-app-basecamp.png`, size: '3806x2168'},
-    credit: null,
-    permission: 'logos',
-    note: 'Screenshot of the Basecamp home screen (Logos-owned).',
-  },
-  'start-building': {
-    concept: 'Start building (build an app)',
-    keys: ['scaffold', 'build-an-app', 'blockchain-app'],
-    logos: {page: `${LOGOS}/`, image: `${LOGOS}/images/home/figma-refresh/start-building.webp`, size: '1404x1472'},
+    figma: {image: 'feb2e715f3736b5bee164848d14104c249cbe978', size: '1920x1920'},
     credit: null,
     permission: 'needed',
-    note: 'No larger original found.',
+    note: 'Photograph from the Logos design files; source not identified.',
   },
-  'logos-core': {
-    concept: 'Logos Core (modules and runtime)',
-    keys: ['core', 'logos-core', 'modules', 'module'],
-    logos: {page: `${LOGOS}/roadmap`, image: `${LOGOS}/images/roadmap/card-logos-core-a.webp`, size: '720x709'},
+  'build-an-app': {
+    figma: {image: '9b722884599c362d6a77de8fc00635f441ee08d8', size: '1828x900'},
     credit: null,
     permission: 'needed',
-    note: 'Larger copies exist only as anonymous reposts (1439x1409); photographer not identified.',
+    note: 'Photograph from the Logos design files; source not identified.',
+  },
+  core: {
+    logos: {page: `${LOGOS}/technology-stack/messaging`, image: `${LOGOS}/images/messaging/chat.webp`, size: '702x335'},
+    figma: {image: '1f8c4ce95de00d0bcd3e8cc539a2c3214912cf04', size: '1199x799'},
+    credit: null,
+    permission: 'needed',
+    note: 'Larger copy only as a watermarked stock preview (Creative Market, 910x607); the Figma copy is the same preview. logos.co shows it for Chat.',
   },
   blockchain: {
-    concept: 'Logos Blockchain',
-    keys: ['blockchain', 'bedrock', 'mantle', 'zones', 'zone-sdk', 'bridging'],
-    logos: {page: `${LOGOS}/technology-stack/blockchain`, image: `${LOGOS}/images/blockchain/overview/mantle.webp`, size: '640x512'},
-    original: {page: 'https://gpidesign.com/2018/10/thursday-salute-to-originals-grasslands-repair/', image: 'https://gpidesign.com/wp-content/uploads/2018/10/Repair_Pavilion-of-Australia_Rory-Gardiner2-960x768@2x.jpg', size: '1920x1536'},
-    credit: {name: 'Rory Gardiner, Repair, Australian Pavilion, Venice 2018', url: 'https://gpidesign.com/2018/10/thursday-salute-to-originals-grasslands-repair/'},
-    permission: 'needed',
-  },
-  cryptarchia: {
-    concept: 'Cryptarchia (private proof-of-stake)',
-    keys: ['cryptarchia'],
-    logos: {page: `${LOGOS}/technology-stack/blockchain`, image: `${LOGOS}/images/blockchain/overview/cryptarchia.webp`, size: '384x480'},
+    figma: {image: '4591b1049ffa4d132526df01a018782519fc2993', size: '1914x822'},
     credit: null,
     permission: 'needed',
-    note: "No larger version found online. Banner cut from the larger copy in the Logos design files' Figma export (images/98059166dfd07e2b461519dd16eb36d9b3240ebb, 2560x3200).",
+    note: 'Photograph from the Logos design files; source not identified.',
   },
   lez: {
-    concept: 'Logos Execution Zone (LEZ)',
-    keys: ['lez', 'logos-execution-zone'],
-    logos: {page: `${LOGOS}/technology-stack/blockchain`, image: `${LOGOS}/images/blockchain/overview/lez.webp`, size: '384x599'},
+    logos: {page: `${LOGOS}/technology-stack/blockchain`, image: `${LOGOS}/images/blockchain/overview/cryptarchia.webp`, size: '384x480'},
+    figma: {image: '98059166dfd07e2b461519dd16eb36d9b3240ebb', size: '2560x3200'},
     credit: null,
     permission: 'needed',
-    note: "No larger version found online. Banner cut from the larger copy in the Logos design files' Figma export (images/9ffb57fcf39a99f0dd0481cb408eb420d5299320, 1076x1676).",
+    note: 'No larger version found online. logos.co shows it for Cryptarchia.',
   },
-  networking: {
-    concept: 'Networking',
-    keys: ['networking', 'libp2p', 'transports'],
+  messaging: {
     logos: {page: `${LOGOS}/roadmap`, image: `${LOGOS}/images/roadmap/card-networking.webp`, size: '2000x1050'},
     credit: null,
     permission: 'needed',
-    note: 'No larger original found.',
-  },
-  'service-discovery': {
-    concept: 'Service and peer discovery',
-    keys: ['peer-discovery', 'service-discovery', 'capability-discovery', 'discv5', 'dns-discovery', 'peer-exchange', 'static-peers'],
-    logos: {page: `${LOGOS}/technology-stack/networking`, image: `${LOGOS}/images/networking/mix-net.jpg`, size: '1440x1800'},
-    credit: null,
-    permission: 'needed',
-    note: 'Too featureless for reverse search; no larger original found.',
+    note: 'No larger original found. logos.co shows it for Networking on the roadmap.',
   },
   mixnet: {
-    concept: 'Mixnet',
-    keys: ['mixnet', 'mix'],
-    logos: {page: `${LOGOS}/technology-stack/networking`, image: `${LOGOS}/images/networking/capability-discovery.webp`, size: '1334x1800'},
-    original: {page: 'https://samepaper.com/goldwin-x-same-paper', image: 'https://freight.cargo.site/t/original/i/02c081e9abb56a7d781db3c39c4f0d18c293c1da46990824098116527aefc80d/09.jpg', size: '4055x5470'},
-    credit: {name: 'Xiaopeng Yuan for Same Paper × Goldwin, Work From Wild', url: 'https://samepaper.com/goldwin-x-same-paper'},
+    figma: {image: '967c2dd05e37963d7d7fa30a97a50a175c911fe0', size: '2560x3200'},
+    credit: null,
     permission: 'needed',
+    note: 'Photograph from the Logos design files; source not identified.',
   },
-  rln: {
-    concept: 'Spam resistance: RLN and Zerokit',
-    keys: ['rln', 'zerokit'],
+  'peer-discovery': {
     logos: {page: `${LOGOS}/technology-stack/networking`, image: `${LOGOS}/images/networking/peering-layer.jpg`, size: '1439x1800'},
+    figma: {image: '10348b10d2ee9bac2b32d5a7cbb8740ebfa7c07d', size: '2560x3202'},
     credit: null,
     permission: 'needed',
-    note: "No larger original found. logos.co also uses this photo for Storage on the stack diagram. Banner cut from the larger copy in the Logos design files' Figma export (images/10348b10d2ee9bac2b32d5a7cbb8740ebfa7c07d, 2560x3202).",
+    note: 'No larger original found online. logos.co shows it for the peering layer and for Storage on the stack diagram.',
   },
-  messaging: {
-    concept: 'Logos Messaging',
-    keys: ['messaging', 'waku'],
-    logos: {page: `${LOGOS}/roadmap`, image: `${LOGOS}/images/roadmap/card-messaging.webp`, size: '1200x1600'},
-    credit: null,
-    permission: 'needed',
-    note: 'No larger original found.',
-  },
-  delivery: {
-    concept: 'Delivery',
-    keys: ['delivery'],
-    logos: {page: `${LOGOS}/technology-stack/messaging`, image: `${LOGOS}/images/messaging/delivery-landscape.webp`, size: '1550x1240'},
-    credit: null,
-    permission: 'needed',
-    note: "No larger original found online. Banner cut from the larger copy in the Logos design files' Figma export (images/18bf18f1e1d75bb3ef1d5734d8e67e1eaf26527d, 2560x3200, stored portrait).",
-  },
-  chat: {
-    concept: 'Chat',
-    keys: ['chat', 'de-mls'],
-    logos: {page: `${LOGOS}/technology-stack/messaging`, image: `${LOGOS}/images/messaging/chat.webp`, size: '702x335'},
-    credit: null,
-    permission: 'needed',
-    note: "Larger copy only as a watermarked stock preview (Creative Market, 910x607). Banner cut from the larger copy in the Logos design files' Figma export (images/1f8c4ce95de00d0bcd3e8cc539a2c3214912cf04, 1199x799).",
-  },
-  storage: {
-    concept: 'Logos Storage',
-    keys: ['storage'],
-    logos: {page: `${LOGOS}/roadmap`, image: `${LOGOS}/images/roadmap/card-storage.webp`, size: '1200x1600'},
-    credit: null,
-    permission: 'needed',
-    note: 'No larger original found.',
-  },
-  libstorage: {
-    concept: 'libstorage',
-    keys: ['libstorage'],
-    logos: {page: `${LOGOS}/technology-stack/storage`, image: `${LOGOS}/images/storage/use-case-2.webp`, size: '702x335'},
-    original: {page: 'http://www.n6cc.com/military-field-day-2024/', image: 'http://www.n6cc.com/wp-content/uploads/FD2024Eqp-200K.jpg', size: '2048x1536'},
-    credit: {name: 'N6CC, Military Field Day 2024', url: 'http://www.n6cc.com/military-field-day-2024/'},
-    permission: 'needed',
-  },
-  node: {
-    concept: 'Run a node (node programme)',
-    keys: ['node', 'run-a-node', 'operators'],
+  'run-a-node': {
     logos: {page: `${LOGOS}/node-programme`, image: `${LOGOS}/images/node-programme/builders.webp`, size: '1920x1082'},
     original: {page: 'https://commons.wikimedia.org/wiki/File:Guifi.net_supernode_installation_2.jpg', image: 'https://upload.wikimedia.org/wikipedia/commons/a/a6/Guifi.net_supernode_installation_2.jpg', size: '3264x1840'},
     credit: {name: 'Lluis tgn, Guifi.net supernode installation, CC BY-SA 4.0, cropped', url: 'https://commons.wikimedia.org/wiki/File:Guifi.net_supernode_installation_2.jpg'},
     permission: 'cc-by-sa-4.0',
   },
+  storage: {
+    figma: {image: '4d50cc822ff723ff596dcbb0aab650ef92ec9267', size: '1200x1200'},
+    credit: null,
+    permission: 'needed',
+    note: 'Photograph from the Logos design files; source not identified.',
+  },
 };
 
-module.exports = {banners, DEFAULT_BANNER: 'logos'};
+// For a page outside any folder, or in a folder with no banner yet.
+const DEFAULT_BANNER = 'get-started';
+
+module.exports = {banners, DEFAULT_BANNER};
 
 /**
  * @typedef {object} Banner
- * @property {string} concept
- * @property {string[]} keys
- * @property {{page: string, image: string, size: string}} logos
+ * @property {{page: string, image: string, size: string}} [logos]
+ * @property {{image: string, size: string}} [figma]
  * @property {{page: string, image: string, size: string}} [original]
  * @property {{name: string, url: string} | null} credit
  * @property {'needed' | 'logos' | 'cc-by-sa-4.0'} permission

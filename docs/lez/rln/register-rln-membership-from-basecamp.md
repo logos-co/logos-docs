@@ -3,7 +3,6 @@ title: Register an RLN membership from Basecamp
 doc_type: procedure
 product: lez
 topics: [lez, rln]
-banner: rln
 steps_layout: sectioned
 authors: adklempner, kashepavadan
 owner: logos

@@ -3,7 +3,6 @@ title: Register an RLN membership on LEZ with a Delivery node
 doc_type: procedure
 product: messaging
 topics: [messaging, LEZ, RLN]
-banner: rln
 steps_layout: sectioned
 authors: adklempner, kashepavadan
 owner: logos

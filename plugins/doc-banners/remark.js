@@ -1,8 +1,8 @@
 // Remark plugin: a banner image under each doc's title and subtitle.
 //
-// The banner is the one for the first of the page's frontmatter `topics`,
-// then its `product`, then its top-level docs folder, that has an image in
-// ./banners.js; failing all three, the default (logos.co home page) banner.
+// The banner is the one named after the page's top-level folder under docs/
+// (see ./banners.js), or DEFAULT_BANNER if that folder has none. Frontmatter
+// `banner: <id>` picks another banner, and `banner: false` turns it off.
 // It goes after the page's H1 and, when present, the `####` subtitle that
 // directly follows it. The photo credit is the image's title (hover) text.
 //
@@ -12,22 +12,6 @@
 const path = require('path');
 const {banners, DEFAULT_BANNER} = require('./banners');
 
-const norm = (s) => String(s).trim().toLowerCase().replace(/[\s_]+/g, '-');
-
-// key -> banner id; the first banner to claim a key wins.
-const byKey = new Map();
-for (const [id, banner] of Object.entries(banners)) {
-  for (const key of banner.keys) {
-    if (!byKey.has(key)) byKey.set(key, id);
-  }
-}
-
-function topicsOf(frontMatter) {
-  const {topics} = frontMatter;
-  if (!topics) return [];
-  return Array.isArray(topics) ? topics : String(topics).split(',');
-}
-
 function sectionOf(filePath, docsDir) {
   const rel = path.relative(docsDir, filePath);
   if (rel.startsWith('..') || path.isAbsolute(rel)) return null;
@@ -36,22 +20,16 @@ function sectionOf(filePath, docsDir) {
 }
 
 function pickBanner(frontMatter, filePath, docsDir) {
-  const candidates = [
-    ...topicsOf(frontMatter),
-    frontMatter.product,
-    sectionOf(filePath, docsDir),
-  ];
-  for (const candidate of candidates) {
-    if (candidate == null || candidate === '') continue;
-    const id = byKey.get(norm(candidate));
-    if (id) return id;
+  if (typeof frontMatter.banner === 'string' && banners[frontMatter.banner]) {
+    return frontMatter.banner;
   }
-  return DEFAULT_BANNER;
+  const section = sectionOf(filePath, docsDir);
+  return section && banners[section] ? section : DEFAULT_BANNER;
 }
 
 function creditOf(banner) {
   if (banner.credit) return `Photo: ${banner.credit.name}`;
-  if (banner.permission === 'logos') return 'Image: Logos';
+  if (banner.permission === 'logos' || !banner.logos) return 'Image: Logos';
   return 'Image: logos.co';
 }
 
@@ -65,10 +43,7 @@ module.exports = function docBanners(options = {}) {
     const frontMatter = file.data?.frontMatter ?? {};
     if (frontMatter.banner === false) return;
 
-    const id =
-      typeof frontMatter.banner === 'string' && banners[frontMatter.banner]
-        ? frontMatter.banner
-        : pickBanner(frontMatter, file.path, docsDir);
+    const id = pickBanner(frontMatter, file.path, docsDir);
     const banner = banners[id];
 
     const image = {

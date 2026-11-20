@@ -152,3 +152,4 @@ The module rejected the transaction. Common causes are insufficient funds to cov
 ## Next steps
 
 - [Register an RLN membership on LEZ with a Delivery node](../../lez/rln/register-rln-membership-on-lez-with-delivery-node.md)
+- [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md)

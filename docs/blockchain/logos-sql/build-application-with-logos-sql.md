@@ -422,3 +422,7 @@ The pending-write queue is full or the library is still saving an accepted publi
 ### A read needs finalised data
 
 The example reads the latest local state. Applications needing settled history can use `finalized_read_connection()` with the same SQLite API. The schema and each data change appear in that view only after their writes finalise.
+
+## Next steps
+
+- [Handle displaced writes](./handle-displaced-writes.md)

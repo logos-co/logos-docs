@@ -46,7 +46,7 @@ On the LEZ, transactions are verified differently depending on if they're public
 
 No, it distributes the opportunity for MEV extraction across a set of sequencers rather than removing it. When a Zone uses several sequencers, taking turns on a round-robin schedule or competing to publish first, no single sequencer can reliably capture all of the MEV available the way a single-sequencer rollup's operator could. A threshold of sequencers can also jointly sign a change to the sequencer list, letting an honest majority remove a malicious one.
 
-By isolating MEV to the Zone level, the Logos Blockchain is able to remain neutral and decentralised - centralised sequencing in one Zone does not impact the decentalisation of other Zones.
+By isolating MEV to the Zone level, the Logos Blockchain is able to remain neutral and decentralised - centralised sequencing in one Zone does not impact the decentralisation of other Zones.
 
 ## Why build on a Zone instead of launching an independent Layer 1?
 

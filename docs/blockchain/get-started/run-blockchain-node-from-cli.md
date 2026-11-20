@@ -389,3 +389,12 @@ This occurs if no bootstrap peer answers when the node starts. The node log will
     ```
 
 After a restart, the node first replays the blocks it already stored. The `start` call, and every `logosctl call blockchain_module` command until the replay ends, can return `RPC call failed`. The node still starts. The replay takes longer the more blocks the node has stored, from seconds on a new node to 10 minutes or more on a node that has synced the testnet. The node log reports `found <N> stored blocks to replay during chain recovery` when it begins.
+
+## Next steps
+
+- [Join the Blend network as a core node](../blend/join-the-blend-network-as-a-core-node.md)
+- [Build an application with Logos SQL](../logos-sql/build-application-with-logos-sql.md)
+- [Bridge assets between Logos Blockchain and a Zone](../zone-sdk/bridge-assets-between-blockchain-and-zone.md)
+- [Inscribe data on-chain using the Zone SDK](../zone-sdk/inscribe-data-on-chain-using-zone-sdk.md)
+- [Run an LEZ Indexer](../../lez/follow-chain/run-lez-indexer.md)
+- [Run a decentralised LEZ sequencer](../../lez/sequencing/run-decentralised-lez-sequencer.md)

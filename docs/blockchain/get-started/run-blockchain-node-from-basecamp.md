@@ -221,3 +221,9 @@ If the node is stuck or will not start at all, the **Reset the database** card i
 
 - **Node stopped** means the node process stopped unexpectedly. Click **Start Node**. If the same thing happens again, restart the app.
 - **Disconnected** means the app lost contact with the node service. Restart the app.
+
+## Next steps
+
+- [Claim leader rewards in Basecamp](./claim-leader-rewards-in-basecamp.md)
+- [Bridge assets from Logos Blockchain to a Zone on Basecamp](../transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md)
+- [Move Blockchain assets on Basecamp](../transfer-tokens/move-blockchain-assets-on-basecamp.md)

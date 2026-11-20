@@ -29,6 +29,10 @@ A page's public URL is its frontmatter `slug`, not its filename, so the two can 
 
 `plugins/agent-ready` writes `.md` copies of every page, `llms.txt`, per-section indexes, `agents/docs.json` and the `agents/AGENTS.md` block in `postBuild`, so none of it exists under `npm start`; use `npm run build && npm run serve`. Section titles and `use_cases` live in `plugins/agent-ready/sections.js`; a new top-level docs folder needs an entry there. `npm run check:agents` (also in CI) fails on any broken link in that output.
 
+## Prerequisites and Next steps
+
+`plugins/tech-tree` reads every procedure's Prerequisites block and fails `npm run build` (only warns under `npm start`) when a linked prerequisite procedure doesn't link back from its `## Next steps` section; the error prints the exact line to add. Links to non-procedure pages (glossary, Testnet endpoints, concepts) are exempt, and concept/reference pages never get a Next steps section. The same graph draws `/get-started/tech-tree`.
+
 ## Conventions
 
 `CONTRIBUTING.md` is the authority on document types, templates, and the review workflow; read it before adding or restructuring a page. Note the repo-wide `:::tip[Version]` banner that states which Testnet release a page is accurate for — it tracks the Testnet, not the app the page describes.

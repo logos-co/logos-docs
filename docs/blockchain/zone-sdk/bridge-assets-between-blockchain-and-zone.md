@@ -336,6 +336,5 @@ For multi-signature bundles the orphan event carries the same `ChannelUpdateTx::
 
 ## Next steps
 
-For more examples of what can be built with the Zone SDK, see the following link:
-
-- [Operate a decentralised Zone with round-robin sequencer rotation](./operate-decentralised-zone-with-round-robin-sequencer-rotation.md)
+- [Operate a decentralised Zone with round-robin sequencer rotation](./operate-decentralised-zone-with-round-robin-sequencer-rotation.md), for more of what you can build with the Zone SDK
+- [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md), which you can fund with notes bridged to the LEZ

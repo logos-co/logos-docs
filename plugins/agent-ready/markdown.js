@@ -94,8 +94,10 @@ function convertAdmonitions(lines) {
  *        maps an absolute .md path to the page's permalink
  * @param {string} args.rawBase     base URL for raw repository files (images)
  * @param {string} args.repoRoot    absolute path of the repository root
+ * @param {Record<string, string>} [args.components] Markdown to put in place
+ *   of self-closing MDX components, by name (`<TechTree />`)
  */
-function toAgentMarkdown({source, sourcePath, siteUrl, title, resolveDoc, rawBase, repoRoot}) {
+function toAgentMarkdown({source, sourcePath, siteUrl, title, resolveDoc, rawBase, repoRoot, components = {}}) {
   const body = stripFrontMatter(source);
   const dir = path.dirname(sourcePath);
 
@@ -127,6 +129,9 @@ function toAgentMarkdown({source, sourcePath, siteUrl, title, resolveDoc, rawBas
       /<YouTube\b[^>]*?id=["']([^"']+)["'][^>]*?title=["']([^"']*)["'][^>]*\/>/g,
       (_, id, t) => `[Video: ${t}](https://www.youtube.com/watch?v=${id})`,
     );
+    for (const [name, markdown] of Object.entries(components)) {
+      text = text.replace(new RegExp(`<${name}\\s*/>`, 'g'), () => markdown);
+    }
     // Markdown links and images. Inline code spans are matched first and left
     // alone, but a link label may itself contain code (`[`lgpm`](...)`).
     text = text.replace(

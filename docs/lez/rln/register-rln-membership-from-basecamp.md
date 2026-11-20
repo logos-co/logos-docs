@@ -13,7 +13,7 @@ sidebar_position: 1
 
 # Register an RLN membership from Basecamp
 
-#### Get an RLN membership on the LEZ testnet for a delivery node running in Logos Basecamp.
+#### Get an RLN membership on the LEZ testnet for a Delivery node running in Logos Basecamp.
 
 :::tip[Version]
 This document is accurate for **Testnet v0.3.1**.
@@ -27,13 +27,15 @@ Registration pays with native tokens from the payer account. There is no faucet:
 
 - [Logos Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
 - Network access to the testnet sequencer [`https://testnet.lez.logos.co/`](https://testnet.lez.logos.co/).
-- A way to send `250000000` native units to an account on the LEZ testnet, such as Logos Blockchain notes that you can [bridge to the zone](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md).
+- `250000000` units of native LEZ tokens for the payer [account](../../get-started/glossary.md#account), from one of these sources:
+   - A [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) wallet you can [bridge assets](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md) from. Testnet has no faucet.
+   - A LEZ account you already hold on the testnet Zone, with about `270000000` units so it can cover the transfer's fee reserve.
 - Approximately 1 GB free disk for the downloaded module packages.
 :::
 
 ## What to expect
 
-- You can create a `logos.test` delivery node in Basecamp and find the payer account it registers from.
+- You can create a `logos.test` Delivery node in Basecamp and find the payer account it registers from.
 - You can fund the payer and watch the node register its own membership, with no wizard and no faucet.
 - You can confirm the membership's state and message quota in the **RLN** panel of Delivery Demo.
 
@@ -42,11 +44,11 @@ Registration pays with native tokens from the payer account. There is no faucet:
 1. In Basecamp's **Package Manager**, find **Delivery Demo** in the official catalogue and click **INSTALL**.
 1. In the **Install Package?** dialogue, click **Install**.
 
-   - The dialogue lists `delivery_module` 0.4.0, `liblogos_lez_rln_module` 5.1.0, and `liblogos_rln_module` 0.12.0. These modules hold the node's wallet and register its membership. No extra package repository is needed.
+   - The dialogue lists `Delivery_module` 0.4.0, `liblogos_lez_rln_module` 5.1.0, and `liblogos_rln_module` 0.12.0. These modules hold the node's wallet and register its membership. No extra package repository is needed.
 
    **Expected result:** the **Delivery Demo** row reads **INSTALLED**. If the row shows **RETRY**, click it once more.
 
-## Step 2: Create the delivery node
+## Step 2: Create the Delivery node
 
 1. Open **Delivery Demo** from the **Applications** grid.
 1. In the `createNode` panel, keep `preset` set to `logos.test` and `mode` set to `Core`, then click **Call**.
@@ -91,7 +93,7 @@ To register, the payer must hold the registry's price plus a fee reserve: `18280
 
 1. Send `250000000` native units to the payer account.
 
-   - To bridge from the Logos Blockchain, follow [Bridge assets between Logos Blockchain and a Zone](../../blockchain/zone-sdk/bridge-assets-between-blockchain-and-zone.md), with the payer account ID as the deposit's recipient. A deposit is credited on LEZ only once it is final on the blockchain, which takes about 10 hours on the current testnet.
+   - To bridge from the Logos Blockchain, follow [Bridge assets from Logos Blockchain to a Zone on Basecamp](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md), with the payer account ID as the deposit's recipient. A deposit is credited on LEZ only once it is final on the blockchain, which takes about 10 hours on the current testnet.
 
 1. Check the payer's balance. Replace `<BASE58>` with the value from Step 3:
 
@@ -132,3 +134,9 @@ The payer holds less than `182800000`. Check its balance as in [Step 4](#step-4-
 ### The balance check returns `0` long after a bridge deposit
 
 The deposit isn't final on the blockchain yet. Wait, and check that the deposit's recipient was the payer account ID from [Step 3](#step-3-find-the-payer-account).
+
+## Next steps
+
+- [Use the Delivery module API in an app](../../messaging/delivery/use-delivery-module-api-in-app.md)
+- [Send 1:1 messages with the Logos Chat app](../../messaging/get-started/send-1-1-messages-logos-chat.md)
+- [Send group messages with the Logos Chat app](../../messaging/get-started/send-group-messages-logos-chat.md)

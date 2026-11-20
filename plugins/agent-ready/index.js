@@ -15,6 +15,7 @@ const fs = require('fs');
 const path = require('path');
 const {toAgentMarkdown, summaryOf, headingsOf} = require('./markdown');
 const SECTIONS = require('./sections');
+const techTree = require('../tech-tree/graph');
 
 const DOCS_PLUGIN = 'docusaurus-plugin-content-docs';
 
@@ -62,6 +63,10 @@ module.exports = function agentReadyPlugin(context, options = {}) {
         bySource.set(path.resolve(repoRoot, doc.source.replace(/^@site\//, '')), doc.permalink);
       }
 
+      // Components that have no Markdown form of their own.
+      const graph = techTree.buildGraph(techTree.docsFrom(docsContent, repoRoot), path.join(repoRoot, 'docs'));
+      const components = {TechTree: techTree.treeMarkdown(graph, mdUrl)};
+
       // Order pages by their first appearance in the sidebars.
       const order = new Map();
       for (const sidebar of Object.values(version.sidebars)) {
@@ -83,6 +88,7 @@ module.exports = function agentReadyPlugin(context, options = {}) {
             rawBase,
             repoRoot,
             resolveDoc: (abs) => bySource.get(abs),
+            components,
           });
           const relSource = path.relative(path.join(repoRoot, 'docs'), sourcePath);
           return {

@@ -195,3 +195,8 @@ The following are all the commands available for the `wallet` CLI, what they are
 ## Next steps
 
 - [Transfer native tokens on the LEZ](../transfer-tokens/transfer-native-tokens-on-lez.md)
+- [Transfer LEZ tokens between public and private states](../transfer-tokens/transfer-lez-tokens-between-public-private-states.md)
+- [Set up a shared private account](../accounts/set-up-shared-private-lez-account.md)
+- [Write an LEZ program that updates an account via `plan` and `apply`](../programs/write-lez-program-with-plan-and-apply.md)
+- [Run an LEZ Indexer](../follow-chain/run-lez-indexer.md)
+- [Run a decentralised LEZ sequencer](../sequencing/run-decentralised-lez-sequencer.md)

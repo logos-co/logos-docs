@@ -611,3 +611,8 @@ A `Plan` does nothing until it is written. If your guest does not use `run_progr
 ### The transaction fails with `EffectOutsideInputs` or `ForeignShardWrite`
 
 The program declared an effect on a shard that is not an input of the call, or tried to write a shard keyed by another program. Check that the client, or the calling program, selects `ProgramShardSelector::new(account_id, <your program's account ID>)` for every account your `plan` writes.
+
+## Next steps
+
+- [Send verified messages between LEZ Zones](../cross-zone/send-verified-messages-between-lez-zones.md)
+- [Emit and query LEZ program events](../follow-chain/emit-and-query-lez-program-events.md)

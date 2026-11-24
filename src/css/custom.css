@@ -509,6 +509,14 @@ code {
   font-family: var(--logos-font-sans);
 }
 
+/* The highlighted search result takes the primary colour as its background,
+   like a primary button, but the plugin's text defaults to pure white,
+   which vanishes on dark mode's off-white primary. Use paper, as the
+   primary buttons do. */
+[data-theme='dark'] {
+  --search-local-hit-active-color: var(--logos-paper);
+}
+
 .navbar-sidebar {
   background-color: var(--logos-paper);
 }

@@ -38,6 +38,9 @@ jobs:
     # Forks would otherwise open sync PRs against themselves every day.
     if: github.repository == 'logos-co/logos-docs'
     runs-on: ubuntu-latest
+    # Holds DOCS_SYNC_SIGNING_KEY. The environment only admits runs from main,
+    # so a workflow pushed to another branch cannot read the key.
+    environment: docs-sync
     steps:
       - uses: actions/checkout@v7
 
@@ -59,17 +62,41 @@ jobs:
           if [ -n "$TAG" ]; then args+=(--tag "$TAG"); fi
           python3 scripts/sync-api-reference/sync.py "${args[@]}"
 
+      # GitHub signs API-created commits only for GITHUB_TOKEN and GitHub App
+      # tokens, so the action's sign-commits option leaves commits pushed with
+      # DOCS_SYNC_TOKEN (a personal access token) unsigned. Sign them in git
+      # instead, with DOCS_SYNC_SIGNING_KEY: an SSH key registered as a
+      # signing-only key on the account below, and used for nothing else.
+      # GitHub verifies an SSH signature against the committer's email, so the
+      # committer must be that account.
+      - name: Set up commit signing
+        env:
+          SIGNING_KEY: ${{ secrets.DOCS_SYNC_SIGNING_KEY }}
+        run: |
+          if [ -z "$SIGNING_KEY" ]; then
+            echo "::error::DOCS_SYNC_SIGNING_KEY is not set in the docs-sync environment"
+            exit 1
+          fi
+          key="$RUNNER_TEMP/docs-sync-signing-key"
+          install -m 600 /dev/null "$key"
+          printf '%s\n' "$SIGNING_KEY" > "$key"
+          git config --global gpg.format ssh
+          git config --global user.signingkey "$key"
+          git config --global commit.gpgsign true
+
       # PRs opened with the default GITHUB_TOKEN do not trigger other
       # workflows, so Build Check and Vale would not run on them. A
       # DOCS_SYNC_TOKEN secret (a fine-grained token with contents and pull
       # requests write on this repo) avoids that; without it, close and reopen
       # the PR to start the checks.
       - uses: peter-evans/create-pull-request@v8
+        id: cpr
         with:
           token: ${{ secrets.DOCS_SYNC_TOKEN || github.token }}
           branch: sync/api-reference
           delete-branch: true
-          sign-commits: true
+          author: kashepavadan <12769325+kashepavadan@users.noreply.github.com>
+          committer: kashepavadan <12769325+kashepavadan@users.noreply.github.com>
           add-paths: |
             docs/messaging/reference/delivery-module-api-reference.md
             docs/messaging/reference/chat-module-api-reference.md
@@ -111,6 +138,21 @@ jobs:
             The pages are mirrored, so review the diff for the change itself rather than the wording; wording is fixed in the source repo.
             If no checks have run on this PR, close and reopen it to start them.
 
+      # Fail (and so report below) if the pushed commit did not come out
+      # Verified, rather than leaving an unsigned sync PR to be noticed later.
+      - name: Check that the commit is signed
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
+        run: |
+          read -r verified reason < <(gh api "repos/${{ github.repository }}/commits/$SHA" \
+            --jq '"\(.commit.verification.verified) \(.commit.verification.reason)"')
+          if [ "$verified" != true ]; then
+            echo "::error::Sync commit $SHA is not verified (reason: $reason)"
+            exit 1
+          fi
+
       # A failed scheduled run only emails whoever last edited the cron line, so
       # a broken sync can go unnoticed for days. Report it as an issue instead:
       # one open issue per failure streak, with a comment for each later run.
@@ -132,7 +174,7 @@ jobs:
             gh issue create --title "$title" --label "type:chore" --body "$(cat <<EOF
           The scheduled sync of the mirrored reference pages failed: $RUN_URL
 
-          Open the run, find the failed step, and fix the cause; mirrored pages stay stale until it is fixed. A run that fails in the \`create-pull-request\` step with "Resource not accessible by personal access token" means the \`DOCS_SYNC_TOKEN\` secret has lost Contents or Pull requests write access to this repo, or is waiting for org approval.
+          Open the run, find the failed step, and fix the cause; mirrored pages stay stale until it is fixed. A run that fails in the \`create-pull-request\` step with "Resource not accessible by personal access token" means the \`DOCS_SYNC_TOKEN\` secret has lost Contents or Pull requests write access to this repo, or is waiting for org approval. A failure in "Check that the commit is signed" means the \`DOCS_SYNC_SIGNING_KEY\` secret in the \`docs-sync\` environment no longer matches a signing key on the committer's GitHub account.
 
           Later failures are added here as comments. Close this issue once a run succeeds.
           EOF

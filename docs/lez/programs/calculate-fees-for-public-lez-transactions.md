@@ -1,6 +1,7 @@
 ---
 title: Calculate the fees for public LEZ transactions
 doc_type: procedure
+user_type: developer
 product: lez
 topics: [lez, fees, gas, wallet]
 steps_layout: sectioned

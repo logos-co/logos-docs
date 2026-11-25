@@ -1,6 +1,7 @@
 ---
 title: Run an LEZ wallet via the CLI
 doc_type: procedure
+user_type: cli_user
 product: lez
 topics: lez
 steps_layout: flat

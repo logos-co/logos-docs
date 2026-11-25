@@ -1,6 +1,7 @@
 ---
 title: Swap ETH and LEZ tokens in Basecamp
 doc_type: procedure
+user_type: gui_user
 product: core
 topics: core
 steps_layout: sectioned
@@ -286,8 +287,5 @@ You're on an older build, or on one launched with the developer override that re
 This is the case the time locks exist for, and no funds are at risk. Open the **Refund** tab: a **Ready to claim back** card carries the **Hashlock** and **Swap ID** from your most recent swap, already filled in, so click **Get my ETH back** once your deadline has passed. For an older swap, expand **Enter a refund by hand (advanced)**, copy **ETH swap ID (lock)** from its receipt in the **History** tab, and paste it into **Swap ID** under **Get ETH back**. The contract enforces the deadline, so an early attempt fails outright rather than passing silently. Reclaiming returns your ETH in full, less gas.
 
 ## Next steps
-
-- [Install and load a module in Basecamp](./install-and-load-module-in-basecamp.md) explains how Basecamp packages, installs, and loads the [modules](../get-started/glossary.md#module) this app is built from.
-- [Run the LEZ wallet app and initiate native token transfers](../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md) covers moving the LEZ tokens you just received.
 
 To build the app from source, or run a swap headlessly from the command line, see the [eth-lez-atomic-swaps README](https://github.com/logos-co/eth-lez-atomic-swaps/blob/master/README.md).

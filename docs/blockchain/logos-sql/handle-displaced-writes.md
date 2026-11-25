@@ -1,6 +1,7 @@
 ---
 title: Handle displaced writes
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics:
   - logos-sql

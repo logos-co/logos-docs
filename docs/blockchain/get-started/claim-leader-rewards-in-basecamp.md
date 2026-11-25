@@ -1,6 +1,7 @@
 ---
 title: Claim leader rewards in Basecamp
 doc_type: procedure
+user_type: gui_user
 product: blockchain
 topics: []
 steps_layout: flat

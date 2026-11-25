@@ -1,6 +1,7 @@
 ---
 title: Send anonymised messages over the mix network
 doc_type: procedure
+user_type: gui_user
 product: mixnet
 topics: [chat, mix]
 steps_layout: flat

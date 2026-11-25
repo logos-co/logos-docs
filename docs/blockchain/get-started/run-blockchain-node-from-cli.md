@@ -1,6 +1,7 @@
 ---
 title: Run a Blockchain node from the CLI
 doc_type: procedure
+user_type: node_operator
 product: blockchain
 topics: blockchain
 steps_layout: sectioned

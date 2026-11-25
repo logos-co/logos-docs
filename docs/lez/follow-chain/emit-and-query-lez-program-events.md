@@ -1,6 +1,7 @@
 ---
 title: Emit and query LEZ program events
 doc_type: procedure
+user_type: developer
 product: lez
 topics:
   - lez

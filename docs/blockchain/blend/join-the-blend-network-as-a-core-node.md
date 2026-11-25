@@ -1,6 +1,7 @@
 ---
 title: Join the Blend network as a core node
 doc_type: procedure
+user_type: node_operator
 product: blockchain
 topics: blend
 steps_layout: flat

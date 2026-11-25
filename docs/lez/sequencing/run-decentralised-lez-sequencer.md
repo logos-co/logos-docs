@@ -1,6 +1,7 @@
 ---
 title: Run a decentralised LEZ sequencer
 doc_type: procedure
+user_type: node_operator
 product: lez
 topics: lez, sequencer, staking
 steps_layout: sectioned

@@ -1,6 +1,7 @@
 ---
 title: Register an RLN membership on LEZ with a Delivery node
 doc_type: procedure
+user_type: cli_user
 product: messaging
 topics: [messaging, LEZ, RLN]
 steps_layout: sectioned

@@ -1,6 +1,7 @@
 ---
 title: Run a Storage Node from Basecamp
 doc_type: procedure
+user_type: gui_user
 product: storage
 topics: storage
 steps_layout: sectioned

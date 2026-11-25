@@ -1,6 +1,7 @@
 ---
 title: Bridge assets from Logos Blockchain to a Zone on Basecamp
 doc_type: procedure
+user_type: gui_user
 product: blockchain
 topics: [lez, bridging]
 steps_layout: flat

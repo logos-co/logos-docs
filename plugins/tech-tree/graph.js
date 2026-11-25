@@ -1,17 +1,20 @@
-// The prerequisite graph between procedures, shared by the tech-tree plugin
-// (the diagram on /get-started/tech-tree and the build check) and agent-ready
-// (the Markdown version of that page).
+// The graph between procedures, shared by the tech-tree plugin (the diagram on
+// /get-started/tech-tree and the build check) and agent-ready (the Markdown
+// version of that page).
 //
-// An edge runs from a prerequisite to the procedure that lists it: a link to
-// another procedure inside a `:::info[Prerequisites]` admonition or a
-// `## Prerequisites` section. Links to pages of any other doc_type (the
-// glossary, Testnet endpoints, concept pages) are lookups, not steps, and are
-// not edges. Every prerequisite must link back to each of its dependents from
-// its `## Next steps` section; `errors` lists the ones that do not.
+// An edge runs from a procedure to each procedure linked from its
+// `## Next steps` section. It is `required` when the target also lists the
+// source as a prerequisite: a link to another procedure inside a
+// `:::info[Prerequisites]` admonition or a `## Prerequisites` section. Links
+// to pages of any other doc_type (the glossary, Testnet endpoints, concept
+// pages) are lookups, not steps, and are not edges. Every prerequisite must
+// link back to each of its dependents from its `## Next steps` section;
+// `errors` lists the ones that do not.
 
 const fs = require('fs');
 const path = require('path');
 const {stripFrontMatter, splitFences} = require('../agent-ready/markdown');
+const {USER_TYPES} = require('./user-types');
 
 // A relative link to a Markdown file, with an optional anchor.
 const DOC_LINK = /\]\(([^)\s#:]+\.mdx?)(?:#[^)\s]*)?\)/g;
@@ -58,7 +61,7 @@ function nextStepsLinks(lines, file) {
 }
 
 /**
- * @param {Array<{source: string, permalink: string, title: string, docType?: string}>} docs
+ * @param {Array<{source: string, permalink: string, title: string, docType?: string, techTree?: boolean, userType?: string}>} docs
  *   `source` is the absolute path of the doc's file.
  * @param {string} docsDir absolute path of docs/
  */
@@ -66,20 +69,20 @@ function buildGraph(docs, docsDir) {
   const bySource = new Map(docs.map((d) => [d.source, d]));
   const isProcedure = (file) => bySource.get(file)?.docType === 'procedure';
   const next = new Map();
-  const edges = [];
+  const required = [];
 
   for (const doc of docs) {
     if (doc.docType !== 'procedure') continue;
     const lines = proseLines(fs.readFileSync(doc.source, 'utf8'));
     next.set(doc.source, nextStepsLinks(lines, doc.source));
     for (const target of new Set(prerequisiteLinks(lines, doc.source))) {
-      if (target !== doc.source && isProcedure(target)) edges.push({from: target, to: doc.source});
+      if (target !== doc.source && isProcedure(target)) required.push({from: target, to: doc.source});
     }
   }
 
   const rel = (file) => path.relative(path.dirname(docsDir), file).split(path.sep).join('/');
   const missing = new Map();
-  for (const {from, to} of edges) {
+  for (const {from, to} of required) {
     if (next.get(from)?.has(to)) continue;
     if (!missing.has(from)) missing.set(from, []);
     missing.get(from).push(to);
@@ -93,12 +96,67 @@ function buildGraph(docs, docsDir) {
     })),
   }));
 
-  const ids = [...new Set(edges.flatMap((e) => [e.from, e.to]))];
+  // Arrows: every Next steps link between procedures. Those a Prerequisites
+  // link backs go in first; any other that would close a loop (two pages that
+  // list each other as Next steps) is left out, since columns need a DAG.
+  const key = (e) => `${e.from}>${e.to}`;
+  const isRequired = new Set(required.map(key));
+  const edges = required.map((e) => ({...e, required: true}));
+  const out = new Map();
+  const addOut = ({from, to}) => out.set(from, [...(out.get(from) ?? []), to]);
+  edges.forEach(addOut);
+  const reaches = (start, goal) => {
+    const seen = new Set();
+    const stack = [start];
+    while (stack.length) {
+      const i = stack.pop();
+      if (i === goal) return true;
+      if (seen.has(i)) continue;
+      seen.add(i);
+      stack.push(...(out.get(i) ?? []));
+    }
+    return false;
+  };
+  const suggested = [...next]
+    .flatMap(([from, tos]) => [...(tos ?? [])].filter((to) => to !== from && isProcedure(to)).map((to) => ({from, to})))
+    .filter((e) => !isRequired.has(key(e)))
+    .sort((a, b) => key(a).localeCompare(key(b)));
+  const skipped = [];
+  for (const e of suggested) {
+    if (reaches(e.to, e.from)) {
+      skipped.push({from: rel(e.from), to: rel(e.to)});
+      continue;
+    }
+    edges.push({...e, required: false});
+    addOut(e);
+  }
+
+  // Every procedure is a node, including ones that link to no other procedure,
+  // unless its front matter sets `tech_tree: false`. The Next steps check above
+  // still covers those pages; they and their links are only left off the diagram.
+  const shown = (file) => bySource.get(file).techTree !== false;
+  const ids = docs.filter((d) => d.docType === 'procedure' && shown(d.source)).map((d) => d.source);
   const nodes = ids.map((id) => {
     const d = bySource.get(id);
-    return {id: rel(id), title: d.title, permalink: d.permalink, section: path.relative(docsDir, id).split(path.sep)[0]};
+    return {
+      id: rel(id),
+      title: d.title,
+      permalink: d.permalink,
+      section: path.relative(docsDir, id).split(path.sep)[0],
+      userType: d.userType,
+    };
   });
-  return {nodes, edges: edges.map((e) => ({from: rel(e.from), to: rel(e.to)})), errors};
+  return {
+    nodes,
+    edges: edges
+      .filter((e) => shown(e.from) && shown(e.to))
+      .map((e) => ({from: rel(e.from), to: rel(e.to), required: e.required})),
+    errors,
+    skipped,
+    userTypeErrors: docs
+      .filter((d) => d.docType === 'procedure' && !USER_TYPES.some((t) => t.id === d.userType))
+      .map((d) => ({file: rel(d.source), value: d.userType})),
+  };
 }
 
 function formatErrors(errors) {
@@ -116,92 +174,6 @@ function formatErrors(errors) {
   return lines.join('\n');
 }
 
-// Columns by longest prerequisite chain, ordered and spaced to keep edges short.
-const GEOMETRY = {nodeWidth: 228, nodeHeight: 56, gap: 10, columnGap: 92, top: 48};
-
-function layout(graph, sectionOrder = []) {
-  const {nodeWidth: W, nodeHeight: H, gap: GAP, columnGap, top} = GEOMETRY;
-  const ids = graph.nodes.map((n) => n.id);
-  const parents = Object.fromEntries(ids.map((i) => [i, []]));
-  const children = Object.fromEntries(ids.map((i) => [i, []]));
-  for (const {from, to} of graph.edges) {
-    children[from].push(to);
-    parents[to].push(from);
-  }
-  const section = Object.fromEntries(graph.nodes.map((n) => [n.id, n.section]));
-
-  const depth = {};
-  const visiting = new Set();
-  const depthOf = (i) => {
-    if (i in depth) return depth[i];
-    if (visiting.has(i)) throw new Error(`tech-tree: prerequisite cycle through ${i}`);
-    visiting.add(i);
-    depth[i] = parents[i].length ? 1 + Math.max(...parents[i].map(depthOf)) : 0;
-    visiting.delete(i);
-    return depth[i];
-  };
-  ids.forEach(depthOf);
-  const columns = Array.from({length: Math.max(0, ...ids.map((i) => depth[i])) + 1}, (_, k) =>
-    ids.filter((i) => depth[i] === k),
-  );
-
-  // Order: group by section, then barycentre sweeps to reduce crossings.
-  const rank = (s) => (sectionOrder.includes(s) ? sectionOrder.indexOf(s) : sectionOrder.length);
-  columns.forEach((c) => c.sort((a, b) => rank(section[a]) - rank(section[b]) || a.localeCompare(b)));
-  const pos = {};
-  const index = () => columns.forEach((c) => c.forEach((i, k) => (pos[i] = k)));
-  index();
-  const bary = (i, nb) => (nb[i].length ? nb[i].reduce((s, j) => s + pos[j], 0) / nb[i].length : pos[i]);
-  for (let it = 0; it < 12; it++) {
-    for (let k = 1; k < columns.length; k++) {
-      columns[k].sort((a, b) => bary(a, parents) - bary(b, parents));
-      index();
-    }
-    for (let k = columns.length - 2; k >= 0; k--) {
-      columns[k].sort((a, b) => bary(a, children) - bary(b, children));
-      index();
-    }
-  }
-
-  // Vertical positions: pull each node toward its neighbours, keeping order and spacing.
-  const y = {};
-  columns.forEach((c) => c.forEach((i, k) => (y[i] = k * (H + GAP))));
-  const place = (c, want) => {
-    let prev = -Infinity;
-    const placed = c.map((i) => (prev = Math.max(want(i), prev + H + GAP)));
-    const shift = placed.reduce((s, v, k) => s + (v - want(c[k])), 0) / c.length;
-    c.forEach((i, k) => (y[i] = placed[k] - shift));
-  };
-  const mean = (nb) => (i) => (nb[i].length ? nb[i].reduce((s, j) => s + y[j], 0) / nb[i].length : y[i]);
-  for (let it = 0; it < 6; it++) {
-    for (let k = 1; k < columns.length; k++) place(columns[k], mean(parents));
-    for (let k = columns.length - 2; k >= 0; k--) place(columns[k], mean(children));
-  }
-  const minY = Math.min(...ids.map((i) => y[i]));
-  const x = (k) => k * (W + columnGap);
-
-  const nodes = graph.nodes.map((n) => ({...n, depth: depth[n.id], x: x(depth[n.id]), y: Math.round(y[n.id] - minY + top)}));
-  const at = Object.fromEntries(nodes.map((n) => [n.id, n]));
-  const edges = graph.edges.map(({from, to}) => {
-    const a = at[from];
-    const b = at[to];
-    const x1 = a.x + W;
-    const y1 = a.y + H / 2;
-    const x2 = b.x;
-    const y2 = b.y + H / 2;
-    const dx = Math.max(40, (x2 - x1) / 2);
-    return {from, to, d: `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`};
-  });
-  return {
-    ...GEOMETRY,
-    width: columns.length ? x(columns.length - 1) + W : 0,
-    height: nodes.length ? Math.max(...nodes.map((n) => n.y)) + H + 16 : 0,
-    columns: columns.map((c, k) => ({x: x(k), count: c.length})),
-    nodes,
-    edges,
-  };
-}
-
 // Markdown stand-in for the diagram, for the agent-facing .md copy of the page.
 function treeMarkdown(graph, url) {
   const byId = Object.fromEntries(graph.nodes.map((n) => [n.id, n]));
@@ -209,10 +181,21 @@ function treeMarkdown(graph, url) {
   const from = [...new Set(graph.edges.map((e) => e.from))].sort((a, b) =>
     byId[a].title.localeCompare(byId[b].title),
   );
-  const lines = ['Each procedure below is a prerequisite of the procedures nested under it.', ''];
+  const lines = [
+    'Each procedure below lists the procedures nested under it as Next steps. "(prerequisite)" marks a next step that lists the procedure above it under Prerequisites.',
+    '',
+  ];
+  const linked = new Set(graph.edges.flatMap((e) => [e.from, e.to]));
+  const alone = graph.nodes.filter((n) => !linked.has(n.id)).sort((a, b) => a.title.localeCompare(b.title));
   for (const id of from) {
     lines.push(`- ${link(id)}`);
-    for (const e of graph.edges.filter((e) => e.from === id)) lines.push(`  - ${link(e.to)}`);
+    for (const e of graph.edges.filter((e) => e.from === id)) {
+      lines.push(`  - ${link(e.to)}${e.required ? ' (prerequisite)' : ''}`);
+    }
+  }
+  if (alone.length) {
+    lines.push('', 'These procedures have no Next steps or Prerequisites links to other procedures:', '');
+    for (const n of alone) lines.push(`- ${link(n.id)}`);
   }
   return lines.join('\n');
 }
@@ -226,7 +209,20 @@ function docsFrom(docsContent, siteDir) {
       permalink: d.permalink,
       title: d.title,
       docType: d.frontMatter.doc_type,
+      techTree: d.frontMatter.tech_tree !== false,
+      userType: d.frontMatter.user_type,
     }));
 }
 
-module.exports = {buildGraph, formatErrors, layout, treeMarkdown, docsFrom};
+function formatUserTypeErrors(errors) {
+  const allowed = USER_TYPES.map((t) => t.id).join(', ');
+  return [
+    `tech-tree: ${errors.length} procedure(s) have no valid \`user_type\` in their front matter. Give each exactly one of: ${allowed}.`,
+    'The criteria for each are the journey fit checklists in .github/ISSUE_TEMPLATE/doc-packet.yml.',
+    '',
+    ...errors.map((e) => `  ${e.file}: ${e.value === undefined ? 'missing' : JSON.stringify(e.value)}`),
+    '',
+  ].join('\n');
+}
+
+module.exports = {buildGraph, formatErrors, formatUserTypeErrors, treeMarkdown, docsFrom};

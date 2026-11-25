@@ -1,6 +1,7 @@
 ---
 title: Start a Logos module from the CLI
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: flat
@@ -187,3 +188,7 @@ An LGX package holds one variant per platform, and the released `logosctl` insta
 ### The module is not loaded after a restart
 
 Restarting the daemon does not reload modules, so `logosctl call` reports `Module 'minimal' is not loaded`. Load it again with `logosctl module load minimal`.
+
+## Next steps
+
+- [Build and run a Logos core module](./build-and-run-a-logos-core-module.md)

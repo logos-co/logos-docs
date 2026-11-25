@@ -13,6 +13,7 @@ Logos Chat app*, *Install Logos Basecamp*, *Build and run a Logos core module*.
 ---
 title:
 doc_type: # tutorial | procedure
+user_type: # gui_user | cli_user | developer | node_operator (procedures only; exactly one, per the journey fit checklists in .github/ISSUE_TEMPLATE/doc-packet.yml)
 product: # [blockchain | storage | messaging | mixnet | peer-discovery | core | basecamp | lez]
 topics: []
 steps_layout: sectioned

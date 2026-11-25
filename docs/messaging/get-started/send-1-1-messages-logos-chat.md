@@ -1,6 +1,7 @@
 ---
 title: Send 1:1 messages with the Logos Chat app
 doc_type: procedure
+user_type: gui_user
 product: messaging
 topics: messaging
 steps_layout: sectioned
@@ -97,3 +98,7 @@ Both instances need to reach a shared bootstrap peer to connect to the peer-to-p
 ### A conversation can't be replied to
 
 The conversation is from an earlier launch, listed under **Previous sessions**. Opening it replaces the message box with a **From a previous session** notice, because each launch has a new identity and earlier conversations are kept for reading only. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.
+
+## Next steps
+
+- [Send anonymised messages over the mix network](../../mixnet/get-started/send-anonymised-messages-over-the-mix-network.md)

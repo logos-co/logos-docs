@@ -1,6 +1,7 @@
 ---
 title: Transfer LEZ tokens between public and private states
 doc_type: procedure
+user_type: cli_user
 product: lez
 topics: lez
 steps_layout: sectioned

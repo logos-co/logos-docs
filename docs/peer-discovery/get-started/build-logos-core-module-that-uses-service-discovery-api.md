@@ -1,6 +1,7 @@
 ---
 title: Build a Logos Core module that uses the Service Discovery API
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: sectioned

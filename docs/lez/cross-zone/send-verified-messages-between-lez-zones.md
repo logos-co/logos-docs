@@ -1,6 +1,7 @@
 ---
 title: Send verified messages between LEZ Zones
 doc_type: procedure
+user_type: developer
 product: lez
 topics:
   - lez

@@ -1,6 +1,7 @@
 ---
 title: Write an LEZ program that updates an account via `plan` and `apply`
 doc_type: procedure
+user_type: developer
 product: lez
 topics:
   - lez
@@ -616,3 +617,4 @@ The program declared an effect on a shard that is not an input of the call, or t
 
 - [Send verified messages between LEZ Zones](../cross-zone/send-verified-messages-between-lez-zones.md)
 - [Emit and query LEZ program events](../follow-chain/emit-and-query-lez-program-events.md)
+- [Calculate the fees for public LEZ transactions](./calculate-fees-for-public-lez-transactions.md)

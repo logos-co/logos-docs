@@ -1,6 +1,7 @@
 ---
 title: Run a Delivery node from the CLI
 doc_type: procedure
+user_type: node_operator
 product: messaging
 topics: messaging
 steps_layout: sectioned
@@ -168,3 +169,8 @@ Query the node's discv5 ENR to confirm it booted with a network identity and joi
 ### Why does `logosctl call` return an error after `module load`?
 
 The daemon may not have finished starting. Wait a few seconds after `logosctl daemon start` returns and retry. For Path A, confirm the container is running with `docker ps` before calling `docker exec logos-node logosctl …`.
+
+## Next steps
+
+- [Use the Delivery module API in an app](./use-delivery-module-api-in-app.md)
+- [Register an RLN membership on LEZ with a Delivery node](../../lez/rln/register-rln-membership-on-lez-with-delivery-node.md)

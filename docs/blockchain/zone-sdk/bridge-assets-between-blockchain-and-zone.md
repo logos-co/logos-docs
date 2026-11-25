@@ -1,6 +1,7 @@
 ---
 title: Bridge assets between Logos Blockchain and a Zone
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics: [bridging, channels, zones, withdrawals, deposits]
 steps_layout: sectioned
@@ -337,4 +338,3 @@ For multi-signature bundles the orphan event carries the same `ChannelUpdateTx::
 ## Next steps
 
 - [Operate a decentralised Zone with round-robin sequencer rotation](./operate-decentralised-zone-with-round-robin-sequencer-rotation.md), for more of what you can build with the Zone SDK
-- [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md), which you can fund with notes bridged to the LEZ

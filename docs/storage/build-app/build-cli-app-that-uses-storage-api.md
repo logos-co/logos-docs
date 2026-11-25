@@ -1,6 +1,7 @@
 ---
 title: Build a CLI app that uses the Storage API
 doc_type: procedure
+user_type: developer
 product: storage
 topics: [storage]
 steps_layout: sectioned

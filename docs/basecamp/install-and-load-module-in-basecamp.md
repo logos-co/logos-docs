@@ -1,6 +1,7 @@
 ---
 title: Install and load a module in Basecamp
 doc_type: procedure
+user_type: gui_user
 product: core
 topics: core
 steps_layout: sectioned
@@ -29,7 +30,7 @@ There are two types of modules in Logos Basecamp. [Core modules](../get-started/
 
 - [Basecamp installed and running](./install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
 - Internet access for online catalogue install.
-- [An `.lgx` file](../core/build-modules/build-and-run-a-logos-core-module.md) for local install. Make sure that the archive contains a variant matching your platform.
+- [An `.lgx` file](../core/reference/lgx-package-format-and-bundling-reference.md) for local install. Make sure that the archive contains a variant matching your platform.
 :::
 
 ## What to expect

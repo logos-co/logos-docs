@@ -1,6 +1,7 @@
 ---
 title: Transfer native tokens on the LEZ
 doc_type: procedure
+user_type: cli_user
 product: LEZ
 topics: LEZ
 steps_layout: flat

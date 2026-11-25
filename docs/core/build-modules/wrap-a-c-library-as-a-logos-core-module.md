@@ -1,6 +1,7 @@
 ---
 title: Wrap a C library as a Logos module
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: sectioned

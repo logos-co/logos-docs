@@ -1,6 +1,7 @@
 ---
 title: Run the LEZ wallet app and initiate native token transfers
 doc_type: procedure
+user_type: gui_user
 product: lez
 topics: lez
 steps_layout: flat

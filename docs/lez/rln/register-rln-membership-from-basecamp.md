@@ -1,6 +1,7 @@
 ---
 title: Register an RLN membership from Basecamp
 doc_type: procedure
+user_type: gui_user
 product: lez
 topics: [lez, rln]
 steps_layout: sectioned

@@ -298,6 +298,10 @@ const config: Config = {
             from: '/storage/get-started/set-up-and-use-logos-storage-ui',
             to: '/storage/get-started/run-storage-node-from-basecamp',
           },
+          {
+            from: '/storage/get-started/run-mix-network-of-storage-nodes',
+            to: '/mixnet/get-started/run-mix-network-of-storage-nodes',
+          },
         ],
       } satisfies PluginClientRedirects.Options,
     ],

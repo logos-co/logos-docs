@@ -1,6 +1,7 @@
 ---
 title: Build a Logos module that uses the Chat module API
 doc_type: procedure
+user_type: developer
 product: messaging
 topics: chat
 steps_layout: sectioned

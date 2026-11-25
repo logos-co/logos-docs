@@ -1,6 +1,7 @@
 ---
 title: Run a Storage node from the CLI
 doc_type: procedure
+user_type: node_operator
 product: storage
 topics:
   - storage
@@ -248,3 +249,8 @@ To clear your local storage, destroy the Storage node, and stop the daemon, foll
 ## Troubleshooting Logos Storage
 
 Connectivity problems (downloads timing out from another machine, no peers, unreachable node) are covered in the [Troubleshooting](troubleshooting.md) and [Connectivity](../concepts/connectivity.md) pages.
+
+## Next steps
+
+- [Run a Mix network of Storage nodes](../../mixnet/get-started/run-mix-network-of-storage-nodes.md)
+- [Build a CLI app that uses the Storage API](../build-app/build-cli-app-that-uses-storage-api.md)

@@ -1,6 +1,7 @@
 ---
 title: Develop a Logos module with Logos Scaffold
 doc_type: procedure
+user_type: developer
 product: core
 topics: scaffold, basecamp, modules
 steps_layout: sectioned

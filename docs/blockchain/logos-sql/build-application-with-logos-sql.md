@@ -1,6 +1,7 @@
 ---
 title: Build an application with Logos SQL
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics:
   - logos-sql

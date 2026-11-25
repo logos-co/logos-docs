@@ -1,6 +1,7 @@
 ---
 title: Expose Logos node metrics to Prometheus
 doc_type: procedure
+user_type: node_operator
 product: core
 topics: [node, core, monitoring]
 steps_layout: sectioned

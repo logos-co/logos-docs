@@ -1,6 +1,7 @@
 ---
 title: Run a Blockchain node from Basecamp
 doc_type: procedure
+user_type: gui_user
 product: blockchain
 topics: blockchain
 steps_layout: sectioned

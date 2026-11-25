@@ -1,12 +1,15 @@
 ---
 title: Use the Logos docs with coding agents
 doc_type: procedure
+user_type: developer
 product: logos
 topics: AI agents, llms.txt, AGENTS.md
 authors: weboko
 owner: logos
 doc_version: 1
 slug: coding-with-agents
+# Not a step in using Logos, so it stays off /get-started/tech-tree.
+tech_tree: false
 sidebar_position: 2
 ---
 

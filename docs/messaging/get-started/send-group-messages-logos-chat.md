@@ -1,6 +1,7 @@
 ---
 title: Send group messages with the Logos Chat app
 doc_type: procedure
+user_type: gui_user
 product: messaging
 topics: [messaging, de-MLS]
 steps_layout: sectioned

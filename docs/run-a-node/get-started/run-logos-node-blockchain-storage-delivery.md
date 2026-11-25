@@ -1,6 +1,7 @@
 ---
 title: Run a Logos node with blockchain, storage, and delivery
 doc_type: procedure
+user_type: node_operator
 product: core
 topics: [node, core]
 steps_layout: sectioned

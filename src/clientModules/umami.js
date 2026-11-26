@@ -9,7 +9,7 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 if (ExecutionEnvironment.canUseDOM) {
   const inject = () => {
     const script = document.createElement('script');
-    script.src = 'https://umami.bi.status.im/script.js';
+    script.src = 'https://analytic.logos.co/script.js';
     script.async = true;
     script.dataset.websiteId = '0f95ea33-c693-4fe7-91dc-8effe9645fa8';
     document.head.appendChild(script);

@@ -22,7 +22,7 @@ body:
     id: journey-type
     attributes:
       label: Journey type
-      description: The type label this journey is tagged with.
+      description: "We have identified four types of procedure docs, and so each procedure must belong to one of the following types:"
       options:
         - gui user
         - cli user
@@ -137,7 +137,7 @@ body:
       label: Journey fit checklists (CLI user)
       options:
         - label: No GUI steps.
-        - label: No build required (include instructions for obtaining binaries).
+        - label: No build required (include instructions for obtaining binaries). Instructions for building from source can be included as an alternative option.
         - label: Relevant settings or config fields described.
         - label: Expected output/logs/state included.
         - label: Prerequisites should be obtainable via CLI (can link to existing docs).
@@ -147,13 +147,17 @@ body:
     attributes:
       label: Journey fit checklists (developer)
       options:
-        - label: Target to build is clearly mentioned (e.g. Basecamp app, LEZ program etc).
+        - label: "Build target is clearly mentioned as one or more of the following:"
+        - label: ↳ UI Module
+        - label: ↳ Core Module
+        - label: ↳ LEZ program
+        - label: ↳ Standalone app using the Logos DK
         - label: Once user goes through the journey, they must have a runnable program. If necessary, include example code.
         - label: Large or non-obvious code blocks should include comments for clarity.
         - label: No missing prerequisites (can link to existing docs).
         - label: Expected output/logs/state included.
         - label: Main functionality/use cases (beyond the example) described. Can take the form of "next steps" or "use cases".
-        - label: Link to API reference where relevant.
+        - label: Link to core module API reference, except for LEZ program guides.
         - label: Includes error handling.
         - label: Build and deploy is described.
 

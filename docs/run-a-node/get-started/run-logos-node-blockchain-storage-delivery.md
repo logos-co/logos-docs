@@ -45,7 +45,9 @@ The default paths used throughout this procedure are:
 :::info[Prerequisites]
 
 - Linux host with a public IPv4 address.
-- Ports `3000/udp`, `8090/udp`, `8091/tcp`, `9000/udp`, `30303/tcp`, and `30303/udp` open on the host firewall.
+- Ports `3000/udp`, `9000/udp`, `30303/tcp`, and `30303/udp` open on the host firewall.
+- glibc version 2.39 or later.
+- FUSE, required by the `logosctl` AppImage (Linux only). On Debian/Ubuntu: `sudo apt install fuse libfuse2t64`. Without it, `logosctl` fails with `No suitable fusermount binary found on the $PATH`.
 - Root or `sudo` access to install tools and create system users.
 
 Make sure your hardware meets the following requirements for running a blockchain node:
@@ -80,11 +82,11 @@ To run a Blend node, make sure you have:
 
 Install the system dependencies and download the `logosctl` CLI.
 
-1. Install `curl`, `jq`, `tar`, and FUSE support for AppImage binaries:
+1. Install `curl`, `jq`, and `tar`:
 
    ```sh
    apt-get update
-   apt-get install -y curl jq tar fuse3
+   apt-get install -y curl jq tar
    ```
 
 1. Download the release archive for `logosctl` version 0.3.2. For x86_64 Linux, download:
@@ -145,8 +147,6 @@ Create a new user that will run the Logos node, as well as the `logosctl` sessio
 
    ```text
    3000/udp
-   8090/udp
-   8091/tcp
    9000/udp
    30303/tcp
    30303/udp
@@ -614,15 +614,13 @@ Run health checks against the Logos node and all three loaded modules to confirm
 1. Verify all ports are bound correctly:
 
    ```sh
-   ss -lntup | egrep '(:3000|:8090|:8091|:9000|:30303|:8080)'
+   ss -lntup | egrep '(:3000|:9000|:30303|:8080)'
    ```
 
    Expected bindings:
 
    ```text
    0.0.0.0:3000/udp
-   0.0.0.0:8090/udp
-   0.0.0.0:8091/tcp
    0.0.0.0:9000/udp
    0.0.0.0:30303/tcp
    0.0.0.0:30303/udp

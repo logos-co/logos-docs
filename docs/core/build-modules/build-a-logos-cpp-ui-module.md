@@ -1,6 +1,7 @@
 ---
 title: Build a Logos C++ UI module
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: sectioned
@@ -809,3 +810,7 @@ The launcher looks for the `view` entry from `metadata.json` under `src/<viewDir
 ### Known constraints
 
 Reloading works only with `logos-standalone-app`. Logos Basecamp loads UI plugins from its own data directory, so it shows your changes only after you rebuild and reinstall the LGX package.
+
+## Next steps
+
+- [Build a Logos module that uses the Chat module API](../../messaging/chat-module/build-logos-module-that-uses-chat-module-api.md)

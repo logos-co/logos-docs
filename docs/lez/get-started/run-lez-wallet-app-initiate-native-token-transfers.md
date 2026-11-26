@@ -1,6 +1,7 @@
 ---
 title: Run the LEZ wallet app and initiate native token transfers
 doc_type: procedure
+user_type: gui_user
 product: lez
 topics: lez
 steps_layout: flat
@@ -38,7 +39,7 @@ Recovering a wallet from its recovery phrase is not yet supported.
 - You can create and name public and private accounts, and fund them to test transfers.
 - You can complete public, private, shielded, and deshielded token transfers, verify finalisation on the L1, and withdraw tokens to the L1.
 
-### Run the wallet app in Basecamp
+## Run the wallet app in Basecamp
 
 1. At the bottom of the sidebar, click **Applications**.
 1. Select `Wallet` in **Categories**, or search for `LEZ Wallet`, then click the **LEZ Wallet** card.
@@ -162,3 +163,7 @@ The settings are stored under the organisation `Logos` and application `Executio
 ### Why does creating a wallet fail with `A wallet already exists at`?
 
 The wallet UI won't create a new wallet over existing wallet files. The error message names the existing storage file. To keep using that wallet, select **I already have a wallet** in the **Setup** step and choose that storage file and the `config.json` file in the same folder. To create a new wallet instead, move or remove those files first.
+
+## Next steps
+
+- [Bridge assets from Logos Blockchain to a Zone on Basecamp](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md)

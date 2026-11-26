@@ -6,7 +6,7 @@ topics: architecture, integration
 authors: fryorcraken
 owner: logos
 doc_version: 1
-slug: integrate-logos
+slug: /build-an-app
 ---
 
 # Integrate Logos into your application

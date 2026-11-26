@@ -1,6 +1,7 @@
 ---
 title: Gate program instructions with admin-authority
 doc_type: procedure
+user_type: developer
 product: lez
 topics: lez
 steps_layout: sectioned
@@ -451,3 +452,7 @@ Misplacing the marker is a different failure and never reaches that error, becau
 ## Reference
 
 Source: [github.com/mmlado/spel-admin-authority](https://github.com/mmlado/spel-admin-authority). The companion repository contains the authority lifecycle state diagram, ADRs for design decisions, and a reference sample program demonstrating end-to-end integration.
+
+## Next steps
+
+- [Freeze program execution with freeze-authority](./freeze-authority.md)

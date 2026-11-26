@@ -13,6 +13,7 @@ Logos Chat app*, *Install Logos Basecamp*, *Build and run a Logos core module*.
 ---
 title:
 doc_type: # tutorial | procedure
+user_type: # gui_user | cli_user | developer | node_operator (procedures only; exactly one, per the journey fit checklists in .github/ISSUE_TEMPLATE/doc-packet.yml)
 product: # [blockchain | storage | messaging | mixnet | peer-discovery | core | basecamp | lez]
 topics: []
 steps_layout: sectioned
@@ -45,6 +46,7 @@ slug:
 | Action expected result        | Bolded "Expected result:" lead-in (3)   | No        | `TUT-STEP-RESULT`  |
 | Reference table                | Markdown table under a step (4)         | No        | `TUT-STEP-TABLE`   |
 | Troubleshooting          | H2 `Troubleshooting` or `Troubleshooting {topic}` + H3 issues | No | `TUT-TROUBLESHOOT` |
+| Next steps               | H2 `Next steps` + bullet list of links       | No        | `TUT-NEXT`         |
 | Extra guidelines         |                                             | Yes       | `TUT-EXTRA`        |
 | Forbidden content        |                                             | Forbidden | `TUT-FORBID`       |
 
@@ -336,6 +338,14 @@ options below independently.
 - A "Known constraints" subsection (architectural limitations that aren't really bugs) is allowed alongside true troubleshooting entries. <!-- TUT-BEHAV-TROUBLESHOOT-KNOWN-CONSTRAINTS -->
 - For longer or recurring issues, link out to a dedicated troubleshooting/FAQ page instead of growing this section indefinitely. <!-- TUT-BEHAV-TROUBLESHOOT-SPLIT-IF-LONG -->
 
+## Next steps (optional) <!-- group: TUT-NEXT -->
+
+- Use the H2 heading "Next steps". <!-- TUT-STRUCT-NEXT-H2 -->
+- Place it at the very end of the document, after Troubleshooting. <!-- TUT-STRUCT-NEXT-POSITION -->
+- Use a single bullet list of links to other docs pages, using each page's title as the link text. <!-- TUT-STRUCT-NEXT-LINK-LIST -->
+- Link to pages the reader can go on to after finishing this one; always include every procedure that lists this one as a prerequisite. The build fails when one is missing (`plugins/tech-tree`). <!-- TUT-BEHAV-NEXT-SCOPE -->
+- A short clause after a link is allowed when the reason to follow it isn't obvious from its title. <!-- TUT-BEHAV-NEXT-CLAUSE -->
+
 ## Extra guidelines <!-- group: TUT-EXTRA -->
 
 - This section is guidance only; do not render a visible heading or body. <!-- TUT-STRUCT-EXTRA-GUIDELINES-NO-RENDER -->
@@ -349,5 +359,5 @@ options below independently.
 - This section is guidance only; do not render a visible heading or body. <!-- TUT-STRUCT-FORBID-GUIDELINES-NO-RENDER -->
 - Do not use H5 or H6 headings. <!-- TUT-STRUCT-FORBID-H5-H6 -->
 - Do not use blockquote-style callouts (`> **Note**`) or GitBook `{% hint %}` tags; use Docusaurus `:::type ... :::` admonitions instead. <!-- TUT-BEHAV-FORBID-NO-BLOCKQUOTE-OR-GITBOOK-CALLOUTS -->
-- Do not include a "Further reading" section or a list of related links at the end of the document. <!-- TUT-BEHAV-FORBID-NO-FURTHER-READING -->
+- Do not include a "Further reading" or "Related documentation" section at the end of the document; the only list of links allowed there is the optional [Next steps](#next-steps-optional) section. <!-- TUT-BEHAV-FORBID-NO-FURTHER-READING -->
 - Do not impose an overall word- or character-count limit on the tutorial as a whole — length should be whatever the number of steps and necessary detail requires. <!-- TUT-BEHAV-FORBID-NO-DOC-LENGTH-LIMIT -->

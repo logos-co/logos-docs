@@ -1,0 +1,342 @@
+.root {
+  --tt-basecamp: #b8540f;
+  --tt-blockchain: #2f5bd3;
+  --tt-lez: #7a3fc4;
+  --tt-messaging: #0f8a6c;
+  --tt-storage: #a8862a;
+  --tt-core: #c23a63;
+  --tt-run-a-node: #3b7f9e;
+  --tt-build-an-app: #5d6b7c;
+  --tt-get-started: #7c7468;
+  --tt-mixnet: #9a4a2a;
+  --tt-peer-discovery: #5a8a2c;
+  --tt-line: var(--ifm-color-emphasis-300);
+  --tt-dim: 0.18;
+  margin: 1rem 0 2rem;
+}
+
+:global([data-theme='dark']) .root {
+  --tt-basecamp: #f0954f;
+  --tt-blockchain: #7fa2ff;
+  --tt-lez: #b994f2;
+  --tt-messaging: #4fcfa8;
+  --tt-storage: #dcbf5f;
+  --tt-core: #f07b9f;
+  --tt-run-a-node: #6fbcdc;
+  --tt-build-an-app: #a3b0bf;
+  --tt-get-started: #c2b9ab;
+  --tt-mixnet: #e0906b;
+  --tt-peer-discovery: #9fd06c;
+  --tt-dim: 0.22;
+}
+
+/* Search box: the site's input look, on the page's own surface. */
+.search {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 0 0.75rem;
+  /* Sits between the legend and the columns. */
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--logos-rule-strong);
+  border-radius: 0.375rem;
+  background: var(--logos-paper);
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--logos-ink);
+  transition: border-color var(--logos-dur) var(--logos-ease-out);
+}
+
+.search::placeholder {
+  color: var(--logos-muted);
+}
+
+.search:focus-visible {
+  border-color: var(--logos-ink);
+  outline: none;
+}
+
+/* User type filter: toggle buttons, shaded while their type is shown. */
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.filter > span {
+  margin-right: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.filter button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--logos-rule);
+  border-radius: 0.375rem;
+  background: none;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--logos-slate);
+  cursor: pointer;
+  transition: background var(--logos-dur) var(--logos-ease-out), border-color var(--logos-dur) var(--logos-ease-out),
+    color var(--logos-dur) var(--logos-ease-out);
+}
+
+.filter button:hover {
+  background: var(--logos-fog-soft);
+}
+
+/* Selected: the site's active style, as on the sidebar and breadcrumbs. */
+.filter button[aria-pressed='true'] {
+  border-color: var(--logos-rule-strong);
+  background: var(--logos-fog);
+  color: var(--logos-ink);
+}
+
+/* The dark theme's fog is close to the page colour, so lift it towards the ink. */
+:global([data-theme='dark']) .filter button[aria-pressed='true'] {
+  border-color: color-mix(in oklab, var(--logos-ink) 40%, transparent);
+  background: color-mix(in oklab, var(--logos-ink) 16%, var(--logos-paper));
+}
+
+.filter button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.count {
+  font-size: 0.75rem;
+  color: var(--logos-muted);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--sec);
+}
+
+.legend .key {
+  margin-left: auto;
+}
+
+.scroller {
+  overflow-x: auto;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.stage {
+  position: relative;
+}
+
+/* The edge layer only, not the icons inside the pins. */
+.stage > svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.colhead {
+  position: absolute;
+  top: 14px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ifm-color-emphasis-700);
+  white-space: nowrap;
+}
+
+.colhead b {
+  font-size: 0.95rem;
+  color: var(--ifm-font-color-base);
+  letter-spacing: 0;
+  margin-right: 0.4rem;
+}
+
+.node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  /* Right padding keeps the title clear of the pin button laid over the box. */
+  padding: 7px 38px 7px 14px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 12.5px;
+  line-height: 16px;
+  transition: opacity 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.node::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 6px 0 0 6px;
+  background: var(--sec);
+}
+
+/* Shown only as a prerequisite: of another user type, or not matching the search. */
+.node.other {
+  border-style: dashed;
+  border-color: var(--ifm-color-emphasis-400);
+  background: transparent;
+}
+
+.otherSwatch {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  border: 1px dashed var(--ifm-color-emphasis-500);
+  border-radius: 3px;
+}
+
+.node:hover,
+.node:focus-visible,
+.node:has(+ .pin:hover) {
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  border-color: var(--sec);
+  outline: none;
+}
+
+.node span {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.node code {
+  font-size: 0.92em;
+  padding: 0 0.2em;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--tt-line);
+  stroke-width: 1.4;
+  transition: opacity 0.15s, stroke 0.15s;
+}
+
+.edge.suggested {
+  stroke-dasharray: 5 4;
+}
+
+.focus .node:not(.on) {
+  opacity: var(--tt-dim);
+}
+
+.focus .edge {
+  opacity: 0.12;
+}
+
+.focus .edge.on {
+  opacity: 1;
+  stroke: var(--ifm-color-primary);
+  stroke-width: 2;
+}
+
+.node.self {
+  border-color: var(--sec);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sec) 45%, transparent);
+}
+
+.status {
+  min-height: 3em;
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.status strong {
+  color: var(--ifm-font-color-base);
+}
+
+/* The pin beside each box: faint until its box is traced, solid once pinned. */
+.pin {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--ifm-font-color-base);
+  opacity: 0.3;
+  cursor: pointer;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.pin svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.pin:hover,
+.pin:focus-visible,
+.pin.near,
+.pin.pinned {
+  opacity: 1;
+}
+
+.pin:hover,
+.pin:focus-visible {
+  background: var(--ifm-color-emphasis-200);
+  outline: none;
+}
+
+.focus .pin:not(.on):not(.pinned) {
+  opacity: 0.08;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin,
+  .node,
+  .edge {
+    transition: none;
+  }
+}
+
+/* Outranks the site's `.markdown a:not(.hash-link):not([class*='card'])` link style. */
+.root .stage a.node.node,
+.root .stage a.node.node:hover {
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+}

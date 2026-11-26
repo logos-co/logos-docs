@@ -1,6 +1,7 @@
 ---
 title: Move Blockchain assets on Basecamp
 doc_type: procedure
+user_type: gui_user
 product: blockchain
 topics: [blockchain-app]
 steps_layout: flat

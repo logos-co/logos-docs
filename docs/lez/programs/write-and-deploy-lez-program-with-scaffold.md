@@ -1,6 +1,7 @@
 ---
 title: Write and deploy an LEZ program with `logos-scaffold`
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics:
   - lez
@@ -324,6 +325,10 @@ Hooks run through `sh -c` from the project root with these variables set:
 The public testnet runs LEZ v0.3, and scaffold pins `v0.1.2` by default. Pointing the project wallet at `https://testnet.lez.logos.co/` fails the compatibility check: `logos-scaffold wallet -- check-health` panics with `Missing authenticated transfer ID from remote`, and `logos-scaffold doctor` reports `FAIL | wallet usability`.
 
 To deploy to the testnet today, set up a standalone wallet as described in [Run an LEZ wallet via the CLI](../get-started/run-lez-wallet-via-cli.md), built from the LEZ release the testnet runs, and use its `deploy-program` command with a guest program built against that same release. Check the wallet with `wallet check-health` first: at the time of writing, a wallet built from LEZ `v0.3.1` passes against the testnet and one built from scaffold's `v0.1.2` pin does not.
+
+## Next steps
+
+- [Write an LEZ program that updates an account via `plan` and `apply`](./write-lez-program-with-plan-and-apply.md)
 
 ## Related documentation
 

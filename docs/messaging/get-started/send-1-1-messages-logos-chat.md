@@ -1,6 +1,7 @@
 ---
 title: Send 1:1 messages with the Logos Chat app
 doc_type: procedure
+user_type: gui_user
 product: messaging
 topics: messaging
 steps_layout: sectioned
@@ -25,8 +26,7 @@ Each launch of the app starts a new identity with a new address. Conversations f
 
 :::info[Prerequisites]
 
-- [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
+- [RLN membership registered on Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md).
 - Network access, so that both instances can reach the `logos.test` network and the key-package registry.
 :::
 
@@ -98,3 +98,7 @@ Both instances need to reach a shared bootstrap peer to connect to the peer-to-p
 ### A conversation can't be replied to
 
 The conversation is from an earlier launch, listed under **Previous sessions**. Opening it replaces the message box with a **From a previous session** notice, because each launch has a new identity and earlier conversations are kept for reading only. Open a new conversation with **New chat** > **Direct message** using the other instance's current address.
+
+## Next steps
+
+- [Send anonymised messages over the mix network](../../mixnet/get-started/send-anonymised-messages-over-the-mix-network.md)

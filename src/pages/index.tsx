@@ -12,50 +12,44 @@ type CardItem = {
   icon?: string;
 };
 
-// Three ways in, after Solana's docs homepage: do something now, have your
-// coding agent do it, or understand the stack first.
+// Start here: three paths in on the first row (try it now, run a node,
+// build), then three ways to orient yourself on the second.
 const startHere: CardItem[] = [
   {
     title: 'Quickstart',
     description: 'Install Logos Basecamp and run your first Logos app in minutes',
     to: '/basecamp/install-logos-basecamp',
-  },
-  {
-    title: 'Coding with agents',
-    description: 'Give Claude Code, Cursor or Codex these docs: llms.txt, an AGENTS.md block and an agent skill',
-    to: '/get-started/coding-with-agents',
-  },
-  {
-    title: 'Concepts',
-    description: 'How the Logos stack fits together, from the runtime to the apps',
-    to: '/get-started/what-is-logos',
-  },
-];
-
-const choosePath: CardItem[] = [
-  {
-    title: 'Run an app',
-    description: 'Run modules inside Basecamp, as standalone apps, or headlessly',
-    to: '/run-an-app',
-    icon: '/img/home/run-an-app.png',
+    icon: '/img/home/quickstart.svg',
   },
   {
     title: 'Run a node',
-    description: 'Run one service or all three: blockchain, delivery, and storage',
+    description: 'Run one service or all three: Blockchain, Delivery, and Storage',
     to: '/run-a-node',
-    icon: '/img/home/run-a-node.png',
+    icon: '/img/home/run-a-node.svg',
   },
   {
     title: 'Build an app',
     description: 'Build and ship apps on Logos',
     to: '/build-an-app',
-    icon: '/img/home/build-an-app.png',
+    icon: '/img/home/build-an-app.svg',
+  },
+  {
+    title: 'Coding with agents',
+    description: 'Give AI agents these docs: llms.txt, an AGENTS.md block and an agent skill',
+    to: '/get-started/coding-with-agents',
+    icon: '/img/home/coding-with-agents.svg',
+  },
+  {
+    title: 'Choose your path',
+    description: 'Find a path through the docs based on what you\'d like to do',
+    to: '/get-started/choose-your-path',
+    icon: '/img/home/choose-your-path.svg',
   },
   {
     title: 'Contribute',
     description: 'Improve the protocol, the docs, or the tooling',
     to: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
-    icon: '/img/home/contribute.png',
+    icon: '/img/home/contribute.svg',
   },
 ];
 
@@ -150,13 +144,6 @@ export default function Home(): ReactNode {
             Building with an AI agent? Point it at <a href="/llms.txt">docs.logos.co/llms.txt</a>,
             or add <code>.md</code> to any page URL for plain Markdown.
           </p>
-        </div>
-
-        <div className={styles.section}>
-          <Heading as="h3" className={styles.sectionTitle}>
-            Choose your path
-          </Heading>
-          <CardGrid items={choosePath} />
         </div>
 
         <div className={styles.section}>

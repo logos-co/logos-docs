@@ -1,6 +1,7 @@
 ---
 title: Inscribe data on-chain using the Zone SDK
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics:
   - channels

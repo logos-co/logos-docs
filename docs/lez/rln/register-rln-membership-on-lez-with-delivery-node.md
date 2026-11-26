@@ -1,6 +1,7 @@
 ---
 title: Register an RLN membership on LEZ with a Delivery node
 doc_type: procedure
+user_type: cli_user
 product: messaging
 topics: [messaging, LEZ, RLN]
 steps_layout: sectioned
@@ -33,7 +34,7 @@ This procedure shows how to register an Rate-Limiting Nullifier (RLN) membership
 - About 1 GB of free disk space. The [modules](../../get-started/glossary.md#module) take about 300 MB.
 - `250000000` units of native LEZ tokens for the node's payer [account](../../get-started/glossary.md#account), from one of these sources:
    - A [Logos Blockchain](../../get-started/glossary.md#logos-blockchain) wallet you can [bridge assets](../../blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp.md) from. Testnet has no faucet.
-   - A LEZ account you already hold on the testnet zone, with about `270000000` units so it can cover the transfer's fee reserve.
+   - A LEZ account you already hold on the testnet Zone, with about `270000000` units so it can cover the transfer's fee reserve.
 
 :::
 

@@ -1,6 +1,7 @@
 ---
 title: Build a CLI app that uses the Storage API
 doc_type: procedure
+user_type: developer
 product: storage
 topics: [storage]
 steps_layout: sectioned
@@ -16,10 +17,8 @@ sidebar_position: 1
 #### Wrap the Storage module API in a simple synchronous CLI interface.
 
 :::tip[Version]
-This document is accurate for **Testnet v0.3.0**.
+This document is accurate for **Testnet v0.3.0**. This tutorial uses **Storage module v3.0.2**, **Logos module builder 0.3.2**, and `logosctl 0.3.2`.
 :::
-
-This tutorial uses **Storage module v3.0.2**, **Logos module builder 0.3.2**, and `logosctl 0.3.2`.
 
 The [Storage Module API](../reference/storage-module-api-reference.md) offers a comprehensive way to access the Storage module, but can be inconveniently complex for CLI access. This tutorial builds a wrapper [module](../../get-started/glossary.md#module)—a separate module that depends on [Logos Storage](../../get-started/glossary.md#logos-storage) and exposes a simpler, synchronous interface over it. It is intended for developers building custom Logos modules who want a straightforward CLI-style interface instead of working with the Storage module's asynchronous API directly.
 

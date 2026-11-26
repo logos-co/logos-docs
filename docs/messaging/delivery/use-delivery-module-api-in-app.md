@@ -1,6 +1,7 @@
 ---
 title: Use the Delivery module API in an app
 doc_type: procedure
+user_type: developer
 product: messaging
 topics: delivery
 steps_layout: sectioned

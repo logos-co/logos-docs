@@ -1,6 +1,7 @@
 ---
 title: Bridge assets from Logos Blockchain to a Zone on Basecamp
 doc_type: procedure
+user_type: gui_user
 product: blockchain
 topics: [lez, bridging]
 steps_layout: flat
@@ -148,3 +149,8 @@ The module rejected the transaction. Common causes are insufficient funds to cov
 
 - Less than an hour has passed since the deposit was included in a block. The LEZ credits it only once that block is final on the Logos Blockchain. Wait, then click **Refresh** in the **Accounts** panel of the LEZ wallet again.
 - **Metadata** did not hold the ID of a public LEZ account. The LEZ cannot credit such a deposit.
+
+## Next steps
+
+- [Register an RLN membership on LEZ with a Delivery node](../../lez/rln/register-rln-membership-on-lez-with-delivery-node.md)
+- [Register an RLN membership from Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md)

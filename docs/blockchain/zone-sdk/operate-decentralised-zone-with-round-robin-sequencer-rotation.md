@@ -1,6 +1,7 @@
 ---
 title: Operate a decentralised Zone with round-robin sequencer rotation
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics: zone-sdk
 steps_layout: sectioned
@@ -236,9 +237,3 @@ Submit a channel config to add or remove sequencers from `accredited_keys`. Beca
    - A signature authorises every channel operation in the prepared transaction, not only the config, so signers should inspect the whole of `prepared.tx()` before signing.
    - A config position holds one pending continuation, so `prepare_channel_config` refuses a second config on a parent that already has one pending until it lands or expires.
    - An orphaned multi-signature config surfaces as `ChannelUpdateTx::Config`. Recover it by running the prepare → collect signatures → submit flow again.
-
-## Next steps
-
-For more examples of what can be built with the Zone SDK, see the following link:
-
-- [Bridge assets between Logos Blockchain and a Zone](./bridge-assets-between-blockchain-and-zone.md)

@@ -1,6 +1,7 @@
 ---
 title: Set up a shared private account
 doc_type: procedure
+user_type: cli_user
 product: lez
 topics: lez
 steps_layout: sectioned

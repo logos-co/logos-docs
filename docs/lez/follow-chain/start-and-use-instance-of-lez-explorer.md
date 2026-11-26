@@ -1,6 +1,7 @@
 ---
 title: Start and use an instance of the LEZ Explorer
 doc_type: procedure
+user_type: developer
 product: lez
 topics: lez
 steps_layout: flat

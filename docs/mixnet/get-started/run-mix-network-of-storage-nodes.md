@@ -1,7 +1,8 @@
 ---
 title: Run a Mix network of Storage nodes
 doc_type: procedure
-product: storage
+user_type: node_operator
+product: mixnet
 topics:
   - storage
   - mix
@@ -11,7 +12,7 @@ authors: arnaud
 owner: logos
 doc_version: 1
 slug: run-mix-network-of-storage-nodes
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 # Run a Mix network of Storage nodes
@@ -22,7 +23,7 @@ sidebar_position: 3
 This document is accurate for **Testnet v0.3**.
 :::
 
-This procedure stands up a small local [Mix](../concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
+This procedure stands up a small local [Mix](../../storage/concepts/mix.md) network using `logosctl`: six [Logos Storage Module](https://github.com/logos-co/logos-storage-module/) nodes on one machine—four Mix relays wired around a bootstrap node, plus two storage nodes that route their DHT lookups through the relays. At the end, one storage node uploads a file and the other downloads it with the lookup tunnelled over Mix.
 
 :::info[Prerequisites]
 
@@ -101,7 +102,7 @@ The first node is the bootstrap node: the other nodes use it to join the Mix net
     # Wait a few seconds for the node to start
     ```
 
-1.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](../concepts/connectivity.md)):
+1.  Read node 1's SPR out of `debug` and save it: the other nodes use this value as their `bootstrap-node` (see [Connectivity](../../storage/concepts/connectivity.md)):
 
     ```sh
     logosctl --config-dir ./logosctl-1 call storage_module debug \

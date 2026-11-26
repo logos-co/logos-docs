@@ -1,6 +1,7 @@
 ---
 title: Handle displaced writes
 doc_type: procedure
+user_type: developer
 product: blockchain
 topics:
   - logos-sql
@@ -29,9 +30,8 @@ The flow is: catch the blocked-write error, list the displaced writes, inspect t
 
 :::info[Prerequisites]
 
-- A running `LogosSql` writer and access to its current database.
+- A [running `LogosSql` writer](./build-application-with-logos-sql.md) and access to its current database.
 - An application write path that calls `execute` and handles its result.
-
 :::
 
 ## What to expect

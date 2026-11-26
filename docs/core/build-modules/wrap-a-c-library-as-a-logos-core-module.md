@@ -1,6 +1,7 @@
 ---
 title: Wrap a C library as a Logos module
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: sectioned
@@ -936,3 +937,7 @@ The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator and 
 ### The build fails with undefined symbols from the C library
 
 Check that the `.so` or `.dylib` is in `lib/` before you build, that the header has `extern "C"` guards, and that the symbols are exported: `nm -D lib/libcalc.so | grep calc` on Linux, or `nm -gU lib/libcalc.dylib | grep calc` on macOS.
+
+## Next steps
+
+- [Build a Logos C++ UI module](./build-a-logos-cpp-ui-module.md)

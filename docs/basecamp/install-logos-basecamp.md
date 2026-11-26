@@ -1,6 +1,7 @@
 ---
 title: Install Logos Basecamp
 doc_type: procedure
+user_type: gui_user
 product: core
 topics: core
 steps_layout: flat
@@ -129,3 +130,12 @@ sudo apt-get install -y libfuse2t64 libegl1 libopengl0 libharfbuzz0b
 ```
 
 Don't install the `fuse` package on Ubuntu 22.04 or later. It replaces `fuse3`, which other system packages depend on.
+
+## Next steps
+
+- [Install and load a module in Basecamp](./install-and-load-module-in-basecamp.md)
+- [Swap ETH and LEZ tokens in Basecamp](./swap-eth-and-lez-tokens-in-basecamp.md)
+- [Run a Blockchain node from Basecamp](../blockchain/get-started/run-blockchain-node-from-basecamp.md)
+- [Run the LEZ wallet app and initiate native token transfers](../lez/get-started/run-lez-wallet-app-initiate-native-token-transfers.md)
+- [Register an RLN membership from Basecamp](../lez/rln/register-rln-membership-from-basecamp.md)
+- [Run a Storage Node from Basecamp](../storage/get-started/run-storage-node-from-basecamp.md)

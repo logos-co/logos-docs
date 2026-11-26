@@ -1,6 +1,7 @@
 ---
 title: Freeze program execution with freeze-authority
 doc_type: procedure
+user_type: developer
 product: lez
 topics: lez
 steps_layout: sectioned

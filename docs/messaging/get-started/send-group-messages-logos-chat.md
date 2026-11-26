@@ -1,6 +1,7 @@
 ---
 title: Send group messages with the Logos Chat app
 doc_type: procedure
+user_type: gui_user
 product: messaging
 topics: [messaging, de-MLS]
 steps_layout: sectioned
@@ -28,9 +29,8 @@ Each launch of the app starts a new identity with a new address. Conversations f
 - A supported OS:
    - Linux
    - macOS
-- Network access, so that the three instances can reach the `logos.test` network and the key-package registry
-- [Basecamp installed](../../basecamp/install-logos-basecamp.md), version [0.3.2](https://github.com/logos-co/logos-basecamp/releases/tag/0.3.2) or later.
-- [RLN membership registered](../../lez/rln/register-rln-membership-from-basecamp.md).
+- Network access, so that the three instances can reach the `logos.test` network and the key-package registry.
+- [RLN membership registered on Basecamp](../../lez/rln/register-rln-membership-from-basecamp.md).
 
 :::
 

@@ -1,6 +1,7 @@
 ---
 title: Run a Logos node with blockchain, storage, and delivery
 doc_type: procedure
+user_type: node_operator
 product: core
 topics: [node, core]
 steps_layout: sectioned
@@ -705,3 +706,7 @@ The keys below are sample values from a throwaway keystore. Never use them for a
   ```sh
   logos-blockchain-node /var/lib/logos-node/user_config.yaml --show-config
   ```
+
+## Next steps
+
+- [Expose Logos node metrics to Prometheus](./expose-logos-node-metrics-to-prometheus.md)

@@ -1,6 +1,7 @@
 ---
 title: Build and run a Logos core module
 doc_type: procedure
+user_type: developer
 product: core
 topics: core
 steps_layout: sectioned
@@ -549,3 +550,9 @@ nix build '.#lib'
 ### First build is slow
 
 The first `nix build` downloads Qt 6, the Logos C++ SDK, the code generator, and the rest of the build dependencies. This is a one-time cost; subsequent builds reuse the cache.
+
+## Next steps
+
+- [Install and load a module in Basecamp](../../basecamp/install-and-load-module-in-basecamp.md)
+- [Wrap a C library as a Logos module](./wrap-a-c-library-as-a-logos-core-module.md)
+- [Build a Logos Core module that uses the Service Discovery API](../../peer-discovery/get-started/build-logos-core-module-that-uses-service-discovery-api.md)

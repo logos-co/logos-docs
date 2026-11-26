@@ -106,7 +106,7 @@
   height: 32px;
 }
 
-/* The icons are black PNGs; flip them to Off-white on the dark theme. */
+/* The icons are black SVGs; flip them to Off-white on the dark theme. */
 [data-theme='dark'] .cardIcon {
   filter: invert(0.95);
 }

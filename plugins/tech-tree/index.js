@@ -2,7 +2,7 @@
 //
 // Builds the graph between procedures (see ./graph.js) and writes it to
 // @generated/tech-tree/default/tree.json for src/components/TechTree, which
-// docs/get-started/tech-tree.md renders. The component lays it out (see
+// docs/get-started/choose-your-path.md renders. The component lays it out (see
 // ./layout.js) for whichever user types the reader selects.
 //
 // It also enforces two conventions. When a procedure lists another procedure

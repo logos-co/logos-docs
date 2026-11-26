@@ -1,5 +1,5 @@
 // The graph between procedures, shared by the tech-tree plugin (the diagram on
-// /get-started/tech-tree and the build check) and agent-ready (the Markdown
+// /get-started/choose-your-path and the build check) and agent-ready (the Markdown
 // version of that page).
 //
 // An edge runs from a procedure to each procedure linked from its

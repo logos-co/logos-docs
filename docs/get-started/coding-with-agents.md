@@ -8,9 +8,9 @@ authors: weboko
 owner: logos
 doc_version: 1
 slug: coding-with-agents
-# Not a step in using Logos, so it stays off /get-started/tech-tree.
+# Not a step in using Logos, so it stays off /get-started/choose-your-path.
 tech_tree: false
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 # Use the Logos docs with coding agents

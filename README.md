@@ -15,8 +15,7 @@ Content is never duplicated between paths and component doc sets: a document liv
 ```
 docs/
 ├── get-started/         # Project introduction and orientation
-├── run-an-app/          # ┐
-├── run-a-node/          # ├ Persona paths: indexes linking into the
+├── run-a-node/          # ┐ Persona paths: indexes linking into the
 ├── build-an-app/        # ├ component doc sets, plus path-specific guides
 ├── contribute/          # ┘ 
 ├── basecamp/            # ┐

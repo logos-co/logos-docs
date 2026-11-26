@@ -1,4 +1,4 @@
-// The procedure tech tree on /get-started/tech-tree. The graph comes from
+// The procedure tech tree on /get-started/choose-your-path. The graph comes from
 // plugins/tech-tree; this filters it by user type, lays it out with the
 // plugin's layout(), draws it and handles highlighting.
 

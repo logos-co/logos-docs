@@ -113,7 +113,7 @@ const config: Config = {
     // Hover previews for internal links (src/theme/MDXComponents/A).
     './plugins/link-previews',
     // Prerequisite graph between procedures: the diagram on
-    // /get-started/tech-tree, and a build failure when a prerequisite's
+    // /get-started/choose-your-path, and a build failure when a prerequisite's
     // "Next steps" section doesn't link back. See plugins/tech-tree.
     './plugins/tech-tree',
     [
@@ -125,9 +125,21 @@ const config: Config = {
         // the content (see sidebars.ts), so old links need to redirect to
         // the canonical (naturally nested, no slug override) page instead.
         redirects: [
+          // The procedure tech tree was renamed Choose your path.
+          {
+            from: '/get-started/tech-tree',
+            to: '/get-started/choose-your-path',
+          },
+          // Integrate Logos became the Build an app landing page.
+          {
+            from: '/build-an-app/integrate-logos',
+            to: '/build-an-app',
+          },
           // run-an-app (-> basecamp / blockchain / lez)
-          // Note: /run-an-app itself is NOT redirected — it's a real
-          // generated-index page now (sidebars.ts), not a redirect target.
+          {
+            from: '/run-an-app',
+            to: '/basecamp/install-logos-basecamp',
+          },
           {
             from: '/run-an-app/basecamp/install-logos-basecamp',
             to: '/basecamp/install-logos-basecamp',
@@ -347,30 +359,9 @@ const config: Config = {
           position: 'left',
         },
         {
-          type: 'dropdown',
+          to: '/get-started/choose-your-path',
           label: 'Your path',
           position: 'left',
-          items: [
-            {
-              type: 'docSidebar',
-              sidebarId: 'runAnAppSidebar',
-              label: 'Run an app',
-            },
-            {
-              type: 'docSidebar',
-              sidebarId: 'runANodeSidebar',
-              label: 'Run a node',
-            },
-            {
-              type: 'docSidebar',
-              sidebarId: 'buildAnAppSidebar',
-              label: 'Build an app',
-            },
-            {
-              href: 'https://github.com/logos-co/logos-docs?tab=contributing-ov-file#contributing-to-the-logos-documentation',
-              label: 'Contribute',
-            },
-          ],
         },
         {
           type: 'dropdown',

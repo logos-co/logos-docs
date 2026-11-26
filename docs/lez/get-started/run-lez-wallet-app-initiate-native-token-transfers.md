@@ -39,7 +39,7 @@ Recovering a wallet from its recovery phrase is not yet supported.
 - You can create and name public and private accounts, and fund them to test transfers.
 - You can complete public, private, shielded, and deshielded token transfers, verify finalisation on the L1, and withdraw tokens to the L1.
 
-### Run the wallet app in Basecamp
+## Run the wallet app in Basecamp
 
 1. At the bottom of the sidebar, click **Applications**.
 1. Select `Wallet` in **Categories**, or search for `LEZ Wallet`, then click the **LEZ Wallet** card.

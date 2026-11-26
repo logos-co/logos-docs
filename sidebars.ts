@@ -2,101 +2,6 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 const sidebars: SidebarsConfig = {
-  runAnAppSidebar: [
-    {
-      type: 'category',
-      label: 'Run an app',
-      link: {
-        type: 'generated-index',
-        title: 'Run an app',
-        description:
-          'Run modules inside Basecamp, through individual UI apps, or headlessly.',
-        slug: '/run-an-app',
-      },
-      items: [
-        {
-          type: 'category',
-          label: 'Basecamp',
-          items: [
-            {
-              type: 'link',
-              label: 'Install Logos Basecamp',
-              href: '/basecamp/install-logos-basecamp',
-            },
-            {
-              type: 'link',
-              label: 'Install and load a module in Basecamp',
-              href: '/basecamp/install-and-load-module-in-basecamp',
-            },
-            {
-              type: 'link',
-              label: 'Swap ETH and LEZ tokens in Basecamp',
-              href: '/basecamp/atomic-swaps-poc',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Blockchain app',
-          items: [
-            {
-              type: 'link',
-              label: 'Run a Blockchain node from Basecamp',
-              href: '/blockchain/get-started/run-blockchain-node-from-basecamp',
-            },
-            {
-              type: 'link',
-              label: 'Move Blockchain assets on Basecamp',
-              href: '/blockchain/transfer-tokens/move-blockchain-assets-on-basecamp',
-            },
-            {
-              type: 'link',
-              label: 'Bridge assets from Logos Blockchain to a Zone on Basecamp',
-              href: '/blockchain/transfer-tokens/bridge-assets-from-logos-blockchain-to-zone-on-basecamp',
-            },
-            {
-              type: 'link',
-              label: 'Claim leader rewards in Basecamp',
-              href: '/blockchain/get-started/claim-leader-rewards-in-basecamp',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'LEZ wallet app',
-          items: [
-            {
-              type: 'link',
-              label: 'Run the LEZ wallet app and initiate native token transfers',
-              href: '/lez/get-started/run-lez-wallet-app-initiate-native-token-transfers',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Chat App',
-          items: [
-            {
-              type: 'link',
-              label: 'Send 1:1 messages with the Logos Chat app',
-              href: '/messaging/get-started/send-1-1-messages-logos-chat',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Storage app',
-          items: [
-            {
-              type: 'link',
-              label: 'Run a Storage Node from Basecamp',
-              href: '/storage/get-started/run-storage-node-from-basecamp',
-            },
-          ],
-        },
-      ],
-    },
-  ],
   runANodeSidebar: [
     'run-a-node/get-started/run-logos-node-blockchain-storage-delivery',
     'run-a-node/get-started/expose-logos-node-metrics-to-prometheus',
@@ -139,75 +44,86 @@ const sidebars: SidebarsConfig = {
       ],
     },
   ],
+  // Like runANodeSidebar: the landing doc carries the section slug
+  // (/build-an-app), so there's no generated-index wrapper.
   buildAnAppSidebar: [
+    'build-an-app/integrate-logos-into-your-application',
     {
       type: 'category',
-      label: 'Build an app',
-      link: {
-        type: 'generated-index',
-        title: 'Build an app',
-        description: 'Build and ship apps on Logos.',
-        slug: '/build-an-app',
-      },
+      label: 'Build modules',
       items: [
-        'build-an-app/integrate-logos-into-your-application',
         {
-          type: 'category',
-          label: 'Build modules',
-          items: [
-            {
-              type: 'link',
-              label: 'Build and run a Logos core module',
-              href: '/core/build-modules/build-and-run-a-logos-core-module',
-            },
-            {
-              type: 'link',
-              label: 'Wrap a C library as a Logos core module',
-              href: '/core/build-modules/wrap-a-c-library-as-a-logos-core-module',
-            },
-            {
-              type: 'link',
-              label: 'Build a Logos C++ UI module',
-              href: '/core/build-modules/build-a-logos-cpp-ui-module',
-            },
-            {
-              type: 'link',
-              label: 'Install and load a module in Basecamp',
-              href: '/basecamp/install-and-load-module-in-basecamp',
-            },
-          ],
+          type: 'link',
+          label: 'Build and run a Logos core module',
+          href: '/core/build-modules/build-and-run-a-logos-core-module',
         },
         {
-          type: 'category',
-          label: 'Scaffold',
-          items: [{type: 'autogenerated', dirName: 'build-an-app/scaffold'}],
+          type: 'link',
+          label: 'Wrap a C library as a Logos core module',
+          href: '/core/build-modules/wrap-a-c-library-as-a-logos-core-module',
         },
         {
-          type: 'category',
-          label: 'Logos SQL',
-          items: [
-            {
-              type: 'link',
-              label: 'Introduction to Logos SQL',
-              href: '/blockchain/logos-sql',
-            },
-            {
-              type: 'link',
-              label: 'Build an application with Logos SQL',
-              href: '/blockchain/logos-sql/build-application-with-logos-sql',
-            },
-            {
-              type: 'link',
-              label: 'Handle displaced writes',
-              href: '/blockchain/logos-sql/handle-displaced-writes',
-            },
-          ],
+          type: 'link',
+          label: 'Build a Logos C++ UI module',
+          href: '/core/build-modules/build-a-logos-cpp-ui-module',
+        },
+        {
+          type: 'link',
+          label: 'Install and load a module in Basecamp',
+          href: '/basecamp/install-and-load-module-in-basecamp',
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Scaffold',
+      items: [{type: 'autogenerated', dirName: 'build-an-app/scaffold'}],
+    },
+    {
+      type: 'category',
+      label: 'Logos SQL',
+      items: [
+        {
+          type: 'link',
+          label: 'Introduction to Logos SQL',
+          href: '/blockchain/logos-sql',
+        },
+        {
+          type: 'link',
+          label: 'Build an application with Logos SQL',
+          href: '/blockchain/logos-sql/build-application-with-logos-sql',
+        },
+        {
+          type: 'link',
+          label: 'Handle displaced writes',
+          href: '/blockchain/logos-sql/handle-displaced-writes',
         },
       ],
     },
   ],
 
-  getStartedSidebar: [{type: 'autogenerated', dirName: 'get-started'}],
+  // Hand-written so Build an app can sit in the list and the reference
+  // pages can be grouped without moving their files (and URLs). A new
+  // get-started page needs an entry here.
+  getStartedSidebar: [
+    'get-started/introduction-to-logos',
+    'get-started/choose-your-path',
+    'get-started/coding-with-agents',
+    {
+      type: 'link',
+      label: 'Integrate Logos into your application',
+      href: '/build-an-app',
+    },
+    {
+      type: 'category',
+      label: 'Reference',
+      items: [
+        'get-started/glossary',
+        'get-started/logos-ecosystem-repositories',
+        'get-started/testnet-endpoints',
+      ],
+    },
+  ],
   // Hand-written, not autogenerated: pulls in an article that physically
   // lives under core/build-modules/ (installing/loading a module is core
   // content, but belongs in the Basecamp reader's path too).

@@ -16,7 +16,7 @@ import TechTree from '@site/src/components/TechTree';
 
 #### See which procedures build on which, and find a path through the docs to whatever you'd like to do.
 
-**Ready to use Logos, but not sure where to start?** Explore what is possible with a "tech tree" generated directly from the Logos documentation. All procedure pages on the site are displayed as boxes, with lines tracing potential sequences to try. You can narrow down the option by selecting how you'd like to use Logos (for example, GUI vs CLI), or search for a specific term. When you've selected your path, click on the text in each box to be directed to the relevant page.
+**Ready to use Logos, but not sure where to start?** Explore what is possible with a "tech tree" generated directly from the Logos documentation. All procedure pages on the site are displayed as boxes, with lines tracing potential sequences to try. You can narrow down the options by selecting how you'd like to use Logos (for example, GUI vs CLI), or search for a specific term. When you've selected your path, click on the text in each box to be directed to the relevant page.
 
 ## Tech tree diagram
 

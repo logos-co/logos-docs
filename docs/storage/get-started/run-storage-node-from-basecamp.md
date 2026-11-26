@@ -37,6 +37,7 @@ The [Logos Storage](../../get-started/glossary.md#logos-storage) app is a file-s
 - You can configure your node through the onboarding wizard, in guided or advanced mode, and reach a running node.
 - You can share files with other nodes and download files shared by others using a Content Identifier ([CID](../../get-started/glossary.md#cid)).
 - You can fetch a manifest and download its content privately over Mix, and stop and restart the node without losing your files.
+- You can share a file under a name and download a file from a name key.
 
 ## Step 1: Run the application
 
@@ -183,6 +184,60 @@ While it seems to be oriented toward advanced users, it can be useful to check t
 1. To stop sharing a file, click the trash icon in the manifest entry's **Actions** column. The file leaves the list and the **Storage** panel returns to **0 B Utilised**: the blocks are actually removed from disk.
 
    - `.lgx` files have no trash icon: they are module [packages](../../get-started/glossary.md#package) downloaded from the Logos Package Manager in Basecamp.
+
+## Step 9: Share a file under a name
+
+A CID changes when the file changes. A name gives you a name key that stays the same: you share it once, and you can point it to another file later. See [Naming](../concepts/naming.md).
+
+### Publish a name
+
+1. Upload the file you want to share, as in [Step 3](#step-3-share-a-file). This guide uses `catalog-v1.txt`.
+
+1. In the file's **Actions** column, click the globe icon. The app opens the **Names** tab and the **Publish under a name** popup, with the file already picked.
+
+1. Type a label, for example `catalog`, and click **Publish**.
+
+   ![Publish under a name popup with the label catalog and the file picked](../assets/set-up-and-use-logos-storage-ui/storage-ui-name-create.png)
+
+1. Wait for the **Names** tab to list the name. It shows the label, the **Name key** and the file the name points to.
+
+   ![Names tab with the name catalog and its name key](../assets/set-up-and-use-logos-storage-ui/storage-ui-name-published.png)
+
+1. In the name's **Actions** column, click the copy icon to copy the name key. Share this string with others so they can download the file.
+
+In the **Manifests** tab, the globe icon of a named file turns orange, and the label appears after the filename.
+
+![Manifests tab with the label catalog after the filename](../assets/set-up-and-use-logos-storage-ui/storage-ui-name-in-table.png)
+
+### Point the name to another file
+
+1. Upload the new version of the file, as in [Step 3](#step-3-share-a-file). This guide uses `catalog-v2.txt`.
+
+1. Click the globe icon of the new file, then click the name under **Or use one of your names:**. You can also click the **Change dataset** icon of the name in the **Names** tab.
+
+1. Click **Move**. The name points to the new file, and the name key stays the same.
+
+   ![Popup that moves catalog to catalog-v2.txt](../assets/set-up-and-use-logos-storage-ui/storage-ui-name-move.png)
+
+### Download a file from a name key
+
+1. Paste the name key into the **Fetch Manifest** panel and click **Fetch**. This field takes a CID or a name key.
+
+   ![Name key pasted in the Fetch Manifest panel](../assets/set-up-and-use-logos-storage-ui/storage-ui-name-fetch.png)
+
+1. Wait for the manifest to appear in the **Manifests** list. While the app looks up the name, the list shows a `Resolving name...` entry.
+
+1. Download the file as in [Step 4](#step-4-download-a-file).
+
+### Stop publishing a name
+
+In the **Names** tab, click the **Unpublish** icon of the name. Your node stops advertising the name. Other nodes can still find it for up to 8 hours.
+
+When you delete a file that has a name, the app unpublishes the name too.
+
+:::warning
+Your node must run for the name to stay online. If your node is offline for more than 8 hours, the name key doesn't resolve until your node starts again.
+:::
 
 ## Troubleshooting Logos Storage
 

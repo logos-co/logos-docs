@@ -34,7 +34,7 @@ Events are not stored in blocks and no hash commits to them. Re-executing a bloc
 - A local clone of the [LEZ repository](https://github.com/logos-blockchain/logos-execution-zone) at `v0.3.2`, to read the example code.
 - A running [LEZ Indexer](./run-lez-indexer.md). The indexer serves JSON-RPC on `http://localhost:8779` by default.
 - [`curl`](https://curl.se/) and [`jq`](https://jqlang.org/). To stream events, a WebSocket client such as [`websocat`](https://github.com/vi/websocat).
-- An understanding of [how LEZ programs update account state](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state). It is also helpful to have gone through [Write an LEZ program that updates an account via `plan` and `apply`](../programs/write-lez-program-with-plan-and-apply.md).
+- An understanding of [how LEZ programs update account state](../concepts/about-the-lee-program-model.md#how-programs-update-account-state). It is also helpful to have gone through [Write an LEZ program that updates an account via `plan` and `apply`](../programs/write-lez-program-with-plan-and-apply.md).
 :::
 
 ## What to expect
@@ -79,7 +79,7 @@ An event is defined as a `ProgramEvent { selector: [u8; 8], data: Vec<u8> }`. Th
 
 ## Step 2: Emit the event from `plan`
 
-Events are declared in a program's `plan` function, the [state-blind entrypoint](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state) that also declares the program's effects and chained calls.
+Events are declared in a program's `plan` function, the [state-blind entrypoint](../concepts/about-the-lee-program-model.md#how-programs-update-account-state) that also declares the program's effects and chained calls.
 
 1. Open [`lez/programs/bridge/src/main.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/programs/bridge/src/main.rs) and find the end of `plan`. After declaring its effect and its chained transfer, the bridge emits the deposit:
 

@@ -9,7 +9,7 @@ sidebar_position: 100
 description: Look up every JSON-RPC method a LEZ sequencer serves.
 custom_edit_url: https://github.com/logos-blockchain/logos-execution-zone/blob/dev/lez/sequencer/service/rpc/src/lib.rs
 source_repo: logos-blockchain/logos-execution-zone
-source_version: v0.3.2
+source_version: v0.4.0
 ---
 
 # LEZ sequencer RPC reference
@@ -17,12 +17,12 @@ source_version: v0.3.2
 #### Look up every JSON-RPC method a LEZ sequencer serves.
 
 :::note[Mirrored page]
-This page mirrors [`lez/sequencer/service/rpc/src/lib.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.3.2/lez/sequencer/service/rpc/src/lib.rs) from
-`logos-execution-zone` v0.3.2, and is regenerated automatically after each release. To change it, edit
+This page mirrors [`lez/sequencer/service/rpc/src/lib.rs`](https://github.com/logos-blockchain/logos-execution-zone/blob/v0.4.0/lez/sequencer/service/rpc/src/lib.rs) from
+`logos-execution-zone` v0.4.0, and is regenerated automatically after each release. To change it, edit
 the source in [`logos-blockchain/logos-execution-zone`](https://github.com/logos-blockchain/logos-execution-zone), not this page.
 :::
 
-The server speaks JSON-RPC 2.0. Parameter and return types are the Rust types the server is written against; most come from the [`sequencer_service_protocol`](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.3.2/lez/sequencer/service/protocol) crate, and their JSON shape is their `serde` serialisation. A failed call returns a JSON-RPC error object.
+The server speaks JSON-RPC 2.0. Parameter and return types are the Rust types the server is written against; most come from the [`sequencer_service_protocol`](https://github.com/logos-blockchain/logos-execution-zone/tree/v0.4.0/lez/sequencer/service/protocol) crate, and their JSON shape is their `serde` serialisation. A failed call returns a JSON-RPC error object.
 
 ## Methods
 
@@ -36,14 +36,19 @@ The server speaks JSON-RPC 2.0. Parameter and return types are the Rust types th
 | [`getLastBlockId`](#getlastblockid) | None | `BlockId` |
 | [`getAccountBalance`](#getaccountbalance) | `account_id` | `u128` |
 | [`getTransaction`](#gettransaction) | `tx_hash` | `Option<(LeeTransaction, BlockId)>` |
+| [`getTransactionReceipt`](#gettransactionreceipt) | `tx_hash` | `Option<TransactionReceipt>` |
 | [`getAccountsNonces`](#getaccountsnonces) | `account_ids` | `Vec<Nonce>` |
-| [`getAccountView`](#getaccountview) | `shard_selector` | `Account` |
-| [`getProofsAndRoot`](#getproofsandroot) | `commitments` | `(Vec<Option<MembershipProof>>, CommitmentSetDigest)` |
-| [`getAccount`](#getaccount) | `account_id` | `Account` |
+| [`getAccountView`](#getaccountview) | `actor_state_selector` | `Option<Account>` |
+| [`getPublications`](#getpublications) | `from_position`, `limit` | `PublicationsPage` |
+| [`getMessagePath`](#getmessagepath) | `position` | `Option<MembershipProof>` |
+| [`getRecoveryBinding`](#getrecoverybinding) | `address` | `Option<EncryptedNote>` |
+| [`getProofsAndRoot`](#getproofsandroot) | `commitments`, `message_positions` | `( Vec<Option<MembershipProof>>, Vec<Option<MembershipProof>>, CommitmentSetDigest, )` |
+| [`getAccount`](#getaccount) | `account_id` | `Option<Account>` |
 | [`getProgramIds`](#getprogramids) | None | `BTreeMap<String, ProgramId>` |
 | [`getChannelId`](#getchannelid) | None | `ChannelId` |
-| [`getCrossZoneDeadLetters`](#getcrosszonedeadletters) | None | `CrossZoneDeadLetterReport` |
-| [`requeueCrossZoneDeadLetter`](#requeuecrosszonedeadletter) | `message_key` | `CrossZoneDeadLetterRequeue` |
+| [`getSequencerStatus`](#getsequencerstatus) | None | `SequencerStatus` |
+| [`submitSystemApproval`](#submitsystemapproval) | `approval` | None |
+| [`getSystemProposals`](#getsystemproposals) | None | `SystemProposalReport` |
 
 ### `sendTransaction`
 
@@ -117,6 +122,18 @@ Parameters, in order:
 
 Returns `Option<(LeeTransaction, BlockId)>`.
 
+### `getTransactionReceipt`
+
+`None` for an unknown transaction, and for a block's trailing fee and clock transactions.
+
+Parameters, in order:
+
+| Name | Type |
+| --- | --- |
+| `tx_hash` | `HashType` |
+
+Returns `Option<TransactionReceipt>`.
+
 ### `getAccountsNonces`
 
 Parameters, in order:
@@ -129,26 +146,61 @@ Returns `Vec<Nonce>`.
 
 ### `getAccountView`
 
-Returns the account's nonce and the selected shard; its balance is the shard at the
-native token program.
+Returns the account's nonce and the selected actor state; its balance is the actor state at
+the native token program.
 
 Parameters, in order:
 
 | Name | Type |
 | --- | --- |
-| `shard_selector` | `ProgramShardSelector` |
+| `actor_state_selector` | `Actor` |
 
-Returns `Account`.
+Returns `Option<Account>`.
+
+### `getPublications`
+
+Parameters, in order:
+
+| Name | Type |
+| --- | --- |
+| `from_position` | `CommitmentPosition` |
+| `limit` | `PageLimit` |
+
+Returns `PublicationsPage`.
+
+### `getMessagePath`
+
+Parameters, in order:
+
+| Name | Type |
+| --- | --- |
+| `position` | `CommitmentPosition` |
+
+Returns `Option<MembershipProof>`.
+
+### `getRecoveryBinding`
+
+Parameters, in order:
+
+| Name | Type |
+| --- | --- |
+| `address` | `AccountId` |
+
+Returns `Option<EncryptedNote>`.
 
 ### `getProofsAndRoot`
+
+The membership paths of `commitments` and of the message leaves at `message_positions`,
+all under the root returned with them.
 
 Parameters, in order:
 
 | Name | Type |
 | --- | --- |
 | `commitments` | `Vec<Commitment>` |
+| `message_positions` | `Vec<CommitmentPosition>` |
 
-Returns `(Vec<Option<MembershipProof>>, CommitmentSetDigest)`.
+Returns `( Vec<Option<MembershipProof>>, Vec<Option<MembershipProof>>, CommitmentSetDigest, )`.
 
 ### `getAccount`
 
@@ -158,7 +210,7 @@ Parameters, in order:
 | --- | --- |
 | `account_id` | `AccountId` |
 
-Returns `Account`.
+Returns `Option<Account>`.
 
 ### `getProgramIds`
 
@@ -172,34 +224,29 @@ Takes no parameters.
 
 Returns `ChannelId`.
 
-### `getCrossZoneDeadLetters`
+### `getSequencerStatus`
 
-The cross-zone deliveries this sequencer has given up on.
-
-Its own method rather than folded into `checkHealth`: one undeliverable
-peer message must not read as an unhealthy node.
+What the sequencer is doing: bootstrapping from the channel, or online.
 
 Takes no parameters.
 
-Returns `CrossZoneDeadLetterReport`.
+Returns `SequencerStatus`.
 
-### `requeueCrossZoneDeadLetter`
+### `submitSystemApproval`
 
-Restores a dead-lettered cross-zone delivery to the pending list, with a
-clean attempt count.
-
-The operator move once the cause of the failures has cleared: a raised
-mint cap, a fixed target program. A delivery that fails again is
-dead-lettered again.
-
-Like the rest of this surface it carries no authentication, so anyone
-who can reach the RPC can requeue; the blast radius is bounded to
-re-attempting deliveries this node already accepted from a peer.
+Hands the node a committee member's approval of a `system_upgrader` change: a borsh
+`SignedApproval`, as `approve_system_change` prints it.
 
 Parameters, in order:
 
 | Name | Type |
 | --- | --- |
-| `message_key` | `HashType` |
+| `approval` | `HexBytes` |
 
-Returns `CrossZoneDeadLetterRequeue`.
+Returns no value: the result is `null`.
+
+### `getSystemProposals`
+
+Takes no parameters.
+
+Returns `SystemProposalReport`.

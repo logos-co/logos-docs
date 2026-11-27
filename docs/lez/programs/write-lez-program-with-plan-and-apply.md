@@ -27,7 +27,7 @@ When a [Logos Execution Zone (LEZ)](../../get-started/glossary.md#logos-executio
 - **`plan`** sees the instruction and a list of account handles, but no account data. It turns the instruction into a list of intents: effects on account data [shards](../../get-started/glossary.md#shard), chained calls to other programs, and events.
 - **`apply`** materialises one effect against exactly one shard of one account, and sees nothing else.
 
-For more information about this two-step update process, see [Introduction to the Logos Execution Zone](../introduction-to-the-logos-execution-zone.md#how-programs-update-account-state).
+For more information about this two-step update process, see [About the LEE program model](../concepts/about-the-lee-program-model.md#how-programs-update-account-state).
 
 This procedure walks through the example programs in the [`examples/program_deployment`](https://github.com/logos-blockchain/logos-execution-zone/tree/fix/program-deployment-runners-declare-fees-v0.3.2/examples/program_deployment) directory of the LEZ repository, from a short program to one that chains calls and emits events. It is intended for developers writing or reviewing LEZ programs who want to understand the interface before writing their own.
 

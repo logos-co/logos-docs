@@ -436,7 +436,7 @@ Enables reward distribution to Logos Blockchain nodes participating in the Blend
 
 ### Shard
 
-A portion of an LEZ account's data, keyed by the program that owns it and writable only by that program. See [Introduction to the Logos Execution Zone](../lez/introduction-to-the-logos-execution-zone.md#how-programs-update-account-state).
+A portion of an LEZ account's data, keyed by the program that owns it and writable only by that program. See [About the LEE program model](../lez/concepts/about-the-lee-program-model.md#how-programs-update-account-state).
 
 ### Slot
 

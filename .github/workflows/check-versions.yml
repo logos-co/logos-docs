@@ -1,0 +1,48 @@
+name: Check component versions
+
+# Finds every component version the docs pin (GitHub release/tag refs, Nix and
+# Cargo pins, package versions from the package indexes) and compares it with
+# that component's latest stable release (scripts/check-versions/
+# check_versions.py). Opens one issue per (component, docs version) that is
+# behind, unless an open issue already reports it, or a closed one was closed
+# as "not planned" or labelled wontfix. Runs daily; the run summary lists every
+# mismatch, reported or not.
+
+on:
+  workflow_dispatch:        # manual "Run workflow" button (needs the file on the default branch)
+    inputs:
+      create_issues:
+        description: Open issues for new mismatches (off lists them in the run summary only)
+        type: boolean
+        default: true
+  schedule:
+    - cron: "47 6 * * *"    # Daily, 06:47 UTC, after the API reference sync.
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: check-versions
+  cancel-in-progress: false
+
+jobs:
+  check:
+    # Forks would otherwise open mismatch issues against themselves every day.
+    if: github.repository == 'logos-co/logos-docs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Compare docs versions with the latest releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CREATE_ISSUES: ${{ github.event_name == 'schedule' || inputs.create_issues }}
+        run: |
+          args=(--ref "${{ github.event.repository.default_branch }}")
+          if [ "$CREATE_ISSUES" = true ]; then args+=(--create-issues); fi
+          python3 scripts/check-versions/check_versions.py "${args[@]}"
